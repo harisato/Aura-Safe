@@ -155,6 +155,36 @@ export const SafeList = ({ onSafeClick }: Props): ReactElement => {
                   </Collapse>
                 </ListItem>
               )}
+
+              {ownedSafesOnNetwork.length > 0 && (
+                <ListItem classes={{ root: classes.listItemCollapse }} component="div">
+                  <Collapse
+                    title={
+                      <Text
+                        size="lg"
+                        color="placeHolder"
+                      >{`Safes owned on ${chainName} (${ownedSafesOnNetwork.length})`}</Text>
+                    }
+                    key={String(shouldExpandOwnedSafes)}
+                    defaultExpanded={shouldExpandOwnedSafes}
+                  >
+                    {ownedSafesOnNetwork.map((ownedAddress) => {
+                      const isAdded = localSafesOnNetwork.some(({ address }) => isSameAddress(address, ownedAddress))
+
+                      return (
+                        <SafeListItem
+                          key={ownedAddress}
+                          address={ownedAddress}
+                          networkId={chainId}
+                          onSafeClick={onSafeClick}
+                          showAllowNewSafe={true}
+                          shouldScrollToSafe={shouldExpandOwnedSafes && !isAdded}
+                        />
+                      )
+                    })}
+                  </Collapse>
+                </ListItem>
+              )}
             </MuiList>
           </Fragment>
         )

@@ -17,6 +17,7 @@ import {
   LOAD_SPECIFIC_SAFE_ROUTE,
   SAFE_ROUTES,
   SafeRouteParams,
+  ALLOW_SPECIFIC_SAFE_ROUTE,
 } from 'src/routes/routes'
 import { currentChainId } from 'src/logic/config/store/selectors'
 import { ChainId } from 'src/config/chain.d'
@@ -60,6 +61,7 @@ type Props = {
   address: string
   ethBalance?: string
   showAddSafeLink?: boolean
+  showAllowNewSafe?: boolean
   networkId: ChainId
   shouldScrollToSafe?: boolean
 }
@@ -70,6 +72,7 @@ const SafeListItem = ({
   address,
   ethBalance,
   showAddSafeLink = false,
+  showAllowNewSafe = false,
   networkId,
   shouldScrollToSafe = false,
 }: Props): ReactElement => {
@@ -109,6 +112,15 @@ const SafeListItem = ({
     setChainId(networkId)
   }
 
+  const handleAllowSafe = (): void => {
+    onSafeClick()
+    onNetworkSwitch?.()
+    history.push(generateSafeRoute(ALLOW_SPECIFIC_SAFE_ROUTE, routesSlug))
+
+    // Navigating to LOAD_SPECIFIC_SAFE_ROUTE doesn't trigger a network switch
+    setChainId(networkId)
+  }
+
   return (
     <ListItem button onClick={handleOpenSafe} ref={safeRef}>
       <StyledIcon type="check" size="md" color="primary" checked={isCurrentSafe} />
@@ -122,6 +134,12 @@ const SafeListItem = ({
           <StyledButton onClick={handleLoadSafe} size="md" variant="outlined">
             <Text size="lg" color="primary">
               Add Safe
+            </Text>
+          </StyledButton>
+        ) : showAllowNewSafe ? (
+          <StyledButton onClick={handleAllowSafe} size="md" variant="outlined">
+            <Text size="lg" color="primary">
+              Allow Safe
             </Text>
           </StyledButton>
         ) : null}
