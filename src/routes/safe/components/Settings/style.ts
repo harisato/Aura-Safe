@@ -10,7 +10,8 @@ export const styles = createStyles({
     display: 'flex',
     flexDirection: 'column',
     marginBottom: '54px',
-    minHeight: '505px',
+    // minHeight: '505px',
+    minHeight: 'min-content',
 
     [`@media (min-width: ${screenSm}px)`]: {
       flexDirection: 'row',

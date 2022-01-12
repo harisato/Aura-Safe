@@ -5,7 +5,8 @@ import { lg, sm } from 'src/theme/variables'
 export const useStyles = makeStyles(
   createStyles({
     formContainer: {
-      minHeight: '420px',
+      // minHeight: '420px',
+      minHeight: 'min-content',
     },
     title: {
       padding: lg,

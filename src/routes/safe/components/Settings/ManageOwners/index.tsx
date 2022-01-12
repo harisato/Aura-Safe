@@ -17,9 +17,6 @@ import ButtonHelper from 'src/components/ButtonHelper'
 import Table from 'src/components/Table'
 import { cellWidth } from 'src/components/Table/TableHead'
 import Block from 'src/components/layout/Block'
-import Button from 'src/components/layout/Button'
-import Col from 'src/components/layout/Col'
-import Hairline from 'src/components/layout/Hairline'
 import Heading from 'src/components/layout/Heading'
 import Paragraph from 'src/components/layout/Paragraph/index'
 import Row from 'src/components/layout/Row'
@@ -145,7 +142,7 @@ const ManageOwners = ({ granted, owners }: Props): ReactElement => {
           </Table>
         </TableContainer>
       </Block>
-      {granted && (
+      {/* {granted && (
         <>
           <Hairline />
           <Row align="end" className={classes.controlsRow} grow>
@@ -162,7 +159,7 @@ const ManageOwners = ({ granted, owners }: Props): ReactElement => {
             </Col>
           </Row>
         </>
-      )}
+      )} */}
       <AddOwnerModal isOpen={modalsStatus.showAddOwner} onClose={onHide('AddOwner')} />
       {selectedOwner && (
         <>

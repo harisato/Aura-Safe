@@ -19,8 +19,8 @@ import { hasFeature } from 'src/logic/safe/utils/safeVersion'
 const useSidebarItems = (): ListItemType[] => {
   const featuresEnabled = useSelector(currentSafeFeaturesEnabled)
   const safeAppsEnabled = hasFeature(FEATURES.SAFE_APPS)
-  const isCollectiblesEnabled = hasFeature(FEATURES.ERC721)
-  const isSpendingLimitEnabled = hasFeature(FEATURES.SPENDING_LIMIT)
+  // const isCollectiblesEnabled = hasFeature(FEATURES.ERC721)
+  // const isSpendingLimitEnabled = hasFeature(FEATURES.SPENDING_LIMIT)
   const { needsUpdate } = useSelector(currentSafeWithNames)
   const safeAddress = extractSafeAddress()
   const granted = useSelector(grantedSelector)
@@ -60,7 +60,7 @@ const useSidebarItems = (): ListItemType[] => {
         href: currentSafeRoutes.ASSETS_BALANCES,
       }),
       makeEntryItem({
-        disabled: !isCollectiblesEnabled,
+        disabled: true, // !isCollectiblesEnabled,
         label: 'Collectibles',
         iconType: 'collectibles',
         href: currentSafeRoutes.ASSETS_BALANCES_COLLECTIBLES,
@@ -90,7 +90,7 @@ const useSidebarItems = (): ListItemType[] => {
         href: currentSafeRoutes.SETTINGS_POLICIES,
       }),
       makeEntryItem({
-        disabled: !isSpendingLimitEnabled,
+        disabled: true, // !isSpendingLimitEnabled,
         label: 'Spending Limit',
         iconType: 'fuelIndicator',
         href: currentSafeRoutes.SETTINGS_SPENDING_LIMIT,
@@ -99,6 +99,7 @@ const useSidebarItems = (): ListItemType[] => {
         label: 'Advanced',
         iconType: 'settingsTool',
         href: currentSafeRoutes.SETTINGS_ADVANCED,
+        disabled: true,
       }),
     ].filter(Boolean)
 
@@ -135,8 +136,8 @@ const useSidebarItems = (): ListItemType[] => {
   }, [
     featuresEnabled,
     granted,
-    isCollectiblesEnabled,
-    isSpendingLimitEnabled,
+    // isCollectiblesEnabled,
+    // isSpendingLimitEnabled,
     makeEntryItem,
     matchSafe,
     matchSafeWithSidebarSection,
