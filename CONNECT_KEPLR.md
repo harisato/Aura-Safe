@@ -45,7 +45,7 @@ await window['keplr'].experimentalSuggestChain({
 		average: 2.5,
 		high: 4
 	},
-	walletUrlForStaking: https://aura.network
+	walletUrlForStaking: "https://aura.network"
 });
 ```
 2. Detech Keplr
