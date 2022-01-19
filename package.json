@@ -15,7 +15,7 @@
     "name": "Gnosis Team",
     "email": "safe@gnosis.io"
   },
-  "homepage": "/app",
+  "homepage": "http://localhost:80",
   "main": "public/electron.js",
   "scripts": {
     "analyze": "source-map-explorer 'build/static/js/*.js'",
