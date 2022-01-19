@@ -13,9 +13,12 @@ export async function getKeplr(): Promise<Keplr | undefined> {
     return window.keplr;
   }
 
+  alert("Please install keplr extension");
+
   if (document.readyState === "complete") {
     return window.keplr;
   }
+
 
   return new Promise((resolve) => {
     const documentStateChange = (event: Event) => {
