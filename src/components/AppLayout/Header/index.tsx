@@ -26,10 +26,19 @@ const HeaderComponent = (): React.ReactElement => {
   const dispatch = useDispatch()
 
   useEffect(() => {
+    // const tryToConnectToLastUsedProvider = async () => {
+    //   const lastUsedProvider = await loadLastUsedProvider()
+    //   if (lastUsedProvider) {
+    //     await onboard().walletSelect(lastUsedProvider)
+    //   }
+    // }
+
+    // tryToConnectToLastUsedProvider()
     const tryToConnectToLastUsedProvider = async () => {
       const lastUsedProvider = await loadLastUsedProvider()
+
       if (lastUsedProvider) {
-        await onboard().walletSelect(lastUsedProvider)
+        
       }
     }
 

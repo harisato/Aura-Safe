@@ -5,7 +5,7 @@ import { getChainInfo, _getChainId } from 'src/config'
 import { getWeb3 } from 'src/logic/wallets/getWeb3'
 import onboard from 'src/logic/wallets/onboard'
 import { shouldSwitchNetwork, switchNetwork } from 'src/logic/wallets/utils/network'
-import { getKeplr } from '../../logic/keplr/keplr'
+import { connectKeplr, getKeplr } from '../../logic/keplr/keplr'
 import { addProvider } from '../../logic/wallets/store/actions'
 import { store } from 'src/store'
 import { makeProvider, ProviderProps } from '../../logic/wallets/store/model/provider'
@@ -39,36 +39,35 @@ export const onConnectButtonClick = async (): Promise<void> => {
   //   await checkWallet()
   // }
 
-  const chainInfo = await getChainInfo()
-  
-  console.log(chainInfo)
-  const chainId = _getChainId()
+  // const chainInfo = await getChainInfo()
 
-  const keplr = await getKeplr()
-  await keplr
-    ?.enable(chainId)
-    .then(() => {
-      return keplr.getKey(chainId)
-    })
-    .then((key) => {
+  // console.log(chainInfo)
+  // const chainId = _getChainId()
 
-      console.log(key)
+  // const keplr = await getKeplr()
+  // await keplr
+  //   ?.enable(chainId)
+  //   .then(() => {
+  //     return keplr.getKey(chainId)
+  //   })
+  //   .then((key) => {
+  //     const providerInfo: ProviderProps = {
+  //       account: key.bech32Address,
+  //       available: true,
+  //       hardwareWallet: false,
+  //       loaded: true,
+  //       name: 'Keplr',
+  //       network: chainInfo.chainId,
+  //       smartContractWallet: false,
+  //     }
 
-      const providerInfo: ProviderProps = {
-        account: key.bech32Address,
-        available: true,
-        hardwareWallet: false,
-        loaded: true,
-        name: 'Keplr',
-        network: chainInfo.chainId,
-        smartContractWallet: false,
-      }
+  //     store.dispatch(fetchProvider(providerInfo))
+  //   })
+  //   .catch((err) => {
+  //     console.log('Can not connect', err)
+  //   })
 
-      store.dispatch(fetchProvider(providerInfo))
-    })
-    .catch((err) => {
-      console.log('Can not connect', err)
-    })
+  connectKeplr()
 }
 
 const ConnectButton = (props: { 'data-testid': string }): ReactElement => (
