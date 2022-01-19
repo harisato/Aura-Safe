@@ -1,16 +1,16 @@
 import { ChainInfo, OwnedSafes } from "@gnosis.pm/safe-react-gateway-sdk";
 import axios from "axios";
 
-const baseUrl = 'https://safe-api-dev.akachains.io';
+const baseUrl = 'https://dev.safe.aura.network/api';
 
 
 export function getMChainsConfig(): Promise<ChainInfo[]> {
   return axios.post(`${baseUrl}/general/network-list`)
     .then(response => {
-      const chainList: ChainInfo[] = response.data.Data.map((e: { id: any; name: any; rpc: any }) => {
+      const chainList: ChainInfo[] = response.data.Data.map((e: { chainId: any; name: any; rpc: any }) => {
         return {
           transactionService: "https://safe-transaction.rinkeby.staging.gnosisdev.com",
-          chainId: e.id,
+          chainId: e.chainId,
           chainName: e.name,
           shortName: "xyz",
           l2: false,
