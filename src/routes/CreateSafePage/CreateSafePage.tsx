@@ -55,10 +55,10 @@ function CreateSafePage(): ReactElement {
         loadFromStorage<CreateSafeFormValues>(SAFE_PENDING_CREATION_STORAGE_KEY),
       )
 
-      if (provider) {
-        await instantiateSafeContracts()
-        setSafePendingToBeCreated(safePendingToBeCreated)
-      }
+      // if (provider) {
+      //   await instantiateSafeContracts()
+      //   setSafePendingToBeCreated(safePendingToBeCreated)
+      // }
       setIsLoading(false)
     }
     checkIfSafeIsPendingToBeCreated()

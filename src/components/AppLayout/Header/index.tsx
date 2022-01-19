@@ -47,8 +47,9 @@ const HeaderComponent = (): React.ReactElement => {
   }, [chainId])
 
   const openDashboard = () => {
-    const { wallet } = onboard().getState()
-    return wallet.type === 'sdk' && wallet.dashboard
+    // const { wallet } = onboard().getState()
+    // return wallet.type === 'sdk' && wallet.dashboard
+    return false;
   }
 
   const onDisconnect = () => {
