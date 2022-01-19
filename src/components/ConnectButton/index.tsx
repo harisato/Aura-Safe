@@ -1,9 +1,10 @@
 import { ReactElement } from 'react'
 import Button from 'src/components/layout/Button'
-import { _getChainId } from 'src/config'
+import { getChainInfo, _getChainId } from 'src/config'
 import { getWeb3 } from 'src/logic/wallets/getWeb3'
 import onboard from 'src/logic/wallets/onboard'
 import { shouldSwitchNetwork, switchNetwork } from 'src/logic/wallets/utils/network'
+import { getKeplr } from '../../logic/keplr/keplr'
 
 const checkWallet = async (): Promise<boolean> => {
   if (shouldSwitchNetwork()) {
@@ -23,12 +24,27 @@ export const onboardUser = async (): Promise<boolean> => {
 }
 
 export const onConnectButtonClick = async (): Promise<void> => {
-  const walletSelected = await onboard().walletSelect()
+  // const walletSelected = await onboard().walletSelect()
 
-  // perform wallet checks only if user selected a wallet
-  if (walletSelected) {
-    await checkWallet()
-  }
+  // // perform wallet checks only if user selected a wallet
+  // if (walletSelected) {
+  //   await checkWallet()
+  // }
+
+  const chainId = _getChainId()
+  console.log(chainId)
+
+  await getKeplr()
+    .then((keplr) => {
+      if (keplr) {
+        keplr.enable(chainId)
+      } else {
+        alert('Please install keplr extension')
+      }
+    })
+    .catch((err) => {
+      console.error(err)
+    })
 }
 
 const ConnectButton = (props: { 'data-testid': string }): ReactElement => (

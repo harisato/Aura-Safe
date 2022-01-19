@@ -1,6 +1,6 @@
-import { ChainInfo, getChainsConfig, RPC_AUTHENTICATION } from '@gnosis.pm/safe-react-gateway-sdk'
+import { ChainInfo, RPC_AUTHENTICATION } from '@gnosis.pm/safe-react-gateway-sdk'
 import { setWeb3ReadOnly } from 'src/logic/wallets/getWeb3'
-import { GATEWAY_URL } from 'src/utils/constants'
+import { getMChainsConfig } from '../../services'
 
 // Cache is required as loading Redux store directly is an anit-pattern
 let chains: ChainInfo[] = []
@@ -8,10 +8,14 @@ let chains: ChainInfo[] = []
 export const getChains = (): ChainInfo[] => chains
 
 export const loadChains = async () => {
-  const { results = [] } = await getChainsConfig(GATEWAY_URL, { limit: 100 })
-  chains = results
+
+  const networkList: ChainInfo[] = await getMChainsConfig();
+  chains = networkList
+
+  // const { results = [] } = await getChainsConfig(GATEWAY_URL, { limit: 100 })
+  // chains = results
   // Set the initail web3 provider after loading chains
-  setWeb3ReadOnly()
+  // setWeb3ReadOnly()
 }
 
 // An empty template is required because `getChain()` uses `find()` on load
