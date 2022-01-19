@@ -16,6 +16,7 @@ import {
 import { removeProvider } from 'src/logic/wallets/store/actions'
 import onboard from 'src/logic/wallets/onboard'
 import { loadLastUsedProvider } from 'src/logic/wallets/store/middlewares/providerWatcher'
+import { connectKeplr } from '../../../logic/keplr/keplr'
 
 const HeaderComponent = (): React.ReactElement => {
   const provider = useSelector(providerNameSelector)
@@ -38,7 +39,7 @@ const HeaderComponent = (): React.ReactElement => {
       const lastUsedProvider = await loadLastUsedProvider()
 
       if (lastUsedProvider) {
-        
+        connectKeplr()
       }
     }
 
