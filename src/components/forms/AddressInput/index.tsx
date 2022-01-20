@@ -48,10 +48,6 @@ const AddressInput = ({
   const sanitizedValidators = useCallback(
     (val: string) => {
       const parsed = parsePrefixedAddress(val)
-      console.log({
-        val,
-        parsed
-      })
       return composeValidators(...validators)(parsed.address)
     },
     [validators],
@@ -87,11 +83,6 @@ const AddressInput = ({
         if (!mustBeCosmosAddress(address) /* || !mustBeEthereumAddress(address) */) {
           const parsed = parsePrefixedAddress(address)
           const checkedAddress = checksumAddress(parsed.address) || parsed.address
-
-          console.log({
-            parsed,
-            checkedAddress
-          })
 
           // Field mutator (parent component) always gets an unprefixed address
           fieldMutator(checkedAddress)
