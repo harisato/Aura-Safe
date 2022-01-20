@@ -108,6 +108,20 @@ export const mustBeEthereumAddress = (fullAddress: string): ValidatorReturnType 
   return result
 }
 
+export const mustBeCosmosAddress = (fullAddress: string): ValidatorReturnType => {
+  const errorMessage = 'Must be a valid Cosmos address, ENS or Unstoppable domain'
+  const { address, prefix } = parsePrefixedAddress(fullAddress)
+
+  const prefixError = mustHaveValidPrefix(prefix)
+  if (prefixError) return prefixError
+
+  const result = undefined
+  if (result !== undefined && hasFeature(FEATURES.DOMAIN_LOOKUP)) {
+    return errorMessage
+  }
+  return result
+}
+
 export const mustBeEthereumContractAddress = memoize(async (fullAddress: string): Promise<ValidatorReturnType> => {
   const { address } = parsePrefixedAddress(fullAddress)
 

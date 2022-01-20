@@ -1,8 +1,17 @@
 import { ChainInfo } from "@gnosis.pm/safe-react-gateway-sdk";
 import axios from "axios";
 import { OwnedMSafes } from "../types/safe";
+import { MSAFE_GATEWAY_URL } from "../utils/constants";
 
-const baseUrl = 'https://dev.safe.aura.network/api';
+const baseUrl = MSAFE_GATEWAY_URL;
+
+export interface ISafeCreate {
+  creatorAddress: string,
+  creatorPubkey: string,
+  otherOwnersAddress: string[]
+  threshold: number
+  chainId: string
+}
 
 
 export function getMChainsConfig(): Promise<ChainInfo[]> {
@@ -73,4 +82,8 @@ export function getMChainsConfig(): Promise<ChainInfo[]> {
 
 export function fetchMSafesByOwner(addressOwner: string): Promise<OwnedMSafes> {
   return axios.get(`${baseUrl}/owner/${addressOwner}/safes`).then(res => res.data.Data)
+}
+
+export function createMSafe(safes: ISafeCreate): Promise<OwnedMSafes> {
+  return axios.post(`${baseUrl}/multisigwallet`, safes).then(res => res.data)
 }

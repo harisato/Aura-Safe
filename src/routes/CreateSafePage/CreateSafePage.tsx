@@ -5,14 +5,14 @@ import styled from 'styled-components'
 import { useSelector } from 'react-redux'
 import queryString from 'query-string'
 import { useLocation } from 'react-router'
-import { Loader } from '@gnosis.pm/safe-react-components'
+import { GenericModal, Loader } from '@gnosis.pm/safe-react-components'
 
 import Page from 'src/components/layout/Page'
 import Block from 'src/components/layout/Block'
 import Row from 'src/components/layout/Row'
 import Heading from 'src/components/layout/Heading'
-import { history } from 'src/routes/routes'
-import { sm, secondary } from 'src/theme/variables'
+import { generateSafeRoute, history, SAFE_ROUTES } from 'src/routes/routes'
+import { sm, secondary, boldFont } from 'src/theme/variables'
 import StepperForm, { StepFormElement } from 'src/components/StepperForm/StepperForm'
 import NameNewSafeStep, { nameNewSafeStepLabel } from './steps/NameNewSafeStep'
 import {
@@ -36,11 +36,19 @@ import ReviewNewSafeStep, { reviewNewSafeStepLabel } from './steps/ReviewNewSafe
 import { loadFromStorage, saveToStorage } from 'src/utils/storage'
 import SafeCreationProcess from './components/SafeCreationProcess'
 import SelectWalletAndNetworkStep, { selectWalletAndNetworkStepLabel } from './steps/SelectWalletAndNetworkStep'
-import { instantiateSafeContracts } from 'src/logic/contracts/safeContracts'
+
+import { createMSafe, ISafeCreate } from 'src/services'
+import { getShortName, _getChainId } from 'src/config'
+import { parseToAdress } from 'src/utils/parseByteAdress'
+import Paragraph from 'src/components/layout/Paragraph'
+import NetworkLabel from 'src/components/NetworkLabel/NetworkLabel'
+import Button from 'src/components/layout/Button'
 
 function CreateSafePage(): ReactElement {
-  const [safePendingToBeCreated, setSafePendingToBeCreated] = useState<CreateSafeFormValues>()
+  // const [safePendingToBeCreated, setSafePendingToBeCreated] = useState<CreateSafeFormValues>()
   const [isLoading, setIsLoading] = useState<boolean>(true)
+
+  const [showCreatedModal, setShowModal] = useState(false)
   const providerName = useSelector(providerNameSelector)
   const isWrongNetwork = useSelector(shouldSwitchWalletChain)
   const provider = !!providerName && !isWrongNetwork
@@ -51,9 +59,9 @@ function CreateSafePage(): ReactElement {
 
       // Removing the await completely is breaking the tests for a mysterious reason
       // @TODO: remove the promise
-      const safePendingToBeCreated = await Promise.resolve(
-        loadFromStorage<CreateSafeFormValues>(SAFE_PENDING_CREATION_STORAGE_KEY),
-      )
+      // const safePendingToBeCreated = await Promise.resolve(
+      //   loadFromStorage<CreateSafeFormValues>(SAFE_PENDING_CREATION_STORAGE_KEY),
+      // )
 
       // if (provider) {
       //   await instantiateSafeContracts()
@@ -69,9 +77,19 @@ function CreateSafePage(): ReactElement {
   const location = useLocation()
   const safeRandomName = useMnemonicSafeName()
 
-  const showSafeCreationProcess = (newSafeFormValues: CreateSafeFormValues): void => {
-    saveToStorage(SAFE_PENDING_CREATION_STORAGE_KEY, { ...newSafeFormValues })
-    setSafePendingToBeCreated(newSafeFormValues)
+  const showSafeCreationProcess = async (newSafeFormValues: CreateSafeFormValues): Promise<void> => {
+    // saveToStorage(SAFE_PENDING_CREATION_STORAGE_KEY, { ...newSafeFormValues })
+
+    const payload = await makeSafeCreate(userWalletAddress, newSafeFormValues)
+
+    console.log(payload)
+
+    const createResponse = await createMSafe(payload)
+
+    if ((createResponse as any).ErrorCode === 'SUCCESSFUL') {
+      setShowModal(true)
+    }
+    // setSafePendingToBeCreated(newSafeFormValues)
   }
 
   const [initialFormValues, setInitialFormValues] = useState<CreateSafeFormValues>()
@@ -91,41 +109,83 @@ function CreateSafePage(): ReactElement {
     )
   }
 
-  return !!safePendingToBeCreated ? (
-    <SafeCreationProcess />
-  ) : (
-    <Page>
-      <Block>
-        <Row align="center">
-          <BackIcon disableRipple onClick={history.goBack}>
-            <ChevronLeft />
-          </BackIcon>
-          <Heading tag="h2">Create new Safe</Heading>
-        </Row>
-        <StepperForm initialValues={initialFormValues} onSubmit={showSafeCreationProcess} testId={'create-safe-form'}>
-          <StepFormElement
-            label={selectWalletAndNetworkStepLabel}
-            nextButtonLabel="Continue"
-            disableNextButton={!provider}
-          >
-            <SelectWalletAndNetworkStep />
-          </StepFormElement>
-          <StepFormElement label={nameNewSafeStepLabel} nextButtonLabel="Continue">
-            <NameNewSafeStep />
-          </StepFormElement>
-          <StepFormElement
-            label={ownersAndConfirmationsNewSafeStepLabel}
-            nextButtonLabel="Continue"
-            validate={ownersAndConfirmationsNewSafeStepValidations}
-          >
-            <OwnersAndConfirmationsNewSafeStep />
-          </StepFormElement>
-          <StepFormElement label={reviewNewSafeStepLabel} nextButtonLabel="Create">
-            <ReviewNewSafeStep />
-          </StepFormElement>
-        </StepperForm>
-      </Block>
-    </Page>
+  function onClickModalButton() {
+    history.push(SAFE_ROUTES.APPS)
+  }
+
+  // return !!safePendingToBeCreated ? (
+  //   <SafeCreationProcess />
+  // ) :
+  return (
+    <>
+      <Page>
+        <Block>
+          <Row align="center">
+            <BackIcon disableRipple onClick={history.goBack}>
+              <ChevronLeft />
+            </BackIcon>
+            <Heading tag="h2">Create new Safe</Heading>
+          </Row>
+          <StepperForm initialValues={initialFormValues} onSubmit={showSafeCreationProcess} testId={'create-safe-form'}>
+            <StepFormElement
+              label={selectWalletAndNetworkStepLabel}
+              nextButtonLabel="Continue"
+              disableNextButton={!provider}
+            >
+              <SelectWalletAndNetworkStep />
+            </StepFormElement>
+            <StepFormElement label={nameNewSafeStepLabel} nextButtonLabel="Continue">
+              <NameNewSafeStep />
+            </StepFormElement>
+            <StepFormElement
+              label={ownersAndConfirmationsNewSafeStepLabel}
+              nextButtonLabel="Continue"
+              validate={ownersAndConfirmationsNewSafeStepValidations}
+            >
+              <OwnersAndConfirmationsNewSafeStep />
+            </StepFormElement>
+            <StepFormElement label={reviewNewSafeStepLabel} nextButtonLabel="Create">
+              <ReviewNewSafeStep />
+            </StepFormElement>
+          </StepperForm>
+        </Block>
+      </Page>
+
+      {showCreatedModal && (
+        <GenericModal
+          onClose={onClickModalButton}
+          title="Safe Created!"
+          body={
+            <div data-testid="safe-created-popup">
+              <Paragraph>
+                You just created a new Safe on <NetworkLabel />
+              </Paragraph>
+              <Paragraph>
+                You will only be able to use this Safe on <NetworkLabel />
+              </Paragraph>
+              <Paragraph>
+                If you send assets on other networks to this address,{' '}
+                <EmphasisLabel>you will not be able to access them</EmphasisLabel>
+              </Paragraph>
+            </div>
+          }
+          footer={
+            <ButtonContainer>
+              <Button
+                testId="safe-created-button"
+                onClick={onClickModalButton}
+                color="primary"
+                type={'button'}
+                size="small"
+                variant="contained"
+              >
+                Continue
+              </Button>
+            </ButtonContainer>
+          }
+        />
+      )}
+    </>
   )
 }
 
@@ -181,6 +241,21 @@ function getInitialValues(userAddress, addressBook, location, suggestedSafeName)
   }
 }
 
+async function makeSafeCreate(creatorAddress: string, newSafeFormValues: CreateSafeFormValues): Promise<ISafeCreate> {
+  const chainId = _getChainId()
+  const pubkey = await window.keplr?.getKey(chainId)
+  const creatorPubkey = parseToAdress(pubkey?.pubKey as Uint8Array)
+  return {
+    chainId,
+    creatorAddress,
+    creatorPubkey,
+    otherOwnersAddress: newSafeFormValues[FIELD_SAFE_OWNERS_LIST].map(
+      ({ addressFieldName }) => newSafeFormValues[addressFieldName],
+    ),
+    threshold: newSafeFormValues[FIELD_NEW_SAFE_THRESHOLD],
+  } as ISafeCreate
+}
+
 const LoaderContainer = styled.div`
   display: flex;
   justify-content: center;
@@ -192,4 +267,11 @@ const BackIcon = styled(IconButton)`
   color: ${secondary};
   padding: ${sm};
   margin-right: 5px;
+`
+const EmphasisLabel = styled.span`
+  font-weight: ${boldFont};
+`
+
+const ButtonContainer = styled.div`
+  text-align: center;
 `
