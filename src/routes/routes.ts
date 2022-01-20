@@ -38,12 +38,16 @@ export type SafeRouteSlugs = {
 }
 
 export const LOAD_SPECIFIC_SAFE_ROUTE = `/load/:${SAFE_ADDRESS_SLUG}?` // ? = optional slug
+export const ALLOW_SPECIFIC_SAFE_ROUTE = `/allow/:${SAFE_ADDRESS_SLUG}?` // ? = optional slug
+export const CANCEL_SPECIFIC_SAFE_ROUTE = `/cancel/:${SAFE_ADDRESS_SLUG}?` // ? = optional slug
 
 // Routes independant of safe/network
 export const ROOT_ROUTE = '/'
 export const WELCOME_ROUTE = '/welcome'
 export const OPEN_SAFE_ROUTE = '/open'
 export const LOAD_SAFE_ROUTE = generatePath(LOAD_SPECIFIC_SAFE_ROUTE) // By providing no slug, we get '/load'
+export const ALLOW_SAFE_ROUTE = generatePath(ALLOW_SPECIFIC_SAFE_ROUTE) // By providing no slug, we get '/allow'
+export const CANCEL_SAFE_ROUTE = generatePath(CANCEL_SPECIFIC_SAFE_ROUTE) // By providing no slug, we get '/allow'
 
 // [SAFE_SECTION_SLUG], [SAFE_SUBSECTION_SLUG] populated safe routes
 export const SAFE_ROUTES = {

@@ -20,6 +20,10 @@ import {
   LOAD_SAFE_ROUTE,
   getNetworkRootRoutes,
   TRANSACTION_ID_SLUG,
+  ALLOW_SAFE_ROUTE,
+  ALLOW_SPECIFIC_SAFE_ROUTE,
+  CANCEL_SAFE_ROUTE,
+  CANCEL_SPECIFIC_SAFE_ROUTE,
 } from './routes'
 import { getShortName } from 'src/config'
 import { setChainId } from 'src/logic/config/utils'
@@ -30,6 +34,8 @@ import { useAddressedRouteKey } from './safe/container/hooks/useAddressedRouteKe
 const Welcome = React.lazy(() => import('./welcome/Welcome'))
 const CreateSafePage = React.lazy(() => import('./CreateSafePage/CreateSafePage'))
 const LoadSafePage = React.lazy(() => import('./LoadSafePage/LoadSafePage'))
+const AllowSafePage = React.lazy(() => import('./AllowSafePage/AllowSafePage'))
+const CanCelSafePage = React.lazy(() => import('./CancelSafePage/CancelSafePage'))
 const SafeContainer = React.lazy(() => import('./safe/container'))
 
 const Routes = (): React.ReactElement => {
@@ -123,6 +129,8 @@ const Routes = (): React.ReactElement => {
         }}
       />
       <Route component={LoadSafePage} path={[LOAD_SAFE_ROUTE, LOAD_SPECIFIC_SAFE_ROUTE]} />
+      <Route component={AllowSafePage} path={[ALLOW_SAFE_ROUTE, ALLOW_SPECIFIC_SAFE_ROUTE]} />
+      <Route component={CanCelSafePage} path={[CANCEL_SAFE_ROUTE, CANCEL_SPECIFIC_SAFE_ROUTE]} />
       <Redirect to={ROOT_ROUTE} />
     </Switch>
   )
