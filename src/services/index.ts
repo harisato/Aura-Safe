@@ -1,5 +1,6 @@
-import { ChainInfo, OwnedSafes } from "@gnosis.pm/safe-react-gateway-sdk";
+import { ChainInfo } from "@gnosis.pm/safe-react-gateway-sdk";
 import axios from "axios";
+import { OwnedMSafes } from "../types/safe";
 
 const baseUrl = 'https://dev.safe.aura.network/api';
 
@@ -70,6 +71,6 @@ export function getMChainsConfig(): Promise<ChainInfo[]> {
     })
 }
 
-export function getOwnedSafes(baseUrl: string, chainId: string, address: string): Promise<OwnedSafes> {
-  return axios.post(`${baseUrl}/general/network-list`)
+export function fetchMSafesByOwner(addressOwner: string): Promise<OwnedMSafes> {
+  return axios.get(`${baseUrl}/owner/${addressOwner}/safes`).then(res => res.data.Data)
 }

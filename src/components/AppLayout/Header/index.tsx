@@ -34,6 +34,8 @@ const HeaderComponent = (): React.ReactElement => {
     //   }
     // }
 
+    console.log('tryToConnectToLastUsedProvider')
+
     // tryToConnectToLastUsedProvider()
     const tryToConnectToLastUsedProvider = async () => {
       const lastUsedProvider = await loadLastUsedProvider()
