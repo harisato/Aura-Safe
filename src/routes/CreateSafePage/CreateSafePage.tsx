@@ -34,11 +34,11 @@ import OwnersAndConfirmationsNewSafeStep, {
 import { currentNetworkAddressBookAsMap } from 'src/logic/addressBook/store/selectors'
 import ReviewNewSafeStep, { reviewNewSafeStepLabel } from './steps/ReviewNewSafeStep'
 import { loadFromStorage, saveToStorage } from 'src/utils/storage'
-import SafeCreationProcess from './components/SafeCreationProcess'
+import SafeCreationProcess, { InlinePrefixedEthHashInfo } from './components/SafeCreationProcess'
 import SelectWalletAndNetworkStep, { selectWalletAndNetworkStepLabel } from './steps/SelectWalletAndNetworkStep'
 
 import { createMSafe, ISafeCreate } from 'src/services'
-import { getShortName, _getChainId } from 'src/config'
+import { getExplorerInfo, getShortName, _getChainId } from 'src/config'
 import { parseToAdress } from 'src/utils/parseByteAdress'
 import Paragraph from 'src/components/layout/Paragraph'
 import NetworkLabel from 'src/components/NetworkLabel/NetworkLabel'
@@ -81,8 +81,6 @@ function CreateSafePage(): ReactElement {
     // saveToStorage(SAFE_PENDING_CREATION_STORAGE_KEY, { ...newSafeFormValues })
 
     const payload = await makeSafeCreate(userWalletAddress, newSafeFormValues)
-
-    console.log(payload)
 
     const createResponse = await createMSafe(payload)
 
@@ -185,6 +183,34 @@ function CreateSafePage(): ReactElement {
           }
         />
       )}
+
+      {/* { true && (
+        <GenericModal
+        onClose={() => {}}
+        
+          title="Unable to load the new Safe"
+          body={
+            <div>
+              <Paragraph>
+                We are currently unable to load the Safe but it was successfully created and can be found <br />
+                under the following address{' '}
+                <InlinePrefixedEthHashInfo
+                  hash={'newSafeAddress'}
+                  showCopyBtn
+                  explorerUrl={getExplorerInfo('newSafeAddress')}
+                />
+              </Paragraph>
+            </div>
+          }
+          footer={
+            <ButtonContainer>
+              <Button color="primary" type="button" size="small" variant="contained">
+                OK
+              </Button>
+            </ButtonContainer>
+          }
+        />
+      )} */}
     </>
   )
 }

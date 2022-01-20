@@ -38,8 +38,6 @@ export async function getKeplr(): Promise<Keplr | undefined> {
 
 export async function connectKeplr(): Promise<void> {
   const chainInfo = await getChainInfo()
-
-  console.log(chainInfo)
   const chainId = _getChainId()
 
   const keplr = await getKeplr()
@@ -62,7 +60,7 @@ export async function connectKeplr(): Promise<void> {
       store.dispatch(fetchProvider(providerInfo))
     })
     .catch((err) => {
-      console.log('Can not connect', err)
+      console.error('Can not connect', err)
     })
 
 
