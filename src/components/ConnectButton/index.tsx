@@ -4,6 +4,7 @@ import { _getChainId } from 'src/config'
 import { getWeb3 } from 'src/logic/wallets/getWeb3'
 import onboard from 'src/logic/wallets/onboard'
 import { shouldSwitchNetwork, switchNetwork } from 'src/logic/wallets/utils/network'
+import { connectKeplr } from '../../logic/keplr/keplr'
 
 const checkWallet = async (): Promise<boolean> => {
   if (shouldSwitchNetwork()) {
@@ -23,12 +24,14 @@ export const onboardUser = async (): Promise<boolean> => {
 }
 
 export const onConnectButtonClick = async (): Promise<void> => {
-  const walletSelected = await onboard().walletSelect()
+  // const walletSelected = await onboard().walletSelect()
 
-  // perform wallet checks only if user selected a wallet
-  if (walletSelected) {
-    await checkWallet()
-  }
+  // // perform wallet checks only if user selected a wallet
+  // if (walletSelected) {
+  //   await checkWallet()
+  // }
+
+  connectKeplr()
 }
 
 const ConnectButton = (props: { 'data-testid': string }): ReactElement => (
@@ -36,5 +39,4 @@ const ConnectButton = (props: { 'data-testid': string }): ReactElement => (
     Connect
   </Button>
 )
-
 export default ConnectButton

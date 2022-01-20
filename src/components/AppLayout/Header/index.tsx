@@ -16,6 +16,7 @@ import {
 import { removeProvider } from 'src/logic/wallets/store/actions'
 import onboard from 'src/logic/wallets/onboard'
 import { loadLastUsedProvider } from 'src/logic/wallets/store/middlewares/providerWatcher'
+import { connectKeplr } from '../../../logic/keplr/keplr'
 
 const HeaderComponent = (): React.ReactElement => {
   const provider = useSelector(providerNameSelector)
@@ -26,10 +27,19 @@ const HeaderComponent = (): React.ReactElement => {
   const dispatch = useDispatch()
 
   useEffect(() => {
+    // const tryToConnectToLastUsedProvider = async () => {
+    //   const lastUsedProvider = await loadLastUsedProvider()
+    //   if (lastUsedProvider) {
+    //     await onboard().walletSelect(lastUsedProvider)
+    //   }
+    // }
+
+    // tryToConnectToLastUsedProvider()
     const tryToConnectToLastUsedProvider = async () => {
       const lastUsedProvider = await loadLastUsedProvider()
+
       if (lastUsedProvider) {
-        await onboard().walletSelect(lastUsedProvider)
+        connectKeplr()
       }
     }
 
@@ -37,8 +47,9 @@ const HeaderComponent = (): React.ReactElement => {
   }, [chainId])
 
   const openDashboard = () => {
-    const { wallet } = onboard().getState()
-    return wallet.type === 'sdk' && wallet.dashboard
+    // const { wallet } = onboard().getState()
+    // return wallet.type === 'sdk' && wallet.dashboard
+    return false;
   }
 
   const onDisconnect = () => {

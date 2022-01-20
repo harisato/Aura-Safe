@@ -15,7 +15,7 @@ import Field from 'src/components/forms/Field'
 import ButtonHelper from 'src/components/ButtonHelper'
 import SelectField from 'src/components/forms/SelectField'
 import { useStepper } from 'src/components/Stepper/stepperContext'
-import { providerNameSelector } from 'src/logic/wallets/store/selectors'
+import { providerNameSelector, userAccountSelector } from 'src/logic/wallets/store/selectors'
 import { disabled, extraSmallFontSize, lg, sm, xs } from 'src/theme/variables'
 import Hairline from 'src/components/layout/Hairline'
 import Row from 'src/components/layout/Row'
@@ -38,6 +38,7 @@ export const ownersAndConfirmationsNewSafeStepLabel = 'Owners and Confirmations'
 
 function OwnersAndConfirmationsNewSafeStep(): ReactElement {
   const provider = useSelector(providerNameSelector)
+  const userWalletAddress = useSelector(userAccountSelector)
   const { setCurrentStep } = useStepper()
 
   useEffect(() => {
@@ -111,9 +112,11 @@ function OwnersAndConfirmationsNewSafeStep(): ReactElement {
       <Hairline />
       <Block margin="md" padding="md">
         <RowHeader>
-          {owners.map(({ nameFieldName, addressFieldName }) => {
+          {owners.map(({ nameFieldName, addressFieldName }, index) => {
             const hasOwnerAddressError = formErrors[addressFieldName]
             const showDeleteIcon = addressFieldName !== 'owner-address-0' // we hide de delete icon for the first owner
+            const disbaleAddressInput =
+              createSafeFormValues[addressFieldName] === userWalletAddress && Number(index) === 0
 
             const handleScan = (address: string, closeQrModal: () => void): void => {
               createSafeForm.change(addressFieldName, address)
@@ -135,6 +138,7 @@ function OwnersAndConfirmationsNewSafeStep(): ReactElement {
                 </Col>
                 <Col xs={7}>
                   <AddressInput
+                    disabled={disbaleAddressInput}
                     fieldMutator={(address) => {
                       createSafeForm.change(addressFieldName, address)
                       const addressName = addressBook[address]?.name
@@ -157,9 +161,11 @@ function OwnersAndConfirmationsNewSafeStep(): ReactElement {
                     testId={addressFieldName}
                   />
                 </Col>
-                <OwnersIconsContainer xs={1} center="xs" middle="xs">
-                  <ScanQRWrapper handleScan={handleScan} testId={`${addressFieldName}-scan-QR`} />
-                </OwnersIconsContainer>
+                {!disbaleAddressInput && (
+                  <OwnersIconsContainer xs={1} center="xs" middle="xs">
+                    <ScanQRWrapper handleScan={handleScan} testId={`${addressFieldName}-scan-QR`} />
+                  </OwnersIconsContainer>
+                )}
                 {showDeleteIcon && (
                   <OwnersIconsContainer xs={1} center="xs" middle="xs">
                     <ButtonHelper

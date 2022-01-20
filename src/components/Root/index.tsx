@@ -36,7 +36,8 @@ const RootConsumer = (): React.ReactElement | null => {
     const initChains = async () => {
       try {
         await loadChains()
-        if (!isValidChainId(_getChainId())) {
+        const _isValidChainId = !isValidChainId(_getChainId())
+        if (_isValidChainId) {
           setChainId(DEFAULT_CHAIN_ID)
           history.push(WELCOME_ROUTE)
         }

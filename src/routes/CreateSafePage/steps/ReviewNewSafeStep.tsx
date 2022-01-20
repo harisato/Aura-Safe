@@ -50,17 +50,17 @@ function ReviewNewSafeStep(): ReactElement | null {
   const safeCreationSalt = createSafeFormValues[FIELD_NEW_SAFE_PROXY_SALT]
   const ownerAddresses = owners.map(({ addressFieldName }) => createSafeFormValues[addressFieldName])
 
-  const { gasCostFormatted, gasLimit, gasPrice } = useEstimateSafeCreationGas({
-    addresses: ownerAddresses,
-    numOwners: numberOfOwners,
-    safeCreationSalt,
-  })
+  // const { gasCostFormatted, gasLimit, gasPrice } = useEstimateSafeCreationGas({
+  //   addresses: ownerAddresses,
+  //   numOwners: numberOfOwners,
+  //   safeCreationSalt,
+  // })
   const nativeCurrency = getNativeCurrency()
 
-  useEffect(() => {
-    createSafeForm.change(FIELD_NEW_SAFE_GAS_LIMIT, gasLimit)
-    createSafeForm.change(FIELD_NEW_SAFE_GAS_PRICE, gasPrice)
-  }, [gasLimit, gasPrice, createSafeForm])
+  // useEffect(() => {
+  //   createSafeForm.change(FIELD_NEW_SAFE_GAS_LIMIT, gasLimit)
+  //   createSafeForm.change(FIELD_NEW_SAFE_GAS_PRICE, gasPrice)
+  // }, [gasLimit, gasPrice, createSafeForm])
 
   return (
     <Row data-testid={'create-safe-review-step'}>
@@ -134,7 +134,7 @@ function ReviewNewSafeStep(): ReactElement | null {
       <DescriptionContainer align="center">
         <Paragraph color="primary" noMargin size="lg">
           You&apos;re about to create a new Safe on <NetworkLabel /> and will have to confirm a transaction with your
-          currently connected wallet. The creation will cost approximately {gasCostFormatted} {nativeCurrency.symbol}.
+          currently connected wallet. The creation will cost approximately {/* gasCostFormatted */ 0 } {nativeCurrency.symbol}.
           The exact amount will be determined by your wallet.
         </Paragraph>
       </DescriptionContainer>

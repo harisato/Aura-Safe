@@ -70,7 +70,7 @@ const enhancer = composeEnhancers(
     save(LS_CONFIG),
     notificationsMiddleware,
     safeStorageMiddleware,
-    providerWatcher,
+    // providerWatcher,
     addressBookMiddleware,
     configMiddleware,
     localTransactionsMiddleware,
