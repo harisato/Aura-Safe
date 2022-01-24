@@ -1,7 +1,8 @@
 export enum SafeStatus {
-    Pending = 'pending',
     Created = 'created',
-    Failed = 'failed',
+    Pending = 'pending',
+    NeedConfirm = 'needConfirm',
+    Confirmed = 'confirmed',
     Deleted = 'deleted'
 }
 

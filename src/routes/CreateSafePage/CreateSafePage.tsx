@@ -277,7 +277,7 @@ async function makeSafeCreate(creatorAddress: string, newSafeFormValues: CreateS
     creatorPubkey,
     otherOwnersAddress: newSafeFormValues[FIELD_SAFE_OWNERS_LIST].map(
       ({ addressFieldName }) => newSafeFormValues[addressFieldName],
-    ),
+    ).filter((e) => e !== creatorAddress),
     threshold: newSafeFormValues[FIELD_NEW_SAFE_THRESHOLD],
   } as ISafeCreate
 }
