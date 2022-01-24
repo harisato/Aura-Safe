@@ -1,6 +1,6 @@
 import { ChainInfo } from "@gnosis.pm/safe-react-gateway-sdk";
 import axios from "axios";
-import { OwnedMSafes } from "../types/safe";
+import { IMSafeInfo, OwnedMSafes } from "../types/safe";
 import { MSAFE_GATEWAY_URL } from "../utils/constants";
 
 const baseUrl = MSAFE_GATEWAY_URL;
@@ -13,6 +13,10 @@ export interface ISafeCreate {
   internalChainId: number
 }
 export interface ISafeCancel {
+  safeId: string,
+  myAddress: string
+}
+export interface ISafeAllow {
   safeId: string,
   myAddress: string
 }
@@ -111,3 +115,8 @@ export function cancelMSafe({ safeId, myAddress }: ISafeCancel): Promise<OwnedMS
     data: { myAddress }
   }).then(res => res.data)
 }
+
+export function getMSafeInfo(safeId: number): Promise<IMSafeInfo> {
+  return axios.get(`${baseUrl}/multisigwallet/${safeId}`).then(res => res.data.Data)
+}
+

@@ -91,15 +91,27 @@ export const extractPrefixedSafeAddress = (
 
   const prefixedSafeAddress = match?.params?.[SAFE_ADDRESS_SLUG]
   const { prefix, address } = parsePrefixedAddress(prefixedSafeAddress || '')
-  console.log({
-    shortName: prefix,
-    safeAddress: address,
-    match
-  });
 
   return {
     shortName: prefix,
     safeAddress: checksumAddress(address),
+  }
+}
+
+export const extractPrefixedSafeId = (
+  path = history.location.pathname,
+  route = ADDRESSED_ROUTE,
+): SafeRouteParams => {
+  const match = matchPath<SafeRouteSlugs>(path, {
+    path: route,
+  })
+
+  const prefixedSafeAddress = match?.params?.[SAFE_ADDRESS_SLUG]
+  const { prefix, address: id } = parsePrefixedAddress(prefixedSafeAddress || '')
+
+  return {
+    shortName: prefix,
+    safeAddress: id,
   }
 }
 

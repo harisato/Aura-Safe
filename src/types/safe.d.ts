@@ -8,3 +8,17 @@ export type Safe = {
 }
 
 export type OwnedMSafes = Safe[]
+
+export interface IMSafeInfo {
+    address: string;
+    pubkeys: string;
+    owners: (string)[];
+    confirms: (string)[];
+    threshold: number;
+    status: string;
+    internalChainId: number;
+    balance: {
+        denom: string;
+        amount: string;
+    }
+}

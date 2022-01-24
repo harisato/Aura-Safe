@@ -14,7 +14,6 @@ import { userAccountSelector } from 'src/logic/wallets/store/selectors'
 import Hairline from 'src/components/layout/Hairline'
 import PrefixedEthHashInfo from 'src/components/PrefixedEthHashInfo'
 import {
-  FIELD_ALLOW_SAFE_ADDRESS,
   FIELD_SAFE_OWNER_LIST,
   FIELD_SAFE_THRESHOLD,
   LoadSafeFormValues,
@@ -32,7 +31,7 @@ function ReviewAllowStep(): ReactElement {
 
   const formValues = loadSafeForm.getState().values as LoadSafeFormValues
   const safeName = getLoadSafeName(formValues, addressBook)
-  const safeAddress = formValues[FIELD_ALLOW_SAFE_ADDRESS] || ''
+  const safeAddress = ''
   const threshold = formValues[FIELD_SAFE_THRESHOLD]
   const ownerList = formValues[FIELD_SAFE_OWNER_LIST]
 
