@@ -1,11 +1,3 @@
-export enum SafeStatus {
-    Created = 'created',
-    Pending = 'pending',
-    NeedConfirm = 'needConfirm',
-    Confirmed = 'confirmed',
-    Deleted = 'deleted'
-}
-
 
 export type Safe = {
     id: number

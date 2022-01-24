@@ -38,7 +38,7 @@ import SafeCreationProcess, { InlinePrefixedEthHashInfo } from './components/Saf
 import SelectWalletAndNetworkStep, { selectWalletAndNetworkStepLabel } from './steps/SelectWalletAndNetworkStep'
 
 import { createMSafe, ISafeCreate } from 'src/services'
-import { getExplorerInfo, getShortName, _getChainId } from 'src/config'
+import { getExplorerInfo, getInternalChainId, getShortName, _getChainId } from 'src/config'
 import { parseToAdress } from 'src/utils/parseByteAdress'
 import Paragraph from 'src/components/layout/Paragraph'
 import NetworkLabel from 'src/components/NetworkLabel/NetworkLabel'
@@ -269,10 +269,11 @@ function getInitialValues(userAddress, addressBook, location, suggestedSafeName)
 
 async function makeSafeCreate(creatorAddress: string, newSafeFormValues: CreateSafeFormValues): Promise<ISafeCreate> {
   const chainId = _getChainId()
+  const internalChainId = getInternalChainId()
   const pubkey = await window.keplr?.getKey(chainId)
   const creatorPubkey = parseToAdress(pubkey?.pubKey as Uint8Array)
   return {
-    chainId,
+    internalChainId,
     creatorAddress,
     creatorPubkey,
     otherOwnersAddress: newSafeFormValues[FIELD_SAFE_OWNERS_LIST].map(

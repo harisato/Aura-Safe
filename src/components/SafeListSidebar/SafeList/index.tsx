@@ -15,7 +15,7 @@ import { SafeRecordProps } from 'src/logic/safe/store/models/safe'
 import { setChainId } from 'src/logic/config/utils'
 import { useSelector } from 'react-redux'
 import { currentChainId } from 'src/logic/config/store/selectors'
-import useOwnerSafes from 'src/logic/safe/hooks/useOwnerSafes'
+import useOwnerSafes, { SafeStatus, SafeType } from 'src/logic/safe/hooks/useOwnerSafes'
 import { getChains } from 'src/config/cache/chains'
 
 const MAX_EXPANDED_SAFES = 3
@@ -68,6 +68,9 @@ const isNotLoadedViaUrl = ({ loadedViaUrl }: SafeRecordProps) => loadedViaUrl ==
 
 const isSameAddress = (addrA: string, addrB: string): boolean => addrA.toLowerCase() === addrB.toLowerCase()
 
+const isPendingSafes = ({ status }: SafeType): boolean =>
+  status === SafeStatus.NeedConfirm || status === SafeStatus.Pending || status === SafeStatus.Confirmed
+
 export const SafeList = ({ onSafeClick }: Props): ReactElement => {
   const classes = useStyles()
   const currentSafeAddress = extractSafeAddress()
@@ -79,7 +82,9 @@ export const SafeList = ({ onSafeClick }: Props): ReactElement => {
     <StyledList>
       {getChains().map(({ chainId, theme, chainName }) => {
         const isCurrentNetwork = chainId === curChainId
-        const ownedSafesOnNetwork = ownedSafes[chainId] || []
+        const ownedSafesOnNetwork = ownedSafes[chainId]?.map((safe) => safe.adress)?.filter(Boolean) || []
+        const pendingSafesOnNetwork = ownedSafes[chainId]?.filter(isPendingSafes) || []
+
         const localSafesOnNetwork = uniqBy(localSafes[chainId].filter(isNotLoadedViaUrl), ({ address }) =>
           address.toLowerCase(),
         )
@@ -156,29 +161,28 @@ export const SafeList = ({ onSafeClick }: Props): ReactElement => {
                 </ListItem>
               )}
 
-              {ownedSafesOnNetwork.length > 0 && (
+              {pendingSafesOnNetwork.length > 0 && (
                 <ListItem classes={{ root: classes.listItemCollapse }} component="div">
                   <Collapse
                     title={
                       <Text
                         size="lg"
                         color="placeHolder"
-                      >{`Safes owned on ${chainName} (${ownedSafesOnNetwork.length})`}</Text>
+                      >{`Safes owned on ${chainName} (${pendingSafesOnNetwork.length})`}</Text>
                     }
                     key={String(shouldExpandOwnedSafes)}
                     defaultExpanded={shouldExpandOwnedSafes}
                   >
-                    {ownedSafesOnNetwork.map((ownedAddress) => {
-                      const isAdded = localSafesOnNetwork.some(({ address }) => isSameAddress(address, ownedAddress))
-
+                    {pendingSafesOnNetwork.map(({ creatorAddress, status }, index) => {
+                      const key = `${creatorAddress}-${index}`
                       return (
                         <SafeListItem
-                          key={ownedAddress}
-                          address={ownedAddress}
+                          key={key}
+                          address={creatorAddress}
                           networkId={chainId}
                           onSafeClick={onSafeClick}
-                          showAllowNewSafe={true}
-                          shouldScrollToSafe={shouldExpandOwnedSafes && !isAdded}
+                          pendingStatus={status}
+                          shouldScrollToSafe={shouldExpandOwnedSafes}
                         />
                       )
                     })}

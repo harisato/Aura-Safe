@@ -52,7 +52,6 @@ function Allow(): ReactElement {
       [FIELD_SAFE_OWNER_LIST]: [],
     }
 
-    console.log('initialValues', initialValues)
     setInitialFormValues(initialValues)
   }, [safeAddress, safeRandomName])
 
