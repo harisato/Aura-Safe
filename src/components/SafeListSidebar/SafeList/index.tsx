@@ -90,7 +90,6 @@ export const SafeList = ({ onSafeClick }: Props): ReactElement => {
         const localSafesOnNetwork = uniqBy(localSafes[chainId].filter(isNotLoadedViaUrl), ({ address }) =>
           address.toLowerCase(),
         )
-        console.log({ localSafes, ownedSafesOnNetwork })
 
         if (!isCurrentNetwork && !ownedSafesOnNetwork.length && !localSafesOnNetwork.length) {
           return null
@@ -99,7 +98,6 @@ export const SafeList = ({ onSafeClick }: Props): ReactElement => {
         let shouldExpandOwnedSafes = false
         if (isCurrentNetwork && ownedSafesOnNetwork.map((e) => e.safeAddress).includes(currentSafeAddress)) {
           // Expand the Owned Safes if the current Safe is owned, but not added
-          console.log('currentSafeAddress')
           shouldExpandOwnedSafes = !localSafesOnNetwork.some(({ address }) =>
             isSameAddress(address, currentSafeAddress),
           )

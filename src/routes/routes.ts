@@ -111,8 +111,7 @@ export const extractPrefixedSafeAddressAndChainId = (
   })
 
   const prefixedSafeAddress = match?.params?.[SAFE_ADDRESS_SLUG]
-  console.log(prefixedSafeAddress);
-  
+
   const { prefix, address } = parsePrefixedChainIdAddress(prefixedSafeAddress || '')
 
   return {
@@ -170,15 +169,11 @@ export const generateSafeRoute = (
 export const generateSafeRouteWithChainId = (
   path: typeof SAFE_ROUTES[keyof typeof SAFE_ROUTES],
   params: SafeRouteParams,
-): string => {
-
-  console.log(history.location.pathname)
-  console.log(ADDRESSED_ROUTE)
-
-  return generatePath(path, {
+): string =>
+  generatePath(path, {
     [SAFE_ADDRESS_SLUG]: `${params.safeId}:${params.safeAddress}`,
   })
-}
+
 
 // Singular tx route is excluded as it has a required safeTxHash slug
 // This is to give stricter routing, instead of making the slug optional

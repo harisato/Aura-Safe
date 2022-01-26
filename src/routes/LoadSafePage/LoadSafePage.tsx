@@ -22,7 +22,7 @@ import StepperForm, { StepFormElement } from 'src/components/StepperForm/Stepper
 import { AddressBookEntry, makeAddressBookEntry } from 'src/logic/addressBook/model/addressBook'
 import { addressBookSafeLoad } from 'src/logic/addressBook/store/actions'
 import { checksumAddress } from 'src/utils/checksumAddress'
-import { buildSafe } from 'src/logic/safe/store/actions/fetchSafe'
+import { buildMSafe, buildSafe } from 'src/logic/safe/store/actions/fetchSafe'
 import { loadStoredSafes, saveSafes } from 'src/logic/safe/utils'
 import { addOrUpdateSafe } from 'src/logic/safe/store/actions/addOrUpdateSafe'
 import {
@@ -36,6 +36,7 @@ import {
 import {
   extractPrefixedSafeAddressAndChainId,
   generateSafeRoute,
+  generateSafeRouteWithChainId,
   LOAD_SPECIFIC_SAFE_ROUTE,
   SAFE_ROUTES,
 } from '../routes'
@@ -43,6 +44,7 @@ import { getShortName } from 'src/config'
 import { currentNetworkAddressBookAsMap } from 'src/logic/addressBook/store/selectors'
 import { getLoadSafeName } from './fields/utils'
 import { currentChainId } from 'src/logic/config/store/selectors'
+import { IdleTransactionSpanRecorder } from '@sentry/tracing/dist/idletransaction'
 
 function Load(): ReactElement {
   const dispatch = useDispatch()
@@ -79,7 +81,7 @@ function Load(): ReactElement {
       .filter((owner) => !!owner.name)
 
     const safeEntry = makeAddressBookEntry({
-      address: checksumAddress(values[FIELD_LOAD_SAFE_ADDRESS] || ''),
+      address: values[FIELD_LOAD_SAFE_ADDRESS] || '',
       name: getLoadSafeName(values, addressBook),
       chainId,
     })
@@ -90,28 +92,39 @@ function Load(): ReactElement {
   const onSubmitLoadSafe = async (values: LoadSafeFormValues): Promise<void> => {
     const address = values[FIELD_LOAD_SAFE_ADDRESS]
     const id = values[FIELD_LOAD_SAFE_ID]
-    if (!address) {
+    if (!address && !id) {
       return
     }
 
     updateAddressBook(values)
 
-    const checksummedAddress = checksumAddress(address || '')
-    // const safeProps = await buildMSafe(address, String(id))
-    const safeProps = await buildSafe(checksummedAddress)
+    const safeProps = await buildMSafe(String(address), String(id))
+
+    // const checksummedAddress = checksumAddress(address || '')
+    // const safeProps = await buildSafe(checksummedAddress)
     const storedSafes = loadStoredSafes() || {}
-    storedSafes[checksummedAddress] = safeProps
 
-    saveSafes(storedSafes)
-    dispatch(addOrUpdateSafe(safeProps))
+    storedSafes[String(address)] = safeProps
 
-    // Go to the newly added Safe
-    history.push(
+    // saveSafes(storedSafes)
+    // dispatch(addOrUpdateSafe(safeProps))
+
+    console.log(
       generateSafeRoute(SAFE_ROUTES.ASSETS_BALANCES, {
         shortName: getShortName(),
-        safeAddress: checksummedAddress,
+        safeAddress: String(address),
+        safeId: id,
       }),
     )
+
+    // Go to the newly added Safe
+    // history.push(
+    //   generateSafeRoute(SAFE_ROUTES.ASSETS_BALANCES, {
+    //     shortName: getShortName(),
+    //     safeAddress: String(address),
+    //     safeId: safeProps.safeId
+    //   }),
+    // )
   }
 
   return (

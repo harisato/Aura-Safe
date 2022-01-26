@@ -16,6 +16,7 @@ import { fetchCollectibles } from 'src/logic/collectibles/store/actions/fetchCol
 import { currentChainId } from 'src/logic/config/store/selectors'
 import { getMSafeInfo } from 'src/services'
 import { IMSafeInfo } from 'src/types/safe'
+import { _getChainId } from 'src/config'
 
 /**
  * Builds a Safe Record that will be added to the app's store
@@ -122,7 +123,7 @@ export const buildMSafe = async (safeAddress: string, safeId: string): Promise<S
       logoUri: '',
       name: ''
     },
-    chainId: String(info?.internalChainId),
+    chainId: _getChainId(),
     nonce: 0,
     threshold: info.threshold,
     owners: info.owners.map(owners => ({

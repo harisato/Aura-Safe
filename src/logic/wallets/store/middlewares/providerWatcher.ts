@@ -8,7 +8,7 @@ import { loadFromStorage, removeFromStorage, saveToStorage } from 'src/utils/sto
 
 const watchedActions = [ADD_PROVIDER, REMOVE_PROVIDER]
 
-const LAST_USED_PROVIDER_KEY = 'LAST_USED_PROVIDER'
+export const LAST_USED_PROVIDER_KEY = 'LAST_USED_PROVIDER'
 
 export const loadLastUsedProvider = async (): Promise<string | undefined> => {
   const lastUsedProvider = await loadFromStorage<string>(LAST_USED_PROVIDER_KEY)

@@ -7,6 +7,8 @@ import { addProvider } from '../wallets/store/actions';
 import enqueueSnackbar from '../notifications/store/actions/enqueueSnackbar';
 import { enhanceSnackbarForAction, NOTIFICATIONS } from '../notifications';
 import { trackAnalyticsEvent, WALLET_EVENTS } from '../../utils/googleAnalytics';
+import { saveToStorage } from 'src/utils/storage';
+import { LAST_USED_PROVIDER_KEY } from '../wallets/store/middlewares/providerWatcher';
 
 export async function getKeplr(): Promise<Keplr | undefined> {
   if (window.keplr) {
@@ -58,6 +60,8 @@ export async function connectKeplr(): Promise<void> {
       }
 
       store.dispatch(fetchProvider(providerInfo))
+      saveToStorage(LAST_USED_PROVIDER_KEY, providerInfo.name)
+
     })
     .catch((err) => {
       console.error('Can not connect', err)
