@@ -166,5 +166,5 @@ export const buildMSafe = async (safeAddress: string, safeId: string): Promise<S
   // update owner's information
   const owners = buildSafeOwners(safeInfoDta?.owners, localSafeInfo.owners)
 
-  return { ...localSafeInfo, ...safeInfo, ...remoteSafeInfo, owners } as SafeRecordProps
+  return { ...localSafeInfo, ...safeInfo, ...remoteSafeInfo, owners, safeId: Number(safeId) } as SafeRecordProps
 }

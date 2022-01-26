@@ -106,8 +106,8 @@ function Load(): ReactElement {
 
     storedSafes[String(address)] = safeProps
 
-    // saveSafes(storedSafes)
-    // dispatch(addOrUpdateSafe(safeProps))
+    saveSafes(storedSafes)
+    dispatch(addOrUpdateSafe(safeProps))
 
     console.log(
       generateSafeRoute(SAFE_ROUTES.ASSETS_BALANCES, {
@@ -118,13 +118,13 @@ function Load(): ReactElement {
     )
 
     // Go to the newly added Safe
-    // history.push(
-    //   generateSafeRoute(SAFE_ROUTES.ASSETS_BALANCES, {
-    //     shortName: getShortName(),
-    //     safeAddress: String(address),
-    //     safeId: safeProps.safeId
-    //   }),
-    // )
+    history.push(
+      generateSafeRoute(SAFE_ROUTES.ASSETS_BALANCES, {
+        shortName: getShortName(),
+        safeAddress: String(address),
+        safeId: safeProps.safeId
+      }),
+    )
   }
 
   return (

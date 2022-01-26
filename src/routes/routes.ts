@@ -13,10 +13,10 @@ export const history = createBrowserHistory({
 
 // Safe specific routes
 // const hashRegExp = '0x[0-9A-Fa-f]'
-const hashRegExp = '0x[0-9A-Za-z]'
+const hashRegExp = 'aura[0-9A-Za-z]'
 
 // const chainSpecificSafeAddressPathRegExp = `[a-z0-9-]{2,}:${hashRegExp}{40}`
-const chainSpecificSafeAddressPathRegExp = `[a-z0-9-]{2,}:${hashRegExp}{39,40}`
+const chainSpecificSafeAddressPathRegExp = `[a-z0-9-]+:${hashRegExp}{39,40}`
 
 export const SAFE_ADDRESS_SLUG = 'prefixedSafeAddress'
 export const ADDRESSED_ROUTE = `/:${SAFE_ADDRESS_SLUG}(${chainSpecificSafeAddressPathRegExp})`
@@ -148,13 +148,15 @@ export const hasPrefixedSafeAddressInUrl = (): boolean => {
 
 export const extractShortChainName = (): ShortName => extractPrefixedSafeAddress().shortName
 export const extractSafeAddress = (): string => extractPrefixedSafeAddress().safeAddress
+export const extractSafeId = (): number | undefined => extractPrefixedSafeAddress().safeId
 
 export const getPrefixedSafeAddressSlug = (
-  { safeAddress = extractSafeAddress(), shortName = extractShortChainName() } = {
+  { safeAddress = extractSafeAddress(), shortName = extractShortChainName(), safeId = extractSafeId() } = {
     safeAddress: extractSafeAddress(),
     shortName: extractShortChainName(),
+    safeId: extractSafeId()
   },
-): string => `${shortName}:${safeAddress}`
+): string => `${safeId}:${safeAddress}`
 
 // Populate `/:[SAFE_ADDRESS_SLUG]` with current 'shortName:safeAddress'
 export const generateSafeRoute = (
