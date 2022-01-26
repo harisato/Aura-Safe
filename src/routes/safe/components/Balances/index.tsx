@@ -34,6 +34,9 @@ const Balances = (): ReactElement => {
   // Question mark makes matching [SAFE_SUBSECTION_SLUG] optional
   const matchSafeWithBalancesSection = useRouteMatch(`${SAFE_SUBSECTION_ROUTE}?`)
 
+  console.log({matchSafeWithBalancesSection});
+  
+
   const currentSafeRoutes = generatePrefixedAddressRoutes({
     shortName: getShortName(),
     safeAddress,
