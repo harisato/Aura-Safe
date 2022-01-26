@@ -29,11 +29,7 @@ const useOwnerSafes = (): Record<string, SafeType[]> => {
         const safes = await fetchMSafesByOwner(connectedWalletAddress, internalChainId)
 
         // Loading Safe with status created
-        const safe: SafeType[] = safes.map(e => ({
-          adress: e.safeAddress,
-          creatorAddress: e.creatorAddress,
-          status: e.status as SafeStatus
-        }))
+        const safe: SafeType[] = safes.map(safe => safe as SafeType)
 
         setCache((prev = {}) => ({
           ...prev,
@@ -63,9 +59,12 @@ export enum SafeStatus {
 }
 
 export type SafeType = {
-  adress: string,
+  safeAddress: string,
   creatorAddress: string,
   status: SafeStatus
+  id: number,
+  ownerAddress?: string,
+  ownerPubkey?: string,
 }
 
 export default useOwnerSafes

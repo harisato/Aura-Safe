@@ -71,6 +71,8 @@ const isSameAddress = (addrA: string, addrB: string): boolean => addrA.toLowerCa
 const isPendingSafes = ({ status }: SafeType): boolean =>
   status === SafeStatus.NeedConfirm || status === SafeStatus.Pending || status === SafeStatus.Confirmed
 
+const isCreatedSafes = ({ status }: SafeType): boolean => status === SafeStatus.Created
+
 export const SafeList = ({ onSafeClick }: Props): ReactElement => {
   const classes = useStyles()
   const currentSafeAddress = extractSafeAddress()
@@ -82,20 +84,22 @@ export const SafeList = ({ onSafeClick }: Props): ReactElement => {
     <StyledList>
       {getChains().map(({ chainId, theme, chainName }) => {
         const isCurrentNetwork = chainId === curChainId
-        const ownedSafesOnNetwork = ownedSafes[chainId]?.map((safe) => safe.adress)?.filter(Boolean) || []
+        const ownedSafesOnNetwork = ownedSafes[chainId]?.filter(isCreatedSafes) || []
         const pendingSafesOnNetwork = ownedSafes[chainId]?.filter(isPendingSafes) || []
 
         const localSafesOnNetwork = uniqBy(localSafes[chainId].filter(isNotLoadedViaUrl), ({ address }) =>
           address.toLowerCase(),
         )
+        console.log({ localSafes, ownedSafesOnNetwork })
 
         if (!isCurrentNetwork && !ownedSafesOnNetwork.length && !localSafesOnNetwork.length) {
           return null
         }
 
         let shouldExpandOwnedSafes = false
-        if (isCurrentNetwork && ownedSafesOnNetwork.includes(currentSafeAddress)) {
+        if (isCurrentNetwork && ownedSafesOnNetwork.map((e) => e.safeAddress).includes(currentSafeAddress)) {
           // Expand the Owned Safes if the current Safe is owned, but not added
+          console.log('currentSafeAddress')
           shouldExpandOwnedSafes = !localSafesOnNetwork.some(({ address }) =>
             isSameAddress(address, currentSafeAddress),
           )
@@ -113,6 +117,7 @@ export const SafeList = ({ onSafeClick }: Props): ReactElement => {
             <MuiList>
               {localSafesOnNetwork.map((safe) => (
                 <SafeListItem
+                  safeId={0}
                   key={safe.address}
                   networkId={chainId}
                   onNetworkSwitch={() => setChainId(chainId)}
@@ -143,13 +148,14 @@ export const SafeList = ({ onSafeClick }: Props): ReactElement => {
                     key={String(shouldExpandOwnedSafes)}
                     defaultExpanded={shouldExpandOwnedSafes}
                   >
-                    {ownedSafesOnNetwork.map((ownedAddress) => {
-                      const isAdded = localSafesOnNetwork.some(({ address }) => isSameAddress(address, ownedAddress))
+                    {ownedSafesOnNetwork.map(({ safeAddress, id }) => {
+                      const isAdded = localSafesOnNetwork.some(({ address }) => isSameAddress(address, safeAddress))
 
                       return (
                         <SafeListItem
-                          key={ownedAddress}
-                          address={ownedAddress}
+                          key={safeAddress}
+                          address={safeAddress}
+                          safeId={id}
                           networkId={chainId}
                           onSafeClick={onSafeClick}
                           showAddSafeLink={!isAdded}
@@ -173,12 +179,14 @@ export const SafeList = ({ onSafeClick }: Props): ReactElement => {
                     key={String(shouldExpandOwnedSafes)}
                     defaultExpanded={shouldExpandOwnedSafes}
                   >
-                    {pendingSafesOnNetwork.map(({ creatorAddress, status }, index) => {
+                    {pendingSafesOnNetwork.map(({ creatorAddress, status, id }, index) => {
                       const key = `${creatorAddress}-${index}`
+
                       return (
                         <SafeListItem
                           key={key}
                           address={creatorAddress}
+                          safeId={id}
                           networkId={chainId}
                           onSafeClick={onSafeClick}
                           pendingStatus={status}

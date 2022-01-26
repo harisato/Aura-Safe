@@ -14,6 +14,8 @@ import { currentSafeWithNames } from '../selectors'
 import fetchTransactions from './transactions/fetchTransactions'
 import { fetchCollectibles } from 'src/logic/collectibles/store/actions/fetchCollectibles'
 import { currentChainId } from 'src/logic/config/store/selectors'
+import { getMSafeInfo } from 'src/services'
+import { IMSafeInfo } from 'src/types/safe'
 
 /**
  * Builds a Safe Record that will be added to the app's store
@@ -106,3 +108,62 @@ export const fetchSafe =
 
     return dispatch(updateSafe({ address, ...safeInfo, owners }))
   }
+
+export const buildMSafe = async (safeAddress: string, safeId: string): Promise<SafeRecordProps> => {
+  // setting `loadedViaUrl` to false, as `buildSafe` is called on safe Load or Open flows
+  const safeInfo: Partial<SafeRecordProps> = { address: safeAddress, loadedViaUrl: false }
+
+  const local = getLocalSafe(safeAddress)
+  const info: IMSafeInfo = await getMSafeInfo(safeId);
+
+  const safeInfoDta: SafeInfo = {
+    address: {
+      value: safeAddress,
+      logoUri: '',
+      name: ''
+    },
+    chainId: String(info?.internalChainId),
+    nonce: 0,
+    threshold: info.threshold,
+    owners: info.owners.map(owners => ({
+      value: owners,
+      logoUri: '',
+      name: ''
+    })),
+    implementation: {
+      value: info.owners[0],
+      logoUri: '',
+      name: ''
+    },
+    modules: [{
+      value: info.owners[0],
+      logoUri: '',
+      name: ''
+    }],
+    guard: {
+      value: info.owners[0],
+      logoUri: '',
+      name: ''
+    },
+    fallbackHandler: {
+      value: info.owners[0],
+      logoUri: '',
+      name: ''
+    },
+    version: '',
+    collectiblesTag: '',
+    txQueuedTag: '',
+    txHistoryTag: '',
+
+  }
+
+  // remote (client-gateway)
+  const remoteSafeInfo = safeInfoDta ? await extractRemoteSafeInfo(safeInfoDta) : {}
+  // local
+  const localSafeInfo = local || ({} as Partial<SafeRecordProps>)
+
+  // update owner's information
+  const owners = buildSafeOwners(safeInfoDta?.owners, localSafeInfo.owners)
+
+  return { ...localSafeInfo, ...safeInfo, ...remoteSafeInfo, owners } as SafeRecordProps
+}

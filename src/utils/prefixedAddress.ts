@@ -12,3 +12,10 @@ export const parsePrefixedAddress = (fullAddress = ''): { address: string; prefi
   const prefix = parts.length > 1 ? parts[0] || '' : getShortName()
   return { prefix, address }
 }
+
+export const parsePrefixedChainIdAddress = (fullAddress = ''): { address: string; prefix: string } => {
+  const parts = fullAddress.split(':').filter(Boolean)
+  const address = parts.length > 1 ? parts[1] : parts[0] || ''
+  const prefix = parts.length > 1 ? parts[0] || '' : getShortName()
+  return { prefix, address }
+}

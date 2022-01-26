@@ -19,6 +19,7 @@ import {
   SafeRouteParams,
   ALLOW_SPECIFIC_SAFE_ROUTE,
   CANCEL_SPECIFIC_SAFE_ROUTE,
+  generateSafeRouteWithChainId,
 } from 'src/routes/routes'
 import { currentChainId } from 'src/logic/config/store/selectors'
 import { ChainId } from 'src/config/chain.d'
@@ -81,6 +82,7 @@ type Props = {
   pendingStatus?: SafeStatus | undefined
   networkId: ChainId
   shouldScrollToSafe?: boolean
+  safeId: number
 }
 
 const SafeListItem = ({
@@ -92,6 +94,7 @@ const SafeListItem = ({
   pendingStatus = undefined,
   networkId,
   shouldScrollToSafe = false,
+  safeId
 }: Props): ReactElement => {
   const history = useHistory()
   const safeName = useSelector((state) => addressBookName(state, { address, chainId: networkId }))
@@ -112,6 +115,7 @@ const SafeListItem = ({
 
   const routesSlug: SafeRouteParams = {
     shortName,
+    safeId: safeId || undefined,
     safeAddress: address,
   }
 
@@ -155,7 +159,7 @@ const SafeListItem = ({
   const handleLoadSafe = (): void => {
     onSafeClick()
     onNetworkSwitch?.()
-    history.push(generateSafeRoute(LOAD_SPECIFIC_SAFE_ROUTE, routesSlug))
+    history.push(generateSafeRouteWithChainId(LOAD_SPECIFIC_SAFE_ROUTE,routesSlug))
 
     // Navigating to LOAD_SPECIFIC_SAFE_ROUTE doesn't trigger a network switch
     setChainId(networkId)

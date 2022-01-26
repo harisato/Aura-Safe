@@ -13,6 +13,7 @@ import {
   isMultisigExecutionInfo,
   LocalTransactionStatus,
 } from 'src/logic/safe/store/models/types/gateway.d'
+import { IMSafeInfo } from 'src/types/safe'
 
 export const shouldExecuteTransaction = async (
   safeInstance: GnosisSafe,

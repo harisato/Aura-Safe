@@ -116,7 +116,7 @@ export function cancelMSafe({ safeId, myAddress }: ISafeCancel): Promise<OwnedMS
   }).then(res => res.data)
 }
 
-export function getMSafeInfo(safeId: number): Promise<IMSafeInfo> {
+export function getMSafeInfo(safeId: string): Promise<IMSafeInfo> {
   return axios.get(`${baseUrl}/multisigwallet/${safeId}`).then(res => res.data.Data)
 }
 

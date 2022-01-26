@@ -22,6 +22,7 @@ import {
   FIELD_LOAD_CUSTOM_SAFE_NAME,
   FIELD_LOAD_IS_LOADING_SAFE_ADDRESS,
   FIELD_LOAD_SAFE_ADDRESS,
+  FIELD_LOAD_SAFE_ID,
   FIELD_SAFE_OWNER_LIST,
   FIELD_SAFE_THRESHOLD,
   LoadSafeFormValues,
@@ -29,6 +30,8 @@ import {
 import NetworkLabel from 'src/components/NetworkLabel/NetworkLabel'
 import { getLoadSafeName } from '../fields/utils'
 import { currentChainId } from 'src/logic/config/store/selectors'
+
+import { getMSafeInfo } from 'src/services'
 
 export const loadSafeAddressStepLabel = 'Name and address'
 
@@ -55,16 +58,19 @@ function LoadSafeAddressStep(): ReactElement {
 
   useEffect(() => {
     const checkSafeAddress = async () => {
-      const isValidSafeAddress = isValidAddress(safeAddress) && isChecksumAddress(safeAddress)
-      if (!isValidSafeAddress) {
+      const safeId = loadSafeForm.getState().values[FIELD_LOAD_SAFE_ID]
+
+      if (!safeId) {
         return
       }
 
       setIsSafeInfoLoading(true)
       try {
-        const { owners, threshold } = await getSafeInfo(safeAddress)
+        const { owners, threshold } = await getMSafeInfo(safeId)
+
+        // const { owners, threshold } = await getSafeInfo(safeAddress)
         setIsSafeInfoLoading(false)
-        const ownersWithName = owners.map(({ value: address }) =>
+        const ownersWithName = owners.map((address) =>
           makeAddressBookEntry(addressBook[address] || { address, name: '', chainId }),
         )
         setOwnersWithName(ownersWithName)
@@ -213,7 +219,7 @@ export const loadSafeAddressStepValidations = (values: {
 
   // check that the address is actually a Safe (must have owners)
   const ownerList = values[FIELD_SAFE_OWNER_LIST]
-  const isValidSafeAddress = ownerList.length > 0 && isValidAddress(safeAddress)
+  const isValidSafeAddress = ownerList.length > 0 /* && isValidAddress(safeAddress) */
   if (!isValidSafeAddress) {
     errors = {
       ...errors,
