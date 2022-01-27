@@ -147,7 +147,7 @@ export const fetchMSafe =
       try {
         remoteSafeInfo = await _getSafeInfo(safeAddress, safeId);
       } catch (err) {
-        err.log()
+        // err.log()
       }
 
       const state = store.getState()

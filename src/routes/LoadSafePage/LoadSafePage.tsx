@@ -103,14 +103,6 @@ function Load(): ReactElement {
     saveSafes(storedSafes)
     dispatch(addOrUpdateSafe(safeProps))
 
-    console.log(
-      generateSafeRoute(SAFE_ROUTES.ASSETS_BALANCES, {
-        shortName: getShortName(),
-        safeAddress: String(address),
-        safeId: id,
-      }),
-    )
-
     // Go to the newly added Safe
     history.push(
       generateSafeRoute(SAFE_ROUTES.ASSETS_BALANCES, {

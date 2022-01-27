@@ -43,8 +43,6 @@ function Allow(): ReactElement {
       [FIELD_SAFE_THRESHOLD]: 0,
     }
 
-    console.log(initialValues)
-
     setInitialFormValues(initialValues)
   }, [safeId, safeRandomName])
 

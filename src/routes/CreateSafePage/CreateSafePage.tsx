@@ -2,7 +2,7 @@ import { ReactElement, useState, useEffect } from 'react'
 import IconButton from '@material-ui/core/IconButton'
 import ChevronLeft from '@material-ui/icons/ChevronLeft'
 import styled from 'styled-components'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import queryString from 'query-string'
 import { useLocation } from 'react-router'
 import { GenericModal, Loader } from '@gnosis.pm/safe-react-components'
@@ -11,7 +11,7 @@ import Page from 'src/components/layout/Page'
 import Block from 'src/components/layout/Block'
 import Row from 'src/components/layout/Row'
 import Heading from 'src/components/layout/Heading'
-import { generateSafeRoute, history, SAFE_ROUTES } from 'src/routes/routes'
+import { generateSafeRouteWithChainId, history, SAFE_ROUTES } from 'src/routes/routes'
 import { sm, secondary, boldFont } from 'src/theme/variables'
 import StepperForm, { StepFormElement } from 'src/components/StepperForm/StepperForm'
 import NameNewSafeStep, { nameNewSafeStepLabel } from './steps/NameNewSafeStep'
@@ -23,7 +23,6 @@ import {
   FIELD_NEW_SAFE_PROXY_SALT,
   FIELD_NEW_SAFE_THRESHOLD,
   FIELD_SAFE_OWNERS_LIST,
-  SAFE_PENDING_CREATION_STORAGE_KEY,
 } from './fields/createSafeFields'
 import { useMnemonicSafeName } from 'src/logic/hooks/useMnemonicName'
 import { providerNameSelector, shouldSwitchWalletChain, userAccountSelector } from 'src/logic/wallets/store/selectors'
@@ -33,25 +32,38 @@ import OwnersAndConfirmationsNewSafeStep, {
 } from './steps/OwnersAndConfirmationsNewSafeStep'
 import { currentNetworkAddressBookAsMap } from 'src/logic/addressBook/store/selectors'
 import ReviewNewSafeStep, { reviewNewSafeStepLabel } from './steps/ReviewNewSafeStep'
-import { loadFromStorage, saveToStorage } from 'src/utils/storage'
-import SafeCreationProcess, { InlinePrefixedEthHashInfo } from './components/SafeCreationProcess'
 import SelectWalletAndNetworkStep, { selectWalletAndNetworkStepLabel } from './steps/SelectWalletAndNetworkStep'
 
 import { createMSafe, ISafeCreate } from 'src/services'
-import { getExplorerInfo, getInternalChainId, getShortName, _getChainId } from 'src/config'
+import { getInternalChainId, _getChainId } from 'src/config'
 import { parseToAdress } from 'src/utils/parseByteAdress'
 import Paragraph from 'src/components/layout/Paragraph'
 import NetworkLabel from 'src/components/NetworkLabel/NetworkLabel'
 import Button from 'src/components/layout/Button'
+import { buildMSafe } from '../../logic/safe/store/actions/fetchSafe'
+import { SafeStatus } from '../../logic/safe/hooks/useOwnerSafes'
+import { addOrUpdateSafe } from '../../logic/safe/store/actions/addOrUpdateSafe'
+import { makeAddressBookEntry } from '../../logic/addressBook/model/addressBook'
+import { addressBookSafeLoad } from '../../logic/addressBook/store/actions'
+import { useAnalytics, USER_EVENTS } from '../../utils/googleAnalytics'
+
+type ModalDataType = {
+  safeAddress: string
+  safeId?: number
+}
 
 function CreateSafePage(): ReactElement {
+  const dispatch = useDispatch()
   // const [safePendingToBeCreated, setSafePendingToBeCreated] = useState<CreateSafeFormValues>()
   const [isLoading, setIsLoading] = useState<boolean>(true)
 
   const [showCreatedModal, setShowModal] = useState(false)
+  const [modalData, setModalData] = useState<ModalDataType>({ safeAddress: '' })
+
   const providerName = useSelector(providerNameSelector)
   const isWrongNetwork = useSelector(shouldSwitchWalletChain)
   const provider = !!providerName && !isWrongNetwork
+  const { trackEvent } = useAnalytics()
 
   useEffect(() => {
     const checkIfSafeIsPendingToBeCreated = async (): Promise<void> => {
@@ -82,12 +94,41 @@ function CreateSafePage(): ReactElement {
 
     const payload = await makeSafeCreate(userWalletAddress, newSafeFormValues)
 
-    const createResponse = await createMSafe(payload)
+    const { ErrorCode, Data: safeData } = await createMSafe(payload)
 
-    if ((createResponse as any).ErrorCode === 'SUCCESSFUL') {
+    if (ErrorCode === 'SUCCESSFUL') {
+      trackEvent(USER_EVENTS.CREATE_SAFE)
+
+      if (safeData.status === SafeStatus.Created) {
+        const { safeAddress, id } = safeData
+        const safeProps = await buildMSafe(String(safeAddress), String(id))
+
+        updateAddressBook(safeAddress, newSafeFormValues)
+        await dispatch(addOrUpdateSafe(safeProps))
+
+        setModalData({
+          safeAddress,
+          safeId: id,
+        })
+      }
       setShowModal(true)
     }
     // setSafePendingToBeCreated(newSafeFormValues)
+  }
+
+  const updateAddressBook = async (newAddress: string, formValues: CreateSafeFormValues) => {
+    const chainId = _getChainId()
+    const defaultSafeValue = formValues[FIELD_CREATE_SUGGESTED_SAFE_NAME]
+    const name = formValues[FIELD_CREATE_CUSTOM_SAFE_NAME] || defaultSafeValue
+
+    const ownersAddressBookEntry = formValues[FIELD_SAFE_OWNERS_LIST].map(({ nameFieldName, addressFieldName }) =>
+      makeAddressBookEntry({
+        address: newAddress || formValues[addressFieldName],
+        name: name || formValues[nameFieldName],
+        chainId,
+      }),
+    )
+    await dispatch(addressBookSafeLoad([...ownersAddressBookEntry]))
   }
 
   const [initialFormValues, setInitialFormValues] = useState<CreateSafeFormValues>()
@@ -108,7 +149,14 @@ function CreateSafePage(): ReactElement {
   }
 
   function onClickModalButton() {
-    history.push(SAFE_ROUTES.APPS)
+    const { safeId, safeAddress } = modalData
+    history.push({
+      pathname: generateSafeRouteWithChainId(SAFE_ROUTES.ASSETS_BALANCES, {
+        shortName: '',
+        safeId: safeId,
+        safeAddress,
+      }),
+    })
   }
 
   // return !!safePendingToBeCreated ? (
