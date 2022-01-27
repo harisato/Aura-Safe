@@ -56,6 +56,7 @@ enum NOTIFICATION_IDS {
   ADDRESS_BOOK_EXPORT_ENTRIES_SUCCESS,
   ADDRESS_BOOK_EXPORT_ENTRIES_ERROR,
   SAFE_NEW_VERSION_AVAILABLE,
+  SAFE_CREATION_DUPLICATED
 }
 
 export const NOTIFICATIONS: Record<NotificationId, Notification> = {
@@ -232,5 +233,11 @@ export const NOTIFICATIONS: Record<NotificationId, Notification> = {
   SAFE_NEW_VERSION_AVAILABLE: {
     message: 'There is a new version available for this Safe. Update now!',
     options: { variant: WARNING, persist: false, preventDuplicate: true },
+  },
+
+  // Safe Create
+  SAFE_CREATION_DUPLICATED: {
+    message: 'Duplicate safe information!',
+    options: { variant: ERROR, persist: false, preventDuplicate: true, autoHideDuration: shortDuration },
   },
 }

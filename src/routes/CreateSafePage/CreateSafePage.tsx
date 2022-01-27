@@ -46,6 +46,9 @@ import { addOrUpdateSafe } from '../../logic/safe/store/actions/addOrUpdateSafe'
 import { makeAddressBookEntry } from '../../logic/addressBook/model/addressBook'
 import { addressBookSafeLoad } from '../../logic/addressBook/store/actions'
 import { useAnalytics, USER_EVENTS } from '../../utils/googleAnalytics'
+import { MESSAGES_CODE } from '../../services/constant/message'
+import enqueueSnackbar from '../../logic/notifications/store/actions/enqueueSnackbar'
+import { enhanceSnackbarForAction, ERROR, NOTIFICATIONS } from '../../logic/notifications'
 
 type ModalDataType = {
   safeAddress: string
@@ -94,9 +97,9 @@ function CreateSafePage(): ReactElement {
 
     const payload = await makeSafeCreate(userWalletAddress, newSafeFormValues)
 
-    const { ErrorCode, Data: safeData } = await createMSafe(payload)
+    const { ErrorCode, Data: safeData, Message } = await createMSafe(payload)
 
-    if (ErrorCode === 'SUCCESSFUL') {
+    if (ErrorCode === MESSAGES_CODE.SUCCESSFUL.ErrorCode) {
       trackEvent(USER_EVENTS.CREATE_SAFE)
 
       if (safeData.status === SafeStatus.Created) {
@@ -112,6 +115,19 @@ function CreateSafePage(): ReactElement {
         })
       }
       setShowModal(true)
+    } else {
+      if (ErrorCode === MESSAGES_CODE.E017.ErrorCode) {
+        dispatch(enqueueSnackbar(enhanceSnackbarForAction(NOTIFICATIONS.SAFE_CREATION_DUPLICATED)))
+      } else {
+        dispatch(
+          enqueueSnackbar(
+            enhanceSnackbarForAction({
+              message: Message,
+              options: { variant: ERROR, persist: false, autoHideDuration: 5000 },
+            }),
+          ),
+        )
+      }
     }
     // setSafePendingToBeCreated(newSafeFormValues)
   }
@@ -159,9 +175,6 @@ function CreateSafePage(): ReactElement {
     })
   }
 
-  // return !!safePendingToBeCreated ? (
-  //   <SafeCreationProcess />
-  // ) :
   return (
     <>
       <Page>
