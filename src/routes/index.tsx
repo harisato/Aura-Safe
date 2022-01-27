@@ -68,7 +68,7 @@ const Routes = (): React.ReactElement => {
 
     // Set the initial network id from the URL.
     // It depends on the chains
-    switchNetworkWithUrl({ pathname })
+    // switchNetworkWithUrl({ pathname }) TO-DO
 
     // Track when pathname changes
   }, [pathname, search, trackPage])

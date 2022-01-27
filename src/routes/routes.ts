@@ -95,29 +95,9 @@ export const extractPrefixedSafeAddress = (
   const { prefix, address } = parsePrefixedAddress(prefixedSafeAddress || '')
 
   return {
-    shortName: prefix,
-    safeAddress: address,
-    // safeAddress: checksumAddress(address),
-  }
-}
-
-
-export const extractPrefixedSafeAddressAndChainId = (
-  path = history.location.pathname,
-  route = ADDRESSED_ROUTE,
-): SafeRouteParams => {
-  const match = matchPath<SafeRouteSlugs>(path, {
-    path: route,
-  })
-
-  const prefixedSafeAddress = match?.params?.[SAFE_ADDRESS_SLUG]
-
-  const { prefix, address } = parsePrefixedChainIdAddress(prefixedSafeAddress || '')
-
-  return {
     safeId: Number(prefix),
     safeAddress: address,
-    shortName: ''
+    shortName: prefix
   }
 }
 
@@ -172,7 +152,7 @@ export const generateSafeRoute = (
   params: SafeRouteParams,
 ): string =>
   generatePath(path, {
-    [SAFE_ADDRESS_SLUG]: getPrefixedSafeAddressSlug(params),
+    [SAFE_ADDRESS_SLUG]: getPrefixedSafeAddressIdSlug(params),
   })
 
 

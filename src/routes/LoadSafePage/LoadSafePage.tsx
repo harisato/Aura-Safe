@@ -33,13 +33,7 @@ import {
   FIELD_SAFE_OWNER_LIST,
   LoadSafeFormValues,
 } from './fields/loadFields'
-import {
-  extractPrefixedSafeAddressAndChainId,
-  generateSafeRoute,
-  generateSafeRouteWithChainId,
-  LOAD_SPECIFIC_SAFE_ROUTE,
-  SAFE_ROUTES,
-} from '../routes'
+import { extractPrefixedSafeAddress, generateSafeRoute, LOAD_SPECIFIC_SAFE_ROUTE, SAFE_ROUTES } from '../routes'
 import { getShortName } from 'src/config'
 import { currentNetworkAddressBookAsMap } from 'src/logic/addressBook/store/selectors'
 import { getLoadSafeName } from './fields/utils'
@@ -49,7 +43,7 @@ import { IdleTransactionSpanRecorder } from '@sentry/tracing/dist/idletransactio
 function Load(): ReactElement {
   const dispatch = useDispatch()
   const history = useHistory()
-  const { safeAddress, shortName, safeId } = extractPrefixedSafeAddressAndChainId(undefined, LOAD_SPECIFIC_SAFE_ROUTE)
+  const { safeAddress, shortName, safeId } = extractPrefixedSafeAddress(undefined, LOAD_SPECIFIC_SAFE_ROUTE)
   const safeRandomName = useMnemonicSafeName()
   const [initialFormValues, setInitialFormValues] = useState<LoadSafeFormValues>()
   const addressBook = useSelector(currentNetworkAddressBookAsMap)
@@ -122,7 +116,7 @@ function Load(): ReactElement {
       generateSafeRoute(SAFE_ROUTES.ASSETS_BALANCES, {
         shortName: getShortName(),
         safeAddress: String(address),
-        safeId: safeProps.safeId
+        safeId: safeProps.safeId,
       }),
     )
   }
