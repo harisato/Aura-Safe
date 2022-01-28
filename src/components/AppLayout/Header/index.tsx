@@ -38,11 +38,26 @@ const HeaderComponent = (): React.ReactElement => {
       const lastUsedProvider = await loadLastUsedProvider()
 
       if (lastUsedProvider) {
-        connectKeplr()
+        const connected = await connectKeplr()
+        if (connected) {
+          window.addEventListener(
+            'keplr_keystorechange',
+            (event) => {
+              connectKeplr()
+            },
+            { once: true },
+          )
+        }
       }
     }
 
     tryToConnectToLastUsedProvider()
+
+    return () => {
+      window.removeEventListener('keplr_keystorechange', (event) => {
+        console.log('Remove Event', event.type)
+      })
+    }
   }, [chainId])
 
   const openDashboard = () => {

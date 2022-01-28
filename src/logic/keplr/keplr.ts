@@ -1,9 +1,9 @@
 import { store } from 'src/store'
 import { Keplr, Key } from "@keplr-wallet/types";
-import { getChainInfo, _getChainId } from "../../config";
+import { getChainInfo, getInternalChainId, _getChainId } from "../../config";
 import { makeProvider, ProviderProps } from '../wallets/store/model/provider';
 import { Dispatch } from 'redux';
-import { addProvider } from '../wallets/store/actions';
+import { addProvider, removeProvider } from '../wallets/store/actions';
 import enqueueSnackbar from '../notifications/store/actions/enqueueSnackbar';
 import { enhanceSnackbarForAction, NOTIFICATIONS } from '../notifications';
 import { trackAnalyticsEvent, WALLET_EVENTS } from '../../utils/googleAnalytics';
@@ -14,8 +14,6 @@ export async function getKeplr(): Promise<Keplr | undefined> {
   if (window.keplr) {
     return window.keplr;
   }
-
-  alert("Please install keplr extension");
 
   if (document.readyState === "complete") {
     return window.keplr;
@@ -38,42 +36,77 @@ export async function getKeplr(): Promise<Keplr | undefined> {
 }
 
 
-export async function connectKeplr(): Promise<void> {
+export async function connectKeplr(): Promise<boolean> {
   const chainInfo = await getChainInfo()
+  const internalChainId = getInternalChainId()
   const chainId = _getChainId()
 
   const keplr = await getKeplr()
+  if (!keplr) {
+    alert("Please install keplr extension");
+    return false;
+  }
+
+
   await keplr
     ?.enable(chainId)
-    .then(() => {
+    .then((e) => {
+      console.log('Event 1', e)
       return keplr.getKey(chainId)
     })
     .then((key) => {
-      const providerInfo: ProviderProps = {
-        account: key.bech32Address,
-        available: true,
-        hardwareWallet: false,
-        loaded: true,
-        name: 'Keplr',
-        network: chainInfo.chainId,
-        smartContractWallet: false,
-      }
+      console.log('Event 2', { key })
+      let providerInfo: ProviderProps;
 
-      store.dispatch(fetchProvider(providerInfo))
-      saveToStorage(LAST_USED_PROVIDER_KEY, providerInfo.name)
+      if (!key) {
+        providerInfo = {
+          account: '',
+          available: false,
+          hardwareWallet: false,
+          loaded: false,
+          name: '',
+          network: '',
+          smartContractWallet: false,
+          internalChainId
+        }
+      } else {
+        providerInfo = {
+          account: key.bech32Address,
+          available: true,
+          hardwareWallet: false,
+          loaded: true,
+          name: 'Keplr',
+          network: chainInfo.chainId,
+          smartContractWallet: false,
+          internalChainId
+        }
+
+        store.dispatch(fetchProvider(providerInfo))
+        saveToStorage(LAST_USED_PROVIDER_KEY, providerInfo.name)
+      }
 
     })
     .catch((err) => {
-      console.error('Can not connect', err)
+      console.log('Keplr Errors', err)
+      store.dispatch(fetchProvider({
+        account: '',
+        available: false,
+        hardwareWallet: false,
+        loaded: false,
+        name: '',
+        network: '',
+        smartContractWallet: false,
+        internalChainId
+      }))
+      return false
     })
 
-
+  return true
 }
-
-
 
 const processProviderResponse = (dispatch: Dispatch, provider: ProviderProps): void => {
   const walletRecord = makeProvider(provider)
+  console.log(addProvider(walletRecord))
   dispatch(addProvider(walletRecord))
 }
 
