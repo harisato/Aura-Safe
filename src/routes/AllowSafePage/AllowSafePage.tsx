@@ -22,14 +22,15 @@ import {
   FIELD_SAFE_OWNER_LIST,
   FIELD_SAFE_THRESHOLD,
   LoadSafeFormValues as AllowSafeFormValues,
-} from './fields/loadFields'
-import { ALLOW_SPECIFIC_SAFE_ROUTE, extractPrefixedSafeId } from '../routes'
+} from './fields/allowFields'
+import { ALLOW_SPECIFIC_SAFE_ROUTE, extractPrefixedSafeAddress, extractPrefixedSafeId } from '../routes'
 import NameAllowSafeStep, { nameNewSafeStepLabel } from './steps/NameAllowSafeStep'
+
 
 function Allow(): ReactElement {
   const dispatch = useDispatch()
   const history = useHistory()
-  const { safeAddress: safeId } = extractPrefixedSafeId(undefined, ALLOW_SPECIFIC_SAFE_ROUTE)
+  const { safeAddress, shortName, safeId } = extractPrefixedSafeAddress(undefined, ALLOW_SPECIFIC_SAFE_ROUTE)
   const safeRandomName = useMnemonicSafeName()
   const [initialFormValues, setInitialFormValues] = useState<AllowSafeFormValues>()
 
@@ -44,9 +45,12 @@ function Allow(): ReactElement {
     }
 
     setInitialFormValues(initialValues)
-  }, [safeId, safeRandomName])
+  }, [safeAddress, safeId, safeRandomName])
 
-  const onSubmitLoadSafe = async (values: AllowSafeFormValues): Promise<void> => {}
+  const onSubmitLoadSafe = async (values: AllowSafeFormValues): Promise<void> => {
+
+
+  }
 
   return (
     <Page>

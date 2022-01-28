@@ -17,7 +17,7 @@ import {
   FIELD_SAFE_OWNER_LIST,
   FIELD_SAFE_THRESHOLD,
   LoadSafeFormValues,
-} from '../fields/loadFields'
+} from '../fields/allowFields'
 import { getLoadSafeName } from '../fields/utils'
 import NetworkLabel from 'src/components/NetworkLabel/NetworkLabel'
 import { currentNetworkAddressBookAsMap } from 'src/logic/addressBook/store/selectors'
