@@ -65,7 +65,7 @@ const App: React.FC = ({ children }) => {
   const sidebarItems = useSidebarItems()
   const dispatch = useDispatch()
   useLoadSafe(addressFromUrl, String(safeIdFromUrl)) // load initially
-  useSafeScheduledUpdates(addressFromUrl) // load every X seconds
+  useSafeScheduledUpdates(addressFromUrl, String(safeIdFromUrl)) // load every X seconds
   useAddressBookSync()
 
   const sendFunds = safeActionsState.sendFunds

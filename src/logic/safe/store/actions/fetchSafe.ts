@@ -17,6 +17,7 @@ import { currentChainId } from 'src/logic/config/store/selectors'
 import { getMSafeInfo } from 'src/services'
 import { IMSafeInfo } from 'src/types/safe'
 import { _getChainId } from 'src/config'
+import { fetchMSafeTokens } from 'src/logic/tokens/store/actions/fetchSafeTokens'
 
 /**
  * Builds a Safe Record that will be added to the app's store
@@ -145,7 +146,7 @@ export const fetchMSafe =
       let remoteSafeInfo: SafeInfo | null = null
 
       try {
-        remoteSafeInfo = await _getSafeInfo(safeAddress, safeId);
+        remoteSafeInfo = await _getSafeInfo(safeAddress, safeId, dispatch);
       } catch (err) {
         // err.log()
       }
@@ -170,13 +171,13 @@ export const fetchMSafe =
         const shouldUpdateTxHistory = txHistoryTag !== safeInfo.txHistoryTag
         const shouldUpdateTxQueued = txQueuedTag !== safeInfo.txQueuedTag
 
-        if (shouldUpdateCollectibles || isInitialLoad) {
-          dispatch(fetchCollectibles(safeAddress))
-        }
+        // if (shouldUpdateCollectibles || isInitialLoad) {
+        //   dispatch(fetchCollectibles(safeAddress))
+        // }
 
-        if (shouldUpdateTxHistory || shouldUpdateTxQueued || isInitialLoad) {
-          dispatch(fetchTransactions(chainId, safeAddress))
-        }
+        // if (shouldUpdateTxHistory || shouldUpdateTxQueued || isInitialLoad) {
+        //   dispatch(fetchTransactions(chainId, safeAddress))
+        // }
       }
 
       const owners = buildSafeOwners(remoteSafeInfo?.owners)
@@ -186,8 +187,9 @@ export const fetchMSafe =
 
 
 
-async function _getSafeInfo(safeAddress: string, safeId: string): Promise<SafeInfo> {
+async function _getSafeInfo(safeAddress: string, safeId: string, dispatch?: Dispatch<any>): Promise<SafeInfo> {
   const info: IMSafeInfo = await getMSafeInfo(safeId);
+  if (dispatch) await dispatch(fetchMSafeTokens(info))
   return {
     address: {
       value: safeAddress,
