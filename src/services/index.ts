@@ -1,6 +1,6 @@
 import { ChainInfo } from "@gnosis.pm/safe-react-gateway-sdk";
 import axios from "axios";
-import { OwnedMSafes } from "../types/safe";
+import { IMSafeInfo, IMSafeResponse, OwnedMSafes } from "../types/safe";
 import { MSAFE_GATEWAY_URL } from "../utils/constants";
 
 const baseUrl = MSAFE_GATEWAY_URL;
@@ -10,16 +10,39 @@ export interface ISafeCreate {
   creatorPubkey: string,
   otherOwnersAddress: string[]
   threshold: number
-  chainId: string
+  internalChainId: number
+}
+export interface ISafeCancel {
+  safeId: string,
+  myAddress: string
+}
+export interface ISafeAllow {
+  safeId: string,
+  myAddress: string
 }
 
+export interface IResponse<T> {
+  AdditionalData: any[]
+  Data: T
+  ErrorCode: string
+  Message: string
+}
 
-export function getMChainsConfig(): Promise<ChainInfo[]> {
+type _ChainInfo = {
+  internalChainId: number
+}
+
+export type MChainInfo = ChainInfo & _ChainInfo
+
+export function getMChainsConfig(): Promise<MChainInfo[]> {
   return axios.post(`${baseUrl}/general/network-list`)
     .then(response => {
-      const chainList: ChainInfo[] = response.data.Data.map((e: { chainId: any; name: any; rpc: any }) => {
+      const chainList: MChainInfo[] = response.data.Data.map((e: {
+        chainId: any; name: any; rpc: any, id: number
+      }) => {
         return {
           transactionService: "https://safe-transaction.rinkeby.staging.gnosisdev.com",
+          internalChainId: e.id,
           chainId: e.chainId,
           chainName: e.name,
           shortName: "xyz",
@@ -80,10 +103,27 @@ export function getMChainsConfig(): Promise<ChainInfo[]> {
     })
 }
 
-export function fetchMSafesByOwner(addressOwner: string): Promise<OwnedMSafes> {
-  return axios.get(`${baseUrl}/owner/${addressOwner}/safes`).then(res => res.data.Data)
+export function fetchMSafesByOwner(addressOwner: string, internalChainId: number): Promise<OwnedMSafes> {
+  return axios.get(`${baseUrl}/owner/${addressOwner}/safes`, {
+    params: {
+      internalChainId
+    }
+  }).then(res => res.data.Data)
 }
 
-export function createMSafe(safes: ISafeCreate): Promise<OwnedMSafes> {
+export function createMSafe(safes: ISafeCreate): Promise<IResponse<IMSafeResponse>> {
   return axios.post(`${baseUrl}/multisigwallet`, safes).then(res => res.data)
 }
+
+
+export function cancelMSafe({ safeId, myAddress }: ISafeCancel): Promise<OwnedMSafes> {
+  return axios.delete(`${baseUrl}/multisigwallet`, {
+    params: { safeId },
+    data: { myAddress }
+  }).then(res => res.data)
+}
+
+export function getMSafeInfo(safeId: string): Promise<IMSafeInfo> {
+  return axios.get(`${baseUrl}/multisigwallet/${safeId}`).then(res => res.data.Data)
+}
+

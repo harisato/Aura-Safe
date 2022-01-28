@@ -18,23 +18,41 @@ import {
   SAFE_ROUTES,
   SafeRouteParams,
   ALLOW_SPECIFIC_SAFE_ROUTE,
+  CANCEL_SPECIFIC_SAFE_ROUTE,
+  generateSafeRouteWithChainId,
 } from 'src/routes/routes'
 import { currentChainId } from 'src/logic/config/store/selectors'
 import { ChainId } from 'src/config/chain.d'
-import { getChainById } from 'src/config'
+import { getChainById, getInternalChainId } from 'src/config'
+import { SafeStatus } from 'src/logic/safe/hooks/useOwnerSafes'
 
 const StyledIcon = styled(Icon)<{ checked: boolean }>`
   ${({ checked }) => (checked ? { marginRight: '4px' } : { visibility: 'hidden', width: '28px' })}
 `
-
-const StyledButton = styled(Button)`
+// background-color: ${({ hovercolor }) => hovercolor || '#cbf1eb'};
+const StyledButton = styled(Button)<{ status?: string }>`
   &.MuiButton-root.MuiButton-text {
     padding: 8px 16px;
     min-width: auto;
     height: 100%;
 
     &:hover {
-      background-color: #cbf1eb;
+      ${({ status }) => {
+        switch (status) {
+          case SafeStatus.Pending:
+            return {
+              backgroundColor: '#ffaa78',
+            }
+          case SafeStatus.NeedConfirm:
+            return {
+              backgroundColor: '#cbf1eb',
+            }
+          default:
+            return {
+              backgroundColor: '#fff',
+            }
+        }
+      }};
     }
   }
 `
@@ -61,9 +79,10 @@ type Props = {
   address: string
   ethBalance?: string
   showAddSafeLink?: boolean
-  showAllowNewSafe?: boolean
+  pendingStatus?: SafeStatus | undefined
   networkId: ChainId
   shouldScrollToSafe?: boolean
+  safeId: number
 }
 
 const SafeListItem = ({
@@ -72,9 +91,10 @@ const SafeListItem = ({
   address,
   ethBalance,
   showAddSafeLink = false,
-  showAllowNewSafe = false,
+  pendingStatus = undefined,
   networkId,
   shouldScrollToSafe = false,
+  safeId,
 }: Props): ReactElement => {
   const history = useHistory()
   const safeName = useSelector((state) => addressBookName(state, { address, chainId: networkId }))
@@ -84,6 +104,7 @@ const SafeListItem = ({
   const safeRef = useRef<HTMLDivElement>(null)
 
   const { nativeCurrency, shortName } = getChainById(networkId)
+  const internalChainId = getInternalChainId()
   const nativeCurrencySymbol = nativeCurrency?.symbol ?? 'ETH'
 
   useEffect(() => {
@@ -94,19 +115,55 @@ const SafeListItem = ({
 
   const routesSlug: SafeRouteParams = {
     shortName,
+    safeId: safeId || undefined,
     safeAddress: address,
   }
 
+  const rederButton = (status: SafeStatus) => {
+    switch (status) {
+      case SafeStatus.NeedConfirm:
+        return (
+          <StyledButton onClick={handleAllowSafe} size="md" variant="outlined" status={status}>
+            <Text size="lg" color="primary">
+              Allow
+            </Text>
+          </StyledButton>
+        )
+
+      case SafeStatus.Pending:
+        return (
+          <StyledButton onClick={handleCancelSafe} size="md" variant="outlined">
+            <Text size="lg" color="primary">
+              Cancel
+            </Text>
+          </StyledButton>
+        )
+
+      default:
+        return (
+          <StyledButton size="md" variant="outlined" disabled>
+            <Text size="lg" color="primary">
+              Allowed
+            </Text>
+          </StyledButton>
+        )
+    }
+  }
+
   const handleOpenSafe = (): void => {
+    if (pendingStatus) {
+      return
+    }
+
     onSafeClick()
     onNetworkSwitch?.()
-    history.push(generateSafeRoute(SAFE_ROUTES.ASSETS_BALANCES, routesSlug))
+    history.push(generateSafeRouteWithChainId(SAFE_ROUTES.ASSETS_BALANCES, routesSlug))
   }
 
   const handleLoadSafe = (): void => {
     onSafeClick()
     onNetworkSwitch?.()
-    history.push(generateSafeRoute(LOAD_SPECIFIC_SAFE_ROUTE, routesSlug))
+    history.push(generateSafeRouteWithChainId(LOAD_SPECIFIC_SAFE_ROUTE, routesSlug))
 
     // Navigating to LOAD_SPECIFIC_SAFE_ROUTE doesn't trigger a network switch
     setChainId(networkId)
@@ -115,16 +172,34 @@ const SafeListItem = ({
   const handleAllowSafe = (): void => {
     onSafeClick()
     onNetworkSwitch?.()
-    history.push(generateSafeRoute(ALLOW_SPECIFIC_SAFE_ROUTE, routesSlug))
+    history.push(generateSafeRouteWithChainId(ALLOW_SPECIFIC_SAFE_ROUTE, routesSlug))
 
     // Navigating to LOAD_SPECIFIC_SAFE_ROUTE doesn't trigger a network switch
     setChainId(networkId)
   }
 
+  const handleCancelSafe = (): void => {
+    onSafeClick()
+    onNetworkSwitch?.()
+    // CANCEL_SPECIFIC_SAFE_ROUTE
+    history.push(
+      generateSafeRoute(CANCEL_SPECIFIC_SAFE_ROUTE, {
+        ...routesSlug,
+        safeAddress: String(internalChainId),
+      }),
+    )
+  }
+
   return (
     <ListItem button onClick={handleOpenSafe} ref={safeRef}>
       <StyledIcon type="check" size="md" color="primary" checked={isCurrentSafe} />
-      <StyledPrefixedEthHashInfo hash={address} name={safeName} shortName={shortName} showAvatar shortenHash={4} />
+      <StyledPrefixedEthHashInfo
+        hash={address}
+        name={safeName ? safeName : 'Created by:'}
+        shortName={shortName}
+        showAvatar
+        shortenHash={4}
+      />
       <ListItemSecondaryAction>
         {ethBalance ? (
           <StyledText size="lg">
@@ -136,12 +211,8 @@ const SafeListItem = ({
               Add Safe
             </Text>
           </StyledButton>
-        ) : showAllowNewSafe ? (
-          <StyledButton onClick={handleAllowSafe} size="md" variant="outlined">
-            <Text size="lg" color="primary">
-              Allow Safe
-            </Text>
-          </StyledButton>
+        ) : pendingStatus ? (
+          rederButton(pendingStatus)
         ) : null}
       </ListItemSecondaryAction>
     </ListItem>

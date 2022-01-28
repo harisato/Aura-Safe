@@ -19,16 +19,16 @@ import LoadSafeOwnersStep, { loadSafeOwnersStepLabel } from './steps/LoadSafeOwn
 import ReviewLoadStep, { reviewLoadStepLabel } from './steps/ReviewLoadStep'
 import { useMnemonicSafeName } from 'src/logic/hooks/useMnemonicName'
 import StepperForm, { StepFormElement } from 'src/components/StepperForm/StepperForm'
-import { isValidAddress } from 'src/utils/isValidAddress'
 import { AddressBookEntry, makeAddressBookEntry } from 'src/logic/addressBook/model/addressBook'
 import { addressBookSafeLoad } from 'src/logic/addressBook/store/actions'
 import { checksumAddress } from 'src/utils/checksumAddress'
-import { buildSafe } from 'src/logic/safe/store/actions/fetchSafe'
+import { buildMSafe, buildSafe } from 'src/logic/safe/store/actions/fetchSafe'
 import { loadStoredSafes, saveSafes } from 'src/logic/safe/utils'
 import { addOrUpdateSafe } from 'src/logic/safe/store/actions/addOrUpdateSafe'
 import {
   FIELD_LOAD_IS_LOADING_SAFE_ADDRESS,
   FIELD_LOAD_SAFE_ADDRESS,
+  FIELD_LOAD_SAFE_ID,
   FIELD_LOAD_SUGGESTED_SAFE_NAME,
   FIELD_SAFE_OWNER_LIST,
   LoadSafeFormValues,
@@ -38,11 +38,12 @@ import { getShortName } from 'src/config'
 import { currentNetworkAddressBookAsMap } from 'src/logic/addressBook/store/selectors'
 import { getLoadSafeName } from './fields/utils'
 import { currentChainId } from 'src/logic/config/store/selectors'
+import { IdleTransactionSpanRecorder } from '@sentry/tracing/dist/idletransaction'
 
 function Load(): ReactElement {
   const dispatch = useDispatch()
   const history = useHistory()
-  const { safeAddress, shortName } = extractPrefixedSafeAddress(undefined, LOAD_SPECIFIC_SAFE_ROUTE)
+  const { safeAddress, shortName, safeId } = extractPrefixedSafeAddress(undefined, LOAD_SPECIFIC_SAFE_ROUTE)
   const safeRandomName = useMnemonicSafeName()
   const [initialFormValues, setInitialFormValues] = useState<LoadSafeFormValues>()
   const addressBook = useSelector(currentNetworkAddressBookAsMap)
@@ -54,6 +55,7 @@ function Load(): ReactElement {
       [FIELD_LOAD_SAFE_ADDRESS]: safeAddress,
       [FIELD_LOAD_IS_LOADING_SAFE_ADDRESS]: false,
       [FIELD_SAFE_OWNER_LIST]: [],
+      [FIELD_LOAD_SAFE_ID]: safeId,
     }
     setInitialFormValues(initialValues)
   }, [safeAddress, safeRandomName])
@@ -73,7 +75,7 @@ function Load(): ReactElement {
       .filter((owner) => !!owner.name)
 
     const safeEntry = makeAddressBookEntry({
-      address: checksumAddress(values[FIELD_LOAD_SAFE_ADDRESS] || ''),
+      address: values[FIELD_LOAD_SAFE_ADDRESS] || '',
       name: getLoadSafeName(values, addressBook),
       chainId,
     })
@@ -83,16 +85,20 @@ function Load(): ReactElement {
 
   const onSubmitLoadSafe = async (values: LoadSafeFormValues): Promise<void> => {
     const address = values[FIELD_LOAD_SAFE_ADDRESS]
-    if (!isValidAddress(address)) {
+    const id = values[FIELD_LOAD_SAFE_ID]
+    if (!address && !id) {
       return
     }
 
     updateAddressBook(values)
 
-    const checksummedAddress = checksumAddress(address || '')
-    const safeProps = await buildSafe(checksummedAddress)
+    const safeProps = await buildMSafe(String(address), String(id))
+
+    // const checksummedAddress = checksumAddress(address || '')
+    // const safeProps = await buildSafe(checksummedAddress)
     const storedSafes = loadStoredSafes() || {}
-    storedSafes[checksummedAddress] = safeProps
+
+    storedSafes[String(address)] = safeProps
 
     saveSafes(storedSafes)
     dispatch(addOrUpdateSafe(safeProps))
@@ -101,7 +107,8 @@ function Load(): ReactElement {
     history.push(
       generateSafeRoute(SAFE_ROUTES.ASSETS_BALANCES, {
         shortName: getShortName(),
-        safeAddress: checksummedAddress,
+        safeAddress: String(address),
+        safeId: safeProps.safeId,
       }),
     )
   }
@@ -123,7 +130,7 @@ function Load(): ReactElement {
           onSubmit={onSubmitLoadSafe}
           key={safeAddress}
         >
-          {safeAddress && shortName ? null : (
+          {safeAddress && safeId ? null : (
             <StepFormElement label={selectNetworkStepLabel} nextButtonLabel="Continue">
               <SelectNetworkStep />
             </StepFormElement>

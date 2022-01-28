@@ -20,6 +20,7 @@ import { emptyChainInfo, getChains } from './cache/chains'
 import { evalTemplate } from './utils'
 import local from 'src/utils/storage/local'
 import { ConfigState } from 'src/logic/config/store/reducer/reducer.d'
+import { MChainInfo } from 'src/services'
 
 export const LOCAL_CONFIG_KEY = 'config'
 
@@ -113,6 +114,10 @@ export const getDisabledWallets = (): ChainInfo['disabledWallets'] => {
 
 const getExplorerUriTemplate = (): ChainInfo['blockExplorerUriTemplate'] => {
   return getChainInfo().blockExplorerUriTemplate
+}
+
+export const getInternalChainId = (): MChainInfo['internalChainId'] => {
+  return (getChainInfo() as MChainInfo).internalChainId
 }
 
 export const getExplorerUrl = (): string => {

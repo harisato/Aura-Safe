@@ -10,6 +10,7 @@ export type ProviderProps = {
   network: ChainId
   smartContractWallet: boolean
   hardwareWallet: boolean
+  internalChainId?: number
 }
 
 export const makeProvider = Record<ProviderProps>({

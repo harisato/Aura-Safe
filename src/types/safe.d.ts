@@ -1,10 +1,3 @@
-export enum SafeStatus {
-    Pending = 'pending',
-    Created = 'created',
-    Failed = 'failed',
-    Deleted = 'deleted'
-}
-
 
 export type Safe = {
     id: number
@@ -15,3 +8,31 @@ export type Safe = {
 }
 
 export type OwnedMSafes = Safe[]
+
+export interface IMSafeInfo {
+    address: string;
+    pubkeys: string;
+    owners: (string)[];
+    confirms: (string)[];
+    threshold: number;
+    status: string;
+    internalChainId: number;
+    balance: {
+        denom: string;
+        amount: string;
+    }[]
+}
+
+export interface IMSafeResponse {
+    creatorAddress: string;
+    creatorPubkey: string;
+    threshold: number;
+    status: string;
+    internalChainId: number;
+    addressHash: string;
+    safeAddress?: any;
+    safePubkey?: any;
+    createdAt: Date;
+    updatedAt: Date;
+    id: number;
+}
