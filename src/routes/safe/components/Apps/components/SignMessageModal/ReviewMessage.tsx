@@ -213,7 +213,7 @@ export const ReviewMessage = ({
             />
             <InfoMessage>
               <Icon size="md" type="info" color="warning" />
-              Signing a message with the Gnosis Safe requires a transaction on the blockchain
+              Signing a message with the Aura Safe requires a transaction on the blockchain
             </InfoMessage>
 
             <TxParametersDetail
