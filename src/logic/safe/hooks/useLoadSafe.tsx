@@ -20,6 +20,6 @@ export const useLoadSafe = (safeAddress?: string, safeId?: string): void => {
     // dispatch(fetchLatestMasterContractVersion())
     // dispatch(fetchSafe(safeAddress, true))
     // dispatch(updateAvailableCurrencies())
-    dispatch(addViewedSafe(safeAddress))
+    dispatch(addViewedSafe(safeAddress, String(safeId)))
   }, [dispatch, safeAddress, chainId])
 }

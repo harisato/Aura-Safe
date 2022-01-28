@@ -9,8 +9,10 @@ import { REMOVE_VIEWED_SAFE } from '../actions/removeViewedSafe'
 export const CURRENT_SESSION_REDUCER_ID = 'currentSession'
 const MAX_VIEWED_SAFES = 10
 
+export type ViewdSafeType = { safeAddress: string, safeId?: string }
+
 export type CurrentSessionState = {
-  viewedSafes: string[]
+  viewedSafes: ViewdSafeType[]
   restored: boolean
 }
 
@@ -19,7 +21,7 @@ export const initialState = {
   restored: false,
 }
 
-type CurrentSessionPayloads = CurrentSessionState | string
+type CurrentSessionPayloads = CurrentSessionState | ViewdSafeType
 
 const currentSessionReducer = handleActions<CurrentSessionState, CurrentSessionPayloads>(
   {
@@ -28,23 +30,24 @@ const currentSessionReducer = handleActions<CurrentSessionState, CurrentSessionP
       ...action.payload,
       restored: true,
     }),
-    [UPDATE_VIEWED_SAFES]: (state, action: Action<string>) => {
-      const safeAddress = action.payload
-      const viewedSafes = state.viewedSafes.filter((item) => item !== safeAddress)
+    [UPDATE_VIEWED_SAFES]: (state, action: Action<ViewdSafeType>) => {
+      const { safeAddress } = action.payload
+      const viewedSafes = state.viewedSafes.filter((item) => item.safeAddress !== safeAddress)
+
       const newState = {
         ...state,
-        viewedSafes: [safeAddress].concat(viewedSafes).slice(0, MAX_VIEWED_SAFES),
+        viewedSafes: [...viewedSafes, action.payload ].slice(0, MAX_VIEWED_SAFES),
       }
 
       saveCurrentSessionToStorage(newState)
 
       return newState
     },
-    [REMOVE_VIEWED_SAFE]: (state, action: Action<string>) => {
-      const safeAddress = action.payload
+    [REMOVE_VIEWED_SAFE]: (state, action: Action<ViewdSafeType>) => {
+      const { safeAddress } = action.payload
       const newState = {
         ...state,
-        viewedSafes: state.viewedSafes.filter((item) => item !== safeAddress),
+        viewedSafes: state.viewedSafes.filter((item) => item.safeAddress !== safeAddress),
       }
 
       saveCurrentSessionToStorage(newState)

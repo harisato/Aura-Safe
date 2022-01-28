@@ -82,7 +82,7 @@ type Props = {
   pendingStatus?: SafeStatus | undefined
   networkId: ChainId
   shouldScrollToSafe?: boolean
-  safeId: number
+  safeId?: number
 }
 
 const SafeListItem = ({
