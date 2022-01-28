@@ -77,15 +77,15 @@ const Sidebar = ({
       </>
     ) : null}
 
-    <HelpContainer>
-      {!IS_PRODUCTION && <DebugToggle />}
+    {/* <HelpContainer>
+      {!IS_PRODUCTION && <DebugToggle />}  
 
-      <StyledDivider />
+       <StyledDivider />  
 
-      {/* <HelpCenterLink href="https://help.gnosis-safe.io/en/" target="_blank" title="Help Center of Gnosis Safe">
+       <HelpCenterLink href="https://help.gnosis-safe.io/en/" target="_blank" title="Help Center of Gnosis Safe">
         <IconText text="HELP CENTER" iconSize="md" textSize="md" color="placeHolder" iconType="question" />
-      </HelpCenterLink> */}
-    </HelpContainer>
+      </HelpCenterLink> 
+    </HelpContainer>*/}
   </>
 )
 
