@@ -11,7 +11,7 @@ import Page from 'src/components/layout/Page'
 import Block from 'src/components/layout/Block'
 import Row from 'src/components/layout/Row'
 import Heading from 'src/components/layout/Heading'
-import { generateSafeRouteWithChainId, history, SAFE_ROUTES } from 'src/routes/routes'
+import { generateSafeRoute, generateSafeRouteWithChainId, history, SAFE_ROUTES, WELCOME_ROUTE } from 'src/routes/routes'
 import { sm, secondary, boldFont } from 'src/theme/variables'
 import StepperForm, { StepFormElement } from 'src/components/StepperForm/StepperForm'
 import NameNewSafeStep, { nameNewSafeStepLabel } from './steps/NameNewSafeStep'
@@ -35,7 +35,7 @@ import ReviewNewSafeStep, { reviewNewSafeStepLabel } from './steps/ReviewNewSafe
 import SelectWalletAndNetworkStep, { selectWalletAndNetworkStepLabel } from './steps/SelectWalletAndNetworkStep'
 
 import { createMSafe, ISafeCreate } from 'src/services'
-import { getInternalChainId, _getChainId } from 'src/config'
+import { getInternalChainId, getShortName, _getChainId } from 'src/config'
 import { parseToAdress } from 'src/utils/parseByteAdress'
 import Paragraph from 'src/components/layout/Paragraph'
 import NetworkLabel from 'src/components/NetworkLabel/NetworkLabel'
@@ -166,13 +166,18 @@ function CreateSafePage(): ReactElement {
 
   function onClickModalButton() {
     const { safeId, safeAddress } = modalData
-    history.push({
-      pathname: generateSafeRouteWithChainId(SAFE_ROUTES.ASSETS_BALANCES, {
-        shortName: '',
-        safeId: safeId,
-        safeAddress,
-      }),
-    })
+
+    if (safeId && safeAddress) {
+      history.push({
+        pathname: generateSafeRoute(SAFE_ROUTES.ASSETS_BALANCES, {
+          shortName: getShortName(),
+          safeId: safeId,
+          safeAddress,
+        }),
+      })
+    } else {
+      history.push(WELCOME_ROUTE)
+    }
   }
 
   return (
