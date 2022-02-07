@@ -1,19 +1,18 @@
 import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { currentChainId } from 'src/logic/config/store/selectors'
-import { fetchMSafe, fetchSafe } from 'src/logic/safe/store/actions/fetchSafe'
-import { fetchSafeTokens } from 'src/logic/tokens/store/actions/fetchSafeTokens'
+import { fetchMSafe } from 'src/logic/safe/store/actions/fetchSafe'
 import { SAFE_POLLING_INTERVAL } from 'src/utils/constants'
 
-export const useSafeScheduledUpdates = (safeAddress?: string, safeId?: string): void => {
+export const useSafeScheduledUpdates = (safeAddress?: string, safeId?: number): void => {
   const dispatch = useDispatch()
   const [pollCount, setPollCount] = useState<number>(0)
   const chainId = useSelector(currentChainId)
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      if (safeAddress) {
-        dispatch(fetchMSafe(safeAddress, String(safeId), true))
+      if (safeAddress && safeId) {
+        dispatch(fetchMSafe(safeAddress, safeId, true))
         // dispatch(fetchSafe(safeAddress))
         // dispatch(fetchSafeTokens(safeAddress))
       }

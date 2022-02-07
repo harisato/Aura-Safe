@@ -111,7 +111,7 @@ export const fetchSafe =
       return dispatch(updateSafe({ address, ...safeInfo, owners }))
     }
 
-export const buildMSafe = async (safeAddress: string, safeId: string): Promise<SafeRecordProps> => {
+export const buildMSafe = async (safeAddress: string, safeId: number): Promise<SafeRecordProps> => {
   // setting `loadedViaUrl` to false, as `buildSafe` is called on safe Load or Open flows
   const safeInfo: Partial<SafeRecordProps> = { address: safeAddress, loadedViaUrl: false }
 
@@ -132,7 +132,7 @@ export const buildMSafe = async (safeAddress: string, safeId: string): Promise<S
 
 
 export const fetchMSafe =
-  (safeAddress: string, safeId: string, isInitialLoad = false) =>
+  (safeAddress: string, safeId: number, isInitialLoad = false) =>
     async (dispatch: Dispatch<any>): Promise<Action<Partial<SafeRecordProps>> | void> => {
       let address = safeAddress
       // try {
@@ -187,7 +187,7 @@ export const fetchMSafe =
 
 
 
-async function _getSafeInfo(safeAddress: string, safeId: string, dispatch?: Dispatch<any>): Promise<SafeInfo> {
+async function _getSafeInfo(safeAddress: string, safeId: number, dispatch?: Dispatch<any>): Promise<SafeInfo> {
   const info: IMSafeInfo = await getMSafeInfo(safeId);
   if (dispatch) await dispatch(fetchMSafeTokens(info))
   return {

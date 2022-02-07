@@ -104,7 +104,7 @@ function CreateSafePage(): ReactElement {
 
       if (safeData.status === SafeStatus.Created) {
         const { safeAddress, id } = safeData
-        const safeProps = await buildMSafe(String(safeAddress), String(id))
+        const safeProps = await buildMSafe(String(safeAddress), id)
 
         updateAddressBook(safeAddress, newSafeFormValues)
         await dispatch(addOrUpdateSafe(safeProps))

@@ -1,14 +1,21 @@
 import { store } from 'src/store'
-import { Keplr, Key } from "@keplr-wallet/types";
+import { Keplr } from "@keplr-wallet/types";
 import { getChainInfo, getInternalChainId, _getChainId } from "../../config";
 import { makeProvider, ProviderProps } from '../wallets/store/model/provider';
 import { Dispatch } from 'redux';
-import { addProvider, removeProvider } from '../wallets/store/actions';
+import { addProvider } from '../wallets/store/actions';
 import enqueueSnackbar from '../notifications/store/actions/enqueueSnackbar';
 import { enhanceSnackbarForAction, NOTIFICATIONS } from '../notifications';
 import { trackAnalyticsEvent, WALLET_EVENTS } from '../../utils/googleAnalytics';
 import { saveToStorage } from 'src/utils/storage';
 import { LAST_USED_PROVIDER_KEY } from '../wallets/store/middlewares/providerWatcher';
+import { parseToAdress } from 'src/utils/parseByteAdress';
+
+
+export type WalletKey = {
+  myAddress: string,
+  myPubkey: string
+}
 
 export async function getKeplr(): Promise<Keplr | undefined> {
   if (window.keplr) {
@@ -35,6 +42,19 @@ export async function getKeplr(): Promise<Keplr | undefined> {
   });
 }
 
+export async function getKeplrKey(chainId: string): Promise<WalletKey | undefined> {
+  const keplr = await getKeplr()
+
+  if (!keplr) return
+
+  const key = await keplr.getKey(chainId)
+
+  return {
+    myAddress: String(key.bech32Address),
+    myPubkey: parseToAdress(key.pubKey)
+  }
+}
+
 
 export async function connectKeplr(): Promise<boolean> {
   const chainInfo = await getChainInfo()
@@ -51,11 +71,9 @@ export async function connectKeplr(): Promise<boolean> {
   await keplr
     ?.enable(chainId)
     .then((e) => {
-      console.log('Event 1', e)
       return keplr.getKey(chainId)
     })
     .then((key) => {
-      console.log('Event 2', { key })
       let providerInfo: ProviderProps;
 
       if (!key) {
@@ -89,6 +107,7 @@ export async function connectKeplr(): Promise<boolean> {
     .catch((err) => {
       console.log('Keplr Errors', err)
       store.dispatch(fetchProvider({
+
         account: '',
         available: false,
         hardwareWallet: false,

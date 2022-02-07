@@ -25,7 +25,7 @@ import { grantedSelector } from 'src/routes/safe/container/selector'
 import ReceiveModal from './ReceiveModal'
 import { useSidebarItems } from 'src/components/AppLayout/Sidebar/useSidebarItems'
 import useAddressBookSync from 'src/logic/addressBook/hooks/useAddressBookSync'
-import { extractSafeAddress, extractSafeId, extractShortChainName } from 'src/routes/routes'
+import { extractSafeAddress, extractSafeId } from 'src/routes/routes'
 import loadSafesFromStorage from 'src/logic/safe/store/actions/loadSafesFromStorage'
 import loadCurrentSessionFromStorage from 'src/logic/currentSession/store/actions/loadCurrentSessionFromStorage'
 
@@ -64,8 +64,8 @@ const App: React.FC = ({ children }) => {
   const granted = useSelector(grantedSelector)
   const sidebarItems = useSidebarItems()
   const dispatch = useDispatch()
-  useLoadSafe(addressFromUrl, String(safeIdFromUrl)) // load initially
-  useSafeScheduledUpdates(addressFromUrl, String(safeIdFromUrl)) // load every X seconds
+  useLoadSafe(addressFromUrl, safeIdFromUrl) // load initially
+  useSafeScheduledUpdates(addressFromUrl, safeIdFromUrl) // load every X seconds
   useAddressBookSync()
 
   const sendFunds = safeActionsState.sendFunds
