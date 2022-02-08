@@ -144,6 +144,7 @@ function Cancel(): ReactElement {
                       size="small"
                       className={classes.nextButton}
                       variant="contained"
+                      disabled
                     >
                       {nextButtonLabel}
                     </Button>

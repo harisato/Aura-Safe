@@ -48,7 +48,7 @@ export function getMChainsConfig(): Promise<MChainInfo[]> {
           internalChainId: e.id,
           chainId: e.chainId,
           chainName: e.name,
-          shortName: "xyz",
+          shortName: "aura",
           l2: false,
           description: "",
           rpcUri: {
@@ -69,8 +69,8 @@ export function getMChainsConfig(): Promise<MChainInfo[]> {
             api: "https://api-rinkeby.etherscan.io/api?module={{module}}&action={{action}}&address={{address}}&apiKey={{apiKey}}"
           },
           nativeCurrency: {
-            name: "Ether",
-            symbol: "ETH",
+            name: "Aura",
+            symbol: "Aura",
             decimals: 18,
             logoUri: "https://safe-transaction-assets.staging.gnosisdev.com/chains/4/currency_logo.png"
           },
@@ -96,7 +96,6 @@ export function getMChainsConfig(): Promise<MChainInfo[]> {
             "DOMAIN_LOOKUP",
             "EIP1559",
             "ERC721",
-            "SAFE_APPS",
             "SAFE_TX_GAS_OPTIONAL",
             "SPENDING_LIMIT"
           ]
