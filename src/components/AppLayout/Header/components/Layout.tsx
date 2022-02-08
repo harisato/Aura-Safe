@@ -13,12 +13,14 @@ import Img from 'src/components/layout/Img'
 import Row from 'src/components/layout/Row'
 import { headerHeight, md, screenSm, sm } from 'src/theme/variables'
 import { useStateHandler } from 'src/logic/hooks/useStateHandler'
-import SafeLogo from '../assets/gnosis-safe-multisig-logo.svg'
+import SafeLogo from '../assets/aura-logo.svg'
 import { WELCOME_ROUTE } from 'src/routes/routes'
 import WalletSwitch from 'src/components/WalletSwitch'
 import Divider from 'src/components/layout/Divider'
 import { shouldSwitchWalletChain } from 'src/logic/wallets/store/selectors'
 import { useSelector } from 'react-redux'
+
+import styled from 'styled-components'
 
 const styles = () => ({
   root: {
@@ -50,6 +52,9 @@ const styles = () => ({
       paddingLeft: md,
       paddingRight: md,
     },
+  },
+  link: {
+    textDecoration: 'none',
   },
   wallet: {
     paddingRight: md,
@@ -99,8 +104,11 @@ const Layout = ({ classes, providerDetails, providerInfo }) => {
   return (
     <Row className={classes.summary}>
       <Col className={classes.logo} middle="xs" start="xs">
-        <Link to={WELCOME_ROUTE}>
-          <Img alt="Aura Safe" height={36} src={SafeLogo} testId="heading-gnosis-logo" />
+        <Link to={WELCOME_ROUTE}  className={classes.link}>
+          <LogoContainer>
+            <Img alt="Aura Safe" height={32} src={SafeLogo} testId="heading-gnosis-logo" />
+            <LogoTitle>Aura Safe</LogoTitle>
+          </LogoContainer>
         </Link>
       </Col>
 
@@ -134,5 +142,16 @@ const Layout = ({ classes, providerDetails, providerInfo }) => {
     </Row>
   )
 }
+
+const LogoContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+`
+
+const LogoTitle = styled.h2`
+  color: black;
+`
 
 export default withStyles(styles as any)(Layout)
