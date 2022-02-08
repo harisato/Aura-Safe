@@ -1,5 +1,6 @@
 import { ChainInfo } from "@gnosis.pm/safe-react-gateway-sdk";
 import axios from "axios";
+import { WalletKey } from "src/logic/keplr/keplr";
 import { IMSafeInfo, IMSafeResponse, OwnedMSafes } from "../types/safe";
 import { MSAFE_GATEWAY_URL } from "../utils/constants";
 
@@ -28,9 +29,11 @@ export interface IResponse<T> {
   Message: string
 }
 
+
 type _ChainInfo = {
   internalChainId: number
 }
+
 
 export type MChainInfo = ChainInfo & _ChainInfo
 
@@ -123,7 +126,10 @@ export function cancelMSafe({ safeId, myAddress }: ISafeCancel): Promise<OwnedMS
   }).then(res => res.data)
 }
 
-export function getMSafeInfo(safeId: string): Promise<IMSafeInfo> {
+export function getMSafeInfo(safeId: number): Promise<IMSafeInfo> {
   return axios.get(`${baseUrl}/multisigwallet/${safeId}`).then(res => res.data.Data)
 }
 
+export async function allowMSafe(safeId: number, walletKey: WalletKey): Promise<IResponse<IMSafeResponse>> {
+  return axios.post(`${baseUrl}/multisigwallet/${safeId}`, walletKey).then(res => res.data)
+}

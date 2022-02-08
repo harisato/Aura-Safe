@@ -38,7 +38,6 @@ import { getShortName } from 'src/config'
 import { currentNetworkAddressBookAsMap } from 'src/logic/addressBook/store/selectors'
 import { getLoadSafeName } from './fields/utils'
 import { currentChainId } from 'src/logic/config/store/selectors'
-import { IdleTransactionSpanRecorder } from '@sentry/tracing/dist/idletransaction'
 
 function Load(): ReactElement {
   const dispatch = useDispatch()
@@ -86,13 +85,13 @@ function Load(): ReactElement {
   const onSubmitLoadSafe = async (values: LoadSafeFormValues): Promise<void> => {
     const address = values[FIELD_LOAD_SAFE_ADDRESS]
     const id = values[FIELD_LOAD_SAFE_ID]
-    if (!address && !id) {
+    if (!address || !id) {
       return
     }
 
     updateAddressBook(values)
 
-    const safeProps = await buildMSafe(String(address), String(id))
+    const safeProps = await buildMSafe(String(address), id)
 
     // const checksummedAddress = checksumAddress(address || '')
     // const safeProps = await buildSafe(checksummedAddress)

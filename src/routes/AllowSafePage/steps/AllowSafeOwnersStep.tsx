@@ -14,7 +14,7 @@ import PrefixedEthHashInfo from 'src/components/PrefixedEthHashInfo'
 import { disabled, extraSmallFontSize, lg, md, sm } from 'src/theme/variables'
 import { minMaxLength } from 'src/components/forms/validator'
 import { getExplorerInfo } from 'src/config'
-import { FIELD_SAFE_OWNER_LIST } from '../fields/loadFields'
+import { FIELD_SAFE_OWNER_LIST } from '../fields/allowFields'
 import NetworkLabel from 'src/components/NetworkLabel/NetworkLabel'
 
 export const loadSafeOwnersStepLabel = 'Owners'

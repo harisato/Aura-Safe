@@ -13,12 +13,12 @@ import { providerNameSelector } from 'src/logic/wallets/store/selectors'
 import { FIELD_CREATE_CUSTOM_SAFE_NAME, FIELD_CREATE_SUGGESTED_SAFE_NAME } from '../fields/createSafeFields'
 import { useStepper } from 'src/components/Stepper/stepperContext'
 import NetworkLabel from 'src/components/NetworkLabel/NetworkLabel'
-import { FIELD_ALLOW_SAFE_ID, FIELD_SAFE_OWNER_LIST } from '../fields/loadFields'
+import { FIELD_ALLOW_SAFE_ID, FIELD_SAFE_OWNER_LIST } from '../fields/allowFields'
 import { currentNetworkAddressBookAsMap } from '../../../logic/addressBook/store/selectors'
 import { currentChainId } from '../../../logic/config/store/selectors'
 import { AddressBookEntry, makeAddressBookEntry } from '../../../logic/addressBook/model/addressBook'
 
-import { FIELD_LOAD_IS_LOADING_SAFE_ADDRESS, FIELD_SAFE_THRESHOLD } from '../../LoadSafePage/fields/loadFields'
+import { FIELD_LOAD_IS_LOADING_SAFE_ADDRESS, FIELD_LOAD_SAFE_ID, FIELD_SAFE_THRESHOLD } from '../../LoadSafePage/fields/loadFields'
 import { getMSafeInfo } from 'src/services'
 
 export const nameNewSafeStepLabel = 'Name'
@@ -49,16 +49,17 @@ function NameAllowSafeStep(): ReactElement {
 
   useEffect(() => {
     const checkSafeAddress = async () => {
-      // const isValidSafeAddress = isValidAddress(safeId) && isChecksumAddress(safeId)
+      
+      const safeId = allowSafeForm.getState().values[FIELD_LOAD_SAFE_ID]
       if (!safeId) {
         return
       }
 
       setIsSafeInfoLoading(true)
       try {
+        
         const { owners, threshold } = await getMSafeInfo(safeId)
 
-        // const { owners, threshold } = await getSafeInfo(safeId)
         setIsSafeInfoLoading(false)
         const ownersWithName = owners.map((address) =>
           makeAddressBookEntry(addressBook[address] || { address, name: '', chainId }),

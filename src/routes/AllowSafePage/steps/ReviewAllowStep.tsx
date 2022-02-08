@@ -13,25 +13,21 @@ import { getExplorerInfo } from 'src/config'
 import { userAccountSelector } from 'src/logic/wallets/store/selectors'
 import Hairline from 'src/components/layout/Hairline'
 import PrefixedEthHashInfo from 'src/components/PrefixedEthHashInfo'
-import {
-  FIELD_SAFE_OWNER_LIST,
-  FIELD_SAFE_THRESHOLD,
-  LoadSafeFormValues,
-} from '../fields/loadFields'
+import { FIELD_SAFE_OWNER_LIST, FIELD_SAFE_THRESHOLD, LoadSafeFormValues } from '../fields/allowFields'
 import { getLoadSafeName } from '../fields/utils'
 import NetworkLabel from 'src/components/NetworkLabel/NetworkLabel'
 import { currentNetworkAddressBookAsMap } from 'src/logic/addressBook/store/selectors'
 
 export const reviewLoadStepLabel = 'Review'
 
-function ReviewAllowStep(): ReactElement {
-  const loadSafeForm = useForm()
+const ReviewAllowStep = (): ReactElement => {
   const userAddress = useSelector(userAccountSelector)
   const addressBook = useSelector(currentNetworkAddressBookAsMap)
 
+  const loadSafeForm = useForm()
   const formValues = loadSafeForm.getState().values as LoadSafeFormValues
   const safeName = getLoadSafeName(formValues, addressBook)
-  const safeAddress = ''
+  // const safeAddress = formValues.
   const threshold = formValues[FIELD_SAFE_THRESHOLD]
   const ownerList = formValues[FIELD_SAFE_OWNER_LIST]
 
@@ -71,7 +67,7 @@ function ReviewAllowStep(): ReactElement {
               {safeName}
             </Paragraph>
           </Block>
-          <Block margin="lg">
+          {/* <Block margin="lg">
             <Paragraph color="disabled" noMargin size="sm">
               Safe address
             </Paragraph>
@@ -84,7 +80,7 @@ function ReviewAllowStep(): ReactElement {
                 explorerUrl={getExplorerInfo(safeAddress)}
               />
             </SafeAddressContainer>
-          </Block>
+          </Block> */}
           <Block margin="lg">
             <Paragraph color="disabled" noMargin size="sm">
               Connected wallet client is owner?
