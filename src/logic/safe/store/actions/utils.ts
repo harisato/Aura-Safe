@@ -100,7 +100,8 @@ export const buildSafeOwners = (
   if (remoteSafeOwners) {
     // ToDo: review if checksums addresses is necessary,
     //  as they must be provided already in the checksum form from the services
-    return remoteSafeOwners.map(({ value }) => checksumAddress(value))
+    // return remoteSafeOwners.map(({ value }) => checksumAddress(value))
+    return remoteSafeOwners.map(({ value }) => (value))
   }
 
   // nothing to do without remote owners, so we return the stored list
