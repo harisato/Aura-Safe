@@ -134,7 +134,7 @@ const AddressBookTable = (): ReactElement => {
     setEditCreateEntryModalOpen(false)
     // update the store
     dispatch(
-      addressBookAddOrUpdate(makeAddressBookEntry({ ...entry, address: checksumAddress(entry.address), chainId })),
+      addressBookAddOrUpdate(makeAddressBookEntry({ ...entry, address: (entry.address), chainId })),
     )
   }
 
@@ -145,7 +145,7 @@ const AddressBookTable = (): ReactElement => {
     setEditCreateEntryModalOpen(false)
     // update the store
     dispatch(
-      addressBookAddOrUpdate(makeAddressBookEntry({ ...entry, address: checksumAddress(entry.address), chainId })),
+      addressBookAddOrUpdate(makeAddressBookEntry({ ...entry, address: (entry.address), chainId })),
     )
   }
 
@@ -241,7 +241,7 @@ const AddressBookTable = (): ReactElement => {
                                 hash={row[column.id]}
                                 showCopyBtn
                                 showAvatar
-                                explorerUrl={getExplorerInfo(row[column.id])}
+                                // explorerUrl={getExplorerInfo(row[column.id])}
                               />
                             </Block>
                           ) : (
@@ -292,6 +292,7 @@ const AddressBookTable = (): ReactElement => {
                             size="md"
                             variant="contained"
                             data-testid={SEND_ENTRY_BUTTON}
+                            disabled
                           >
                             <FixedIcon type="arrowSentWhite" />
                             <Text size="xl" color="white">
