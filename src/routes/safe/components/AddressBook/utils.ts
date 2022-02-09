@@ -1,4 +1,4 @@
-import { isValidAddress } from 'src/utils/isValidAddress'
+// import { isValidAddress } from 'src/utils/isValidAddress'
 import { isValidChainId } from 'src/config'
 
 export const WRONG_FILE_EXTENSION_ERROR = 'Only CSV files are allowed'
@@ -42,10 +42,10 @@ export const validateCsvData = (data: CsvDataType): string | undefined => {
       return `Invalid amount of columns on row ${index + 1}`
     }
     // Verify address properties
-    const lowerCaseAddress = address.toLowerCase()
-    if (!isValidAddress(lowerCaseAddress)) {
-      return `Invalid address on row ${index + 1}`
-    }
+    // const lowerCaseAddress = address.toLowerCase()
+    // if (!isValidAddress(lowerCaseAddress)) {
+    //   return `Invalid address on row ${index + 1}`
+    // }
     if (!isValidChainId(chainId.trim())) {
       return `Invalid chain id on row ${index + 1}`
     }
