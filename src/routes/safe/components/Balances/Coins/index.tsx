@@ -78,7 +78,8 @@ const Coins = (props: Props): React.ReactElement => {
   const autoColumns = columns.filter((c) => !c.custom)
   const selectedCurrency = useSelector(currentCurrencySelector)
   const safeTokens = useSelector(extendedSafeTokensSelector)
-  const granted = useSelector(grantedSelector)
+  // const granted = useSelector(grantedSelector)
+  const granted = false
   const { trackEvent } = useAnalytics()
 
   useEffect(() => {

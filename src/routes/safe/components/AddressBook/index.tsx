@@ -184,7 +184,7 @@ const AddressBookTable = (): ReactElement => {
           >
             Export
           </ButtonLink>
-          <ButtonLink
+          {/* <ButtonLink
             onClick={() => {
               setImportEntryModalOpen(true)
             }}
@@ -194,7 +194,7 @@ const AddressBookTable = (): ReactElement => {
             textSize="xl"
           >
             Import
-          </ButtonLink>
+          </ButtonLink> */}
           <ButtonLink
             onClick={() => {
               setSelectedEntry(initialEntryState)
