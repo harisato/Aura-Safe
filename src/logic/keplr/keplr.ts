@@ -17,6 +17,16 @@ export type WalletKey = {
   myPubkey: string
 }
 
+export enum KeplrErrors {
+  Success = '',
+  Failed = 'FAILED',
+  NoChainInfo = 'THERE IS NO CHAIN INFO FOR',
+  SameChain = 'SAME CHAIN IS ALREADY REGISTERED',
+  NotRegistered = 'CHAIN IS NOT REGISTERED',
+  RequestRejected = 'REQUEST REJECTED',
+  NotInstall = 'NOT INSTALL'
+}
+
 export async function getKeplr(): Promise<Keplr | undefined> {
   if (window.keplr) {
     return window.keplr;
@@ -56,7 +66,7 @@ export async function getKeplrKey(chainId: string): Promise<WalletKey | undefine
 }
 
 
-export async function connectKeplr(): Promise<boolean> {
+export async function connectKeplr(): Promise<KeplrErrors> {
   const chainInfo = await getChainInfo()
   const internalChainId = getInternalChainId()
   const chainId = _getChainId()
@@ -64,7 +74,7 @@ export async function connectKeplr(): Promise<boolean> {
   const keplr = await getKeplr()
   if (!keplr) {
     alert("Please install keplr extension");
-    return false;
+    return KeplrErrors.NotInstall;
   }
 
 
@@ -104,10 +114,10 @@ export async function connectKeplr(): Promise<boolean> {
       }
 
     })
-    .catch((err) => {
-      console.log('Keplr Errors', err)
-      store.dispatch(fetchProvider({
+    .catch((err: Error) => {
+      console.error('Keplr Errors', err)
 
+      store.dispatch(fetchProvider({
         account: '',
         available: false,
         hardwareWallet: false,
@@ -117,10 +127,18 @@ export async function connectKeplr(): Promise<boolean> {
         smartContractWallet: false,
         internalChainId
       }))
-      return false
+
+      const message = err.message.toUpperCase()
+
+      if (message.includes(KeplrErrors.NoChainInfo)) {
+        return KeplrErrors.NoChainInfo
+        // await suggestChain().then(console.log)
+      } else if (message.includes(KeplrErrors.NoChainInfo)) {
+      }
+      return KeplrErrors.Failed
     })
 
-  return true
+  return KeplrErrors.Success
 }
 
 const processProviderResponse = (dispatch: Dispatch, provider: ProviderProps): void => {
@@ -145,6 +163,56 @@ const handleProviderNotification = (provider: ProviderProps, dispatch: Dispatch<
   } else {
     dispatch(enqueueSnackbar(enhanceSnackbarForAction(NOTIFICATIONS.UNLOCK_WALLET_MSG)))
   }
+}
+
+async function suggestChain(): Promise<void> {
+  await window['keplr']?.experimentalSuggestChain({
+    features: ['no-legacy-stdTx'],
+    chainId: "aura-testnet",
+    chainName: "aura testnet",
+    rpc: "http://18.138.28.51:26657",
+    rest: "http://18.138.28.51:1317",
+    bip44: {
+      coinType: 118,
+    },
+    bech32Config: {
+      bech32PrefixAccAddr: "aura",
+      bech32PrefixAccPub: "aura" + "pub",
+      bech32PrefixValAddr: "aura" + "valoper",
+      bech32PrefixValPub: "aura" + "valoperpub",
+      bech32PrefixConsAddr: "aura" + "valcons",
+      bech32PrefixConsPub: "aura" + "valconspub",
+    },
+    currencies: [
+      {
+        coinDenom: "AURA",
+        coinMinimalDenom: "uaura",
+        coinDecimals: 6,
+        // coinGeckoId: "aura",
+      },
+    ],
+    feeCurrencies: [
+      {
+        coinDenom: "AURA",
+        coinMinimalDenom: "uaura",
+        coinDecimals: 6,
+        // coinGeckoId: "uaura",
+      },
+    ],
+    stakeCurrency: {
+      coinDenom: "AURA",
+      coinMinimalDenom: "uaura",
+      coinDecimals: 6,
+      // coinGeckoId: "uaura",
+    },
+    coinType: 118,
+    gasPriceStep: {
+      low: 1,
+      average: 2.5,
+      high: 4
+    },
+    walletUrlForStaking: "https://aura.network"
+  });
 }
 
 function fetchProvider(providerInfo: ProviderProps): (dispatch: Dispatch<any>) => Promise<void> {
