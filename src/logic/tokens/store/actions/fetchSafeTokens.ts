@@ -108,7 +108,7 @@ export const fetchMSafeTokens =
             fiatConversion: '0',
             tokenInfo: {
               address: 'aura000000000000000000000000000000000000000',
-              decimals: 0,
+              decimals: 6,
               logoUri: '',
               name: 'Aura',
               symbol: 'Aura'
