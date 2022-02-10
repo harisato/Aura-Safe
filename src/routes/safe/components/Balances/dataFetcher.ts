@@ -72,7 +72,7 @@ export const generateColumns = (): List<TableColumn> => {
     static: true,
   }
 
-  const value: TableColumn = {
+/*   const value: TableColumn = {
     id: BALANCE_TABLE_VALUE_ID,
     align: 'right',
     order: true,
@@ -80,7 +80,7 @@ export const generateColumns = (): List<TableColumn> => {
     custom: false,
     static: true,
     disablePadding: false,
-  }
-
-  return List([assetColumn, balanceColumn, value, actions])
+   }
+*/
+  return List([assetColumn, balanceColumn, /* value, */ actions])
 }
