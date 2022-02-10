@@ -61,8 +61,7 @@ const App: React.FC = ({ children }) => {
   const safeIdFromUrl = extractSafeId()
   const { safeActionsState, onShow, onHide, showSendFunds, hideSendFunds } = useSafeActions()
   const currentCurrency = useSelector(currentCurrencySelector)
-  // const granted = useSelector(grantedSelector)
-  const granted = false
+  const granted = useSelector(grantedSelector)
   const sidebarItems = useSidebarItems()
   const dispatch = useDispatch()
   useLoadSafe(addressFromUrl, safeIdFromUrl) // load initially
