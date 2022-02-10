@@ -9,109 +9,96 @@ import Page from 'src/components/layout/Page'
 import Row from 'src/components/layout/Row'
 import { useMnemonicSafeName } from 'src/logic/hooks/useMnemonicName'
 import { boldFont, lg, secondary, sm } from 'src/theme/variables'
-import { isValidAddress } from 'src/utils/isValidAddress'
 import styled from 'styled-components'
 import GnoForm from '../../components/forms/GnoForm'
 import Button from 'src/components/layout/Button'
 import Col from 'src/components/layout/Col'
-import { ALLOW_SPECIFIC_SAFE_ROUTE, extractPrefixedSafeAddress } from '../routes'
-import { FIELD_ALLOW_SAFE_ADDRESS, LoadSafeFormValues as AllowSafeFormValues } from './fields/loadFields'
+import { ALLOW_SPECIFIC_SAFE_ROUTE, CANCEL_SPECIFIC_SAFE_ROUTE, extractPrefixedSafeAddress } from '../routes'
 import ReviewAllowStep from './steps/ReviewAllowStep'
 import Hairline from '../../components/layout/Hairline'
+import {
+  CancelSafeFormValues,
+  FIELD_CREATE_CUSTOM_SAFE_NAME,
+  FIELD_CREATE_SUGGESTED_SAFE_NAME,
+  FIELD_SAFE_THRESHOLD,
+  FIELD_SAFE_OWNERS_LIST,
+  FIELD_MAX_OWNER_NUMBER,
+  OwnerFieldItem,
+} from './fields/cancelSafeFields'
+import { getMSafeInfo } from 'src/services'
+import { OwnerFieldListItem } from './fields/loadFields'
 
 function Cancel(): ReactElement {
-  // const dispatch = useDispatch()
   const history = useHistory()
   const isStepLabelClickable = true
   const classes = useStyles({ isStepLabelClickable })
-  const { safeAddress } = extractPrefixedSafeAddress(undefined, ALLOW_SPECIFIC_SAFE_ROUTE)
+  const { safeAddress, shortName, safeId } = extractPrefixedSafeAddress(undefined, CANCEL_SPECIFIC_SAFE_ROUTE)
   const safeRandomName = useMnemonicSafeName()
-  const [initialFormValues, setInitialFormValues] = useState<AllowSafeFormValues>()
-  // const addressBook = useSelector(currentNetworkAddressBookAsMap)
-  // const chainId = useSelector(currentChainId)
+  const [initialFormValues, setInitialFormValues] = useState<CancelSafeFormValues>()
 
   useEffect(() => {
-    const initialValues: AllowSafeFormValues = JSON.parse(`{
-      "suggestedSafeName": "astonishing-rinkeby-safe",
-      "safeAddress": "0x7e2fE2302d6c02cc2d900cEc29B8f45F30a9369a",
-      "isLoadingSafeAddress": false,
-      "safeOwnerList": [
-          {
-              "address": "0x8Aaec6068610E46Ae770da1bb5E18F80d1701985",
-              "name": "",
-              "chainId": "4"
-          },
-          {
-              "address": "0x6e0Ee569FFc8982cc60B3f450e0C2E5509727212",
-              "name": "",
-              "chainId": "4"
-          }
-      ],
-      "safeThreshold": 2,
-      "owner-address-0x8Aaec6068610E46Ae770da1bb5E18F80d1701985": "",
-      "owner-address-0x6e0Ee569FFc8982cc60B3f450e0C2E5509727212": ""
-    }`)
-    // const initialValues: AllowSafeFormValues = {
-    //   [FIELD_ALLOW_SUGGESTED_SAFE_NAME]: safeRandomName,
-    //   [FIELD_ALLOW_SAFE_ADDRESS]: safeAddress,
-    //   [FIELD_ALLOW_IS_LOADING_SAFE_ADDRESS]: false,
-    //   [FIELD_SAFE_OWNER_LIST]: [],
-    // }
+    // const initialValues: CancelSafeFormValues = JSON.parse(`{
+    //   "suggestedSafeName": "astonishing-rinkeby-safe",
+    //   "safeAddress": "0x7e2fE2302d6c02cc2d900cEc29B8f45F30a9369a",
+    //   "isLoadingSafeAddress": false,
+    //   "safeOwnerList": [
+    //       {
+    //           "address": "0x8Aaec6068610E46Ae770da1bb5E18F80d1701985",
+    //           "name": "",
+    //           "chainId": "4"
+    //       },
+    //       {
+    //           "address": "0x6e0Ee569FFc8982cc60B3f450e0C2E5509727212",
+    //           "name": "",
+    //           "chainId": "4"
+    //       }
+    //   ],
+    //   "safeThreshold": 2,
+    //   "owner-address-0x8Aaec6068610E46Ae770da1bb5E18F80d1701985": "",
+    //   "owner-address-0x6e0Ee569FFc8982cc60B3f450e0C2E5509727212": ""
+    // }`)
 
-    setInitialFormValues(initialValues)
-  }, [safeAddress, safeRandomName])
+    // setInitialFormValues(initialValues)
 
-  // const updateAddressBook = (values: AllowSafeFormValues) => {
-  //   const ownerList = values[FIELD_SAFE_OWNER_LIST] as AddressBookEntry[]
+    const checkSafeAddress = async () => {
+      if (!safeId) {
+        return
+      }
 
-  //   const ownerEntries = ownerList
-  //     .map((owner) => {
-  //       const ownerFieldName = `owner-address-${owner.address}`
-  //       const ownerNameValue = values[ownerFieldName]
-  //       return {
-  //         ...owner,
-  //         name: ownerNameValue,
-  //       }
-  //     })
-  //     .filter((owner) => !!owner.name)
+      const initialValues: CancelSafeFormValues = {
+        [FIELD_CREATE_SUGGESTED_SAFE_NAME]: '',
+        [FIELD_CREATE_CUSTOM_SAFE_NAME]: '',
+        [FIELD_SAFE_OWNERS_LIST]: [],
+        [FIELD_SAFE_THRESHOLD]: 0,
+        [FIELD_MAX_OWNER_NUMBER]: 0,
+      }
 
-  //   const safeEntry = makeAddressBookEntry({
-  //     address: checksumAddress(values[FIELD_ALLOW_SAFE_ADDRESS] || ''),
-  //     name: getLoadSafeName(values, addressBook),
-  //     chainId,
-  //   })
+      try {
+        const { owners, threshold } = await getMSafeInfo(safeId)
 
-  //   dispatch(addressBookSafeLoad([...ownerEntries, safeEntry]))
-  // }
+        
+        
+        const ownerList: Array<OwnerFieldItem> = owners.map((address) => ({
+          address: address,
+          name: '',
+        }))
+        console.log(ownerList);
 
-  const onSubmitCancelSafe = async (values: AllowSafeFormValues): Promise<void> => {
-    console.log('onSubmitCancelSafe values:', values)
+        initialValues[FIELD_SAFE_OWNERS_LIST] = [...ownerList]
+        initialValues[FIELD_SAFE_THRESHOLD] = threshold
+        initialValues[FIELD_MAX_OWNER_NUMBER] = ownerList.length
 
-    const address = values[FIELD_ALLOW_SAFE_ADDRESS]
-    if (!isValidAddress(address)) {
-      return
+        setInitialFormValues(initialValues)
+      } catch (error) {}
     }
 
-    // updateAddressBook(values)
+    checkSafeAddress()
+  }, [safeAddress, safeRandomName, safeId])
 
-    // const checksummedAddress = checksumAddress(address || '')
-    // const safeProps = await buildSafe(checksummedAddress)
-    // const storedSafes = loadStoredSafes() || {}
-    // storedSafes[checksummedAddress] = safeProps
-
-    // saveSafes(storedSafes)
-    // dispatch(addOrUpdateSafe(safeProps))
-
-    // // Go to the newly added Safe
-    // history.push(
-    //   generateSafeRoute(SAFE_ROUTES.ASSETS_BALANCES, {
-    //     shortName: getShortName(),
-    //     safeAddress: checksummedAddress,
-    //   }),
-    // )
+  const onSubmitCancelSafe = async (values: CancelSafeFormValues): Promise<void> => {
+    console.log('onSubmitCancelSafe values:', values)
   }
 
-  const onClickPreviousStep = () => {}
   const backButtonLabel = 'Back'
   const nextButtonLabel = 'Cancel Safe'
 
@@ -126,7 +113,6 @@ function Cancel(): ReactElement {
         </Row>
 
         <GnoForm initialValues={initialFormValues} onSubmit={onSubmitCancelSafe}>
-          {/* <ReviewAllowStep /> */}
           {() => {
             return (
               <Paper elevation={1} className={classes.root}>
@@ -135,7 +121,7 @@ function Cancel(): ReactElement {
                 <Hairline />
                 <Row align="center" grow className={classes.controlStyle}>
                   <Col center="xs" xs={12}>
-                    <Button onClick={onClickPreviousStep} size="small" className={classes.backButton} type="button">
+                    <Button onClick={history.goBack} size="small" className={classes.backButton} type="button">
                       {backButtonLabel}
                     </Button>
                     <Button
@@ -144,7 +130,6 @@ function Cancel(): ReactElement {
                       size="small"
                       className={classes.nextButton}
                       variant="contained"
-                      disabled
                     >
                       {nextButtonLabel}
                     </Button>

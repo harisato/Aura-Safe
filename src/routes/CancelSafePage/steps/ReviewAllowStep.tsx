@@ -55,6 +55,8 @@ function ReviewAllowStep(): ReactElement {
 
   const safeName = getLoadSafeName(formValues, addressBook)
 
+  console.log('formValues', formValues)
+
   const safeAddress = formValues[FIELD_ALLOW_SAFE_ADDRESS] || ''
   const threshold = formValues[FIELD_SAFE_THRESHOLD]
   const ownerList = formValues[FIELD_SAFE_OWNER_LIST] || []
