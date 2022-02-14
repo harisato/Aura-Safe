@@ -7,7 +7,23 @@ If you are familliar with [Gnosis-safe](https://gnosis-safe.io/) for Ethereum, w
 ## How to use
 Aura-Safe is still in development, you can check out the latest deployed Dev version in the Deployed environment section.
 
+1. Clone the repository
+```bash
+git clone https://github.com/aura-nw/safe-react
+```
+2. Enter to project folder
+```bash
+cd multisig-api
+```
+3. Install Dependencies
+```bash
+yarn install
+```
+5. Add test-net to Keplr
 To use Aura-Safe with Keplr, please follow the instruction [here](https://github.com/aura-nw/safe-react/blob/dev/CONNECT_KEPLR.md) to add Aura test-net to Keplr
+
+## Setup for developments
+Aura-safe use Nodejs, please make sure installed it.
 
 ## Related repos
 
