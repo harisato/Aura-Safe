@@ -7,23 +7,26 @@ If you are familliar with [Gnosis-safe](https://gnosis-safe.io/) for Ethereum, w
 ## How to use
 Aura-Safe is still in development, you can check out the latest deployed Dev version in the Deployed environment section.
 
-1. Clone the repository
+#### Prerequisites
+We use [yarn](https://yarnpkg.com/) in our infrastructure, so we decided to go with yarn in the README. Please install yarn globally if you haven't already.
+
+### 1. Clone the repository
 ```bash
 git clone https://github.com/aura-nw/safe-react
 ```
-2. Enter to project folder
+### 2. Enter to project folder
 ```bash
 cd safe-react
 ```
-3. Install Dependencies
+### 3. Install Dependencies
 ```bash
 yarn install
 ```
-4. Run app
+### 4. Run app
 ```bash
 npm start
  ```
-5. Add test-net to Keplr <br>
+### 5. Add test-net to Keplr
 After the app is started, open browser's dev tool by press F12 button or right click then choose Inspect, then click on Console tab and follow the instruction [here](https://github.com/aura-nw/safe-react/blob/dev/CONNECT_KEPLR.md) to add Aura test-net to Keplr
 
 ## Setup for developments
