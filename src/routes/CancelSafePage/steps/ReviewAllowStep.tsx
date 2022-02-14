@@ -15,14 +15,13 @@ import Hairline from 'src/components/layout/Hairline'
 import PrefixedEthHashInfo from 'src/components/PrefixedEthHashInfo'
 import {
   FIELD_ALLOW_SAFE_ADDRESS,
-  FIELD_SAFE_OWNER_LIST,
   FIELD_SAFE_THRESHOLD,
   LoadSafeFormValues,
   OwnerFieldListItem,
 } from '../fields/loadFields'
-import { getLoadSafeName } from '../fields/utils'
 import NetworkLabel from 'src/components/NetworkLabel/NetworkLabel'
 import { currentNetworkAddressBookAsMap } from 'src/logic/addressBook/store/selectors'
+import { FIELD_SAFE_OWNERS_LIST } from '../fields/cancelSafeFields'
 
 export const reviewLoadStepLabel = 'Review'
 
@@ -32,34 +31,10 @@ function ReviewAllowStep(): ReactElement {
   const addressBook = useSelector(currentNetworkAddressBookAsMap)
 
   const formValues = loadSafeForm.getState().values as LoadSafeFormValues
-  // const formValues: LoadSafeFormValues= JSON.parse(`{
-  //   "suggestedSafeName": "astonishing-rinkeby-safe",
-  //   "safeAddress": "0x7e2fE2302d6c02cc2d900cEc29B8f45F30a9369a",
-  //   "isLoadingSafeAddress": false,
-  //   "safeOwnerList": [
-  //       {
-  //           "address": "0x8Aaec6068610E46Ae770da1bb5E18F80d1701985",
-  //           "name": "",
-  //           "chainId": "4"
-  //       },
-  //       {
-  //           "address": "0x6e0Ee569FFc8982cc60B3f450e0C2E5509727212",
-  //           "name": "",
-  //           "chainId": "4"
-  //       }
-  //   ],
-  //   "safeThreshold": 2,
-  //   "owner-address-0x8Aaec6068610E46Ae770da1bb5E18F80d1701985": "",
-  //   "owner-address-0x6e0Ee569FFc8982cc60B3f450e0C2E5509727212": ""
-  // }`)
-
-  const safeName = getLoadSafeName(formValues, addressBook)
-
-  console.log('formValues', formValues)
 
   const safeAddress = formValues[FIELD_ALLOW_SAFE_ADDRESS] || ''
   const threshold = formValues[FIELD_SAFE_THRESHOLD]
-  const ownerList = formValues[FIELD_SAFE_OWNER_LIST] || []
+  const ownerList = formValues[FIELD_SAFE_OWNERS_LIST] || []
 
   const ownerListWithNames = ownerList?.map((owner) => {
     const ownerFieldName = `owner-address-${owner.address}`
@@ -89,14 +64,6 @@ function ReviewAllowStep(): ReactElement {
             <StyledParagraph color="disabled" noMargin size="sm" data-testid="load-form-review-safe-network">
               <NetworkLabel />
             </StyledParagraph>
-          </Block>
-          <Block margin="lg">
-            <Paragraph color="disabled" noMargin size="sm">
-              Name of the Safe
-            </Paragraph>
-            <Paragraph color="primary" noMargin size="lg" weight="bolder" data-testid="load-form-review-safe-name">
-              {safeName}
-            </Paragraph>
           </Block>
           {safeAddress ? (
             <Block margin="lg">

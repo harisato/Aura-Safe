@@ -14,7 +14,6 @@ export interface ISafeCreate {
   internalChainId: number
 }
 export interface ISafeCancel {
-  safeId: string,
   myAddress: string
 }
 export interface ISafeAllow {
@@ -118,14 +117,13 @@ export function createMSafe(safes: ISafeCreate): Promise<IResponse<IMSafeRespons
 }
 
 
-export function cancelMSafe({ safeId, myAddress }: ISafeCancel): Promise<OwnedMSafes> {
-  return axios.delete(`${baseUrl}/multisigwallet`, {
-    params: { safeId },
-    data: { myAddress }
+export async function cancelMSafe(safeId: number, payload: ISafeCancel): Promise<IResponse<any>> {
+  return axios.delete(`${baseUrl}/multisigwallet/${safeId}`, {
+    data: payload
   }).then(res => res.data)
 }
 
-export function getMSafeInfo(safeId: number): Promise<IMSafeInfo> {
+export async function getMSafeInfo(safeId: number): Promise<IMSafeInfo> {
   return axios.get(`${baseUrl}/multisigwallet/${safeId}`).then(res => res.data.Data)
 }
 

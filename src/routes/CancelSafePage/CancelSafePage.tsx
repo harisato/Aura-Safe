@@ -13,7 +13,7 @@ import styled from 'styled-components'
 import GnoForm from '../../components/forms/GnoForm'
 import Button from 'src/components/layout/Button'
 import Col from 'src/components/layout/Col'
-import { ALLOW_SPECIFIC_SAFE_ROUTE, CANCEL_SPECIFIC_SAFE_ROUTE, extractPrefixedSafeAddress } from '../routes'
+import { CANCEL_SPECIFIC_SAFE_ROUTE, extractPrefixedSafeAddress, ROOT_ROUTE } from '../routes'
 import ReviewAllowStep from './steps/ReviewAllowStep'
 import Hairline from '../../components/layout/Hairline'
 import {
@@ -22,43 +22,27 @@ import {
   FIELD_CREATE_SUGGESTED_SAFE_NAME,
   FIELD_SAFE_THRESHOLD,
   FIELD_SAFE_OWNERS_LIST,
-  FIELD_MAX_OWNER_NUMBER,
   OwnerFieldItem,
 } from './fields/cancelSafeFields'
-import { getMSafeInfo } from 'src/services'
-import { OwnerFieldListItem } from './fields/loadFields'
+import { cancelMSafe, getMSafeInfo, ISafeCancel } from 'src/services'
+import { useDispatch, useSelector } from 'react-redux'
+import { userAccountSelector } from 'src/logic/wallets/store/selectors'
+import enqueueSnackbar from 'src/logic/notifications/store/actions/enqueueSnackbar'
+import { enhanceSnackbarForAction, ERROR, SUCCESS } from 'src/logic/notifications'
+import { MESSAGES_CODE } from 'src/services/constant/message'
 
 function Cancel(): ReactElement {
   const history = useHistory()
+  const dispatch = useDispatch()
   const isStepLabelClickable = true
   const classes = useStyles({ isStepLabelClickable })
-  const { safeAddress, shortName, safeId } = extractPrefixedSafeAddress(undefined, CANCEL_SPECIFIC_SAFE_ROUTE)
+  const { safeAddress, safeId } = extractPrefixedSafeAddress(undefined, CANCEL_SPECIFIC_SAFE_ROUTE)
   const safeRandomName = useMnemonicSafeName()
+  const myAddress = useSelector(userAccountSelector)
+
   const [initialFormValues, setInitialFormValues] = useState<CancelSafeFormValues>()
 
   useEffect(() => {
-    // const initialValues: CancelSafeFormValues = JSON.parse(`{
-    //   "suggestedSafeName": "astonishing-rinkeby-safe",
-    //   "safeAddress": "0x7e2fE2302d6c02cc2d900cEc29B8f45F30a9369a",
-    //   "isLoadingSafeAddress": false,
-    //   "safeOwnerList": [
-    //       {
-    //           "address": "0x8Aaec6068610E46Ae770da1bb5E18F80d1701985",
-    //           "name": "",
-    //           "chainId": "4"
-    //       },
-    //       {
-    //           "address": "0x6e0Ee569FFc8982cc60B3f450e0C2E5509727212",
-    //           "name": "",
-    //           "chainId": "4"
-    //       }
-    //   ],
-    //   "safeThreshold": 2,
-    //   "owner-address-0x8Aaec6068610E46Ae770da1bb5E18F80d1701985": "",
-    //   "owner-address-0x6e0Ee569FFc8982cc60B3f450e0C2E5509727212": ""
-    // }`)
-
-    // setInitialFormValues(initialValues)
 
     const checkSafeAddress = async () => {
       if (!safeId) {
@@ -70,23 +54,18 @@ function Cancel(): ReactElement {
         [FIELD_CREATE_CUSTOM_SAFE_NAME]: '',
         [FIELD_SAFE_OWNERS_LIST]: [],
         [FIELD_SAFE_THRESHOLD]: 0,
-        [FIELD_MAX_OWNER_NUMBER]: 0,
       }
 
       try {
         const { owners, threshold } = await getMSafeInfo(safeId)
 
-        
-        
         const ownerList: Array<OwnerFieldItem> = owners.map((address) => ({
           address: address,
           name: '',
         }))
-        console.log(ownerList);
 
         initialValues[FIELD_SAFE_OWNERS_LIST] = [...ownerList]
         initialValues[FIELD_SAFE_THRESHOLD] = threshold
-        initialValues[FIELD_MAX_OWNER_NUMBER] = ownerList.length
 
         setInitialFormValues(initialValues)
       } catch (error) {}
@@ -96,7 +75,37 @@ function Cancel(): ReactElement {
   }, [safeAddress, safeRandomName, safeId])
 
   const onSubmitCancelSafe = async (values: CancelSafeFormValues): Promise<void> => {
-    console.log('onSubmitCancelSafe values:', values)
+    if (!safeId) {
+      return
+    }
+
+    const cancelSafePayload: ISafeCancel = {
+      myAddress,
+    }
+
+    const { ErrorCode, Message } = await cancelMSafe(safeId, cancelSafePayload)
+
+    if (ErrorCode === MESSAGES_CODE.SUCCESSFUL.ErrorCode) {
+      dispatch(
+        enqueueSnackbar(
+          enhanceSnackbarForAction({
+            message: Message,
+            options: { variant: SUCCESS, persist: false, autoHideDuration: 5000 },
+          }),
+        ),
+      )
+
+      history.push(ROOT_ROUTE)
+    } else {
+      dispatch(
+        enqueueSnackbar(
+          enhanceSnackbarForAction({
+            message: Message,
+            options: { variant: ERROR, persist: false, autoHideDuration: 5000 },
+          }),
+        ),
+      )
+    }
   }
 
   const backButtonLabel = 'Back'
