@@ -12,9 +12,6 @@ import Field from 'src/components/forms/Field'
 import TextField from 'src/components/forms/TextField'
 import AddressInput from 'src/components/forms/AddressInput'
 import { ScanQRWrapper } from 'src/components/ScanQRModal/ScanQRWrapper'
-import { isValidAddress } from 'src/utils/isValidAddress'
-import { isChecksumAddress } from 'src/utils/checksumAddress'
-import { getSafeInfo } from 'src/logic/safe/utils/safeInformation'
 import { lg, secondary } from 'src/theme/variables'
 import { AddressBookEntry, makeAddressBookEntry } from 'src/logic/addressBook/model/addressBook'
 import { currentNetworkAddressBookAsMap } from 'src/logic/addressBook/store/selectors'
@@ -31,7 +28,8 @@ import NetworkLabel from 'src/components/NetworkLabel/NetworkLabel'
 import { getLoadSafeName } from '../fields/utils'
 import { currentChainId } from 'src/logic/config/store/selectors'
 
-import { getMSafeInfo } from 'src/services'
+import { getMSafeInfo, getMSafeInfoWithAdress } from 'src/services'
+import { getInternalChainId } from 'src/config'
 
 export const loadSafeAddressStepLabel = 'Name and address'
 
@@ -40,7 +38,9 @@ function LoadSafeAddressStep(): ReactElement {
   const [threshold, setThreshold] = useState<number>()
   const [isValidSafeAddress, setIsValidSafeAddress] = useState<boolean>(false)
   const [isSafeInfoLoading, setIsSafeInfoLoading] = useState<boolean>(false)
+  const [safeId, setSafeId] = useState<number>()
   const chainId = useSelector(currentChainId)
+  const internalChainId = getInternalChainId()
 
   const loadSafeForm = useForm()
   const addressBook = useSelector(currentNetworkAddressBookAsMap)
@@ -58,15 +58,18 @@ function LoadSafeAddressStep(): ReactElement {
 
   useEffect(() => {
     const checkSafeAddress = async () => {
-      const safeId = loadSafeForm.getState().values[FIELD_LOAD_SAFE_ID]
+      const _safeId = loadSafeForm.getState().values[FIELD_LOAD_SAFE_ID]
 
-      if (!safeId) {
+      if (!_safeId && !safeAddress) {
         return
       }
 
       setIsSafeInfoLoading(true)
+
       try {
-        const { owners, threshold } = await getMSafeInfo(safeId)
+        const { owners, threshold, id} = _safeId
+          ? await getMSafeInfo(_safeId)
+          : await getMSafeInfoWithAdress(safeAddress, Number(internalChainId))
 
         // const { owners, threshold } = await getSafeInfo(safeAddress)
         setIsSafeInfoLoading(false)
@@ -76,16 +79,24 @@ function LoadSafeAddressStep(): ReactElement {
         setOwnersWithName(ownersWithName)
         setThreshold(threshold)
         setIsValidSafeAddress(true)
+        setSafeId(id)
       } catch (error) {
         setOwnersWithName([])
         setThreshold(undefined)
         setIsValidSafeAddress(false)
+        setSafeId(undefined)
       }
       setIsSafeInfoLoading(false)
     }
 
     checkSafeAddress()
   }, [safeAddress, addressBook, chainId])
+
+  useEffect(() => {
+    if (safeId) {
+      loadSafeForm.change(FIELD_LOAD_SAFE_ID, safeId)
+    }
+  }, [safeId, loadSafeForm])
 
   useEffect(() => {
     if (threshold) {
@@ -219,6 +230,9 @@ export const loadSafeAddressStepValidations = (values: {
 
   // check that the address is actually a Safe (must have owners)
   const ownerList = values[FIELD_SAFE_OWNER_LIST]
+
+  console.log('ownerList', ownerList);
+  
   const isValidSafeAddress = ownerList.length > 0 /* && isValidAddress(safeAddress) */
   if (!isValidSafeAddress) {
     errors = {

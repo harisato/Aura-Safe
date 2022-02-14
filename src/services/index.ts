@@ -127,6 +127,14 @@ export async function getMSafeInfo(safeId: number): Promise<IMSafeInfo> {
   return axios.get(`${baseUrl}/multisigwallet/${safeId}`).then(res => res.data.Data)
 }
 
+export async function getMSafeInfoWithAdress(query: string, internalChainId: number): Promise<IMSafeInfo> {
+  return axios.get(`${baseUrl}/multisigwallet/${query}`, {
+    params: {
+      internalChainId
+    }
+  }).then(res => res.data.Data)
+}
+
 export async function allowMSafe(safeId: number, walletKey: WalletKey): Promise<IResponse<IMSafeResponse>> {
   return axios.post(`${baseUrl}/multisigwallet/${safeId}`, walletKey).then(res => res.data)
 }
