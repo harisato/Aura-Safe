@@ -57,6 +57,8 @@ export type SendCollectibleTxInfo = {
   nftTokenId: string
   recipientAddress?: string
   recipientName?: string
+  amount?: string
+  gasLimit?: string
 }
 
 const SendCollectible = ({

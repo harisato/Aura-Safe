@@ -11,6 +11,8 @@ import { ReviewTxProp } from './screens/ReviewSendFundsTx'
 import { NFTToken } from 'src/logic/collectibles/sources/collectibles.d'
 import { SendCollectibleTxInfo } from './screens/SendCollectible'
 import { Erc721Transfer } from '@gnosis.pm/safe-react-gateway-sdk'
+import { createTransaction } from 'src/logic/safe/store/actions/createTransaction'
+import { createSafeTransaction } from 'src/services'
 
 const ChooseTxType = lazy(() => import('./screens/ChooseTxType'))
 
@@ -84,9 +86,11 @@ const SendModal = ({
     setRecipient(recipientAddress)
   }, [activeScreenType, isOpen, recipientAddress])
 
-  const handleTxCreation = (txInfo: SendCollectibleTxInfo) => {
+  const handleTxCreation = async (txInfo: SendCollectibleTxInfo) => {
     setActiveScreen('sendFundsReviewTx')
     setTx(txInfo)
+    // call api to create transaction
+    const { ErrorCode, Data: safeData, Message } = await createSafeTransaction(txInfo);
   }
 
   const handleContractInteractionCreation = (contractInteractionInfo: any, submit: boolean): void => {

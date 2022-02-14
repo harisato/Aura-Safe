@@ -1,6 +1,8 @@
 import { ChainInfo } from "@gnosis.pm/safe-react-gateway-sdk";
 import axios from "axios";
 import { WalletKey } from "src/logic/keplr/keplr";
+import { SendCollectibleTxInfo } from "src/routes/safe/components/Balances/SendModal/screens/SendCollectible";
+import { ITransactionInfoResponse } from "src/types/transaction";
 import { IMSafeInfo, IMSafeResponse, OwnedMSafes } from "../types/safe";
 import { MSAFE_GATEWAY_URL } from "../utils/constants";
 
@@ -131,4 +133,8 @@ export function getMSafeInfo(safeId: number): Promise<IMSafeInfo> {
 
 export async function allowMSafe(safeId: number, walletKey: WalletKey): Promise<IResponse<IMSafeResponse>> {
   return axios.post(`${baseUrl}/multisigwallet/${safeId}`, walletKey).then(res => res.data)
+}
+
+export function createSafeTransaction(transactionInfo: SendCollectibleTxInfo): Promise<IResponse<ITransactionInfoResponse>> {
+  return axios.post(`${baseUrl}/transaction/create`, {from: transactionInfo.assetAddress, to: transactionInfo.recipientAddress, amount: transactionInfo.amount, gasLimit: transactionInfo.gasLimit, interalChainId: transactionInfo.nftTokenId }).then(res => res.data);
 }
