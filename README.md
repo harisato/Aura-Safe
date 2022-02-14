@@ -24,7 +24,7 @@ yarn install
 npm start
  ```
 5. Add test-net to Keplr <br>
-To use Aura-Safe with Keplr, please follow the instruction [here](https://github.com/aura-nw/safe-react/blob/dev/CONNECT_KEPLR.md) to add Aura test-net to Keplr
+After the app is started, open browser's dev tool by press F12 button or right click then choose Inspect, then click on Console tab and follow the instruction [here](https://github.com/aura-nw/safe-react/blob/dev/CONNECT_KEPLR.md) to add Aura test-net to Keplr
 
 ## Setup for developments
 Aura-safe use Nodejs, please make sure installed it.
