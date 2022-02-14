@@ -13,7 +13,7 @@ git clone https://github.com/aura-nw/safe-react
 ```
 2. Enter to project folder
 ```bash
-cd multisig-api
+cd safe-react
 ```
 3. Install Dependencies
 ```bash
