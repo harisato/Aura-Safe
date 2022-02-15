@@ -18,7 +18,7 @@ export type WalletKey = {
 }
 
 export enum KeplrErrors {
-  Success = '',
+  Success = 'OK',
   Failed = 'FAILED',
   NoChainInfo = 'THERE IS NO CHAIN INFO FOR',
   SameChain = 'SAME CHAIN IS ALREADY REGISTERED',
@@ -77,46 +77,52 @@ export async function connectKeplr(): Promise<KeplrErrors> {
     return KeplrErrors.NotInstall;
   }
 
+  let error = KeplrErrors.Success
 
-  await keplr
-    ?.enable(chainId)
-    .then((e) => {
-      return keplr.getKey(chainId)
-    })
-    .then((key) => {
-      let providerInfo: ProviderProps;
 
-      if (!key) {
-        providerInfo = {
-          account: '',
-          available: false,
-          hardwareWallet: false,
-          loaded: false,
-          name: '',
-          network: '',
-          smartContractWallet: false,
-          internalChainId
+  try {
+    await keplr.enable(chainId)
+      .then(e => keplr.getKey(chainId))
+      .then(key => {
+        let providerInfo: ProviderProps;
+        if (!key) {
+          providerInfo = {
+            account: '',
+            available: false,
+            hardwareWallet: false,
+            loaded: false,
+            name: '',
+            network: '',
+            smartContractWallet: false,
+            internalChainId
+          }
+        } else {
+          providerInfo = {
+            account: key.bech32Address,
+            available: true,
+            hardwareWallet: false,
+            loaded: true,
+            name: 'Keplr',
+            network: chainInfo.chainId,
+            smartContractWallet: false,
+            internalChainId
+          }
+
+          store.dispatch(fetchProvider(providerInfo))
+          saveToStorage(LAST_USED_PROVIDER_KEY, providerInfo.name)
         }
-      } else {
-        providerInfo = {
-          account: key.bech32Address,
-          available: true,
-          hardwareWallet: false,
-          loaded: true,
-          name: 'Keplr',
-          network: chainInfo.chainId,
-          smartContractWallet: false,
-          internalChainId
-        }
+      });
 
-        store.dispatch(fetchProvider(providerInfo))
-        saveToStorage(LAST_USED_PROVIDER_KEY, providerInfo.name)
-      }
+  } catch (e) {
+    const message = e.message.toUpperCase()
 
-    })
-    .catch((err: Error) => {
-      console.error('Keplr Errors', err)
+    console.log('message', message)
 
+    if (message.includes(KeplrErrors.NoChainInfo)) {
+      // suggestChain()
+      error = KeplrErrors.NoChainInfo
+    } else {
+      error = KeplrErrors.Failed
       store.dispatch(fetchProvider({
         account: '',
         available: false,
@@ -127,23 +133,73 @@ export async function connectKeplr(): Promise<KeplrErrors> {
         smartContractWallet: false,
         internalChainId
       }))
+    }
 
-      const message = err.message.toUpperCase()
+  }
 
-      if (message.includes(KeplrErrors.NoChainInfo)) {
-        return KeplrErrors.NoChainInfo
-        // await suggestChain().then(console.log)
-      } else if (message.includes(KeplrErrors.NoChainInfo)) {
-      }
-      return KeplrErrors.Failed
-    })
+  // await keplr
+  //   ?.enable(chainId)
+  //   .then((e) => {
+  //     return keplr.getKey(chainId)
+  //   })
+  //   .then((key) => {
+  //     let providerInfo: ProviderProps;
 
-  return KeplrErrors.Success
+  //     if (!key) {
+  //       providerInfo = {
+  //         account: '',
+  //         available: false,
+  //         hardwareWallet: false,
+  //         loaded: false,
+  //         name: '',
+  //         network: '',
+  //         smartContractWallet: false,
+  //         internalChainId
+  //       }
+  //     } else {
+  //       providerInfo = {
+  //         account: key.bech32Address,
+  //         available: true,
+  //         hardwareWallet: false,
+  //         loaded: true,
+  //         name: 'Keplr',
+  //         network: chainInfo.chainId,
+  //         smartContractWallet: false,
+  //         internalChainId
+  //       }
+
+  //       store.dispatch(fetchProvider(providerInfo))
+  //       saveToStorage(LAST_USED_PROVIDER_KEY, providerInfo.name)
+  //     }
+
+  //   })
+  //   .catch((err: Error) => {
+  //     store.dispatch(fetchProvider({
+  //       account: '',
+  //       available: false,
+  //       hardwareWallet: false,
+  //       loaded: false,
+  //       name: '',
+  //       network: '',
+  //       smartContractWallet: false,
+  //       internalChainId
+  //     }))
+
+  //     const message = err.message.toUpperCase()
+
+  //     if (message.includes(KeplrErrors.NoChainInfo)) {
+  //       error = KeplrErrors.NoChainInfo
+  //     } else if (message.includes(KeplrErrors.RequestRejected)) {
+  //       error = KeplrErrors.RequestRejected
+  //     } else { error = KeplrErrors.Failed }
+  //   })
+
+  return error
 }
+
 
 const processProviderResponse = (dispatch: Dispatch, provider: ProviderProps): void => {
   const walletRecord = makeProvider(provider)
-  console.log(addProvider(walletRecord))
   dispatch(addProvider(walletRecord))
 }
 
@@ -165,7 +221,7 @@ const handleProviderNotification = (provider: ProviderProps, dispatch: Dispatch<
   }
 }
 
-async function suggestChain(): Promise<void> {
+export async function suggestChain(): Promise<any> {
   await window['keplr']?.experimentalSuggestChain({
     features: ['no-legacy-stdTx'],
     chainId: "aura-testnet",

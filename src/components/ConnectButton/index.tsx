@@ -1,10 +1,13 @@
 import { ReactElement } from 'react'
 import Button from 'src/components/layout/Button'
 import { _getChainId } from 'src/config'
+import { enhanceSnackbarForAction, NOTIFICATIONS } from 'src/logic/notifications'
+import enqueueSnackbar from 'src/logic/notifications/store/actions/enqueueSnackbar'
 import { getWeb3 } from 'src/logic/wallets/getWeb3'
 import onboard from 'src/logic/wallets/onboard'
 import { shouldSwitchNetwork, switchNetwork } from 'src/logic/wallets/utils/network'
-import { connectKeplr } from '../../logic/keplr/keplr'
+import { store } from 'src/store'
+import { connectKeplr, KeplrErrors, suggestChain } from '../../logic/keplr/keplr'
 
 const checkWallet = async (): Promise<boolean> => {
   if (shouldSwitchNetwork()) {
@@ -24,14 +27,17 @@ export const onboardUser = async (): Promise<boolean> => {
 }
 
 export const onConnectButtonClick = async (): Promise<void> => {
-  // const walletSelected = await onboard().walletSelect()
-
-  // // perform wallet checks only if user selected a wallet
-  // if (walletSelected) {
-  //   await checkWallet()
-  // }
-
-  connectKeplr()
+  await connectKeplr()
+    .then((status) => {
+      console.log('status', status)
+      if (status === KeplrErrors.NoChainInfo) {
+        return suggestChain()
+      }
+    })
+    .then((e) => connectKeplr())
+    .catch((error) => {
+      store.dispatch(enqueueSnackbar(enhanceSnackbarForAction(NOTIFICATIONS.CONNECT_WALLET_ERROR_MSG)))
+    })
 }
 
 const ConnectButton = (props: { 'data-testid': string }): ReactElement => (
