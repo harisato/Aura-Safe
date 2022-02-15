@@ -36,7 +36,7 @@ function Welcome(): ReactElement {
               </Button>
             </CardContentContainer>
             <Divider orientation="vertical" flexItem />
-            {/* <CardContentContainer>
+            <CardContentContainer>
               
               <Title size="sm" strong withoutMargin>
                 Load Existing Safe
@@ -60,7 +60,7 @@ function Welcome(): ReactElement {
                   Add existing Safe
                 </StyledButtonLabel>
               </Button>
-            </CardContentContainer> */}
+            </CardContentContainer>
           </StyledCard>
         </CardsContainer>
       </Block>
@@ -73,7 +73,7 @@ export default Welcome
 const CardsContainer = styled.div`
   display: flex;
   height: 300px;
-  max-width: 450px;
+  max-width: 850px;
 `
 
 const StyledCard = styled(Card)`
