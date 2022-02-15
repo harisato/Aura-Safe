@@ -66,23 +66,23 @@ const useTxData = (
 ): string => {
   const [data, setData] = useState('')
 
-  useEffect(() => {
-    const updateTxDataAsync = async () => {
-      if (!txToken) {
-        return
-      }
+  // useEffect(() => {
+  //   const updateTxDataAsync = async () => {
+  //     if (!txToken) {
+  //       return
+  //     }
 
-      let txData = EMPTY_DATA
-      if (!isSendingNativeToken) {
-        const ERC20TokenInstance = getERC20TokenContract(txToken.address)
-        const erc20TransferAmount = toTokenUnit(txAmount, txToken.decimals)
-        txData = ERC20TokenInstance.methods.transfer(recipientAddress, erc20TransferAmount).encodeABI()
-      }
-      setData(txData)
-    }
+  //     let txData = EMPTY_DATA
+  //     if (!isSendingNativeToken) {
+  //       const ERC20TokenInstance = getERC20TokenContract(txToken.address)
+  //       const erc20TransferAmount = toTokenUnit(txAmount, txToken.decimals)
+  //       txData = ERC20TokenInstance.methods.transfer(recipientAddress, erc20TransferAmount).encodeABI()
+  //     }
+  //     setData(txData)
+  //   }
 
-    updateTxDataAsync()
-  }, [isSendingNativeToken, recipientAddress, txAmount, txToken])
+  //   updateTxDataAsync()
+  // }, [isSendingNativeToken, recipientAddress, txAmount, txToken])
 
   return data
 }
