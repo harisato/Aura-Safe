@@ -10,7 +10,8 @@ export interface ITransactionInfoResponse {
 export interface ICreateSafeTransaction {
     from: string,
     to: string,
-    amount: number,
-    gasLimit: number,
-    internalChainId: number
+    amount: string,
+    gasLimit: string,
+    internalChainId: number,
+    fee: number
 }

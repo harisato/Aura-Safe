@@ -57,16 +57,16 @@ export const useTransactionParameters = (props?: Props): TxParameters => {
   const [ethGasPriceInGWei, setEthGasPriceInGWei] = useState<string | undefined>() // get fast gas price
 
   // Get nonce for connected wallet
-  useEffect(() => {
-    const getNonce = async () => {
-      const res = await getUserNonce(connectedWalletAddress)
-      setEthNonce(res.toString())
-    }
+  // useEffect(() => {
+  //   const getNonce = async () => {
+  //     const res = await getUserNonce(connectedWalletAddress)
+  //     setEthNonce(res.toString())
+  //   }
 
-    if (connectedWalletAddress) {
-      getNonce()
-    }
-  }, [connectedWalletAddress])
+  //   if (connectedWalletAddress) {
+  //     getNonce()
+  //   }
+  // }, [connectedWalletAddress])
 
   // Get ETH gas price
   useEffect(() => {

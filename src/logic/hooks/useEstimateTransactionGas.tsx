@@ -128,7 +128,8 @@ export const useEstimateTransactionGas = ({
   manualGasLimit,
 }: UseEstimateTransactionGasProps): TransactionGasEstimationResult => {
   const [gasEstimation, setGasEstimation] = useState<TransactionGasEstimationResult>(
-    getDefaultGasEstimation(EstimationStatus.LOADING, '0', '0'),
+    // getDefaultGasEstimation(EstimationStatus.LOADING, '0', '0'),
+    getDefaultGasEstimation(EstimationStatus.SUCCESS, '0', '0'),
   )
   const nativeCurrency = getNativeCurrency()
   const { address: safeAddress = '', threshold = 1, currentVersion: safeVersion = '' } = useSelector(currentSafe) ?? {}

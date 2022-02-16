@@ -81,7 +81,6 @@ const SendModal = ({
   const [activeScreen, setActiveScreen] = useState<TxType>(activeScreenType || 'chooseTxType')
   const [tx, setTx] = useState<unknown>({})
   const [isABI, setIsABI] = useState(true)
-  const { address: safeAddress, ethBalance, name: safeName } = useSelector(currentSafeWithNames)
 
   const [recipient, setRecipient] = useState<string | undefined>(recipientAddress)
 
@@ -95,16 +94,6 @@ const SendModal = ({
   const handleTxCreation = async (txInfo: SendCollectibleTxInfo) => {
     setActiveScreen('sendFundsReviewTx')
     setTx(txInfo)
-    
-    const data: ICreateSafeTransaction = {
-      from: safeAddress,
-      to: txInfo?.recipientAddress || '',
-      amount: txInfo?.amount || 0,
-      gasLimit: txInfo?.gasLimit || 0,
-      internalChainId: getInternalChainId(),
-    }
-    // call api to create transaction
-    const { ErrorCode, Data: safeData, Message } = await createSafeTransaction(data)
   }
 
   const handleContractInteractionCreation = (contractInteractionInfo: any, submit: boolean): void => {

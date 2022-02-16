@@ -3,7 +3,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
 import { toTokenUnit } from 'src/logic/tokens/utils/humanReadableValue'
-import { getExplorerInfo, getNativeCurrency } from 'src/config'
+import { getExplorerInfo, getInternalChainId, getNativeCurrency } from 'src/config'
 import Divider from 'src/components/Divider'
 import Block from 'src/components/layout/Block'
 import Col from 'src/components/layout/Col'
@@ -39,6 +39,10 @@ import { ModalHeader } from '../ModalHeader'
 import { extractSafeAddress } from 'src/routes/routes'
 import ExecuteCheckbox from 'src/components/ExecuteCheckbox'
 import { getNativeCurrencyAddress } from 'src/config/utils'
+import { ICreateSafeTransaction } from 'src/types/transaction'
+import { currentSafeWithNames } from 'src/logic/safe/store/selectors'
+import { TxData } from 'src/routes/safe/components/Transactions/TxList/TxData'
+import { createSafeTransaction } from 'src/services'
 
 const useStyles = makeStyles(styles)
 
@@ -95,12 +99,14 @@ const ReviewSendFundsTx = ({ onClose, onPrev, tx }: ReviewTxProps): React.ReactE
   const tokens: any = useSelector(extendedSafeTokensSelector)
   const txToken = useMemo(() => tokens.find((token) => sameAddress(token.address, tx.token)), [tokens, tx.token])
   const isSendingNativeToken = useMemo(() => sameAddress(txToken?.address, getNativeCurrencyAddress()), [txToken])
-  const txRecipient = isSendingNativeToken ? tx.recipientAddress : txToken?.address || ''
+  // const txRecipient = isSendingNativeToken ? tx.recipientAddress : txToken?.address || ''
+  const txRecipient = tx.recipientAddress || ''
   const txValue = isSendingNativeToken ? toTokenUnit(tx.amount, nativeCurrency.decimals) : '0'
   const data = useTxData(isSendingNativeToken, tx.amount, tx.recipientAddress, txToken)
   const [manualSafeTxGas, setManualSafeTxGas] = useState('0')
   const [manualGasPrice, setManualGasPrice] = useState<string | undefined>()
   const [manualGasLimit, setManualGasLimit] = useState<string | undefined>()
+  // const { address: safeAddress, ethBalance, name: safeName } = useSelector(currentSafeWithNames)
 
   const {
     gasCostFormatted,
@@ -127,53 +133,72 @@ const ReviewSendFundsTx = ({ onClose, onPrev, tx }: ReviewTxProps): React.ReactE
   const doExecute = isExecution && executionApproved
 
   const submitTx = async (txParameters: TxParameters) => {
+    const data: ICreateSafeTransaction = {
+      from: safeAddress,
+      to: txRecipient || '',
+      amount: tx?.amount || '',
+      gasLimit: manualGasLimit || '',
+      internalChainId: getInternalChainId(),
+      fee: 0
+    }
+    // call api to create transaction
+    const { ErrorCode, Data: safeData, Message } = await createSafeTransaction(data)
     setButtonStatus(ButtonStatus.LOADING)
-
-    if (!safeAddress) {
+    if(ErrorCode === 'SUCCESSFUL') {
       setButtonStatus(ButtonStatus.READY)
-      logError(Errors._802)
-      return
+      onClose()
     }
-
-    if (isSpendingLimit && txToken && tx.tokenSpendingLimit) {
-      const spendingLimitTokenAddress = isSendingNativeToken ? ZERO_ADDRESS : txToken.address
-      const spendingLimit = getSpendingLimitContract()
-      try {
-        await spendingLimit.methods
-          .executeAllowanceTransfer(
-            safeAddress,
-            spendingLimitTokenAddress,
-            tx.recipientAddress,
-            toTokenUnit(tx.amount, txToken.decimals),
-            ZERO_ADDRESS,
-            0,
-            tx.tokenSpendingLimit.delegate,
-            EMPTY_DATA,
-          )
-          .send({ from: tx.tokenSpendingLimit.delegate })
-          .on('transactionHash', () => onClose())
-      } catch (err) {
-        setButtonStatus(ButtonStatus.READY)
-        logError(Errors._801, err.message)
-      }
-      return
-    }
-
-    dispatch(
-      createTransaction({
-        safeAddress: safeAddress,
-        to: txRecipient as string,
-        valueInWei: txValue,
-        txData: data,
-        txNonce: txParameters.safeNonce,
-        safeTxGas: txParameters.safeTxGas,
-        ethParameters: txParameters,
-        notifiedTransaction: TX_NOTIFICATION_TYPES.STANDARD_TX,
-        delayExecution: !executionApproved,
-      }),
-    )
-    onClose()
+    console.log(safeData);
   }
+
+  // const submitTx = async (txParameters: TxParameters) => {
+  //   setButtonStatus(ButtonStatus.LOADING)
+
+  //   if (!safeAddress) {
+  //     setButtonStatus(ButtonStatus.READY)
+  //     logError(Errors._802)
+  //     return
+  //   }
+
+  //   if (isSpendingLimit && txToken && tx.tokenSpendingLimit) {
+  //     const spendingLimitTokenAddress = isSendingNativeToken ? ZERO_ADDRESS : txToken.address
+  //     const spendingLimit = getSpendingLimitContract()
+  //     try {
+  //       await spendingLimit.methods
+  //         .executeAllowanceTransfer(
+  //           safeAddress,
+  //           spendingLimitTokenAddress,
+  //           tx.recipientAddress,
+  //           toTokenUnit(tx.amount, txToken.decimals),
+  //           ZERO_ADDRESS,
+  //           0,
+  //           tx.tokenSpendingLimit.delegate,
+  //           EMPTY_DATA,
+  //         )
+  //         .send({ from: tx.tokenSpendingLimit.delegate })
+  //         .on('transactionHash', () => onClose())
+  //     } catch (err) {
+  //       setButtonStatus(ButtonStatus.READY)
+  //       logError(Errors._801, err.message)
+  //     }
+  //     return
+  //   }
+
+  //   dispatch(
+  //     createTransaction({
+  //       safeAddress: safeAddress,
+  //       to: txRecipient as string,
+  //       valueInWei: txValue,
+  //       txData: data,
+  //       txNonce: txParameters.safeNonce,
+  //       safeTxGas: txParameters.safeTxGas,
+  //       ethParameters: txParameters,
+  //       notifiedTransaction: TX_NOTIFICATION_TYPES.STANDARD_TX,
+  //       delayExecution: !executionApproved,
+  //     }),
+  //   )
+  //   onClose()
+  // }
 
   const closeEditModalCallback = (txParameters: TxParameters) => {
     const oldGasPrice = gasPriceFormatted
@@ -271,9 +296,9 @@ const ReviewSendFundsTx = ({ onClose, onPrev, tx }: ReviewTxProps): React.ReactE
           {!isSpendingLimit && txEstimationExecutionStatus !== EstimationStatus.LOADING && (
             <ReviewInfoText
               gasCostFormatted={gasCostFormatted}
-              isCreation={isCreation}
-              isExecution={doExecute}
-              isOffChainSignature={isOffChainSignature}
+              isCreation={true}
+              isExecution={true}
+              isOffChainSignature={true}
               safeNonce={txParameters.safeNonce}
               txEstimationExecutionStatus={txEstimationExecutionStatus}
             />
