@@ -40,14 +40,14 @@ export function getMChainsConfig(): Promise<MChainInfo[]> {
   return axios.post(`${baseUrl}/general/network-list`)
     .then(response => {
       const chainList: MChainInfo[] = response.data.Data.map((e: {
-        chainId: any; name: any; rpc: any, id: number
+        chainId: any; name: any; rpc: any, id: number, prefix: string
       }) => {
         return {
           transactionService: "https://safe-transaction.rinkeby.staging.gnosisdev.com",
           internalChainId: e.id,
           chainId: e.chainId,
           chainName: e.name,
-          shortName: "aura",
+          shortName: e.prefix,
           l2: false,
           description: "",
           rpcUri: {
