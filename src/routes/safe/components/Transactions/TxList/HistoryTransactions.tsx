@@ -1,5 +1,5 @@
 import { Loader, Title } from '@gnosis.pm/safe-react-components'
-import { ReactElement } from 'react'
+import { ReactElement, useEffect, useState } from 'react'
 
 import { usePagedHistoryTransactions } from './hooks/usePagedHistoryTransactions'
 import { Centered, NoTransactions } from './styled'
@@ -7,9 +7,29 @@ import { HistoryTxList } from './HistoryTxList'
 import { TxsInfiniteScroll } from './TxsInfiniteScroll'
 import Img from 'src/components/layout/Img'
 import NoTransactionsImage from './assets/no-transactions.svg'
+import { ITransactionListItem, ITransactionListQuery } from 'src/types/transaction'
+import { getAllTx } from 'src/services'
 
 export const HistoryTransactions = (): ReactElement => {
   const { count, hasMore, next, transactions, isLoading } = usePagedHistoryTransactions()
+
+  const [historyList, setHistoryList] = useState<ITransactionListItem[]>([])
+
+  useEffect(() => {
+    const payload: ITransactionListQuery = {
+      safeAddress: 'aura14g36ajgngkmw2jp26zvc4388ecxmppmxqgz5kx',
+      pageIndex: 1,
+      pageSize: 10,
+    }
+
+    const getTx = async (payload) => {
+      const res = await getAllTx(payload)
+
+      console.log(res)
+    }
+
+    getTx(payload)
+  }, [historyList])
 
   if (count === 0 && isLoading) {
     return (

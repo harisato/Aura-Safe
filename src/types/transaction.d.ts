@@ -15,3 +15,22 @@ export interface ICreateSafeTransaction {
     internalChainId: number,
     fee: number
 }
+
+export interface ITransactionListQuery {
+    safeAddress: string,
+    pageSize: number,
+    pageIndex: number
+}
+
+export interface ITransactionListItem {
+    Id: number,
+    CreatedAt: string,
+    UpdatedAt: string,
+    FromAddress: string,
+    ToAddress: string,
+    TxHash: string,
+    Amount: number,
+    Denom: string,
+    Status: string,
+    Signatures: string[]
+}
