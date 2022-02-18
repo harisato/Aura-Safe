@@ -23,8 +23,8 @@ export default (chainId: string, safeAddress: string) =>
     }
 
     await Promise.all([
-      loadTxs(loadHistoryTransactions, addHistoryTransactions),
       loadTxs(loadHistoryTransactions2, addHistoryTransactions),
-      loadTxs(loadQueuedTransactions, addQueuedTransactions),
+      // loadTxs(loadHistoryTransactions, addHistoryTransactions),
+      // loadTxs(loadQueuedTransactions, addQueuedTransactions),
     ])
   }

@@ -208,35 +208,53 @@ export const isAwaitingExecution = (
 
 
 export const makeTransactionsFromService = (list: ITransactionListItem[]): TransactionListPage => {
+  console.log('list', list)
+  /**
+  Amount: 1
+  CreatedAt: "2022-02-18T01:33:57.314Z"
+  Denom: "uaura"
+  FromAddress: "aura14g36ajgngkmw2jp26zvc4388ecxmppmxqgz5kx"
+  Id: 27
+  Signatures: []
+  Status: "PENDING"
+  ToAddress: "aura14g36ajgngkmw2jp26zvc4388ecxmppmxqgz5kx"
+  TxHash: null
+  UpdatedAt: "2022-02-18T01:33:57.314Z"
+   */
 
-  const transaction: TransactionListItem[] = [{
-    conflictType: 'None',
-    type: 'TRANSACTION',
-    transaction: {
-      id: '0',
-      timestamp: now(),
-      txStatus: TransactionStatus.SUCCESS,
-      txInfo: {
-        type: 'Transfer',
-        sender: {
-          value: ZERO_ADDRESS,
-          name: null,
-          logoUri: null,
-        },
-        recipient: {
-          value: ZERO_ADDRESS,
-          name: null,
-          logoUri: null,
-        },
-        direction: TransferDirection.OUTGOING,
-        transferInfo: {
-          type: TokenType.NATIVE_COIN,
-          value: '123',
-        },
-      },
 
+
+  const transaction: TransactionListItem[] = list.map(tx => {
+    const trans: TransactionListItem = {
+      conflictType: 'None',
+      type: 'TRANSACTION',
+      transaction: {
+        id: tx.Id.toString(),
+        timestamp: new Date(tx.UpdatedAt).getTime(),
+        txStatus: TransactionStatus.SUCCESS,
+        txInfo: {
+          type: 'Transfer',
+          sender: {
+            value: tx.FromAddress,
+            name: null,
+            logoUri: null,
+          },
+          recipient: {
+            value: tx.ToAddress,
+            name: null,
+            logoUri: null,
+          },
+          direction: TransferDirection.OUTGOING,
+          transferInfo: {
+            type: TokenType.NATIVE_COIN,
+            value: (tx.Amount).toString(),
+          },
+        },
+      }
     }
-  }]
+
+    return trans
+  })
   let page: TransactionListPage = {
     results: [...transaction]
   }

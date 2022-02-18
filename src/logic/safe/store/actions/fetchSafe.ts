@@ -162,7 +162,7 @@ export const fetchMSafe =
       const owners = buildSafeOwners(remoteSafeInfo?.owners)
 
       if (isInitialLoad) {
-
+        dispatch(fetchTransactions(chainId, safeAddress))
       }
 
       return dispatch(updateSafe({ address, ...safeInfo, owners, safeId: +safeId }))

@@ -73,6 +73,8 @@ export const loadHistoryTransactions2 = async (safeAddress: string): Promise<His
       pageSize: 10
     })
 
+    console.log('response', response)
+
     const { Data: item } = response
     const { results, next, previous } = makeTransactionsFromService(item)
 
