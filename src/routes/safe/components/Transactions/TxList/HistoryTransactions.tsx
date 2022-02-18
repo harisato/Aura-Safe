@@ -9,15 +9,22 @@ import Img from 'src/components/layout/Img'
 import NoTransactionsImage from './assets/no-transactions.svg'
 import { ITransactionListItem, ITransactionListQuery } from 'src/types/transaction'
 import { getAllTx } from 'src/services'
+import { HistoryPayload } from 'src/logic/safe/store/reducer/gatewayTransactions'
+import { useSelector } from 'react-redux'
+import { currentChainId } from 'src/logic/config/store/selectors'
+import { extractSafeAddress } from 'src/routes/routes'
 
 export const HistoryTransactions = (): ReactElement => {
   const { count, hasMore, next, transactions, isLoading } = usePagedHistoryTransactions()
 
   const [historyList, setHistoryList] = useState<ITransactionListItem[]>([])
 
+  const chainId = useSelector(currentChainId)
+  const safeAddress = extractSafeAddress()
+
   useEffect(() => {
     const payload: ITransactionListQuery = {
-      safeAddress: 'aura14g36ajgngkmw2jp26zvc4388ecxmppmxqgz5kx',
+      safeAddress,
       pageIndex: 1,
       pageSize: 10,
     }
@@ -25,7 +32,17 @@ export const HistoryTransactions = (): ReactElement => {
     const getTx = async (payload) => {
       const res = await getAllTx(payload)
 
-      console.log(res)
+      //   const payload2: HistoryPayload = {
+      //     chainId,
+      //     safeAddress,
+      //     values: [
+      //       {
+      //         transaction: listItemTx,
+      //         type: 'TRANSACTION', // Other types are discarded in reducer
+      //         conflictType: 'None', // Not used in reducer
+      //       },
+      //     ],
+      //   }
     }
 
     getTx(payload)

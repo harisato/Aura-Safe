@@ -6,8 +6,13 @@ import {
   TransactionDetails,
   MultisigExecutionDetails,
   MultisigExecutionInfo,
+  TransactionListPage,
+  TransferDirection,
+  TransactionListItem,
+  TransactionStatus,
 } from '@gnosis.pm/safe-react-gateway-sdk'
 import { BigNumber } from 'bignumber.js'
+import { now } from 'lodash'
 import { matchPath } from 'react-router-dom'
 import { getNativeCurrency } from 'src/config'
 import { getNativeCurrencyAddress } from 'src/config/utils'
@@ -22,8 +27,9 @@ import {
   Transaction,
 } from 'src/logic/safe/store/models/types/gateway.d'
 import { formatAmount } from 'src/logic/tokens/utils/formatAmount'
-import { sameAddress } from 'src/logic/wallets/ethAddresses'
+import { sameAddress, ZERO_ADDRESS } from 'src/logic/wallets/ethAddresses'
 import { SAFE_ROUTES, TRANSACTION_ID_SLUG, history } from 'src/routes/routes'
+import { ITransactionListItem } from 'src/types/transaction'
 
 export const NOT_AVAILABLE = 'n/a'
 interface AmountData {
@@ -111,8 +117,8 @@ export const isCancelTxDetails = (txInfo: Transaction['txInfo']): boolean =>
 
 export const addressInList =
   (list: AddressEx[] = []) =>
-  (address: string): boolean =>
-    list.some((ownerAddress) => sameAddress(ownerAddress.value, address))
+    (address: string): boolean =>
+      list.some((ownerAddress) => sameAddress(ownerAddress.value, address))
 
 export const getTxTo = ({ txInfo }: Pick<Transaction, 'txInfo'>): AddressEx | undefined => {
   switch (txInfo.type) {
@@ -199,3 +205,42 @@ export const isDeeplinkedTx = (): boolean => {
 export const isAwaitingExecution = (
   txStatus: typeof LocalTransactionStatus[keyof typeof LocalTransactionStatus],
 ): boolean => [LocalTransactionStatus.AWAITING_EXECUTION, LocalTransactionStatus.PENDING_FAILED].includes(txStatus)
+
+
+export const makeTransactionsFromService = (list: ITransactionListItem[]): TransactionListPage => {
+
+  const transaction: TransactionListItem[] = [{
+    conflictType: 'None',
+    type: 'TRANSACTION',
+    transaction: {
+      id: '0',
+      timestamp: now(),
+      txStatus: TransactionStatus.SUCCESS,
+      txInfo: {
+        type: 'Transfer',
+        sender: {
+          value: ZERO_ADDRESS,
+          name: null,
+          logoUri: null,
+        },
+        recipient: {
+          value: ZERO_ADDRESS,
+          name: null,
+          logoUri: null,
+        },
+        direction: TransferDirection.OUTGOING,
+        transferInfo: {
+          type: TokenType.NATIVE_COIN,
+          value: '123',
+        },
+      },
+
+    }
+  }]
+  let page: TransactionListPage = {
+    results: [...transaction]
+  }
+
+
+  return page;
+}
