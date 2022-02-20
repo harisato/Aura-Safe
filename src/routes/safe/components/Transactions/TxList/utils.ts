@@ -230,7 +230,7 @@ export const makeTransactionsFromService = (list: ITransactionListItem[]): Trans
       transaction: {
         id: tx.Id.toString(),
         timestamp: new Date(tx.UpdatedAt).getTime(),
-        txStatus: TransactionStatus.SUCCESS,
+        txStatus: TransactionStatus.PENDING,
         txInfo: {
           type: 'Transfer',
           sender: {

@@ -157,6 +157,25 @@ export const fetchMSafe =
       // remote (client-gateway)
       if (remoteSafeInfo) {
         safeInfo = await extractRemoteSafeInfo(remoteSafeInfo)
+
+        // If these polling timestamps have changed, fetch again
+        const { collectiblesTag, txQueuedTag, txHistoryTag } = currentSafeWithNames(state)
+
+        const shouldUpdateCollectibles = collectiblesTag !== safeInfo.collectiblesTag
+        const shouldUpdateTxHistory = txHistoryTag !== safeInfo.txHistoryTag
+        const shouldUpdateTxQueued = txQueuedTag !== safeInfo.txQueuedTag
+
+        // if (shouldUpdateCollectibles || isInitialLoad) {
+        //   dispatch(fetchCollectibles(safeAddress))
+        // }
+
+        // if (shouldUpdateTxHistory || shouldUpdateTxQueued || isInitialLoad) {
+        //   dispatch(fetchTransactions(chainId, safeAddress))
+        // }
+
+        if(isInitialLoad) {
+          dispatch(fetchTransactions(chainId, safeAddress))
+        }
       }
 
       const owners = buildSafeOwners(remoteSafeInfo?.owners)
