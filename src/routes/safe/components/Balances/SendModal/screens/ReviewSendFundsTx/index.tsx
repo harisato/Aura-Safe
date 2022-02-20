@@ -1,5 +1,5 @@
 import { makeStyles } from '@material-ui/core/styles'
-import { useEffect, useMemo, useState } from 'react'
+import { memo, useEffect, useMemo, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
 import { toTokenUnit } from 'src/logic/tokens/utils/humanReadableValue'
@@ -43,6 +43,9 @@ import { ICreateSafeTransaction } from 'src/types/transaction'
 import { currentSafeWithNames } from 'src/logic/safe/store/selectors'
 import { TxData } from 'src/routes/safe/components/Transactions/TxList/TxData'
 import { createSafeTransaction } from 'src/services'
+import { SigningStargateClient } from '@cosmjs/stargate'
+import enqueueSnackbar from 'src/logic/notifications/store/actions/enqueueSnackbar'
+import { enhanceSnackbarForAction, NOTIFICATIONS } from 'src/logic/notifications'
 
 const useStyles = makeStyles(styles)
 
@@ -108,6 +111,25 @@ const ReviewSendFundsTx = ({ onClose, onPrev, tx }: ReviewTxProps): React.ReactE
   const [manualGasLimit, setManualGasLimit] = useState<string | undefined>()
   // const { address: safeAddress, ethBalance, name: safeName } = useSelector(currentSafeWithNames)
 
+  // const {
+  //   gasCostFormatted,
+  //   gasPriceFormatted,
+  //   gasLimit,
+  //   gasEstimation,
+  //   txEstimationExecutionStatus,
+  //   isExecution,
+  //   isCreation,
+  //   isOffChainSignature,
+  // } = useEstimateTransactionGas({
+  //   txData: data,
+  //   txRecipient,
+  //   txType: tx.txType,
+  //   txAmount: txValue,
+  //   safeTxGas: manualSafeTxGas,
+  //   manualGasPrice,
+  //   manualGasLimit,
+  // })
+
   const {
     gasCostFormatted,
     gasPriceFormatted,
@@ -117,15 +139,16 @@ const ReviewSendFundsTx = ({ onClose, onPrev, tx }: ReviewTxProps): React.ReactE
     isExecution,
     isCreation,
     isOffChainSignature,
-  } = useEstimateTransactionGas({
-    txData: data,
-    txRecipient,
-    txType: tx.txType,
-    txAmount: txValue,
-    safeTxGas: manualSafeTxGas,
-    manualGasPrice,
-    manualGasLimit,
-  })
+  } = {
+    gasCostFormatted: '',
+    gasPriceFormatted: '',
+    gasLimit: '0',
+    gasEstimation: '0',
+    txEstimationExecutionStatus: EstimationStatus.SUCCESS,
+    isExecution: true,
+    isCreation: true,
+    isOffChainSignature: true,
+  }
 
   const [buttonStatus, setButtonStatus] = useEstimationStatus(txEstimationExecutionStatus)
   const isSpendingLimit = sameString(tx.txType, 'spendingLimit')
@@ -136,19 +159,97 @@ const ReviewSendFundsTx = ({ onClose, onPrev, tx }: ReviewTxProps): React.ReactE
     const data: ICreateSafeTransaction = {
       from: safeAddress,
       to: txRecipient || '',
-      amount: tx?.amount || '',
+      amount: Math.floor(Number(tx?.amount) * Math.pow(10, 6)).toString() || '',
       gasLimit: manualGasLimit || '',
       internalChainId: getInternalChainId(),
-      fee: 0
+      fee: 0,
     }
     // call api to create transaction
-    const { ErrorCode, Data: safeData, Message } = await createSafeTransaction(data)
-    setButtonStatus(ButtonStatus.LOADING)
-    if(ErrorCode === 'SUCCESSFUL') {
-      setButtonStatus(ButtonStatus.READY)
-      onClose()
+    signTransactionWithKeplr(safeAddress, txRecipient, data?.amount, data)
+    // const { ErrorCode, Data: safeData, Message } = await createSafeTransaction(data)
+    // setButtonStatus(ButtonStatus.LOADING)
+    // if (ErrorCode === 'SUCCESSFUL') {
+    //   setButtonStatus(ButtonStatus.READY)
+    //   onClose()
+    // }
+    // console.log(safeData)
+  }
+
+  const signTransactionWithKeplr = async (safeAddress: string, to: string, amount: string, data: any) => {
+    const chainId = 'aura-testnet'
+    if (window.keplr) {
+      await window.keplr.enable(chainId)
     }
-    console.log(safeData);
+
+    if (window.getOfflineSigner) {
+      const offlineSigner = window.getOfflineSigner(chainId)
+      const accounts = await offlineSigner.getAccounts()
+      const tendermintUrl = 'https://tendermint-testnet.aura.network'
+      const client = await SigningStargateClient.connectWithSigner(tendermintUrl, offlineSigner)
+
+      // const tx = {
+      //   chainId: 'aura-testnet',
+      //   // accountNumber: "0",
+      //   // sequence: "0",
+      //   // fee: {
+      //   //     amount: [{
+      //   //         amount: "0",
+      //   //         denom: "uatom",
+      //   //     }],
+      //   //     gas: "200000",
+      //   // },
+      //   msgs: [
+      //     {
+      //       type: 'cosmos-sdk/MsgSend',
+      //       value: {
+      //         from_address: safeAddress,
+      //         to_address: to,
+      //         amount: [
+      //           {
+      //             amount: amount,
+      //             denom: 'uaura',
+      //           },
+      //         ],
+      //       },
+      //     },
+      //   ],
+      //   memo: '',
+      // }
+      // sign transaction
+      // const client = await SigningStargateClient.connectWithSigner(
+      //   'https://tendermint-testnet.aura.network',
+      //   offlineSigner,
+      // )
+
+      const amountFinal = {
+        denom: 'uaura',
+        amount: amount.toString(),
+      }
+      const fee = {
+        amount: [
+          {
+            denom: 'uaura',
+            amount: amount.toString(),
+          },
+        ],
+        gas: '200000',
+      }
+
+      try {
+        dispatch(enqueueSnackbar(enhanceSnackbarForAction(NOTIFICATIONS.SIGN_TX_MSG)))
+        const result = await client.sendTokens(accounts[0].address, to, [amountFinal], fee, '')
+        alert('Succeed to send tx:' + result.transactionHash)
+        const { ErrorCode, Data: safeData, Message } = await createSafeTransaction(data)
+        setButtonStatus(ButtonStatus.LOADING)
+        if (ErrorCode === 'SUCCESSFUL') {
+          setButtonStatus(ButtonStatus.READY)
+          onClose()
+        }
+      } catch {
+        dispatch(enqueueSnackbar(enhanceSnackbarForAction(NOTIFICATIONS.TX_CANCELLATION_EXECUTED_MSG)))
+        onClose()
+      }
+    }
   }
 
   // const submitTx = async (txParameters: TxParameters) => {
