@@ -206,7 +206,6 @@ export const isAwaitingExecution = (
   txStatus: typeof LocalTransactionStatus[keyof typeof LocalTransactionStatus],
 ): boolean => [LocalTransactionStatus.AWAITING_EXECUTION, LocalTransactionStatus.PENDING_FAILED].includes(txStatus)
 
-
 export const makeTransactionsFromService = (list: ITransactionListItem[]): TransactionListPage => {
   console.log('list', list)
   /**
@@ -261,4 +260,4 @@ export const makeTransactionsFromService = (list: ITransactionListItem[]): Trans
 
 
   return page;
-}
+} 

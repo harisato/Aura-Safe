@@ -5,7 +5,7 @@ import {
   addHistoryTransactions,
   addQueuedTransactions,
 } from 'src/logic/safe/store/actions/transactions/gatewayTransactions'
-import { loadHistoryTransactions, loadHistoryTransactions2, loadQueuedTransactions } from './loadGatewayTransactions'
+import { loadHistoryTransactions, loadHistoryTransactions2, loadQueuedTransactions, loadQueuedTransactionsFromAuraApi } from './loadGatewayTransactions'
 import { AppReduxState } from 'src/store'
 
 export default (chainId: string, safeAddress: string) =>
@@ -24,7 +24,6 @@ export default (chainId: string, safeAddress: string) =>
 
     await Promise.all([
       loadTxs(loadHistoryTransactions2, addHistoryTransactions),
-      // loadTxs(loadHistoryTransactions, addHistoryTransactions),
-      // loadTxs(loadQueuedTransactions, addQueuedTransactions),
+      loadTxs(loadQueuedTransactionsFromAuraApi, addQueuedTransactions),
     ])
   }

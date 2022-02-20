@@ -1,5 +1,5 @@
 import { Loader, Title } from '@gnosis.pm/safe-react-components'
-import { ReactElement } from 'react'
+import { ReactElement, useEffect, useState } from 'react'
 
 import Img from 'src/components/layout/Img'
 import NoTransactionsImage from './assets/no-transactions.svg'
@@ -8,9 +8,45 @@ import { QueueTxList } from './QueueTxList'
 import { Centered, NoTransactions } from './styled'
 import { TxsInfiniteScroll } from './TxsInfiniteScroll'
 import { TxLocationContext } from './TxLocationProvider'
+import { ITransactionListItem, ITransactionListQuery } from 'src/types/transaction'
+import { useSelector } from 'react-redux'
+import { currentChainId } from 'src/logic/config/store/selectors'
+import { extractSafeAddress } from 'src/routes/routes'
+import { getAllTx } from 'src/services'
 
 export const QueueTransactions = (): ReactElement => {
   const { count, isLoading, hasMore, next, transactions } = usePagedQueuedTransactions()
+
+  const [queuedList, setQueuedList] = useState<ITransactionListItem[]>([])
+
+  const chainId = useSelector(currentChainId)
+  const safeAddress = extractSafeAddress()
+
+  useEffect(() => {
+    const payload: ITransactionListQuery = {
+      safeAddress,
+      pageIndex: 1,
+      pageSize: 10,
+    }
+
+    const getTx = async (payload) => {
+      const res = await getAllTx(payload)
+
+      //   const payload2: HistoryPayload = {
+      //     chainId,
+      //     safeAddress,
+      //     values: [
+      //       {
+      //         transaction: listItemTx,
+      //         type: 'TRANSACTION', // Other types are discarded in reducer
+      //         conflictType: 'None', // Not used in reducer
+      //       },
+      //     ],
+      //   }
+    }
+
+    getTx(payload)
+  }, [queuedList])
 
   if (count === 0 && isLoading) {
     return (

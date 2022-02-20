@@ -33,4 +33,4 @@ export interface ITransactionListItem {
     Denom: string,
     Status: string,
     Signatures: string[]
-}
+} 
