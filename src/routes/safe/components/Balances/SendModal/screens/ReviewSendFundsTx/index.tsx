@@ -42,10 +42,11 @@ import { getNativeCurrencyAddress } from 'src/config/utils'
 import { ICreateSafeTransaction } from 'src/types/transaction'
 import { currentSafeWithNames } from 'src/logic/safe/store/selectors'
 import { TxData } from 'src/routes/safe/components/Transactions/TxList/TxData'
-import { createSafeTransaction } from 'src/services'
+import { createSafeTransaction, signSafeTransaction } from 'src/services'
 import { SigningStargateClient } from '@cosmjs/stargate'
 import enqueueSnackbar from 'src/logic/notifications/store/actions/enqueueSnackbar'
 import { enhanceSnackbarForAction, NOTIFICATIONS } from 'src/logic/notifications'
+import { AuthInfo, TxBody, TxRaw } from 'cosmjs-types/cosmos/tx/v1beta1/tx'
 
 const useStyles = makeStyles(styles)
 
@@ -156,16 +157,7 @@ const ReviewSendFundsTx = ({ onClose, onPrev, tx }: ReviewTxProps): React.ReactE
   const doExecute = isExecution && executionApproved
 
   const submitTx = async (txParameters: TxParameters) => {
-    const data: ICreateSafeTransaction = {
-      from: safeAddress,
-      to: txRecipient || '',
-      amount: Math.floor(Number(tx?.amount) * Math.pow(10, 6)).toString() || '',
-      gasLimit: manualGasLimit || '',
-      internalChainId: getInternalChainId(),
-      fee: 0,
-    }
-    // call api to create transaction
-    signTransactionWithKeplr(safeAddress, txRecipient, data?.amount, data)
+    signTransactionWithKeplr(safeAddress, txRecipient)
     // const { ErrorCode, Data: safeData, Message } = await createSafeTransaction(data)
     // setButtonStatus(ButtonStatus.LOADING)
     // if (ErrorCode === 'SUCCESSFUL') {
@@ -175,7 +167,7 @@ const ReviewSendFundsTx = ({ onClose, onPrev, tx }: ReviewTxProps): React.ReactE
     // console.log(safeData)
   }
 
-  const signTransactionWithKeplr = async (safeAddress: string, to: string, amount: string, data: any) => {
+  const signTransactionWithKeplr = async (safeAddress: string, to: string) => {
     const chainId = 'aura-testnet'
     if (window.keplr) {
       await window.keplr.enable(chainId)
@@ -187,63 +179,45 @@ const ReviewSendFundsTx = ({ onClose, onPrev, tx }: ReviewTxProps): React.ReactE
       const tendermintUrl = 'https://tendermint-testnet.aura.network'
       const client = await SigningStargateClient.connectWithSigner(tendermintUrl, offlineSigner)
 
-      // const tx = {
-      //   chainId: 'aura-testnet',
-      //   // accountNumber: "0",
-      //   // sequence: "0",
-      //   // fee: {
-      //   //     amount: [{
-      //   //         amount: "0",
-      //   //         denom: "uatom",
-      //   //     }],
-      //   //     gas: "200000",
-      //   // },
-      //   msgs: [
-      //     {
-      //       type: 'cosmos-sdk/MsgSend',
-      //       value: {
-      //         from_address: safeAddress,
-      //         to_address: to,
-      //         amount: [
-      //           {
-      //             amount: amount,
-      //             denom: 'uaura',
-      //           },
-      //         ],
-      //       },
-      //     },
-      //   ],
-      //   memo: '',
-      // }
-      // sign transaction
-      // const client = await SigningStargateClient.connectWithSigner(
-      //   'https://tendermint-testnet.aura.network',
-      //   offlineSigner,
-      // )
-
-      const amountFinal = {
-        denom: 'uaura',
-        amount: amount.toString(),
-      }
       const fee = {
         amount: [
           {
             denom: 'uaura',
-            amount: amount.toString(),
+            amount: manualGasPrice || '100',
           },
         ],
-        gas: '200000',
+        gas: manualGasLimit || '20000',
       }
 
       try {
+        // Sign On Wallet
         dispatch(enqueueSnackbar(enhanceSnackbarForAction(NOTIFICATIONS.SIGN_TX_MSG)))
-        const result = await client.sendTokens(accounts[0].address, to, [amountFinal], fee, '')
-        alert('Succeed to send tx:' + result.transactionHash)
+        const signResult = await client.sign(accounts[0]?.address, [], fee, '')
+
+        // call api to create transaction
+        const data: ICreateSafeTransaction = {
+          from: safeAddress,
+          to: txRecipient || '',
+          amount: Math.floor(Number(tx?.amount) * Math.pow(10, 6)).toString() || '',
+          gasLimit: manualGasLimit || '',
+          internalChainId: getInternalChainId(),
+          fee: Number(manualGasPrice) || 0,
+          creatorAddress: safeAddress,
+          signature: signResult.signatures.toString(),
+          bodyBytes: signResult.bodyBytes.toString(),
+        }
+
         const { ErrorCode, Data: safeData, Message } = await createSafeTransaction(data)
-        setButtonStatus(ButtonStatus.LOADING)
+
         if (ErrorCode === 'SUCCESSFUL') {
           setButtonStatus(ButtonStatus.READY)
-          onClose()
+          // broadcast
+          try {
+            await client.broadcastTx(Uint8Array.from(TxRaw.encode(signResult).finish()))
+            onClose()
+          } catch {}
+        } else {
+          dispatch(enqueueSnackbar(enhanceSnackbarForAction(NOTIFICATIONS.TX_FAILED_MSG)))
         }
       } catch {
         dispatch(enqueueSnackbar(enhanceSnackbarForAction(NOTIFICATIONS.TX_CANCELLATION_EXECUTED_MSG)))
