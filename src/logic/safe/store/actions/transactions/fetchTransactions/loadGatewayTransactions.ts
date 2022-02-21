@@ -5,7 +5,7 @@ import { checksumAddress } from 'src/utils/checksumAddress'
 import { Errors, CodedException } from 'src/logic/exceptions/CodedException'
 import { GATEWAY_URL } from 'src/utils/constants'
 import { getAllTx } from 'src/services'
-import { makeTransactionsFromService } from 'src/routes/safe/components/Transactions/TxList/utils'
+import { makeQueueTransactionsFromService, makeTransactionsFromService } from 'src/routes/safe/components/Transactions/TxList/utils'
 
 /*************/
 /*  HISTORY  */
@@ -177,7 +177,7 @@ export const loadQueuedTransactionsFromAuraApi = async (safeAddress: string): Pr
     console.log('response', response)
 
     const { Data: item } = response
-    const { results, next, previous } = makeTransactionsFromService(item)
+    const { results, next, previous } = makeQueueTransactionsFromService(item)
 
 
 

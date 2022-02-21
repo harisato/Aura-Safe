@@ -261,3 +261,50 @@ export const makeTransactionsFromService = (list: ITransactionListItem[]): Trans
 
   return page;
 } 
+
+export const makeQueueTransactionsFromService = (list: ITransactionListItem[]): TransactionListPage => {
+  const transaction: TransactionListItem[] = list.map(tx => {
+    const trans: TransactionListItem = {
+      conflictType: 'None',
+      type: 'TRANSACTION',
+      transaction: {
+        executionInfo: {
+          confirmationsRequired: 1,
+          confirmationsSubmitted: 1,
+          nonce: 2,
+          type: "MULTISIG",
+          missingSigners: null
+        },
+        id: tx.Id.toString(),
+        timestamp: new Date(tx.UpdatedAt).getTime(),
+        txStatus: TransactionStatus.PENDING,
+        txInfo: {
+          type: 'Transfer',
+          sender: {
+            value: tx.FromAddress,
+            name: null,
+            logoUri: null,
+          },
+          recipient: {
+            value: tx.ToAddress,
+            name: null,
+            logoUri: null,
+          },
+          direction: TransferDirection.OUTGOING,
+          transferInfo: {
+            type: TokenType.NATIVE_COIN,
+            value: (tx.Amount).toString(),
+          },
+        },
+      }
+    }
+
+    return trans
+  })
+  let page: TransactionListPage = {
+    results: [...transaction]
+  }
+
+
+  return page;
+} 
