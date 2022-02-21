@@ -10,6 +10,7 @@ import {
   TransferDirection,
   TransactionListItem,
   TransactionStatus,
+  TransactionSummary,
 } from '@gnosis.pm/safe-react-gateway-sdk'
 import { BigNumber } from 'bignumber.js'
 import { now } from 'lodash'
@@ -206,64 +207,26 @@ export const isAwaitingExecution = (
   txStatus: typeof LocalTransactionStatus[keyof typeof LocalTransactionStatus],
 ): boolean => [LocalTransactionStatus.AWAITING_EXECUTION, LocalTransactionStatus.PENDING_FAILED].includes(txStatus)
 
-export const makeTransactionsFromService = (list: ITransactionListItem[]): TransactionListPage => {
-  console.log('list', list)
-  /**
-  Amount: 1
-  CreatedAt: "2022-02-18T01:33:57.314Z"
-  Denom: "uaura"
-  FromAddress: "aura14g36ajgngkmw2jp26zvc4388ecxmppmxqgz5kx"
-  Id: 27
-  Signatures: []
-  Status: "PENDING"
-  ToAddress: "aura14g36ajgngkmw2jp26zvc4388ecxmppmxqgz5kx"
-  TxHash: null
-  UpdatedAt: "2022-02-18T01:33:57.314Z"
-   */
-
-
-
-  const transaction: TransactionListItem[] = list.map(tx => {
-    const trans: TransactionListItem = {
-      conflictType: 'None',
-      type: 'TRANSACTION',
-      transaction: {
-        id: tx.Id.toString(),
-        timestamp: new Date(tx.UpdatedAt).getTime(),
-        txStatus: TransactionStatus.PENDING,
-        txInfo: {
-          type: 'Transfer',
-          sender: {
-            value: tx.FromAddress,
-            name: null,
-            logoUri: null,
-          },
-          recipient: {
-            value: tx.ToAddress,
-            name: null,
-            logoUri: null,
-          },
-          direction: TransferDirection.OUTGOING,
-          transferInfo: {
-            type: TokenType.NATIVE_COIN,
-            value: (tx.Amount).toString(),
-          },
-        },
-      }
-    }
-
-    return trans
-  })
+export const makeHistoryTransactionsFromService = (list: ITransactionListItem[]): TransactionListPage => {
+  const transaction: TransactionListItem[] = makeTransactions(list)
+    .filter(({ transaction }: any) => transaction.txStatus !== TransactionStatus.PENDING)
   let page: TransactionListPage = {
     results: [...transaction]
   }
-
-
   return page;
-} 
+}
 
 export const makeQueueTransactionsFromService = (list: ITransactionListItem[]): TransactionListPage => {
-  const transaction: TransactionListItem[] = list.map(tx => {
+  const transaction: TransactionListItem[] = makeTransactions(list)
+    .filter((item: any) => item.transaction.txStatus === TransactionStatus.PENDING)
+  let page: TransactionListPage = {
+    results: [...transaction]
+  }
+  return page;
+}
+
+const makeTransactions = (list: ITransactionListItem[]): TransactionListItem[] => {
+  return list.map(tx => {
     const trans: TransactionListItem = {
       conflictType: 'None',
       type: 'TRANSACTION',
@@ -271,13 +234,13 @@ export const makeQueueTransactionsFromService = (list: ITransactionListItem[]): 
         executionInfo: {
           confirmationsRequired: 1,
           confirmationsSubmitted: 1,
-          nonce: 2,
+          nonce: 0,
           type: "MULTISIG",
           missingSigners: null
         },
         id: tx.Id.toString(),
         timestamp: new Date(tx.UpdatedAt).getTime(),
-        txStatus: TransactionStatus.PENDING,
+        txStatus: (tx.Status == '0' ? TransactionStatus.SUCCESS : tx.Status) as TransactionStatus,
         txInfo: {
           type: 'Transfer',
           sender: {
@@ -298,13 +261,6 @@ export const makeQueueTransactionsFromService = (list: ITransactionListItem[]): 
         },
       }
     }
-
     return trans
   })
-  let page: TransactionListPage = {
-    results: [...transaction]
-  }
-
-
-  return page;
-} 
+}

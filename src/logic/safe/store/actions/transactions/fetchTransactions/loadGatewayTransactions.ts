@@ -5,7 +5,8 @@ import { checksumAddress } from 'src/utils/checksumAddress'
 import { Errors, CodedException } from 'src/logic/exceptions/CodedException'
 import { GATEWAY_URL } from 'src/utils/constants'
 import { getAllTx } from 'src/services'
-import { makeQueueTransactionsFromService, makeTransactionsFromService } from 'src/routes/safe/components/Transactions/TxList/utils'
+import { makeQueueTransactionsFromService, makeHistoryTransactionsFromService } from 'src/routes/safe/components/Transactions/TxList/utils'
+import { ITransactionListItem } from 'src/types/transaction'
 
 /*************/
 /*  HISTORY  */
@@ -62,23 +63,16 @@ export const loadHistoryTransactions = async (safeAddress: string): Promise<Hist
   }
 }
 
-export const loadHistoryTransactions2 = async (safeAddress: string): Promise<HistoryGatewayResponse['results']> => {
+export const loadHistoryTransactionsFromAuraApi = async (safeAddress: string): Promise<HistoryGatewayResponse['results']> => {
   const chainId = _getChainId()
   try {
     // const { results, next, previous } = await getTransactionHistory(GATEWAY_URL, chainId, checksumAddress(safeAddress))
-    const response = await getAllTx({
+    const { Data: list } = await getAllTx({
       safeAddress,
       pageIndex: 1,
       pageSize: 10
     })
-
-    console.log('response', response)
-
-    const { Data: item } = response
-    const { results, next, previous } = makeTransactionsFromService(item)
-
-
-
+    const { results, next, previous } = makeHistoryTransactionsFromService(list)
     if (!historyPointers[chainId]) {
       historyPointers[chainId] = {}
     }
@@ -150,36 +144,13 @@ export const loadQueuedTransactions = async (safeAddress: string): Promise<Queue
 
 export const loadQueuedTransactionsFromAuraApi = async (safeAddress: string): Promise<QueuedGatewayResponse['results']> => {
   const chainId = _getChainId()
-  // try {
-  //   const { results, next, previous } = await getTransactionQueue(GATEWAY_URL, chainId, checksumAddress(safeAddress))
-
-  //   if (!queuedPointers[chainId]) {
-  //     queuedPointers[chainId] = {}
-  //   }
-
-  //   if (!queuedPointers[chainId][safeAddress] || queuedPointers[chainId][safeAddress].next === null) {
-  //     queuedPointers[chainId][safeAddress] = { next, previous }
-  //   }
-
-  //   return results
-  // } catch (e) {
-  //   throw new CodedException(Errors._603, e.message)
-  // }
-
   try {
-    // const { results, next, previous } = await getTransactionHistory(GATEWAY_URL, chainId, checksumAddress(safeAddress))
-    const response = await getAllTx({
+    const { Data: list } = await getAllTx({
       safeAddress,
       pageIndex: 1,
       pageSize: 10
     })
-
-    console.log('response', response)
-
-    const { Data: item } = response
-    const { results, next, previous } = makeQueueTransactionsFromService(item)
-
-
+    const { results, next, previous } = makeQueueTransactionsFromService(list)
 
     if (!queuedPointers[chainId]) {
       queuedPointers[chainId] = {}
