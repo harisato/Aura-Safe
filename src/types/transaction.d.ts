@@ -32,5 +32,6 @@ export interface ITransactionListItem {
     Amount: number,
     Denom: string,
     Status: string,
-    Signatures: string[]
+    Signatures: string[],
+    Direction: string
 } 

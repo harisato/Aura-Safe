@@ -253,7 +253,7 @@ const makeTransactions = (list: ITransactionListItem[]): TransactionListItem[] =
             name: null,
             logoUri: null,
           },
-          direction: TransferDirection.OUTGOING,
+          direction: tx.Direction as TransferDirection,
           transferInfo: {
             type: TokenType.NATIVE_COIN,
             value: (tx.Amount).toString(),
