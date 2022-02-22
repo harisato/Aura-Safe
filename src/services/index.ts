@@ -66,14 +66,14 @@ export function getMChainsConfig(): Promise<MChainInfo[]> {
             value: e.rpc
           },
           blockExplorerUriTemplate: {
-            address: "https://rinkeby.etherscan.io/address/{{address}}",
-            txHash: "https://rinkeby.etherscan.io/tx/{{txHash}}",
-            api: "https://api-rinkeby.etherscan.io/api?module={{module}}&action={{action}}&address={{address}}&apiKey={{apiKey}}"
+            address: "https://explorer.aura.network/address/{{address}}",
+            txHash: "https://explorer.aura.network/transaction/{{txHash}}",
+            api: "https://explorer.aura.network/api?module={{module}}&action={{action}}&address={{address}}&apiKey={{apiKey}}"
           },
           nativeCurrency: {
             name: "Aura",
             symbol: "Aura",
-            decimals: 18,
+            decimals: 6,
             logoUri: "https://safe-transaction-assets.staging.gnosisdev.com/chains/4/currency_logo.png"
           },
           theme: {
