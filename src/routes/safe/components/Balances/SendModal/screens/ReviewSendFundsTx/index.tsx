@@ -47,6 +47,7 @@ import { SigningStargateClient } from '@cosmjs/stargate'
 import enqueueSnackbar from 'src/logic/notifications/store/actions/enqueueSnackbar'
 import { enhanceSnackbarForAction, NOTIFICATIONS } from 'src/logic/notifications'
 import { AuthInfo, TxBody, TxRaw } from 'cosmjs-types/cosmos/tx/v1beta1/tx'
+import { userAccountSelector } from 'src/logic/wallets/store/selectors'
 
 const useStyles = makeStyles(styles)
 
@@ -155,6 +156,7 @@ const ReviewSendFundsTx = ({ onClose, onPrev, tx }: ReviewTxProps): React.ReactE
   const isSpendingLimit = sameString(tx.txType, 'spendingLimit')
   const [executionApproved, setExecutionApproved] = useState<boolean>(true)
   const doExecute = isExecution && executionApproved
+  const userWalletAddress = useSelector(userAccountSelector)
 
   const submitTx = async (txParameters: TxParameters) => {
     signTransactionWithKeplr(safeAddress, txRecipient)
@@ -202,23 +204,27 @@ const ReviewSendFundsTx = ({ onClose, onPrev, tx }: ReviewTxProps): React.ReactE
           gasLimit: manualGasLimit || '',
           internalChainId: getInternalChainId(),
           fee: Number(manualGasPrice) || 0,
-          creatorAddress: safeAddress,
+          creatorAddress: userWalletAddress,
           signature: signResult.signatures.toString(),
           bodyBytes: signResult.bodyBytes.toString(),
         }
+        
 
         const { ErrorCode, Data: safeData, Message } = await createSafeTransaction(data)
-
-        if (ErrorCode === 'SUCCESSFUL') {
-          setButtonStatus(ButtonStatus.READY)
-          // broadcast
-          try {
-            await client.broadcastTx(Uint8Array.from(TxRaw.encode(signResult).finish()))
-            onClose()
-          } catch {}
-        } else {
-          dispatch(enqueueSnackbar(enhanceSnackbarForAction(NOTIFICATIONS.TX_FAILED_MSG)))
-        }
+        
+        // if (ErrorCode === 'SUCCESSFUL') {
+        //   setButtonStatus(ButtonStatus.READY)
+        //   // broadcast
+        //   try {
+        //     // const broadcastResult = await client.broadcastTx(Uint8Array.from(TxRaw.encode(signResult).finish()))
+        //     onClose()
+        //   } catch (error) {
+        //     console.log(error)
+        //     debugger;
+        //   }
+        // } else {
+        //   dispatch(enqueueSnackbar(enhanceSnackbarForAction(NOTIFICATIONS.TX_FAILED_MSG)))
+        // }
       } catch {
         dispatch(enqueueSnackbar(enhanceSnackbarForAction(NOTIFICATIONS.TX_CANCELLATION_EXECUTED_MSG)))
         onClose()
