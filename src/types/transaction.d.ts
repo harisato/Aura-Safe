@@ -1,3 +1,8 @@
+import { TransactionListItem, TransactionSummary } from "@gnosis.pm/safe-react-gateway-sdk";
+
+export type MTransactionListItem = TransactionListItem & {
+    transaction: TransactionSummary & { txHash?: string }
+}
 export interface ITransactionInfoResponse {
     from: string,
     to: string,
@@ -34,4 +39,27 @@ export interface ITransactionListItem {
     Status: string,
     Signatures: string[],
     Direction: string
-} 
+}
+export interface ITransactionDetail {
+    CreatedAt: string,
+    UpdatedAt: string,
+    Id: string,
+    Code: number,
+    CodeSpace: string,
+    Data: string,
+    GasUsed: number,
+    GasWanted: number,
+    Height: number,
+    Info: string,
+    Logs: string,
+    RawLogs: string,
+    FromAddress: string,
+    ToAddress: string,
+    Amount: number,
+    Denom: string,
+    TimeStamp: string,
+    Tx: string,
+    TxHash: string,
+    ChainId: string,
+    Signatures: string,
+}

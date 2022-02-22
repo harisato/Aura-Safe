@@ -3,7 +3,7 @@ import axios from "axios";
 import { WalletKey } from "src/logic/keplr/keplr";
 import { SendCollectibleTxInfo } from "src/routes/safe/components/Balances/SendModal/screens/SendCollectible";
 import { TxInfo } from "src/routes/safe/components/Transactions/TxList/TxInfo";
-import { ICreateSafeTransaction, ITransactionInfoResponse, ITransactionListItem, ITransactionListQuery } from "src/types/transaction";
+import { ICreateSafeTransaction, ITransactionDetail, ITransactionInfoResponse, ITransactionListItem, ITransactionListQuery } from "src/types/transaction";
 import { IMSafeInfo, IMSafeResponse, OwnedMSafes } from "../types/safe";
 import { MSAFE_GATEWAY_URL } from "../utils/constants";
 
@@ -148,4 +148,8 @@ export function createSafeTransaction(transactionInfo: ICreateSafeTransaction): 
 
 export async function getAllTx(payload: ITransactionListQuery): Promise<IResponse<Array<ITransactionListItem>>> {
   return axios.post(`${baseUrl}/transaction/get-all-txs`, payload).then(res => res.data);
+}
+
+export async function getTxDetailByHash(txHash: string): Promise<IResponse<ITransactionDetail>> {
+  return axios.get(`${baseUrl}/transaction/transaction-details/${txHash}`).then(res => res.data)
 }

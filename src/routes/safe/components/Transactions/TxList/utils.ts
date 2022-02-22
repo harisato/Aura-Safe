@@ -30,7 +30,7 @@ import {
 import { formatAmount } from 'src/logic/tokens/utils/formatAmount'
 import { sameAddress, ZERO_ADDRESS } from 'src/logic/wallets/ethAddresses'
 import { SAFE_ROUTES, TRANSACTION_ID_SLUG, history } from 'src/routes/routes'
-import { ITransactionListItem } from 'src/types/transaction'
+import { ITransactionListItem, MTransactionListItem } from 'src/types/transaction'
 
 export const NOT_AVAILABLE = 'n/a'
 interface AmountData {
@@ -208,16 +208,17 @@ export const isAwaitingExecution = (
 ): boolean => [LocalTransactionStatus.AWAITING_EXECUTION, LocalTransactionStatus.PENDING_FAILED].includes(txStatus)
 
 export const makeHistoryTransactionsFromService = (list: ITransactionListItem[]): TransactionListPage => {
-  const transaction: TransactionListItem[] = makeTransactions(list)
+  const transaction: MTransactionListItem[] = makeTransactions(list)
     .filter(({ transaction }: any) => transaction.txStatus !== TransactionStatus.PENDING)
   let page: TransactionListPage = {
     results: [...transaction]
   }
+  console.log('page', page)
   return page;
 }
 
 export const makeQueueTransactionsFromService = (list: ITransactionListItem[]): TransactionListPage => {
-  const transaction: TransactionListItem[] = makeTransactions(list)
+  const transaction: MTransactionListItem[] = makeTransactions(list)
     .filter((item: any) => item.transaction.txStatus === TransactionStatus.PENDING)
   let page: TransactionListPage = {
     results: [...transaction]
@@ -225,42 +226,40 @@ export const makeQueueTransactionsFromService = (list: ITransactionListItem[]): 
   return page;
 }
 
-const makeTransactions = (list: ITransactionListItem[]): TransactionListItem[] => {
-  return list.map(tx => {
-    const trans: TransactionListItem = {
-      conflictType: 'None',
-      type: 'TRANSACTION',
-      transaction: {
-        executionInfo: {
-          confirmationsRequired: 1,
-          confirmationsSubmitted: 1,
-          nonce: 0,
-          type: "MULTISIG",
-          missingSigners: null
+const makeTransactions = (list: ITransactionListItem[]): MTransactionListItem[] => list.map(
+  (tx: ITransactionListItem) => ({
+    conflictType: 'None',
+    type: 'TRANSACTION',
+    transaction: {
+      executionInfo: {
+        confirmationsRequired: 1,
+        confirmationsSubmitted: 1,
+        nonce: 0,
+        type: "MULTISIG",
+        missingSigners: null
+      },
+      id: tx.Id.toString(),
+      txHash: tx.TxHash,
+      timestamp: new Date(tx.UpdatedAt).getTime(),
+      txStatus: (tx.Status == '0' ? TransactionStatus.SUCCESS : tx.Status) as TransactionStatus,
+      txInfo: {
+        type: 'Transfer',
+        sender: {
+          value: tx.FromAddress,
+          name: null,
+          logoUri: null,
         },
-        id: tx.Id.toString(),
-        timestamp: new Date(tx.UpdatedAt).getTime(),
-        txStatus: (tx.Status == '0' ? TransactionStatus.SUCCESS : tx.Status) as TransactionStatus,
-        txInfo: {
-          type: 'Transfer',
-          sender: {
-            value: tx.FromAddress,
-            name: null,
-            logoUri: null,
-          },
-          recipient: {
-            value: tx.ToAddress,
-            name: null,
-            logoUri: null,
-          },
-          direction: tx.Direction as TransferDirection,
-          transferInfo: {
-            type: TokenType.NATIVE_COIN,
-            value: (tx.Amount).toString(),
-          },
+        recipient: {
+          value: tx.ToAddress,
+          name: null,
+          logoUri: null,
         },
-      }
+        direction: tx.Direction as TransferDirection,
+        transferInfo: {
+          type: TokenType.NATIVE_COIN,
+          value: (tx.Amount).toString(),
+        },
+      },
     }
-    return trans
-  })
-}
+  }))
+

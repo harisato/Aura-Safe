@@ -11,7 +11,7 @@ export type LoadTransactionDetails = {
   loading: boolean
 }
 
-export const useTransactionDetails = (transactionId: string): LoadTransactionDetails => {
+export const useTransactionDetails = (transactionId: string, txHash?: string): LoadTransactionDetails => {
   const dispatch = useRef(useDispatch())
   const [txDetails, setTxDetails] = useState<LoadTransactionDetails>({
     loading: true,
@@ -26,7 +26,11 @@ export const useTransactionDetails = (transactionId: string): LoadTransactionDet
       setTxDetails({ loading: false, data: data?.txDetails })
     } else {
       // lookup tx details
-      dispatch.current(fetchTransactionDetails({ transactionId }))
+      if (txHash) {
+        dispatch.current(fetchTransactionDetails({ transactionId }))
+      } else {
+        dispatch.current(fetchTransactionDetails({ transactionId }))
+      }
     }
   }, [data?.txDetails, transactionId])
 
