@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
 import { ExpandedTxDetails } from 'src/logic/safe/store/models/types/gateway.d'
-import { fetchTransactionDetails } from 'src/logic/safe/store/actions/fetchTransactionDetails'
+import { fetchTransactionDetails, fetchTransactionDetailsWithHash } from 'src/logic/safe/store/actions/fetchTransactionDetails'
 import { getTransactionByAttribute } from 'src/logic/safe/store/selectors/gatewayTransactions'
 import { AppReduxState } from 'src/store'
 
@@ -27,7 +27,7 @@ export const useTransactionDetails = (transactionId: string, txHash?: string): L
     } else {
       // lookup tx details
       if (txHash) {
-        dispatch.current(fetchTransactionDetails({ transactionId }))
+        dispatch.current(fetchTransactionDetailsWithHash({ txHash: String(txHash) }))
       } else {
         dispatch.current(fetchTransactionDetails({ transactionId }))
       }

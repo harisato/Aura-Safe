@@ -40,26 +40,35 @@ export interface ITransactionListItem {
     Signatures: string[],
     Direction: string
 }
+
+export interface ISignature {
+    id: number;
+    createdAt: string;
+    updatedAt: string;
+    ownerAddress: string;
+}
+
 export interface ITransactionDetail {
-    CreatedAt: string,
-    UpdatedAt: string,
-    Id: string,
-    Code: number,
-    CodeSpace: string,
-    Data: string,
-    GasUsed: number,
-    GasWanted: number,
-    Height: number,
-    Info: string,
-    Logs: string,
-    RawLogs: string,
-    FromAddress: string,
-    ToAddress: string,
-    Amount: number,
-    Denom: string,
-    TimeStamp: string,
-    Tx: string,
-    TxHash: string,
-    ChainId: string,
-    Signatures: string,
+    CreatedAt: string;
+    UpdatedAt: string;
+    Id: number;
+    SafeId: number;
+    FromAddress: string;
+    ToAddress: string;
+    Signature: string;
+    InternalChainId: number;
+    Gas: number;
+    Fee: number;
+    MultisigPubkey: string;
+    TxHash?: any;
+    Map: string;
+    Amount: number;
+    Denom: string;
+    Status: string;
+    TypeUrl: string;
+    Sequence: string;
+    Msg: string;
+    AccountNumber: string;
+    ChainId: string;
+    Signatures: Signature[];
 }

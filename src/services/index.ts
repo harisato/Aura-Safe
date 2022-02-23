@@ -42,7 +42,7 @@ export type MChainInfo = ChainInfo & _ChainInfo
 export function getMChainsConfig(): Promise<MChainInfo[]> {
   return axios.post(`${baseUrl}/general/network-list`)
     .then(response => {
-      const chainList: MChainInfo[] = response.data.Data.map((e: {
+      const chainList: MChainInfo[] = response.data.Data.filter(e => e.name !== 'Aura Devnet').map((e: {
         chainId: any; name: any; rpc: any, id: number, prefix: string
       }) => {
         return {

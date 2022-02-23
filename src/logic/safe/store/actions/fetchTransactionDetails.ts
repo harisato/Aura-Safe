@@ -10,7 +10,7 @@ import { currentChainId } from 'src/logic/config/store/selectors'
 import { extractSafeAddress } from 'src/routes/routes'
 import { getTxDetailByHash } from 'src/services'
 import { MESSAGES_CODE } from 'src/services/constant/message'
-import { TokenType, TransactionStatus, TransferDirection } from '@gnosis.pm/safe-react-gateway-sdk'
+import { TokenType, TransactionDetails, TransactionStatus, TransferDirection } from '@gnosis.pm/safe-react-gateway-sdk'
 
 export const UPDATE_TRANSACTION_DETAILS = 'UPDATE_TRANSACTION_DETAILS'
 const updateTransactionDetails = createAction<TransactionDetailsPayload>(UPDATE_TRANSACTION_DETAILS)
@@ -37,31 +37,38 @@ export const fetchTransactionDetails =
         console.error(`Failed to retrieve transaction ${transactionId} details`, error.message)
       }
     }
-/* 
-export const fetchTransactionDetailsWithHash = (txHash: string) => {
+
+export const fetchTransactionDetailsWithHash = ({ txHash }: { txHash: string }) =>
   async (dispatch: Dispatch, getState: () => AppReduxState): Promise<Transaction['txDetails']> => {
     // const transaction = getTransactionByAttribute(getState(), {
     //   attributeValue: transactionId,
     //   attributeName: 'id',
     // })
-    // const safeAddress = extractSafeAddress()
-    // const chainId = currentChainId(getState())
+    const safeAddress = extractSafeAddress()
+    const chainId = currentChainId(getState())
 
-    // if (transaction?.txDetails || !safeAddress) {
-    //   return
-    // }
+    console.log('fetchTransactionDetailsWithHash', txHash);
+
+    if (!txHash || !safeAddress) {
+      return
+    }
+
+
 
     try {
-      // const transactionDetails = await fetchSafeTransaction(transactionId)
       const { Data, ErrorCode } = await getTxDetailByHash(txHash)
+
+      console.log(Data);
+      
+
 
       if (ErrorCode !== MESSAGES_CODE.SUCCESSFUL.ErrorCode) {
         return
       }
 
-      const value: Transaction = {
-        id: Data.Id,
-        timestamp: (new Date(Data.UpdatedAt)).getTime(),
+      const transactionDetails: TransactionDetails = {
+        txId: Data.Id.toString(),
+        executedAt: new Date(Data.UpdatedAt).getTime(),
         txStatus: (Data.Status == '0' ? TransactionStatus.SUCCESS : Data.Status) as TransactionStatus,
         txInfo: {
           type: 'Transfer',
@@ -81,12 +88,29 @@ export const fetchTransactionDetailsWithHash = (txHash: string) => {
             value: (Data.Amount).toString(),
           },
         },
-
+        txHash: Data.TxHash,
+        safeAppInfo: null,
+        detailedExecutionInfo: null,
+        txData: null
       }
 
-      dispatch(updateTransactionDetails({ chainId, transactionId, safeAddress, value: transactionDetails }))
+      console.log('transactionDetails', transactionDetails)
+
+      dispatch(updateTransactionDetails({ chainId, transactionId: transactionDetails.txId, safeAddress, value: transactionDetails }))
     } catch (error) {
-      // console.error(`Failed to retrieve transaction ${transactionId} details`, error.message)
+      console.error(`Failed to retrieve transaction details`, error.message)
     }
   }
-} */
+
+/* 
+export type TransactionDetails = {
+  txId: string
+  executedAt: number | null
+  txStatus: TransactionStatus
+  txInfo: TransactionInfo
+  txData: TransactionData | null
+  detailedExecutionInfo: DetailedExecutionInfo | null
+  txHash: string | null
+  safeAppInfo: SafeAppInfo | null
+}
+*/
