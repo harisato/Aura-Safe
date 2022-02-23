@@ -33,6 +33,12 @@ import { SAFE_ROUTES, TRANSACTION_ID_SLUG, history } from 'src/routes/routes'
 import { ITransactionListItem, MTransactionListItem } from 'src/types/transaction'
 
 export const NOT_AVAILABLE = 'n/a'
+
+const inQueuedStatus = [
+  TransactionStatus.PENDING,
+  TransactionStatus.AWAITING_CONFIRMATIONS,
+  TransactionStatus.AWAITING_EXECUTION,
+]
 interface AmountData {
   decimals?: number | string
   symbol?: string
@@ -209,7 +215,7 @@ export const isAwaitingExecution = (
 
 export const makeHistoryTransactionsFromService = (list: ITransactionListItem[]): TransactionListPage => {
   const transaction: MTransactionListItem[] = makeTransactions(list)
-    .filter(({ transaction }: any) => transaction.txStatus !== TransactionStatus.PENDING)
+    .filter(({ transaction }: any) => !inQueuedStatus.includes(transaction.txStatus))
   let page: TransactionListPage = {
     results: [...transaction]
   }
@@ -218,8 +224,9 @@ export const makeHistoryTransactionsFromService = (list: ITransactionListItem[])
 }
 
 export const makeQueueTransactionsFromService = (list: ITransactionListItem[]): TransactionListPage => {
+
   const transaction: MTransactionListItem[] = makeTransactions(list)
-    .filter((item: any) => item.transaction.txStatus === TransactionStatus.PENDING)
+    .filter(({ transaction }: any) => inQueuedStatus.includes(transaction.txStatus))
   let page: TransactionListPage = {
     results: [...transaction]
   }
@@ -234,7 +241,7 @@ const makeTransactions = (list: ITransactionListItem[]): MTransactionListItem[] 
       executionInfo: {
         confirmationsRequired: 1,
         confirmationsSubmitted: 1,
-        nonce: 0,
+        nonce: tx.Id,
         type: "MULTISIG",
         missingSigners: null
       },
