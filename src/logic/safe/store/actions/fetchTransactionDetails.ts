@@ -10,7 +10,7 @@ import { currentChainId } from 'src/logic/config/store/selectors'
 import { extractSafeAddress } from 'src/routes/routes'
 import { getTxDetailByHash } from 'src/services'
 import { MESSAGES_CODE } from 'src/services/constant/message'
-import { TokenType, TransactionDetails, TransactionStatus, TransferDirection } from '@gnosis.pm/safe-react-gateway-sdk'
+import { Operation, TokenType, TransactionDetails, TransactionStatus, TransferDirection } from '@gnosis.pm/safe-react-gateway-sdk'
 
 export const UPDATE_TRANSACTION_DETAILS = 'UPDATE_TRANSACTION_DETAILS'
 const updateTransactionDetails = createAction<TransactionDetailsPayload>(UPDATE_TRANSACTION_DETAILS)
@@ -56,10 +56,10 @@ export const fetchTransactionDetailsWithHash = ({ txHash }: { txHash: string }) 
 
 
     try {
-      const { Data, ErrorCode } = await getTxDetailByHash(txHash)
+      const { Data, ErrorCode } = await getTxDetailByHash(txHash, safeAddress)
 
       console.log(Data);
-      
+
 
 
       if (ErrorCode !== MESSAGES_CODE.SUCCESSFUL.ErrorCode) {
@@ -82,16 +82,68 @@ export const fetchTransactionDetailsWithHash = ({ txHash }: { txHash: string }) 
             name: null,
             logoUri: null,
           },
-          direction: TransferDirection.INCOMING,
+          direction: Data.Direction as TransferDirection,
           transferInfo: {
             type: TokenType.NATIVE_COIN,
             value: (Data.Amount).toString(),
           },
         },
         txHash: Data.TxHash,
-        safeAppInfo: null,
-        detailedExecutionInfo: null,
-        txData: null
+        safeAppInfo: {
+          name: 'safeAppInfo',
+          url: 'https://safe-transaction-assets.staging.gnosisdev.com/chains/4/currency_logo.png',
+          logoUri: 'https://safe-transaction-assets.staging.gnosisdev.com/chains/4/currency_logo.png',
+        },
+        detailedExecutionInfo: {
+          type: 'MULTISIG',
+          submittedAt: new Date(Data.CreatedAt).getTime(),
+          nonce: Data.Id,
+          safeTxGas: Data.GasUsed.toString(),
+          baseGas: Data.GasUsed.toString(),
+          gasPrice: '0',
+          gasToken: Data.Denom,
+          refundReceiver: {
+            logoUri: 'https://safe-transaction-assets.staging.gnosisdev.com/chains/4/currency_logo.png',
+            name: '',
+            value: Data.ToAddress
+          },
+          safeTxHash: 'aura1r2gv6rx0fxdmepu8gd2gmn5j8cjetkqrw836x5',
+          executor: {
+            logoUri: 'https://safe-transaction-assets.staging.gnosisdev.com/chains/4/currency_logo.png',
+            name: '',
+            value: Data.FromAddress
+          },
+          signers: [] /* Data.Signatures.map(e => (
+            {
+              logoUri: 'https://safe-transaction-assets.staging.gnosisdev.com/chains/4/currency_logo.png',
+              name: 'Owner ' + e.id,
+              value: e.ownerAddress
+            }
+          )) */,
+          confirmationsRequired: Data.Signatures.length,
+          confirmations: [],
+          rejectors: null,
+          gasTokenInfo: {
+            address: '',
+            decimals: 6,
+            logoUri: 'https://safe-transaction-assets.staging.gnosisdev.com/chains/4/currency_logo.png',
+            name: 'Aura',
+            symbol: 'Aura'
+
+          },
+        },
+        txData: {
+          hexData: null,
+          dataDecoded: null,
+          to: {
+            logoUri: 'https://safe-transaction-assets.staging.gnosisdev.com/chains/4/currency_logo.png',
+            name: '',
+            value: Data.ToAddress
+          },
+          value: Data.Amount.toString(),
+          operation: Operation.CALL,
+          addressInfoIndex: null
+        }
       }
 
       console.log('transactionDetails', transactionDetails)
