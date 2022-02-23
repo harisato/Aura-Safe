@@ -6,7 +6,7 @@ WORKDIR /app
 
 COPY package.json ./
 
-COPY yarn.lock ./
+# COPY yarn.lock ./
 
 COPY  src/logic/contracts/artifacts ./src/logic/contracts/artifacts
 
