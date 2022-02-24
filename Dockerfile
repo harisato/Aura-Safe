@@ -1,18 +1,16 @@
-FROM node:14 as build
+FROM node:16 as build
 
 RUN apt-get update && apt-get install -y libusb-1.0-0 libusb-1.0-0-dev libudev-dev
 
 WORKDIR /app
-
-COPY package.json ./
+COPY . .
+# COPY package.json ./
 
 # COPY yarn.lock ./
 
-COPY  src/logic/contracts/artifacts ./src/logic/contracts/artifacts
+# COPY  src/logic/contracts/artifacts ./src/logic/contracts/artifacts
 
 RUN yarn install
-
-COPY . .
 
 RUN yarn run build
 
