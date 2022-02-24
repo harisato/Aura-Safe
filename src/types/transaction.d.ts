@@ -55,6 +55,7 @@ export interface ITransactionDetail {
     Code: string;
     CodeSpace?: any;
     Data: string;
+    Gas: number;
     GasUsed: number;
     GasWanted: number;
     Height: number;
@@ -72,5 +73,5 @@ export interface ITransactionDetail {
     ChainId: string;
     Status: string;
     Direction: string;
-    Signatures: Signatures;
+    Signatures: ISignature[];
 }

@@ -26,11 +26,9 @@ export const useTransactionDetails = (transactionId: string, txHash?: string): L
       setTxDetails({ loading: false, data: data?.txDetails })
     } else {
       // lookup tx details
-      if (txHash) {
-        dispatch.current(fetchTransactionDetailsByHash({ txHash, transactionId }))
-      } else {
-        dispatch.current(fetchTransactionDetails({ transactionId }))
-      }
+      // dispatch.current(fetchTransactionDetails({ transactionId }))
+      dispatch.current(fetchTransactionDetailsByHash({ transactionId, txHash: txHash || null }))
+
     }
   }, [data?.txDetails, transactionId])
 

@@ -38,7 +38,7 @@ export const fetchTransactionDetails =
       }
     }
 
-export const fetchTransactionDetailsByHash = ({ txHash, transactionId }: { txHash: string, transactionId: string }) =>
+export const fetchTransactionDetailsByHash = ({ transactionId, txHash }: { transactionId: string, txHash?: string | null }) =>
   async (dispatch: Dispatch, getState: () => AppReduxState): Promise<Transaction['txDetails']> => {
     const transaction = getTransactionByAttribute(getState(), {
       attributeValue: transactionId,
@@ -47,12 +47,14 @@ export const fetchTransactionDetailsByHash = ({ txHash, transactionId }: { txHas
     const safeAddress = extractSafeAddress()
     const chainId = currentChainId(getState())
 
-    if (transaction?.txDetails || !safeAddress || !txHash) {
+    const txQuery = txHash || transactionId
+
+    if (transaction?.txDetails || !safeAddress || !txQuery) {
       return
     }
 
     try {
-      const { Data, ErrorCode } = await getTxDetailByHash(txHash, safeAddress)
+      const { Data, ErrorCode } = await getTxDetailByHash(txQuery, safeAddress)
 
       console.log(Data);
 
@@ -62,7 +64,7 @@ export const fetchTransactionDetailsByHash = ({ txHash, transactionId }: { txHas
         return
       }
 
-      const direction: TransferDirection = Data.Direction as TransferDirection
+      const direction: TransferDirection = Data?.Direction as TransferDirection || TransferDirection.UNKNOWN
 
       let safeAppInfo: SafeAppInfo | null = null;
       let detailedExecutionInfo: DetailedExecutionInfo | null = null;
@@ -70,17 +72,17 @@ export const fetchTransactionDetailsByHash = ({ txHash, transactionId }: { txHas
 
       if (direction == TransferDirection.OUTGOING) {
         safeAppInfo = {
-          name: 'safeAppInfo',
-          url: 'https://safe-transaction-assets.staging.gnosisdev.com/chains/4/currency_logo.png',
-          logoUri: 'https://safe-transaction-assets.staging.gnosisdev.com/chains/4/currency_logo.png',
+          name: '',
+          url: '',
+          logoUri: '',
         }
 
         detailedExecutionInfo = {
           type: 'MULTISIG',
           submittedAt: new Date(Data.CreatedAt).getTime(),
           nonce: Data.Id,
-          safeTxGas: Data.GasUsed.toString(),
-          baseGas: Data.GasUsed.toString(),
+          safeTxGas: (Data.GasUsed || Data.Gas)?.toString(),
+          baseGas: (Data.GasUsed || Data.Gas)?.toString(),
           gasPrice: '0',
           gasToken: Data.Denom,
           refundReceiver: {
@@ -89,11 +91,11 @@ export const fetchTransactionDetailsByHash = ({ txHash, transactionId }: { txHas
             value: 'aura000000000000000000000000000000000000000'
           },
           safeTxHash: 'aura1r2gv6rx0fxdmepu8gd2gmn5j8cjetkqrw836x5',
-          executor: {
+          executor: Data.TxHash ? {
             logoUri: null,
             name: null,
             value: Data.FromAddress
-          },
+          } : null,
           signers: [],
           confirmationsRequired: 2,
           confirmations: [
@@ -130,8 +132,8 @@ export const fetchTransactionDetailsByHash = ({ txHash, transactionId }: { txHas
           hexData: null,
           dataDecoded: null,
           to: {
-            logoUri: 'https://safe-transaction-assets.staging.gnosisdev.com/chains/4/currency_logo.png',
-            name: '',
+            logoUri: null,
+            name: null,
             value: Data.ToAddress
           },
           value: Data.Amount.toString(),
@@ -144,7 +146,7 @@ export const fetchTransactionDetailsByHash = ({ txHash, transactionId }: { txHas
 
       const transactionDetails: TransactionDetails = {
         txId: Data.Id.toString(),
-        executedAt: new Date(Data.UpdatedAt).getTime(),
+        executedAt: Data.TxHash ? new Date(Data.UpdatedAt).getTime() : null,
         txStatus: (Data.Status == '0' ? TransactionStatus.SUCCESS : Data.Status) as TransactionStatus,
         txInfo: {
           type: 'Transfer',
@@ -164,7 +166,7 @@ export const fetchTransactionDetailsByHash = ({ txHash, transactionId }: { txHas
             value: (Data.Amount).toString(),
           },
         },
-        txHash: Data.TxHash,
+        txHash: Data?.TxHash || '',
         safeAppInfo,
         detailedExecutionInfo,
         txData
@@ -175,16 +177,3 @@ export const fetchTransactionDetailsByHash = ({ txHash, transactionId }: { txHas
       console.error(`Failed to retrieve transaction details`, error.message)
     }
   }
-
-/* 
-export type TransactionDetails = {
-  txId: string
-  executedAt: number | null
-  txStatus: TransactionStatus
-  txInfo: TransactionInfo
-  txData: TransactionData | null
-  detailedExecutionInfo: DetailedExecutionInfo | null
-  txHash: string | null
-  safeAppInfo: SafeAppInfo | null
-}
-*/
