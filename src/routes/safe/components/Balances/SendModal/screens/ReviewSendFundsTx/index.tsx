@@ -36,14 +36,14 @@ import { TxParametersDetail } from 'src/routes/safe/components/Transactions/help
 import { TxParameters } from 'src/routes/safe/container/hooks/useTransactionParameters'
 import { Errors, logError } from 'src/logic/exceptions/CodedException'
 import { ModalHeader } from '../ModalHeader'
-import { extractPrefixedSafeAddress, extractSafeAddress } from 'src/routes/routes'
+import { extractPrefixedSafeAddress, extractSafeAddress, extractShortChainName, getPrefixedSafeAddressSlug, history, SAFE_ADDRESS_SLUG, SAFE_ROUTES, TRANSACTION_ID_SLUG } from 'src/routes/routes'
 import ExecuteCheckbox from 'src/components/ExecuteCheckbox'
 import { getNativeCurrencyAddress } from 'src/config/utils'
 import { ICreateSafeTransaction } from 'src/types/transaction'
 import { currentSafeWithNames } from 'src/logic/safe/store/selectors'
 import { TxData } from 'src/routes/safe/components/Transactions/TxList/TxData'
 import { createSafeTransaction, getMChainsConfig, signSafeTransaction } from 'src/services'
-import { coins, MsgSendEncodeObject, SigningStargateClient } from '@cosmjs/stargate'
+import { coins, GasPrice, MsgSendEncodeObject, SignerData, SigningStargateClient } from '@cosmjs/stargate'
 import enqueueSnackbar from 'src/logic/notifications/store/actions/enqueueSnackbar'
 import { enhanceSnackbarForAction, NOTIFICATIONS } from 'src/logic/notifications'
 import { AuthInfo, TxBody, TxRaw } from 'cosmjs-types/cosmos/tx/v1beta1/tx'
@@ -51,6 +51,7 @@ import { userAccountSelector } from 'src/logic/wallets/store/selectors'
 import { parseToAdress } from 'src/utils/parseByteAdress'
 import { ChainInfo } from '@gnosis.pm/safe-react-gateway-sdk'
 import { getChains } from 'src/config/cache/chains'
+import { generatePath } from 'react-router-dom'
 
 const useStyles = makeStyles(styles)
 let chains: ChainInfo[] = []
@@ -177,7 +178,7 @@ const ReviewSendFundsTx = ({ onClose, onPrev, tx }: ReviewTxProps): React.ReactE
     const chainInfo = getChainInfo()
     const chainId = chainInfo.chainId
     const listChain = getChains()
-    const denom = listChain.find(x => x.chainId === chainId)?.denom || ''
+    const denom = listChain.find((x) => x.chainId === chainId)?.denom || ''
     if (window.keplr) {
       await window.keplr.enable(chainId)
     }
@@ -189,6 +190,20 @@ const ReviewSendFundsTx = ({ onClose, onPrev, tx }: ReviewTxProps): React.ReactE
       const client = await SigningStargateClient.connectWithSigner(tendermintUrl, offlineSigner)
 
       const amountFinal = Math.floor(Number(tx?.amount) * Math.pow(10, 6)).toString() || ''
+
+      const signingInstruction = await (async () => {
+
+        const accountOnChain = await client.getAccount(safeAddress);
+
+        return {
+            accountNumber: accountOnChain?.accountNumber,
+            sequence: accountOnChain?.sequence,
+            memo: "",
+        };
+    })();
+
+
+      
 
       const msgSend = {
         fromAddress: safeAddress,
@@ -210,10 +225,16 @@ const ReviewSendFundsTx = ({ onClose, onPrev, tx }: ReviewTxProps): React.ReactE
         gas: manualGasLimit || '20000',
       }
 
+      const signerData: SignerData = {
+        accountNumber: signingInstruction.accountNumber || 0,
+        sequence: signingInstruction.sequence || 0,
+        chainId: chainId,
+    };
+
       try {
         // Sign On Wallet
         dispatch(enqueueSnackbar(enhanceSnackbarForAction(NOTIFICATIONS.SIGN_TX_MSG)))
-        const signResult = await client.sign(accounts[0]?.address, [msg], fee, '')
+        const signResult = await client.sign(accounts[0]?.address, [msg], fee, '', signerData)
 
         const signatures = parseToAdress(signResult.signatures[0])
         const bodyBytes = parseToAdress(signResult.bodyBytes)
@@ -235,6 +256,14 @@ const ReviewSendFundsTx = ({ onClose, onPrev, tx }: ReviewTxProps): React.ReactE
         if (ErrorCode === 'SUCCESSFUL') {
           setButtonStatus(ButtonStatus.READY)
           onClose()
+
+          // navigate to tx details
+          const prefixedSafeAddress = getPrefixedSafeAddressSlug({ shortName: extractShortChainName(), safeAddress })
+          const txRoute = generatePath(SAFE_ROUTES.TRANSACTIONS_SINGULAR, {
+            [SAFE_ADDRESS_SLUG]: prefixedSafeAddress,
+            id: safeData,
+          })
+          history.push(txRoute)
         } else {
           dispatch(enqueueSnackbar(enhanceSnackbarForAction(NOTIFICATIONS.TX_FAILED_MSG)))
           onClose()
@@ -253,7 +282,8 @@ const ReviewSendFundsTx = ({ onClose, onPrev, tx }: ReviewTxProps): React.ReactE
         // } else {
         //   dispatch(enqueueSnackbar(enhanceSnackbarForAction(NOTIFICATIONS.TX_FAILED_MSG)))
         // }
-      } catch {
+      } catch (error) {
+        console.log(error)
         dispatch(enqueueSnackbar(enhanceSnackbarForAction(NOTIFICATIONS.TX_CANCELLATION_EXECUTED_MSG)))
         onClose()
       }

@@ -1,17 +1,17 @@
-import { ChainInfo } from "@gnosis.pm/safe-react-gateway-sdk";
-import axios from "axios";
-import { WalletKey } from "src/logic/keplr/keplr";
-import { SendCollectibleTxInfo } from "src/routes/safe/components/Balances/SendModal/screens/SendCollectible";
-import { TxInfo } from "src/routes/safe/components/Transactions/TxList/TxInfo";
-import { ICreateSafeTransaction, ISignSafeTransaction, ITransactionInfoResponse } from "src/types/transaction";
-import { IMSafeInfo, IMSafeResponse, OwnedMSafes } from "../types/safe";
-import { MSAFE_GATEWAY_URL } from "../utils/constants";
+import { ChainInfo, TransactionDetails } from '@gnosis.pm/safe-react-gateway-sdk'
+import axios from 'axios'
+import { WalletKey } from 'src/logic/keplr/keplr'
+import { SendCollectibleTxInfo } from 'src/routes/safe/components/Balances/SendModal/screens/SendCollectible'
+import { TxInfo } from 'src/routes/safe/components/Transactions/TxList/TxInfo'
+import { ICreateSafeTransaction, ISignSafeTransaction, ITransactionInfoResponse } from 'src/types/transaction'
+import { IMSafeInfo, IMSafeResponse, OwnedMSafes } from '../types/safe'
+import { MSAFE_GATEWAY_URL } from '../utils/constants'
 
-const baseUrl = MSAFE_GATEWAY_URL;
+const baseUrl = MSAFE_GATEWAY_URL
 
 export interface ISafeCreate {
-  creatorAddress: string,
-  creatorPubkey: string,
+  creatorAddress: string
+  creatorPubkey: string
   otherOwnersAddress: string[]
   threshold: number
   internalChainId: number
@@ -20,7 +20,7 @@ export interface ISafeCancel {
   myAddress: string
 }
 export interface ISafeAllow {
-  safeId: string,
+  safeId: string
   myAddress: string
 }
 
@@ -31,122 +31,125 @@ export interface IResponse<T> {
   Message: string
 }
 
-
 type _ChainInfo = {
   internalChainId: number
 }
 
-
 export type MChainInfo = ChainInfo & _ChainInfo
 
 export function getMChainsConfig(): Promise<MChainInfo[]> {
-  return axios.post(`${baseUrl}/general/network-list`)
-    .then(response => {
-      const chainList: MChainInfo[] = response.data.Data.map((e: {
-        chainId: any; name: any; rpc: any, id: number, prefix: string, denom: string
-      }) => {
+  return axios.post(`${baseUrl}/general/network-list`).then((response) => {
+    const chainList: MChainInfo[] = response.data.Data.map(
+      (e: { chainId: any; name: any; rpc: any; id: number; prefix: string; denom: string }) => {
         return {
-          transactionService: "https://safe-transaction.rinkeby.staging.gnosisdev.com",
+          transactionService: 'https://safe-transaction.rinkeby.staging.gnosisdev.com',
           internalChainId: e.id,
           denom: e.denom,
           chainId: e.chainId,
           chainName: e.name,
           shortName: e.prefix,
           l2: false,
-          description: "",
+          description: '',
           rpcUri: {
-            authentication: "API_KEY_PATH",
-            value: e.rpc
+            authentication: 'API_KEY_PATH',
+            value: e.rpc,
           },
           safeAppsRpcUri: {
-            authentication: "API_KEY_PATH",
-            value: e.rpc
+            authentication: 'API_KEY_PATH',
+            value: e.rpc,
           },
           publicRpcUri: {
-            authentication: "API_KEY_PATH",
-            value: e.rpc
+            authentication: 'API_KEY_PATH',
+            value: e.rpc,
           },
           blockExplorerUriTemplate: {
-            address: "https://rinkeby.etherscan.io/address/{{address}}",
-            txHash: "https://rinkeby.etherscan.io/tx/{{txHash}}",
-            api: "https://api-rinkeby.etherscan.io/api?module={{module}}&action={{action}}&address={{address}}&apiKey={{apiKey}}"
+            address: 'https://rinkeby.etherscan.io/address/{{address}}',
+            txHash: 'https://rinkeby.etherscan.io/tx/{{txHash}}',
+            api: 'https://api-rinkeby.etherscan.io/api?module={{module}}&action={{action}}&address={{address}}&apiKey={{apiKey}}',
           },
           nativeCurrency: {
-            name: "Aura",
-            symbol: "Aura",
+            name: 'Aura',
+            symbol: 'Aura',
             decimals: 18,
-            logoUri: "https://safe-transaction-assets.staging.gnosisdev.com/chains/4/currency_logo.png"
+            logoUri: 'https://safe-transaction-assets.staging.gnosisdev.com/chains/4/currency_logo.png',
           },
           theme: {
-            textColor: "#ffffff",
-            backgroundColor: "#E8673C"
+            textColor: '#ffffff',
+            backgroundColor: '#E8673C',
           },
-          ensRegistryAddress: "0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e",
+          ensRegistryAddress: '0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e',
           gasPrice: [
             {
-              type: "ORACLE",
-              uri: "https://api-rinkeby.etherscan.io/api?module=gastracker&action=gasoracle&apikey=JNFAU892RF9TJWBU3EV7DJCPIWZY8KEMY1",
-              gasParameter: "FastGasPrice",
-              gweiFactor: "1000000000.000000000"
-            }
+              type: 'ORACLE',
+              uri: 'https://api-rinkeby.etherscan.io/api?module=gastracker&action=gasoracle&apikey=JNFAU892RF9TJWBU3EV7DJCPIWZY8KEMY1',
+              gasParameter: 'FastGasPrice',
+              gweiFactor: '1000000000.000000000',
+            },
           ],
-          disabledWallets: [
-            "fortmatic",
-            "lattice"
-          ],
+          disabledWallets: ['fortmatic', 'lattice'],
           features: [
-            "CONTRACT_INTERACTION",
-            "DOMAIN_LOOKUP",
-            "EIP1559",
-            "ERC721",
-            "SAFE_TX_GAS_OPTIONAL",
-            "SPENDING_LIMIT"
-          ]
+            'CONTRACT_INTERACTION',
+            'DOMAIN_LOOKUP',
+            'EIP1559',
+            'ERC721',
+            'SAFE_TX_GAS_OPTIONAL',
+            'SPENDING_LIMIT',
+          ],
         }
-      });
-      return chainList;
-    })
+      },
+    )
+    return chainList
+  })
 }
 
 export function fetchMSafesByOwner(addressOwner: string, internalChainId: number): Promise<OwnedMSafes> {
-  return axios.get(`${baseUrl}/owner/${addressOwner}/safes`, {
-    params: {
-      internalChainId
-    }
-  }).then(res => res.data.Data)
+  return axios
+    .get(`${baseUrl}/owner/${addressOwner}/safes`, {
+      params: {
+        internalChainId,
+      },
+    })
+    .then((res) => res.data.Data)
 }
 
 export function createMSafe(safes: ISafeCreate): Promise<IResponse<IMSafeResponse>> {
-  return axios.post(`${baseUrl}/multisigwallet`, safes).then(res => res.data)
+  return axios.post(`${baseUrl}/multisigwallet`, safes).then((res) => res.data)
 }
 
-
 export async function cancelMSafe(safeId: number, payload: ISafeCancel): Promise<IResponse<any>> {
-  return axios.delete(`${baseUrl}/multisigwallet/${safeId}`, {
-    data: payload
-  }).then(res => res.data)
+  return axios
+    .delete(`${baseUrl}/multisigwallet/${safeId}`, {
+      data: payload,
+    })
+    .then((res) => res.data)
 }
 
 export async function getMSafeInfo(safeId: number): Promise<IMSafeInfo> {
-  return axios.get(`${baseUrl}/multisigwallet/${safeId}`).then(res => res.data.Data)
+  return axios.get(`${baseUrl}/multisigwallet/${safeId}`).then((res) => res.data.Data)
 }
 
 export async function getMSafeInfoWithAdress(query: string, internalChainId: number): Promise<IMSafeInfo> {
-  return axios.get(`${baseUrl}/multisigwallet/${query}`, {
-    params: {
-      internalChainId
-    }
-  }).then(res => res.data.Data)
+  return axios
+    .get(`${baseUrl}/multisigwallet/${query}`, {
+      params: {
+        internalChainId,
+      },
+    })
+    .then((res) => res.data.Data)
 }
 
 export async function allowMSafe(safeId: number, walletKey: WalletKey): Promise<IResponse<IMSafeResponse>> {
-  return axios.post(`${baseUrl}/multisigwallet/${safeId}`, walletKey).then(res => res.data)
+  return axios.post(`${baseUrl}/multisigwallet/${safeId}`, walletKey).then((res) => res.data)
 }
 
-export function createSafeTransaction(transactionInfo: ICreateSafeTransaction): Promise<IResponse<ITransactionInfoResponse>> {
-  return axios.post(`${baseUrl}/transaction/create`, transactionInfo).then(res => res.data);
+export function createSafeTransaction(transactionInfo: ICreateSafeTransaction): Promise<IResponse<number>> {
+  return axios.post(`${baseUrl}/transaction/create`, transactionInfo).then((res) => res.data)
 }
 
 export function signSafeTransaction(transactionInfo: ISignSafeTransaction): Promise<IResponse<any>> {
-  return axios.post(`${baseUrl}/transaction/sign`, transactionInfo).then(res => res.data);
+  return axios.post(`${baseUrl}/transaction/sign`, transactionInfo).then((res) => res.data)
+}
+
+export const fetchSafeTransactionById = async (txId: number, safeAddress: string): Promise<any> => {
+  return axios.get(`${baseUrl}/transaction/transaction-details/${txId}/${safeAddress}`).then((res) => res.data.Data)
 }

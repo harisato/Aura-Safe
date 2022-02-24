@@ -5,7 +5,8 @@ export interface ITransactionInfoResponse {
   fee: number
   gasLimit: number
   internalChainId: number,
-  transactionId: number
+  transactionId: number,
+  id: number
 }
 
 export interface ICreateSafeTransaction {

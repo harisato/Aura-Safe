@@ -13,6 +13,7 @@ import {
   SAFE_ROUTES,
   TRANSACTION_ID_SLUG,
   history,
+  TRANSACTION_ID_NUMBER,
 } from 'src/routes/routes'
 import { Centered } from './styled'
 import { getTransactionWithLocationByAttribute } from 'src/logic/safe/store/selectors/gatewayTransactions'
@@ -30,13 +31,16 @@ import { Transaction } from 'src/logic/safe/store/models/types/gateway.d'
 import { currentChainId } from 'src/logic/config/store/selectors'
 import { QueueTxList } from './QueueTxList'
 import { HistoryTxList } from './HistoryTxList'
+import { fetchSafeTransactionById } from 'src/services'
 
 const TxSingularDetails = (): ReactElement => {
   const { [TRANSACTION_ID_SLUG]: safeTxHash = '' } = useParams<SafeRouteSlugs>()
+  const { [TRANSACTION_ID_NUMBER]: txId = '' } = useParams<SafeRouteSlugs>()
   const [fetchedTx, setFetchedTx] = useState<TransactionDetails>()
   const [liveTx, setLiveTx] = useState<{ txLocation: TxLocation; transaction: Transaction }>()
   const dispatch = useDispatch()
   const chainId = useSelector(currentChainId)
+  const safeAddress = extractSafeAddress()
 
   // We must use the tx from the store as the queue actions alter the tx
   const indexedTx = useSelector(
@@ -61,7 +65,7 @@ const TxSingularDetails = (): ReactElement => {
 
     setFetchedTx(undefined)
 
-    if (!safeTxHash) {
+    if (!txId) {
       const txsRoute = generateSafeRoute(SAFE_ROUTES.TRANSACTIONS, extractPrefixedSafeAddress())
       history.replace(txsRoute)
       return
@@ -73,7 +77,8 @@ const TxSingularDetails = (): ReactElement => {
 
       let txDetails: TransactionDetails
       try {
-        txDetails = await fetchSafeTransaction(safeTxHash)
+        // txDetails = await fetchSafeTransaction(safeTxHash)
+        txDetails = await fetchSafeTransactionById(Number(txId), safeAddress)
       } catch (e) {
         logError(Errors._614, e.message)
         return
