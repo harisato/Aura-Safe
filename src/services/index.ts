@@ -150,6 +150,6 @@ export async function getAllTx(payload: ITransactionListQuery): Promise<IRespons
   return axios.post(`${baseUrl}/transaction/get-all-txs`, payload).then(res => res.data);
 }
 
-export async function getTxDetailByHash(txHash: string): Promise<IResponse<ITransactionDetail>> {
-  return axios.get(`${baseUrl}/transaction/transaction-details/${txHash}`).then(res => res.data)
+export async function getTxDetailByHash(txHash: string,safeAddress: string): Promise<IResponse<ITransactionDetail>> {
+  return axios.get(`${baseUrl}/transaction/transaction-details/${txHash}/${safeAddress}`).then(res => res.data)
 }
