@@ -47,31 +47,45 @@ export interface ISignature {
     updatedAt: string;
     ownerAddress: string;
 }
+export interface ISigner {
+    OwnerAddress: string;
+}
+
+export interface IExecutor {
+    id: number;
+    createdAt: string;
+    updatedAt: string;
+    ownerAddress: string;
+    signature: string;
+    status: string;
+}
+
+export interface IConfirmation {
+    id: number;
+    createdAt: string;
+    updatedAt: string;
+    ownerAddress: string;
+    signature: string;
+    status: string;
+}
 
 export interface ITransactionDetail {
+    Id: number;
     CreatedAt: string;
     UpdatedAt: string;
-    Id: number;
-    Code: string;
-    CodeSpace?: any;
-    Data: string;
-    Gas: number;
-    GasUsed: number;
-    GasWanted: number;
-    Height: number;
-    Info: string;
-    Logs: string;
-    RawLogs: string;
     FromAddress: string;
     ToAddress: string;
+    TxHash?: any;
     Amount: number;
     Denom: string;
-    TimeStamp?: any;
-    Tx: string;
-    TxHash: string;
-    InternalChainId: number;
+    GasUsed: string;
+    GasWanted: number;
     ChainId: string;
     Status: string;
+    ConfirmationsRequired: number;
+    Signers: Signer[];
     Direction: string;
-    Signatures: ISignature[];
+    Confirmations: Confirmation[];
+    Rejectors: any[];
+    Executor: IExecutor[];
 }

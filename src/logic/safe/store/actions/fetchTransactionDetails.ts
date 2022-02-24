@@ -10,7 +10,7 @@ import { currentChainId } from 'src/logic/config/store/selectors'
 import { extractSafeAddress } from 'src/routes/routes'
 import { getTxDetailByHash } from 'src/services'
 import { MESSAGES_CODE } from 'src/services/constant/message'
-import { DetailedExecutionInfo, Operation, SafeAppInfo, TokenType, TransactionData, TransactionDetails, TransactionStatus, TransferDirection } from '@gnosis.pm/safe-react-gateway-sdk'
+import { AddressEx, DetailedExecutionInfo, MultisigConfirmation, Operation, SafeAppInfo, TokenType, TransactionData, TransactionDetails, TransactionStatus, TransferDirection } from '@gnosis.pm/safe-react-gateway-sdk'
 
 export const UPDATE_TRANSACTION_DETAILS = 'UPDATE_TRANSACTION_DETAILS'
 const updateTransactionDetails = createAction<TransactionDetailsPayload>(UPDATE_TRANSACTION_DETAILS)
@@ -49,6 +49,9 @@ export const fetchTransactionDetailsByHash = ({ transactionId, txHash }: { trans
 
     const txQuery = txHash || transactionId
 
+    console.log("transaction?.txDetails", transaction?.txDetails);
+
+
     if (transaction?.txDetails || !safeAddress || !txQuery) {
       return
     }
@@ -81,8 +84,8 @@ export const fetchTransactionDetailsByHash = ({ transactionId, txHash }: { trans
           type: 'MULTISIG',
           submittedAt: new Date(Data.CreatedAt).getTime(),
           nonce: Data.Id,
-          safeTxGas: (Data.GasUsed || Data.Gas)?.toString(),
-          baseGas: (Data.GasUsed || Data.Gas)?.toString(),
+          safeTxGas: (Data?.GasUsed || 0)?.toString(),
+          baseGas: (Data?.GasWanted || 0)?.toString(),
           gasPrice: '0',
           gasToken: Data.Denom,
           refundReceiver: {
@@ -90,34 +93,27 @@ export const fetchTransactionDetailsByHash = ({ transactionId, txHash }: { trans
             name: null,
             value: 'aura000000000000000000000000000000000000000'
           },
-          safeTxHash: 'aura1r2gv6rx0fxdmepu8gd2gmn5j8cjetkqrw836x5',
-          executor: Data.TxHash ? {
+          safeTxHash: safeAddress,
+          executor: !Data.Executor[0] ? null : {
             logoUri: null,
             name: null,
-            value: Data.FromAddress
-          } : null,
-          signers: [],
-          confirmationsRequired: 2,
-          confirmations: [
-            {
-              signature: '',
-              signer: {
-                logoUri: null,
-                name: null,
-                value: Data.FromAddress
-              },
-              submittedAt: new Date(Data.CreatedAt).getTime()
+            value: Data.Executor[0].ownerAddress
+          },
+          signers: Data.Signers.map(signer => ({
+            logoUri: null,
+            name: null,
+            value: signer.OwnerAddress
+          } as AddressEx)),
+          confirmationsRequired: Data.ConfirmationsRequired,
+          confirmations: Data.Confirmations.map(cf => ({
+            signature: cf.signature,
+            signer: {
+              logoUri: null,
+              name: null,
+              value: cf.ownerAddress
             },
-            {
-              signature: '',
-              signer: {
-                logoUri: null,
-                name: null,
-                value: Data.ToAddress
-              },
-              submittedAt: new Date(Data.UpdatedAt).getTime()
-            }
-          ],
+            submittedAt: new Date(cf.createdAt).getTime()
+          } as MultisigConfirmation)),
           rejectors: null,
           gasTokenInfo: {
             address: '',
@@ -141,8 +137,6 @@ export const fetchTransactionDetailsByHash = ({ transactionId, txHash }: { trans
           addressInfoIndex: null
         }
       }
-
-
 
       const transactionDetails: TransactionDetails = {
         txId: Data.Id.toString(),
