@@ -46,7 +46,7 @@ const TxSingularDetails = (): ReactElement => {
   const indexedTx = useSelector(
     (state: AppReduxState) =>
       fetchedTx
-        ? getTransactionWithLocationByAttribute(state, { attributeName: 'id', attributeValue: fetchedTx.Id?.toString() })
+        ? getTransactionWithLocationByAttribute(state, { attributeName: 'id', attributeValue: fetchedTx.txId })
         : null,
     shallowEqual,
   )
@@ -75,7 +75,7 @@ const TxSingularDetails = (): ReactElement => {
       // Remove the previously loaded tx (when making a new tx from the single tx route)
       setLiveTx(undefined)
 
-      let txDetails: TransactionDetails
+      let txDetails: any
       try {
         // txDetails = await fetchSafeTransaction(safeTxHash)
         txDetails = await fetchSafeTransactionById(Number(txId), safeAddress)
@@ -85,7 +85,8 @@ const TxSingularDetails = (): ReactElement => {
       }
 
       if (isCurrent) {
-        setFetchedTx(txDetails)
+        const tempTxDetail = {...txDetails, txId: txDetails?.Id?.toString()}
+        setFetchedTx(tempTxDetail)
       }
     }
 
