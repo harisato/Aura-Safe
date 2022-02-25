@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { _getChainId } from 'src/config'
-import { loadQueuedTransactions } from 'src/logic/safe/store/actions/transactions/fetchTransactions/loadGatewayTransactions'
+import { loadQueuedTransactions, loadQueuedTransactionsFromAuraApi } from 'src/logic/safe/store/actions/transactions/fetchTransactions/loadGatewayTransactions'
 import { addQueuedTransactions } from 'src/logic/safe/store/actions/transactions/gatewayTransactions'
 
 import { TransactionDetails } from 'src/logic/safe/store/models/types/gateway.d'
@@ -35,7 +35,8 @@ export const useQueueTransactions = (): QueueTransactionsInfo | undefined => {
     if (hasDeeplinkLoaded) {
       const getQueuedTxs = async () => {
         const safeAddress = extractSafeAddress()
-        const values = await loadQueuedTransactions(safeAddress)
+        // const values = await loadQueuedTransactions(safeAddress)
+        const values = await loadQueuedTransactionsFromAuraApi(safeAddress)
         dispatch(addQueuedTransactions({ chainId: _getChainId(), safeAddress, values }))
       }
       getQueuedTxs()

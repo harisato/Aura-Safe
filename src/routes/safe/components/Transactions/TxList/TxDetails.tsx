@@ -88,7 +88,7 @@ type TxDetailsProps = {
 
 export const TxDetails = ({ transaction }: TxDetailsProps): ReactElement => {
   const { txLocation } = useContext(TxLocationContext)
-  const { data, loading } = useTransactionDetails(transaction.id)
+  const { data, loading } = useTransactionDetails(transaction.id, transaction.txHash)
   const txStatus = useLocalTxStatus(transaction)
   const willBeReplaced = txStatus === LocalTransactionStatus.WILL_BE_REPLACED
   const isPending = txStatus === LocalTransactionStatus.PENDING

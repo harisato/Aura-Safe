@@ -135,12 +135,6 @@ export const fetchMSafe =
   (safeAddress: string, safeId: number, isInitialLoad = false) =>
     async (dispatch: Dispatch<any>): Promise<Action<Partial<SafeRecordProps>> | void> => {
       let address = safeAddress
-      // try {
-      //   address = checksumAddress(safeAddress)
-      // } catch (err) {
-      //   logError(Errors._102, safeAddress)
-      //   return
-      // }
 
       let safeInfo: Partial<SafeRecordProps> = {}
       let remoteSafeInfo: SafeInfo | null = null
@@ -148,7 +142,7 @@ export const fetchMSafe =
       try {
         remoteSafeInfo = await _getSafeInfo(safeAddress, safeId, dispatch);
       } catch (err) {
-        // err.log()
+        console.error(err)
       }
 
       const state = store.getState()
@@ -162,22 +156,9 @@ export const fetchMSafe =
 
       // remote (client-gateway)
       if (remoteSafeInfo) {
-        safeInfo = await extractRemoteSafeInfo(remoteSafeInfo)
-
-        // If these polling timestamps have changed, fetch again
-        const { collectiblesTag, txQueuedTag, txHistoryTag } = currentSafeWithNames(state)
-
-        const shouldUpdateCollectibles = collectiblesTag !== safeInfo.collectiblesTag
-        const shouldUpdateTxHistory = txHistoryTag !== safeInfo.txHistoryTag
-        const shouldUpdateTxQueued = txQueuedTag !== safeInfo.txQueuedTag
-
-        // if (shouldUpdateCollectibles || isInitialLoad) {
-        //   dispatch(fetchCollectibles(safeAddress))
-        // }
-
-        // if (shouldUpdateTxHistory || shouldUpdateTxQueued || isInitialLoad) {
-        //   dispatch(fetchTransactions(chainId, safeAddress))
-        // }
+        if(isInitialLoad) {
+          dispatch(fetchTransactions(chainId, safeAddress))
+        }
       }
 
       const owners = buildSafeOwners(remoteSafeInfo?.owners)

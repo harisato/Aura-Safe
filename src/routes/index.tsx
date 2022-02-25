@@ -105,7 +105,6 @@ const Routes = (): React.ReactElement => {
             )
           }
 
-          console.log({defaultSafe});
           if (defaultSafe) {
             
             return (
