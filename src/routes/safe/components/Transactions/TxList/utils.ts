@@ -6,8 +6,14 @@ import {
   TransactionDetails,
   MultisigExecutionDetails,
   MultisigExecutionInfo,
+  TransactionListPage,
+  TransferDirection,
+  TransactionListItem,
+  TransactionStatus,
+  TransactionSummary,
 } from '@gnosis.pm/safe-react-gateway-sdk'
 import { BigNumber } from 'bignumber.js'
+import { now } from 'lodash'
 import { matchPath } from 'react-router-dom'
 import { getNativeCurrency } from 'src/config'
 import { getNativeCurrencyAddress } from 'src/config/utils'
@@ -22,10 +28,17 @@ import {
   Transaction,
 } from 'src/logic/safe/store/models/types/gateway.d'
 import { formatAmount } from 'src/logic/tokens/utils/formatAmount'
-import { sameAddress } from 'src/logic/wallets/ethAddresses'
+import { sameAddress, ZERO_ADDRESS } from 'src/logic/wallets/ethAddresses'
 import { SAFE_ROUTES, TRANSACTION_ID_SLUG, history } from 'src/routes/routes'
+import { ITransactionListItem, MTransactionListItem } from 'src/types/transaction'
 
 export const NOT_AVAILABLE = 'n/a'
+
+const inQueuedStatus = [
+  TransactionStatus.PENDING,
+  TransactionStatus.AWAITING_CONFIRMATIONS,
+  TransactionStatus.AWAITING_EXECUTION,
+]
 interface AmountData {
   decimals?: number | string
   symbol?: string
@@ -111,8 +124,8 @@ export const isCancelTxDetails = (txInfo: Transaction['txInfo']): boolean =>
 
 export const addressInList =
   (list: AddressEx[] = []) =>
-  (address: string): boolean =>
-    list.some((ownerAddress) => sameAddress(ownerAddress.value, address))
+    (address: string): boolean =>
+      list.some((ownerAddress) => sameAddress(ownerAddress.value, address))
 
 export const getTxTo = ({ txInfo }: Pick<Transaction, 'txInfo'>): AddressEx | undefined => {
   switch (txInfo.type) {
@@ -199,3 +212,61 @@ export const isDeeplinkedTx = (): boolean => {
 export const isAwaitingExecution = (
   txStatus: typeof LocalTransactionStatus[keyof typeof LocalTransactionStatus],
 ): boolean => [LocalTransactionStatus.AWAITING_EXECUTION, LocalTransactionStatus.PENDING_FAILED].includes(txStatus)
+
+export const makeHistoryTransactionsFromService = (list: ITransactionListItem[]): TransactionListPage => {
+  const transaction: MTransactionListItem[] = makeTransactions(list)
+    .filter(({ transaction }: any) => !inQueuedStatus.includes(transaction.txStatus))
+  let page: TransactionListPage = {
+    results: [...transaction]
+  }
+
+  return page;
+}
+
+export const makeQueueTransactionsFromService = (list: ITransactionListItem[]): TransactionListPage => {
+
+  const transaction: MTransactionListItem[] = makeTransactions(list)
+    .filter(({ transaction }: any) => inQueuedStatus.includes(transaction.txStatus))
+  let page: TransactionListPage = {
+    results: [...transaction]
+  }
+  return page;
+}
+
+const makeTransactions = (list: ITransactionListItem[]): MTransactionListItem[] => list.map(
+  (tx: ITransactionListItem) => ({
+    conflictType: 'None',
+    type: 'TRANSACTION',
+    transaction: {
+      executionInfo: {
+        confirmationsRequired: 1,
+        confirmationsSubmitted: 1,
+        nonce: tx.Id,
+        type: "MULTISIG",
+        missingSigners: null
+      },
+      id: tx.Id.toString(),
+      txHash: tx.TxHash,
+      timestamp: new Date(tx.UpdatedAt).getTime(),
+      txStatus: (tx.Status == '0' ? TransactionStatus.SUCCESS : tx.Status) as TransactionStatus,
+      txInfo: {
+        type: 'Transfer',
+        sender: {
+          value: tx.FromAddress,
+          name: null,
+          logoUri: null,
+        },
+        recipient: {
+          value: tx.ToAddress,
+          name: null,
+          logoUri: null,
+        },
+        direction: tx.Direction as TransferDirection,
+        transferInfo: {
+          type: TokenType.NATIVE_COIN,
+          value: (tx.Amount).toString(),
+        },
+      },
+    }
+  }))
+
