@@ -29,7 +29,7 @@ export const TxSummary = ({ txDetails }: Props): ReactElement => {
     <>
       {isMultiSigExecutionDetails(txDetails.detailedExecutionInfo) && (
         <div className="tx-share">
-          <TxShareButton safeTxHash={txDetails.detailedExecutionInfo.safeTxHash} />
+          <TxShareButton safeTxHash={txDetails.txId} />
         </div>
       )}
       <div className="tx-hash">
@@ -44,7 +44,7 @@ export const TxSummary = ({ txDetails }: Props): ReactElement => {
           </Text>
         )}
       </div>
-      {safeTxHash !== undefined && (
+      { !!safeTxHash && (
         <div className="tx-hash">
           <Text size="xl" strong as="span">
             SafeTxHash:{' '}

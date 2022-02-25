@@ -136,7 +136,7 @@ export const TxDetails = ({ transaction }: TxDetailsProps): ReactElement => {
       <div
         className={cn('tx-details', {
           'no-padding': isMultiSend,
-          'not-executed': !data.executedAt,
+          'not-executed': !data?.executedAt,
           'will-be-replaced': willBeReplaced,
         })}
       >

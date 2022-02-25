@@ -21,7 +21,7 @@ import { TxLocationContext } from './TxLocationProvider'
 import { AppReduxState } from 'src/store'
 import { logError, Errors } from 'src/logic/exceptions/CodedException'
 import { fetchSafeTransaction } from 'src/logic/safe/transactions/api/fetchSafeTransaction'
-import { makeTxFromDetails } from './utils'
+import { makeTransactionDetail, makeTxFromDetails } from './utils'
 import {
   addQueuedTransactions,
   addHistoryTransactions,
@@ -101,7 +101,8 @@ const TxSingularDetails = (): ReactElement => {
     if (!fetchedTx) return
 
     // Format the tx details into a History or Queue-like tx item
-    const listItemTx = makeTxFromDetails(fetchedTx)
+    // const listItemTx = makeTxFromDetails(fetchedTx)
+    const listItemTx = makeTransactionDetail(fetchedTx)
     const payload: HistoryPayload | QueuedPayload = {
       chainId,
       safeAddress: extractSafeAddress(),

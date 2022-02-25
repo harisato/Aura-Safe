@@ -65,7 +65,7 @@ const QueueTransaction = ({ nonce, transactions }: QueueTransactionProps): React
       <TxHoverProvider>
         <Disclaimer nonce={nonce} />
         <GroupedTransactions>
-          {transactions.map((transaction, index) => (
+          {transactions?.map((transaction, index) => (
             <Fragment key={`${nonce}-${transaction.id}`}>
               <TreeView firstElement={!index} />
               <TxQueueRow isGrouped transaction={transaction} />

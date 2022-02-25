@@ -6,6 +6,9 @@ import {
   TransactionDetails,
   MultisigExecutionDetails,
   MultisigExecutionInfo,
+  TransactionStatus,
+  TransactionSummary,
+  TransferDirection,
 } from '@gnosis.pm/safe-react-gateway-sdk'
 import { BigNumber } from 'bignumber.js'
 import { matchPath } from 'react-router-dom'
@@ -199,3 +202,80 @@ export const isDeeplinkedTx = (): boolean => {
 export const isAwaitingExecution = (
   txStatus: typeof LocalTransactionStatus[keyof typeof LocalTransactionStatus],
 ): boolean => [LocalTransactionStatus.AWAITING_EXECUTION, LocalTransactionStatus.PENDING_FAILED].includes(txStatus)
+
+export const makeTransactionDetail = (txDetail: any): any => {
+  return {
+    executionInfo: {
+      confirmationsRequired: txDetail?.ConfirmationsRequired,
+      confirmationsSubmitted: 1,
+      missingSigners: null,
+      nonce: 0,
+      type: 'MULTISIG'
+    },
+    id: txDetail?.id,
+    safeAppInfo: undefined,
+    timestamp: new Date(txDetail?.CreatedAt).getTime(),
+    txDetails: {
+      detailedExecutionInfo: {
+        baseGas: '0',
+        confirmations: [
+          {
+            signature: '',
+            signer: {
+              value: ''
+            },
+            submittedAt: new Date(txDetail?.CreatedAt).getTime()
+          }
+        ],
+        confirmationRequired: txDetail?.ConfirmationsRequired,
+        executor: null,
+        gasPrice: txDetail?.GasWanted,
+        gasToken: '',
+        nonce: 0,
+        refundReceiver: {
+          value: ''
+        },
+        safeTxGas: txDetail?.GasWanted,
+        safeTxHash: txDetail?.TxHash,
+        signers: [
+          {
+            value: ''
+          }
+        ],
+        submittedAt: new Date(txDetail?.UpdatedAt).getTime(),
+        type: 'MULTISIG'        
+      },
+      executedAt: null,
+      safeAddress: txDetail?.FromAddres,
+      txData: {
+        dataDecoded: null,
+        hexData: null,
+        operation: 0,
+        to: {
+          value: txDetail?.ToAddress
+        }
+      },
+      txHash: txDetail?.TxHash,
+      txId: txDetail?.Id
+    },
+    txInfo: {
+      direction: TransferDirection.OUTGOING,
+      recipient: {
+        value: '',
+        name: '',
+        logoUri: ''
+      },
+      sender: {
+        value: '',
+        name: '',
+        logoUri: ''
+      },
+      transferInfo: {
+        type: TokenType.NATIVE_COIN,
+        value: txDetail?.Amount
+      },
+      type: 'Transfer'
+    },
+    txStatus: txDetail.Status
+  }
+}
