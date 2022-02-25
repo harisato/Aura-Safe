@@ -18,3 +18,4 @@ public/**/*.js
 jest.results.json
 *.#*
 # yarn.lock
+/public/config.json
