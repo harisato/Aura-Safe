@@ -186,7 +186,7 @@ const ReviewSendFundsTx = ({ onClose, onPrev, tx }: ReviewTxProps): React.ReactE
   const signTransactionWithKeplr = async (safeAddress: string) => {
     const chainInfo = getChainInfo()
     const chainId = chainInfo.chainId
-    const listChain = getChains()
+    const listChain = await getMChainsConfig()
     const denom = listChain.find((x) => x.chainId === chainId)?.denom || ''
     if (window.keplr) {
       await window.keplr.enable(chainId)
