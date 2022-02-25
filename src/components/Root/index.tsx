@@ -21,6 +21,8 @@ import { loadChains } from 'src/config/cache/chains'
 import { isValidChainId, _getChainId } from 'src/config'
 import { DEFAULT_CHAIN_ID } from 'src/utils/constants'
 import { setChainId } from 'src/logic/config/utils'
+import { getGatewayUrl } from 'src/services/data/environment'
+import { setBaseUrl } from 'src/services'
 
 // Preloader is rendered outside of '#root' and acts as a loading spinner
 // for the app and then chains loading
@@ -29,10 +31,32 @@ const removePreloader = () => {
 }
 
 const RootConsumer = (): React.ReactElement | null => {
+  const [gatewayUrl, setGatewayUrl] = useState<string>('')
   const [hasChains, setHasChains] = useState<boolean>(false)
   const [isError, setIsError] = useState<boolean>(false)
 
   useEffect(() => {
+    const initGateway = async () => {
+      try {
+        const gateway = await getGatewayUrl()
+        if (gateway && gateway?.apiGateway) {
+          setBaseUrl(gateway.apiGateway)
+          setGatewayUrl(gateway.apiGateway)
+        } else {
+          setIsError(true)
+        }
+      } catch (err) {
+        console.error(err)
+        setIsError(true)
+      }
+    }
+    initGateway()
+  }, [])
+
+  useEffect(() => {
+    if (!gatewayUrl) {
+      return
+    }
     const initChains = async () => {
       try {
         await loadChains()
@@ -47,8 +71,9 @@ const RootConsumer = (): React.ReactElement | null => {
         setIsError(true)
       }
     }
+
     initChains()
-  }, [])
+  }, [gatewayUrl])
 
   // Chains failed to load
   if (isError) {

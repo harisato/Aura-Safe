@@ -7,7 +7,7 @@ import { ICreateSafeTransaction, ITransactionDetail, ITransactionInfoResponse, I
 import { IMSafeInfo, IMSafeResponse, OwnedMSafes } from "../types/safe";
 import { MSAFE_GATEWAY_URL } from "../utils/constants";
 
-const baseUrl = MSAFE_GATEWAY_URL;
+let baseUrl = '';
 
 export interface ISafeCreate {
   creatorAddress: string,
@@ -38,6 +38,10 @@ type _ChainInfo = {
 
 
 export type MChainInfo = ChainInfo & _ChainInfo
+
+export function setBaseUrl(url: string): void {
+  baseUrl = url;
+}
 
 export function getMChainsConfig(): Promise<MChainInfo[]> {
   return axios.post(`${baseUrl}/general/network-list`)
