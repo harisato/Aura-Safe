@@ -3,7 +3,7 @@ import { memo, useEffect, useMemo, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
 import { toTokenUnit } from 'src/logic/tokens/utils/humanReadableValue'
-import { getExplorerInfo, getInternalChainId, getNativeCurrency } from 'src/config'
+import { getChainInfo, getExplorerInfo, getInternalChainId, getNativeCurrency, _getChainId } from 'src/config'
 import Divider from 'src/components/Divider'
 import Block from 'src/components/layout/Block'
 import Col from 'src/components/layout/Col'
@@ -36,18 +36,25 @@ import { TxParametersDetail } from 'src/routes/safe/components/Transactions/help
 import { TxParameters } from 'src/routes/safe/container/hooks/useTransactionParameters'
 import { Errors, logError } from 'src/logic/exceptions/CodedException'
 import { ModalHeader } from '../ModalHeader'
-import { extractSafeAddress } from 'src/routes/routes'
+import { extractPrefixedSafeAddress, extractSafeAddress, extractShortChainName, getPrefixedSafeAddressSlug, history, SAFE_ADDRESS_SLUG, SAFE_ROUTES, TRANSACTION_ID_SLUG } from 'src/routes/routes'
 import ExecuteCheckbox from 'src/components/ExecuteCheckbox'
 import { getNativeCurrencyAddress } from 'src/config/utils'
 import { ICreateSafeTransaction } from 'src/types/transaction'
 import { currentSafeWithNames } from 'src/logic/safe/store/selectors'
 import { TxData } from 'src/routes/safe/components/Transactions/TxList/TxData'
-import { createSafeTransaction } from 'src/services'
-import { SigningStargateClient } from '@cosmjs/stargate'
+import { createSafeTransaction, getMChainsConfig, signSafeTransaction } from 'src/services'
+import { coins, GasPrice, MsgSendEncodeObject, SignerData, SigningStargateClient } from '@cosmjs/stargate'
 import enqueueSnackbar from 'src/logic/notifications/store/actions/enqueueSnackbar'
 import { enhanceSnackbarForAction, NOTIFICATIONS } from 'src/logic/notifications'
+import { AuthInfo, TxBody, TxRaw } from 'cosmjs-types/cosmos/tx/v1beta1/tx'
+import { userAccountSelector } from 'src/logic/wallets/store/selectors'
+import { parseToAdress } from 'src/utils/parseByteAdress'
+import { ChainInfo } from '@gnosis.pm/safe-react-gateway-sdk'
+import { getChains } from 'src/config/cache/chains'
+import { generatePath } from 'react-router-dom'
 
 const useStyles = makeStyles(styles)
+let chains: ChainInfo[] = []
 
 export type ReviewTxProp = {
   recipientAddress: string
@@ -154,18 +161,10 @@ const ReviewSendFundsTx = ({ onClose, onPrev, tx }: ReviewTxProps): React.ReactE
   const isSpendingLimit = sameString(tx.txType, 'spendingLimit')
   const [executionApproved, setExecutionApproved] = useState<boolean>(true)
   const doExecute = isExecution && executionApproved
+  const userWalletAddress = useSelector(userAccountSelector)
 
   const submitTx = async (txParameters: TxParameters) => {
-    const data: ICreateSafeTransaction = {
-      from: safeAddress,
-      to: txRecipient || '',
-      amount: Math.floor(Number(tx?.amount) * Math.pow(10, 6)).toString() || '',
-      gasLimit: manualGasLimit || '',
-      internalChainId: getInternalChainId(),
-      fee: 0,
-    }
-    // call api to create transaction
-    signTransactionWithKeplr(safeAddress, txRecipient, data?.amount, data)
+    signTransactionWithKeplr(safeAddress)
     // const { ErrorCode, Data: safeData, Message } = await createSafeTransaction(data)
     // setButtonStatus(ButtonStatus.LOADING)
     // if (ErrorCode === 'SUCCESSFUL') {
@@ -175,8 +174,11 @@ const ReviewSendFundsTx = ({ onClose, onPrev, tx }: ReviewTxProps): React.ReactE
     // console.log(safeData)
   }
 
-  const signTransactionWithKeplr = async (safeAddress: string, to: string, amount: string, data: any) => {
-    const chainId = 'aura-testnet'
+  const signTransactionWithKeplr = async (safeAddress: string) => {
+    const chainInfo = getChainInfo()
+    const chainId = chainInfo.chainId
+    const listChain = getChains()
+    const denom = listChain.find((x) => x.chainId === chainId)?.denom || ''
     if (window.keplr) {
       await window.keplr.enable(chainId)
     }
@@ -187,65 +189,101 @@ const ReviewSendFundsTx = ({ onClose, onPrev, tx }: ReviewTxProps): React.ReactE
       const tendermintUrl = 'https://tendermint-testnet.aura.network'
       const client = await SigningStargateClient.connectWithSigner(tendermintUrl, offlineSigner)
 
-      // const tx = {
-      //   chainId: 'aura-testnet',
-      //   // accountNumber: "0",
-      //   // sequence: "0",
-      //   // fee: {
-      //   //     amount: [{
-      //   //         amount: "0",
-      //   //         denom: "uatom",
-      //   //     }],
-      //   //     gas: "200000",
-      //   // },
-      //   msgs: [
-      //     {
-      //       type: 'cosmos-sdk/MsgSend',
-      //       value: {
-      //         from_address: safeAddress,
-      //         to_address: to,
-      //         amount: [
-      //           {
-      //             amount: amount,
-      //             denom: 'uaura',
-      //           },
-      //         ],
-      //       },
-      //     },
-      //   ],
-      //   memo: '',
-      // }
-      // sign transaction
-      // const client = await SigningStargateClient.connectWithSigner(
-      //   'https://tendermint-testnet.aura.network',
-      //   offlineSigner,
-      // )
+      const amountFinal = Math.floor(Number(tx?.amount) * Math.pow(10, 6)).toString() || ''
 
-      const amountFinal = {
-        denom: 'uaura',
-        amount: amount.toString(),
+      const signingInstruction = await (async () => {
+
+        const accountOnChain = await client.getAccount(safeAddress);
+
+        return {
+            accountNumber: accountOnChain?.accountNumber,
+            sequence: accountOnChain?.sequence,
+            memo: "",
+        };
+    })();
+
+
+      
+
+      const msgSend = {
+        fromAddress: safeAddress,
+        toAddress: txRecipient,
+        amount: coins(amountFinal, denom),
       }
+      const msg: MsgSendEncodeObject = {
+        typeUrl: '/cosmos.bank.v1beta1.MsgSend',
+        value: msgSend,
+      }
+
       const fee = {
         amount: [
           {
-            denom: 'uaura',
-            amount: amount.toString(),
+            denom: denom,
+            amount: manualGasPrice || '100',
           },
         ],
-        gas: '200000',
+        gas: manualGasLimit || '20000',
       }
 
+      const signerData: SignerData = {
+        accountNumber: signingInstruction.accountNumber || 0,
+        sequence: signingInstruction.sequence || 0,
+        chainId: chainId,
+    };
+
       try {
+        // Sign On Wallet
         dispatch(enqueueSnackbar(enhanceSnackbarForAction(NOTIFICATIONS.SIGN_TX_MSG)))
-        const result = await client.sendTokens(accounts[0].address, to, [amountFinal], fee, '')
-        alert('Succeed to send tx:' + result.transactionHash)
+        const signResult = await client.sign(accounts[0]?.address, [msg], fee, '', signerData)
+
+        const signatures = parseToAdress(signResult.signatures[0])
+        const bodyBytes = parseToAdress(signResult.bodyBytes)
+
+        // call api to create transaction
+        const data: ICreateSafeTransaction = {
+          from: safeAddress,
+          to: txRecipient || '',
+          amount: amountFinal,
+          gasLimit: manualGasLimit || '',
+          internalChainId: getInternalChainId(),
+          fee: Number(manualGasPrice) || 0,
+          creatorAddress: userWalletAddress,
+          signature: signatures,
+          bodyBytes: bodyBytes,
+        }
+
         const { ErrorCode, Data: safeData, Message } = await createSafeTransaction(data)
-        setButtonStatus(ButtonStatus.LOADING)
         if (ErrorCode === 'SUCCESSFUL') {
           setButtonStatus(ButtonStatus.READY)
           onClose()
+
+          // navigate to tx details
+          const prefixedSafeAddress = getPrefixedSafeAddressSlug({ shortName: extractShortChainName(), safeAddress })
+          const txRoute = generatePath(SAFE_ROUTES.TRANSACTIONS_SINGULAR, {
+            [SAFE_ADDRESS_SLUG]: prefixedSafeAddress,
+            id: safeData,
+          })
+          history.push(txRoute)
+        } else {
+          dispatch(enqueueSnackbar(enhanceSnackbarForAction(NOTIFICATIONS.TX_FAILED_MSG)))
+          onClose()
         }
-      } catch {
+
+        // if (ErrorCode === 'SUCCESSFUL') {
+        //   setButtonStatus(ButtonStatus.READY)
+        //   // broadcast
+        //   try {
+        //     // const broadcastResult = await client.broadcastTx(Uint8Array.from(TxRaw.encode(signResult).finish()))
+        //     onClose()
+        //   } catch (error) {
+        //     console.log(error)
+        //     debugger;
+        //   }
+        // } else {
+        //   dispatch(enqueueSnackbar(enhanceSnackbarForAction(NOTIFICATIONS.TX_FAILED_MSG)))
+        // }
+      } catch (error) {
+        console.log(error)
         dispatch(enqueueSnackbar(enhanceSnackbarForAction(NOTIFICATIONS.TX_CANCELLATION_EXECUTED_MSG)))
         onClose()
       }

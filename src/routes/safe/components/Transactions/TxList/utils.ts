@@ -29,7 +29,7 @@ import {
 } from 'src/logic/safe/store/models/types/gateway.d'
 import { formatAmount } from 'src/logic/tokens/utils/formatAmount'
 import { sameAddress, ZERO_ADDRESS } from 'src/logic/wallets/ethAddresses'
-import { SAFE_ROUTES, TRANSACTION_ID_SLUG, history } from 'src/routes/routes'
+import { SAFE_ROUTES, TRANSACTION_ID_SLUG, history, extractSafeAddress } from 'src/routes/routes'
 import { ITransactionListItem, MTransactionListItem } from 'src/types/transaction'
 
 export const NOT_AVAILABLE = 'n/a'
@@ -124,8 +124,8 @@ export const isCancelTxDetails = (txInfo: Transaction['txInfo']): boolean =>
 
 export const addressInList =
   (list: AddressEx[] = []) =>
-    (address: string): boolean =>
-      list.some((ownerAddress) => sameAddress(ownerAddress.value, address))
+  (address: string): boolean =>
+    list.some((ownerAddress) => sameAddress(ownerAddress.value, address))
 
 export const getTxTo = ({ txInfo }: Pick<Transaction, 'txInfo'>): AddressEx | undefined => {
   switch (txInfo.type) {
@@ -213,28 +213,135 @@ export const isAwaitingExecution = (
   txStatus: typeof LocalTransactionStatus[keyof typeof LocalTransactionStatus],
 ): boolean => [LocalTransactionStatus.AWAITING_EXECUTION, LocalTransactionStatus.PENDING_FAILED].includes(txStatus)
 
-export const makeHistoryTransactionsFromService = (list: ITransactionListItem[]): TransactionListPage => {
-  const transaction: MTransactionListItem[] = makeTransactions(list)
-    .filter(({ transaction }: any) => !inQueuedStatus.includes(transaction.txStatus))
-  let page: TransactionListPage = {
-    results: [...transaction]
+export const makeTransactionDetail = (txDetail: any): any => {
+  let confirmationList: Array<any> = []
+  if (txDetail?.Confirmations && txDetail?.Confirmations.length > 0) {
+    txDetail?.Confirmations.forEach((confirmationItem) => {
+      const item = {
+        signature: confirmationItem?.signature,
+        signer: {
+          value: confirmationItem?.ownerAddress,
+        },
+        submittedAt: new Date(confirmationItem?.updatedAt).getTime(),
+      }
+      confirmationList.push(item)
+    })
   }
 
-  return page;
+  let signerList: Array<any> = []
+  if (txDetail?.Signers && txDetail?.Signers.length > 0) {
+    txDetail?.Signers.forEach((signerItem) => {
+      const item = {
+        value: signerItem?.OwnerAddress,
+      }
+      signerList.push(item)
+    })
+  }
+
+  return {
+    executionInfo: {
+      confirmationsRequired: txDetail?.ConfirmationsRequired,
+      confirmationsSubmitted: 1,
+      missingSigners: null,
+      nonce: 0,
+      type: 'MULTISIG',
+    },
+    id: txDetail?.id,
+    safeAppInfo: undefined,
+    timestamp: new Date(txDetail?.CreatedAt).getTime(),
+    txDetails: {
+      detailedExecutionInfo: {
+        baseGas: '0',
+        confirmations: confirmationList,
+        confirmationsRequired: txDetail?.ConfirmationsRequired,
+        executor: null,
+        gasPrice: txDetail?.GasWanted,
+        gasToken: '',
+        nonce: 0,
+        refundReceiver: {
+          value: '',
+        },
+        safeTxGas: txDetail?.GasWanted,
+        safeTxHash: txDetail?.TxHash,
+        signers: signerList,
+        submittedAt: new Date(txDetail?.UpdatedAt).getTime(),
+        type: 'MULTISIG',
+      },
+      executedAt: null,
+      safeAddress: txDetail?.FromAddres,
+      txData: {
+        dataDecoded: null,
+        hexData: null,
+        operation: 0,
+        to: {
+          value: txDetail?.ToAddress,
+        },
+      },
+      txHash: txDetail?.TxHash,
+      txId: txDetail?.Id,
+      txInfo: {
+        direction: txDetail?.Direction,
+        recipient: {
+          value: txDetail?.ToAddress,
+          name: '',
+          logoUri: '',
+        },
+        sender: {
+          value: txDetail?.FromAddres,
+          name: '',
+          logoUri: '',
+        },
+        transferInfo: {
+          type: TokenType.NATIVE_COIN,
+          value: txDetail?.Amount,
+        },
+        type: 'Transfer',
+      },
+    },
+    txInfo: {
+      direction: txDetail?.Direction,
+      recipient: {
+        value: txDetail?.ToAddress,
+        name: '',
+        logoUri: '',
+      },
+      sender: {
+        value: txDetail?.FromAddres,
+        name: '',
+        logoUri: '',
+      },
+      transferInfo: {
+        type: TokenType.NATIVE_COIN,
+        value: txDetail?.Amount,
+      },
+      type: 'Transfer',
+    },
+    txStatus: txDetail.Status,
+  }
+}
+export const makeHistoryTransactionsFromService = (list: ITransactionListItem[]): TransactionListPage => {
+  const transaction: MTransactionListItem[] = makeTransactions(list).filter(
+    ({ transaction }: any) => !inQueuedStatus.includes(transaction.txStatus),
+  )
+  let page: TransactionListPage = {
+    results: [...transaction],
+  }
+
+  return page
 }
 
 export const makeQueueTransactionsFromService = (list: ITransactionListItem[]): TransactionListPage => {
-
-  const transaction: MTransactionListItem[] = makeTransactions(list)
-    .filter(({ transaction }: any) => inQueuedStatus.includes(transaction.txStatus))
+  const transaction: MTransactionListItem[] = makeTransactions(list).filter(({ transaction }: any) =>
+    inQueuedStatus.includes(transaction.txStatus),
+  )
   let page: TransactionListPage = {
-    results: [...transaction]
+    results: [...transaction],
   }
-  return page;
+  return page
 }
 
-const makeTransactions = (list: ITransactionListItem[]): MTransactionListItem[] => list.map(
-  (tx: ITransactionListItem) => ({
+const makeTransactions = (list: ITransactionListItem[]): MTransactionListItem[] =>
+  list.map((tx: ITransactionListItem) => ({
     conflictType: 'None',
     type: 'TRANSACTION',
     transaction: {
@@ -242,8 +349,8 @@ const makeTransactions = (list: ITransactionListItem[]): MTransactionListItem[] 
         confirmationsRequired: 1,
         confirmationsSubmitted: 1,
         nonce: tx.Id,
-        type: "MULTISIG",
-        missingSigners: null
+        type: 'MULTISIG',
+        missingSigners: null,
       },
       id: tx.Id.toString(),
       txHash: tx.TxHash,
@@ -264,9 +371,8 @@ const makeTransactions = (list: ITransactionListItem[]): MTransactionListItem[] 
         direction: tx.Direction as TransferDirection,
         transferInfo: {
           type: TokenType.NATIVE_COIN,
-          value: (tx.Amount).toString(),
+          value: tx.Amount.toString(),
         },
       },
-    }
+    },
   }))
-

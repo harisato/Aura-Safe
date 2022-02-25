@@ -86,7 +86,7 @@ export const useActionButtonsHandlers = (transaction: Transaction): ActionButton
   const disabledActions =
     !currentUser ||
     isPending ||
-    (txStatus === LocalTransactionStatus.AWAITING_EXECUTION && locationContext.txLocation === 'queued.queued') ||
+    // (txStatus === LocalTransactionStatus.AWAITING_EXECUTION && locationContext.txLocation === 'queued.queued') ||
     (txStatus === LocalTransactionStatus.AWAITING_CONFIRMATIONS && !signaturePending(currentUser))
 
   return {

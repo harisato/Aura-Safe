@@ -4,12 +4,14 @@ export type MTransactionListItem = TransactionListItem & {
     transaction: TransactionSummary & { txHash?: string }
 }
 export interface ITransactionInfoResponse {
-    from: string,
-    to: string,
-    amount: number,
-    fee: number,
-    gasLimit: number,
-    internalChainId: number
+  from: string
+  to: string
+  amount: number
+  fee: number
+  gasLimit: number
+  internalChainId: number,
+  transactionId: number,
+  id: number
 }
 
 export interface ICreateSafeTransaction {
@@ -18,7 +20,10 @@ export interface ICreateSafeTransaction {
     amount: string,
     gasLimit: string,
     internalChainId: number,
-    fee: number
+    fee: number,
+    creatorAddress: string,
+    signature: string,
+    bodyBytes: string
 }
 
 export interface ITransactionListQuery {
@@ -88,4 +93,12 @@ export interface ITransactionDetail {
     Confirmations: Confirmation[];
     Rejectors: any[];
     Executor: IExecutor[];
+}
+
+export interface ISignSafeTransaction {
+    fromAddress: string
+    transactionId: number
+    bodyBytes: string
+    signature: string
+    internalChainId: number
 }
