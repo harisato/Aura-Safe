@@ -246,7 +246,7 @@ export const makeTransactionDetail = (txDetail: any): any => {
       nonce: 0,
       type: 'MULTISIG',
     },
-    id: txDetail?.id,
+    id: txDetail?.Id.toString(),
     safeAppInfo: undefined,
     timestamp: new Date(txDetail?.CreatedAt).getTime(),
     txDetails: {

@@ -308,7 +308,10 @@ export const ApproveTxModal = ({
           owner: userWalletAddress,
         }
         const { ErrorCode, Data: safeData, Message } = await sendSafeTransaction(data)
-      } catch (error) {}
+        console.log(safeData)
+      } catch (error) {
+        console.log(error)
+      }
     }
     onClose()
   }
