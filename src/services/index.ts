@@ -32,7 +32,8 @@ export interface IResponse<T> {
 }
 
 type _ChainInfo = {
-  internalChainId: number
+  internalChainId: number,
+  denom: string
 }
 
 export type MChainInfo = ChainInfo & _ChainInfo
