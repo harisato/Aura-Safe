@@ -57,8 +57,6 @@ function Allow(): ReactElement {
   const addressBook = useSelector(currentNetworkAddressBookAsMap)
   const chainId = useSelector(currentChainId)
 
-  console.log({ safeAddress, shortName, safeId })
-
   useEffect(() => {
     const checkSafeAddress = async () => {
       if (!safeId) {

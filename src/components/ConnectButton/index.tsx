@@ -29,7 +29,6 @@ export const onboardUser = async (): Promise<boolean> => {
 export const onConnectButtonClick = async (): Promise<void> => {
   await connectKeplr()
     .then((status) => {
-      console.log('status', status)
       if (status === KeplrErrors.NoChainInfo) {
         return suggestChain()
       }

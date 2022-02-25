@@ -219,7 +219,7 @@ export const makeHistoryTransactionsFromService = (list: ITransactionListItem[])
   let page: TransactionListPage = {
     results: [...transaction]
   }
-  console.log('page', page)
+
   return page;
 }
 
