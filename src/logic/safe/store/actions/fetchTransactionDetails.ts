@@ -47,10 +47,7 @@ export const fetchTransactionDetailsByHash = ({ transactionId, txHash }: { trans
     const safeAddress = extractSafeAddress()
     const chainId = currentChainId(getState())
 
-    const txQuery = txHash || transactionId
-
-    console.log("transaction?.txDetails", transaction?.txDetails);
-
+    const txQuery = transactionId
 
     if (transaction?.txDetails || !safeAddress || !txQuery) {
       return
@@ -58,10 +55,6 @@ export const fetchTransactionDetailsByHash = ({ transactionId, txHash }: { trans
 
     try {
       const { Data, ErrorCode } = await getTxDetailByHash(txQuery, safeAddress)
-
-      console.log(Data);
-
-
 
       if (ErrorCode !== MESSAGES_CODE.SUCCESSFUL.ErrorCode) {
         return
@@ -140,7 +133,7 @@ export const fetchTransactionDetailsByHash = ({ transactionId, txHash }: { trans
 
       const transactionDetails: TransactionDetails = {
         txId: Data.Id.toString(),
-        executedAt: Data.TxHash ? new Date(Data.UpdatedAt).getTime() : null,
+        executedAt: Data.Executor.length ? new Date(Data.UpdatedAt).getTime() : null,
         txStatus: (Data.Status == '0' ? TransactionStatus.SUCCESS : Data.Status) as TransactionStatus,
         txInfo: {
           type: 'Transfer',
@@ -160,7 +153,7 @@ export const fetchTransactionDetailsByHash = ({ transactionId, txHash }: { trans
             value: (Data.Amount).toString(),
           },
         },
-        txHash: Data?.TxHash || '',
+        txHash: Data?.TxHash || null,
         safeAppInfo,
         detailedExecutionInfo,
         txData
