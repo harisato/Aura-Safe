@@ -46,7 +46,7 @@ const TxSingularDetails = (): ReactElement => {
   const indexedTx = useSelector(
     (state: AppReduxState) =>
       fetchedTx
-        ? getTransactionWithLocationByAttribute(state, { attributeName: 'id', attributeValue: fetchedTx.txId })
+        ? getTransactionWithLocationByAttribute(state, { attributeName: 'id', attributeValue: fetchedTx.Id?.toString() })
         : null,
     shallowEqual,
   )

@@ -169,5 +169,5 @@ export async function getTxDetailByHash(txHash: string,safeAddress: string): Pro
 }
 
 export function sendSafeTransaction(payload: any): Promise<IResponse<any>> {
-  return axios.post(`${baseUrl}/transaction/sign`, payload).then((res) => res.data)
+  return axios.post(`${baseUrl}/transaction/send`, payload).then((res) => res.data)
 }

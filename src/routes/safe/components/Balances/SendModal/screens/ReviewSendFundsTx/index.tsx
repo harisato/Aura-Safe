@@ -36,7 +36,16 @@ import { TxParametersDetail } from 'src/routes/safe/components/Transactions/help
 import { TxParameters } from 'src/routes/safe/container/hooks/useTransactionParameters'
 import { Errors, logError } from 'src/logic/exceptions/CodedException'
 import { ModalHeader } from '../ModalHeader'
-import { extractPrefixedSafeAddress, extractSafeAddress, extractShortChainName, getPrefixedSafeAddressSlug, history, SAFE_ADDRESS_SLUG, SAFE_ROUTES, TRANSACTION_ID_SLUG } from 'src/routes/routes'
+import {
+  extractPrefixedSafeAddress,
+  extractSafeAddress,
+  extractShortChainName,
+  getPrefixedSafeAddressSlug,
+  history,
+  SAFE_ADDRESS_SLUG,
+  SAFE_ROUTES,
+  TRANSACTION_ID_SLUG,
+} from 'src/routes/routes'
 import ExecuteCheckbox from 'src/components/ExecuteCheckbox'
 import { getNativeCurrencyAddress } from 'src/config/utils'
 import { ICreateSafeTransaction } from 'src/types/transaction'
@@ -192,18 +201,14 @@ const ReviewSendFundsTx = ({ onClose, onPrev, tx }: ReviewTxProps): React.ReactE
       const amountFinal = Math.floor(Number(tx?.amount) * Math.pow(10, 6)).toString() || ''
 
       const signingInstruction = await (async () => {
-
-        const accountOnChain = await client.getAccount(safeAddress);
+        const accountOnChain = await client.getAccount(safeAddress)
 
         return {
-            accountNumber: accountOnChain?.accountNumber,
-            sequence: accountOnChain?.sequence,
-            memo: "",
-        };
-    })();
-
-
-      
+          accountNumber: accountOnChain?.accountNumber,
+          sequence: accountOnChain?.sequence,
+          memo: '',
+        }
+      })()
 
       const msgSend = {
         fromAddress: safeAddress,
@@ -229,7 +234,7 @@ const ReviewSendFundsTx = ({ onClose, onPrev, tx }: ReviewTxProps): React.ReactE
         accountNumber: signingInstruction.accountNumber || 0,
         sequence: signingInstruction.sequence || 0,
         chainId: chainId,
-    };
+      }
 
       try {
         // Sign On Wallet
