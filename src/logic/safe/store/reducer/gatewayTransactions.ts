@@ -179,6 +179,7 @@ export const gatewayTransactionsReducer = handleActions<GatewayTransactionsState
         }
 
         for (const [timestamp, transactions] of Object.entries(txGroup)) {
+          
           const txIndex = transactions.findIndex(({ id }) => sameString(id, transactionId))
 
           if (txIndex !== -1) {

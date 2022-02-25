@@ -116,8 +116,6 @@ export async function connectKeplr(): Promise<KeplrErrors> {
   } catch (e) {
     const message = e.message.toUpperCase()
 
-    console.log('message', message)
-
     if (message.includes(KeplrErrors.NoChainInfo)) {
       // suggestChain()
       error = KeplrErrors.NoChainInfo

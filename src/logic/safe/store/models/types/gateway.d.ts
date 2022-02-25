@@ -15,6 +15,7 @@ import {
   TransactionListPage,
   TransactionStatus,
 } from '@gnosis.pm/safe-react-gateway-sdk'
+import { MTransactionListItem } from 'src/types/transaction'
 
 /**
  * We can't use the enum values from the SDK directly when comparing to strings
@@ -32,7 +33,8 @@ export const LocalTransactionStatus: Record<string, TransactionStatus> = {
 }
 
 export type Transaction = TransactionSummary & {
-  txDetails?: ExpandedTxDetails
+  txDetails?: ExpandedTxDetails,
+  txHash?: string
 }
 
 export type ExpandedTxDetails = GWTransactionDetails

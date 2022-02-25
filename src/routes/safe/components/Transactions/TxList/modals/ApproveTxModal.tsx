@@ -37,6 +37,10 @@ import enqueueSnackbar from 'src/logic/notifications/store/actions/enqueueSnackb
 import { ExpandedTxDetails, isMultiSigExecutionDetails, Transaction } from 'src/logic/safe/store/models/types/gateway.d'
 import { extractSafeAddress } from 'src/routes/routes'
 import ExecuteCheckbox from 'src/components/ExecuteCheckbox'
+import { SigningStargateClient } from '@cosmjs/stargate'
+import { getChainInfo, getInternalChainId } from 'src/config'
+import { getChains } from 'src/config/cache/chains'
+import { sendSafeTransaction } from 'src/services'
 
 export const APPROVE_TX_MODAL_SUBMIT_BTN_TEST_ID = 'approve-tx-modal-submit-btn'
 export const REJECT_TX_MODAL_SUBMIT_BTN_TEST_ID = 'reject-tx-modal-submit-btn'
@@ -226,6 +230,7 @@ export const ApproveTxModal = ({
   const isTheTxReadyToBeExecuted = oneConfirmationLeft ? true : thresholdReached
   const [manualGasPrice, setManualGasPrice] = useState<string | undefined>()
   const [manualGasLimit, setManualGasLimit] = useState<string | undefined>()
+  const userWalletAddress = useSelector(userAccountSelector)
   const {
     confirmations,
     data,
@@ -264,36 +269,46 @@ export const ApproveTxModal = ({
   const doExecute = isExecution && approveAndExecute
   const [buttonStatus] = useEstimationStatus(txEstimationExecutionStatus)
 
-  const approveTx = (txParameters: TxParameters) => {
+  const approveTx = async (txParameters: TxParameters) => {
     if (thresholdReached && confirmations.size < _threshold) {
       dispatch(enqueueSnackbar(NOTIFICATIONS.TX_FETCH_SIGNATURES_ERROR_MSG))
     } else {
-      dispatch(
-        processTransaction({
-          safeAddress,
-          tx: {
-            id,
-            baseGas,
-            confirmations,
-            data,
-            gasPrice,
-            gasToken,
-            nonce,
-            operation,
-            origin,
-            refundReceiver,
-            safeTxGas,
-            safeTxHash,
-            to,
-            value,
-          },
-          userAddress,
-          notifiedTransaction: TX_NOTIFICATION_TYPES.CONFIRMATION_TX,
-          approveAndExecute: canExecute && approveAndExecute && isTheTxReadyToBeExecuted,
-          ethParameters: txParameters,
-          thresholdReached,
-        }),
-      )
+      // dispatch(
+      //   processTransaction({
+      //     safeAddress,
+      //     tx: {
+      //       id,
+      //       baseGas,
+      //       confirmations,
+      //       data,
+      //       gasPrice,
+      //       gasToken,
+      //       nonce,
+      //       operation,
+      //       origin,
+      //       refundReceiver,
+      //       safeTxGas,
+      //       safeTxHash,
+      //       to,
+      //       value,
+      //     },
+      //     userAddress,
+      //     notifiedTransaction: TX_NOTIFICATION_TYPES.CONFIRMATION_TX,
+      //     approveAndExecute: canExecute && approveAndExecute && isTheTxReadyToBeExecuted,
+      //     ethParameters: txParameters,
+      //     thresholdReached,
+      //   }),
+      // )
+
+      // call api to broadcast tx
+      try {
+        const data = {
+          transactionId: transaction.id,
+          internalChainId: getInternalChainId(),
+          owner: userWalletAddress,
+        }
+        const { ErrorCode, Data: safeData, Message } = await sendSafeTransaction(data)
+      } catch (error) {}
     }
     onClose()
   }

@@ -1,11 +1,11 @@
-import { ChainInfo, TransactionDetails } from '@gnosis.pm/safe-react-gateway-sdk'
-import axios from 'axios'
-import { WalletKey } from 'src/logic/keplr/keplr'
-import { SendCollectibleTxInfo } from 'src/routes/safe/components/Balances/SendModal/screens/SendCollectible'
-import { TxInfo } from 'src/routes/safe/components/Transactions/TxList/TxInfo'
-import { ICreateSafeTransaction, ISignSafeTransaction, ITransactionInfoResponse } from 'src/types/transaction'
-import { IMSafeInfo, IMSafeResponse, OwnedMSafes } from '../types/safe'
-import { MSAFE_GATEWAY_URL } from '../utils/constants'
+import { ChainInfo } from "@gnosis.pm/safe-react-gateway-sdk";
+import axios from "axios";
+import { WalletKey } from "src/logic/keplr/keplr";
+import { SendCollectibleTxInfo } from "src/routes/safe/components/Balances/SendModal/screens/SendCollectible";
+import { TxInfo } from "src/routes/safe/components/Transactions/TxList/TxInfo";
+import { ICreateSafeTransaction, ISignSafeTransaction, ITransactionDetail, ITransactionInfoResponse, ITransactionListItem, ITransactionListQuery } from "src/types/transaction";
+import { IMSafeInfo, IMSafeResponse, OwnedMSafes } from "../types/safe";
+import { MSAFE_GATEWAY_URL } from "../utils/constants";
 
 const baseUrl = MSAFE_GATEWAY_URL
 
@@ -38,9 +38,11 @@ type _ChainInfo = {
 export type MChainInfo = ChainInfo & _ChainInfo
 
 export function getMChainsConfig(): Promise<MChainInfo[]> {
-  return axios.post(`${baseUrl}/general/network-list`).then((response) => {
-    const chainList: MChainInfo[] = response.data.Data.map(
-      (e: { chainId: any; name: any; rpc: any; id: number; prefix: string; denom: string }) => {
+  return axios.post(`${baseUrl}/general/network-list`)
+    .then(response => {
+      const chainList: MChainInfo[] = response.data.Data.filter(e => e.name !== 'Aura Devnet').map((e: {
+        chainId: any; name: any; rpc: any, id: number, prefix: string; denom: string
+      }) => {
         return {
           transactionService: 'https://safe-transaction.rinkeby.staging.gnosisdev.com',
           internalChainId: e.id,
@@ -63,15 +65,15 @@ export function getMChainsConfig(): Promise<MChainInfo[]> {
             value: e.rpc,
           },
           blockExplorerUriTemplate: {
-            address: 'https://rinkeby.etherscan.io/address/{{address}}',
-            txHash: 'https://rinkeby.etherscan.io/tx/{{txHash}}',
-            api: 'https://api-rinkeby.etherscan.io/api?module={{module}}&action={{action}}&address={{address}}&apiKey={{apiKey}}',
+            address: "https://explorer.aura.network/address/{{address}}",
+            txHash: "https://explorer.aura.network/transaction/{{txHash}}",
+            api: "https://explorer.aura.network/api?module={{module}}&action={{action}}&address={{address}}&apiKey={{apiKey}}"
           },
           nativeCurrency: {
-            name: 'Aura',
-            symbol: 'Aura',
-            decimals: 18,
-            logoUri: 'https://safe-transaction-assets.staging.gnosisdev.com/chains/4/currency_logo.png',
+            name: "Aura",
+            symbol: "Aura",
+            decimals: 6,
+            logoUri: "https://safe-transaction-assets.staging.gnosisdev.com/chains/4/currency_logo.png"
           },
           theme: {
             textColor: '#ffffff',
@@ -152,4 +154,16 @@ export function signSafeTransaction(transactionInfo: ISignSafeTransaction): Prom
 
 export const fetchSafeTransactionById = async (txId: number, safeAddress: string): Promise<any> => {
   return axios.get(`${baseUrl}/transaction/transaction-details/${txId}/${safeAddress}`).then((res) => res.data.Data)
+}
+
+export async function getAllTx(payload: ITransactionListQuery): Promise<IResponse<Array<ITransactionListItem>>> {
+  return axios.post(`${baseUrl}/transaction/get-all-txs`, payload).then(res => res.data);
+}
+
+export async function getTxDetailByHash(txHash: string,safeAddress: string): Promise<IResponse<ITransactionDetail>> {
+  return axios.get(`${baseUrl}/transaction/transaction-details/${txHash}/${safeAddress}`).then(res => res.data)
+}
+
+export function sendSafeTransaction(payload: any): Promise<IResponse<any>> {
+  return axios.post(`${baseUrl}/transaction/sign`, payload).then((res) => res.data)
 }
