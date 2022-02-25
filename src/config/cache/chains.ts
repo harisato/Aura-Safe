@@ -44,6 +44,5 @@ export const emptyChainInfo: ChainInfo = {
   ensRegistryAddress: '',
   gasPrice: [],
   disabledWallets: [],
-  features: [],
-  denom: ''
+  features: []
 }
