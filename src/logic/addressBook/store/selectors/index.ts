@@ -38,10 +38,10 @@ export const addressBookAsMap = createSelector([addressBookState], (addressBook)
 })
 
 const getNameByAddress = (addressBook, address: string, chainId: ChainId): string => {
-  if (!isValidAddress(address)) {
-    return ''
-  }
-  return addressBook?.[chainId]?.[checksumAddress(address)]?.name || ''
+  // if (!isValidAddress(address)) {
+  //   return ''
+  // }
+  return addressBook?.[chainId]?.[(address)]?.name || ''
 }
 
 type GetNameParams = Overwrite<Partial<AddressBookEntry>, { address: string }>
