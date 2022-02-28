@@ -58,6 +58,7 @@ type ModalDataType = {
 function CreateSafePage(): ReactElement {
   const dispatch = useDispatch()
   // const [safePendingToBeCreated, setSafePendingToBeCreated] = useState<CreateSafeFormValues>()
+  const [pendingSafe, setPendingSafe] = useState<boolean>(false)
   const [isLoading, setIsLoading] = useState<boolean>(true)
 
   const [showCreatedModal, setShowModal] = useState(false)
@@ -113,6 +114,8 @@ function CreateSafePage(): ReactElement {
           safeAddress,
           safeId: id,
         })
+      } else {
+        setPendingSafe(true)
       }
       setShowModal(true)
     } else {
@@ -218,20 +221,36 @@ function CreateSafePage(): ReactElement {
       {showCreatedModal && (
         <GenericModal
           onClose={onClickModalButton}
-          title="Safe Created!"
+          title={pendingSafe ? 'Confirmation' : 'Safe Created!'}
           body={
-            <div data-testid="safe-created-popup">
-              <Paragraph>
-                You just created a new Safe on <NetworkLabel />
-              </Paragraph>
-              <Paragraph>
-                You will only be able to use this Safe on <NetworkLabel />
-              </Paragraph>
-              <Paragraph>
-                If you send assets on other networks to this address,{' '}
-                <EmphasisLabel>you will not be able to access them</EmphasisLabel>
-              </Paragraph>
-            </div>
+            !pendingSafe ? (
+              <div data-testid="safe-created-popup">
+                <Paragraph>
+                  You just created a new Safe on <NetworkLabel />
+                </Paragraph>
+                <Paragraph>
+                  You will only be able to use this Safe on <NetworkLabel />
+                </Paragraph>
+                <Paragraph>
+                  If you send assets on other networks to this address,{' '}
+                  <EmphasisLabel>you will not be able to access them</EmphasisLabel>
+                </Paragraph>
+              </div>
+            ) : (
+              <div data-testid="safe-created-popup">
+                <Paragraph>
+                  You are about to create a new Safe on <NetworkLabel />
+                </Paragraph>
+                <Paragraph>
+                  You will only be able to use this Safe on <NetworkLabel />
+                </Paragraph>
+                <Paragraph>All other owners must give their permission in order for the Safe to be created.</Paragraph>
+                <Paragraph>
+                  Before that, you can also cancel the Safe creation request by clicking the{' '}
+                  <EmphasisLabel> "Cancel"</EmphasisLabel> button next to your awaiting safe in the Safe list.
+                </Paragraph>
+              </div>
+            )
           }
           footer={
             <ButtonContainer>
