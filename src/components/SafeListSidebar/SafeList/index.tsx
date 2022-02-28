@@ -172,7 +172,7 @@ export const SafeList = ({ onSafeClick }: Props): ReactElement => {
                       <Text
                         size="lg"
                         color="placeHolder"
-                      >{`Safes owned on ${chainName} (${pendingSafesOnNetwork.length})`}</Text>
+                      >{`Pending safes on ${chainName} (${pendingSafesOnNetwork.length})`}</Text>
                     }
                     key={String(shouldExpandOwnedSafes)}
                     defaultExpanded={shouldExpandOwnedSafes}
