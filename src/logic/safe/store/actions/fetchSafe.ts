@@ -156,14 +156,16 @@ export const fetchMSafe =
 
       // remote (client-gateway)
       if (remoteSafeInfo) {
-        if(isInitialLoad) {
+        safeInfo = await extractRemoteSafeInfo(remoteSafeInfo)
+
+        if (isInitialLoad) {
           dispatch(fetchTransactions(chainId, safeAddress))
         }
       }
 
       const owners = buildSafeOwners(remoteSafeInfo?.owners)
 
-      return dispatch(updateSafe({ address, ...safeInfo, owners, safeId: +safeId }))
+      return dispatch(updateSafe({ address, ...safeInfo, owners, safeId: safeId }))
     }
 
 

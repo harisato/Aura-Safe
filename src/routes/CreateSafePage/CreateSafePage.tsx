@@ -23,6 +23,8 @@ import {
   FIELD_NEW_SAFE_PROXY_SALT,
   FIELD_NEW_SAFE_THRESHOLD,
   FIELD_SAFE_OWNERS_LIST,
+  SAFES_PENDING_STORAGE_KEY,
+  SAFE_PENDING_CREATION_STORAGE_KEY,
 } from './fields/createSafeFields'
 import { useMnemonicSafeName } from 'src/logic/hooks/useMnemonicName'
 import { providerNameSelector, shouldSwitchWalletChain, userAccountSelector } from 'src/logic/wallets/store/selectors'
@@ -49,15 +51,24 @@ import { useAnalytics, USER_EVENTS } from '../../utils/googleAnalytics'
 import { MESSAGES_CODE } from '../../services/constant/message'
 import enqueueSnackbar from '../../logic/notifications/store/actions/enqueueSnackbar'
 import { enhanceSnackbarForAction, ERROR, NOTIFICATIONS } from '../../logic/notifications'
+import { loadFromStorage, saveToStorage } from 'src/utils/storage'
 
 type ModalDataType = {
   safeAddress: string
   safeId?: number
 }
 
+type PendingSafeStorage =
+  | {
+      id: number
+    } & CreateSafeFormValues
+
+export type PendingSafeListStorage = PendingSafeStorage[]
+
 function CreateSafePage(): ReactElement {
   const dispatch = useDispatch()
-  // const [safePendingToBeCreated, setSafePendingToBeCreated] = useState<CreateSafeFormValues>()
+  const [safePendingToBeCreated, setSafePendingToBeCreated] = useState<CreateSafeFormValues>()
+  const [pendingSafe, setPendingSafe] = useState<boolean>(false)
   const [isLoading, setIsLoading] = useState<boolean>(true)
 
   const [showCreatedModal, setShowModal] = useState(false)
@@ -79,7 +90,7 @@ function CreateSafePage(): ReactElement {
       // )
 
       // if (provider) {
-      //   await instantiateSafeContracts()
+      //   // await instantiateSafeContracts()
       //   setSafePendingToBeCreated(safePendingToBeCreated)
       // }
       setIsLoading(false)
@@ -101,18 +112,39 @@ function CreateSafePage(): ReactElement {
 
     if (ErrorCode === MESSAGES_CODE.SUCCESSFUL.ErrorCode) {
       trackEvent(USER_EVENTS.CREATE_SAFE)
+      const { safeAddress, id, status } = safeData
 
-      if (safeData.status === SafeStatus.Created) {
-        const { safeAddress, id } = safeData
-        const safeProps = await buildMSafe(String(safeAddress), id)
+      if (status === SafeStatus.Created) {
+        const safeProps = await buildMSafe(safeAddress, id)
 
-        updateAddressBook(safeAddress, newSafeFormValues)
-        await dispatch(addOrUpdateSafe(safeProps))
+        updateAddressBook(safeAddress, newSafeFormValues, dispatch)
+        dispatch(addOrUpdateSafe(safeProps))
 
         setModalData({
           safeAddress,
           safeId: id,
         })
+      } else {
+        setPendingSafe(true)
+
+        const safesPending = await Promise.resolve(loadFromStorage<PendingSafeListStorage>(SAFES_PENDING_STORAGE_KEY))
+
+        if (safesPending) {
+          saveToStorage(SAFES_PENDING_STORAGE_KEY, [
+            ...safesPending,
+            {
+              ...newSafeFormValues,
+              id,
+            },
+          ])
+        } else {
+          saveToStorage(SAFES_PENDING_STORAGE_KEY, [
+            {
+              ...newSafeFormValues,
+              id,
+            },
+          ])
+        }
       }
       setShowModal(true)
     } else {
@@ -130,21 +162,6 @@ function CreateSafePage(): ReactElement {
       }
     }
     // setSafePendingToBeCreated(newSafeFormValues)
-  }
-
-  const updateAddressBook = async (newAddress: string, formValues: CreateSafeFormValues) => {
-    const chainId = _getChainId()
-    const defaultSafeValue = formValues[FIELD_CREATE_SUGGESTED_SAFE_NAME]
-    const name = formValues[FIELD_CREATE_CUSTOM_SAFE_NAME] || defaultSafeValue
-
-    const ownersAddressBookEntry = formValues[FIELD_SAFE_OWNERS_LIST].map(({ nameFieldName, addressFieldName }) =>
-      makeAddressBookEntry({
-        address: newAddress || formValues[addressFieldName],
-        name: name || formValues[nameFieldName],
-        chainId,
-      }),
-    )
-    await dispatch(addressBookSafeLoad([...ownersAddressBookEntry]))
   }
 
   const [initialFormValues, setInitialFormValues] = useState<CreateSafeFormValues>()
@@ -218,20 +235,36 @@ function CreateSafePage(): ReactElement {
       {showCreatedModal && (
         <GenericModal
           onClose={onClickModalButton}
-          title="Safe Created!"
+          title={pendingSafe ? 'Confirmation' : 'Safe Created!'}
           body={
-            <div data-testid="safe-created-popup">
-              <Paragraph>
-                You just created a new Safe on <NetworkLabel />
-              </Paragraph>
-              <Paragraph>
-                You will only be able to use this Safe on <NetworkLabel />
-              </Paragraph>
-              <Paragraph>
-                If you send assets on other networks to this address,{' '}
-                <EmphasisLabel>you will not be able to access them</EmphasisLabel>
-              </Paragraph>
-            </div>
+            !pendingSafe ? (
+              <div data-testid="safe-created-popup">
+                <Paragraph>
+                  You just created a new Safe on <NetworkLabel />
+                </Paragraph>
+                <Paragraph>
+                  You will only be able to use this Safe on <NetworkLabel />
+                </Paragraph>
+                <Paragraph>
+                  If you send assets on other networks to this address,{' '}
+                  <EmphasisLabel>you will not be able to access them</EmphasisLabel>
+                </Paragraph>
+              </div>
+            ) : (
+              <div data-testid="safe-created-popup">
+                <Paragraph>
+                  You are about to create a new Safe on <NetworkLabel />
+                </Paragraph>
+                <Paragraph>
+                  You will only be able to use this Safe on <NetworkLabel />
+                </Paragraph>
+                <Paragraph>All other owners must give their permission in order for the Safe to be created.</Paragraph>
+                <Paragraph>
+                  Before that, you can also cancel the Safe creation request by clicking the{' '}
+                  <EmphasisLabel> "Cancel"</EmphasisLabel> button next to your awaiting safe in the Safe list.
+                </Paragraph>
+              </div>
+            )
           }
           footer={
             <ButtonContainer>
@@ -347,6 +380,21 @@ async function makeSafeCreate(creatorAddress: string, newSafeFormValues: CreateS
     ).filter((e) => e !== creatorAddress),
     threshold: newSafeFormValues[FIELD_NEW_SAFE_THRESHOLD],
   } as ISafeCreate
+}
+
+export const updateAddressBook = async (newAddress: string, formValues: CreateSafeFormValues, dispatch) => {
+  const chainId = _getChainId()
+  const defaultSafeValue = formValues[FIELD_CREATE_SUGGESTED_SAFE_NAME]
+  const name = formValues[FIELD_CREATE_CUSTOM_SAFE_NAME] || defaultSafeValue
+
+  const ownersAddressBookEntry = formValues[FIELD_SAFE_OWNERS_LIST].map(({ nameFieldName, addressFieldName }) =>
+    makeAddressBookEntry({
+      address: newAddress || formValues[addressFieldName],
+      name: name || formValues[nameFieldName],
+      chainId,
+    }),
+  )
+  await dispatch(addressBookSafeLoad([...ownersAddressBookEntry]))
 }
 
 const LoaderContainer = styled.div`
