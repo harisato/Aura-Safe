@@ -189,14 +189,14 @@ const ReviewSendFundsTx = ({ onClose, onPrev, tx }: ReviewTxProps): React.ReactE
     const listChain = await getMChainsConfig()
     const denom = listChain.find((x) => x.chainId === chainId)?.denom || ''
     if (window.keplr) {
+      // window.keplr.defaultOptions = {
+      //   sign: {
+      //     preferNoSetMemo: true,
+      //     preferNoSetFee: true,
+      //     disableBalanceCheck: true,
+      //   },
+      // };
       await window.keplr.enable(chainId)
-      window.keplr.defaultOptions = {
-        sign: {
-          preferNoSetMemo: true,
-          preferNoSetFee: true,
-          disableBalanceCheck: true,
-        },
-      };
     }
 
     if (window.getOfflineSignerOnlyAmino) {
