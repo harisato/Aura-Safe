@@ -195,7 +195,7 @@ const SafeListItem = ({
       <StyledIcon type="check" size="md" color="primary" checked={isCurrentSafe} />
       <StyledPrefixedEthHashInfo
         hash={address}
-        name={safeName ? safeName : 'Created by:'}
+        name={!pendingStatus ? safeName ? safeName : '' : 'Created by:'}
         shortName={shortName}
         showAvatar
         shortenHash={4}

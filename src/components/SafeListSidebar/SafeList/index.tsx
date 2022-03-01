@@ -2,7 +2,7 @@ import MuiList from '@material-ui/core/List'
 import ListItem from '@material-ui/core/ListItem'
 import styled from 'styled-components'
 import makeStyles from '@material-ui/core/styles/makeStyles'
-import { Fragment, ReactElement } from 'react'
+import { Fragment, ReactElement, useEffect, useState } from 'react'
 import { Text } from '@gnosis.pm/safe-react-components'
 import { Link } from 'react-router-dom'
 import uniqBy from 'lodash/uniqBy'
@@ -13,10 +13,16 @@ import useLocalSafes from 'src/logic/safe/hooks/useLocalSafes'
 import { extractSafeAddress, WELCOME_ROUTE } from 'src/routes/routes'
 import { SafeRecordProps } from 'src/logic/safe/store/models/safe'
 import { setChainId } from 'src/logic/config/utils'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { currentChainId } from 'src/logic/config/store/selectors'
 import useOwnerSafes, { SafeStatus, SafeType } from 'src/logic/safe/hooks/useOwnerSafes'
 import { getChains } from 'src/config/cache/chains'
+import { loadFromStorage, saveToStorage } from 'src/utils/storage'
+import { PendingSafeListStorage, updateAddressBook } from 'src/routes/CreateSafePage/CreateSafePage'
+import { SAFES_PENDING_STORAGE_KEY } from 'src/routes/CreateSafePage/fields/createSafeFields'
+import { loadStoredSafes, saveSafes } from 'src/logic/safe/utils'
+import { buildMSafe } from 'src/logic/safe/store/actions/fetchSafe'
+import { addOrUpdateSafe } from 'src/logic/safe/store/actions/addOrUpdateSafe'
 
 const MAX_EXPANDED_SAFES = 3
 
@@ -74,6 +80,7 @@ const isPendingSafes = ({ status }: SafeType): boolean =>
 const isCreatedSafes = ({ status }: SafeType): boolean => status === SafeStatus.Created
 
 export const SafeList = ({ onSafeClick }: Props): ReactElement => {
+  const dispatch = useDispatch()
   const classes = useStyles()
   const currentSafeAddress = extractSafeAddress()
   const ownedSafes = useOwnerSafes()
@@ -86,6 +93,41 @@ export const SafeList = ({ onSafeClick }: Props): ReactElement => {
         const isCurrentNetwork = chainId === curChainId
         const ownedSafesOnNetwork = ownedSafes[chainId]?.filter(isCreatedSafes) || []
         const pendingSafesOnNetwork = ownedSafes[chainId]?.filter(isPendingSafes) || []
+
+        const getSafePending = async () => {
+          const safesPending = await Promise.resolve(loadFromStorage<PendingSafeListStorage>(SAFES_PENDING_STORAGE_KEY))
+          let safePendingIndex = -1
+          safesPending?.forEach((safePending, index) => {
+            const safeFound = ownedSafes[chainId]?.find((ownedSafe) => ownedSafe.id === safePending.id)
+
+            if (safeFound && safeFound.status === SafeStatus.Created && safeFound.safeAddress) {
+              safePendingIndex = index
+
+              const buildSafe = async () => {
+                const safeProps = await buildMSafe(safeFound.safeAddress, safeFound.id)
+                const storedSafes = loadStoredSafes() || {}
+
+                storedSafes[safeFound.safeAddress] = safeProps
+
+                updateAddressBook(safeFound.safeAddress, safePending, dispatch)
+                saveSafes(storedSafes)
+                dispatch(addOrUpdateSafe(safeProps))
+              }
+              buildSafe()
+            } else if (safeFound && safeFound.status === SafeStatus.Deleted) {
+
+            }
+          })
+
+          if (safePendingIndex >= 0 && safesPending) {
+            console.log('safesPending', safesPending)
+            safesPending?.splice(safePendingIndex, 1)
+            console.log('safesPending', safesPending)
+            saveToStorage(SAFES_PENDING_STORAGE_KEY, [...safesPending])
+          }
+        }
+
+        getSafePending()
 
         const localSafesOnNetwork = uniqBy(localSafes[chainId].filter(isNotLoadedViaUrl), ({ address }) =>
           address.toLowerCase(),
@@ -172,7 +214,7 @@ export const SafeList = ({ onSafeClick }: Props): ReactElement => {
                       <Text
                         size="lg"
                         color="placeHolder"
-                      >{`Safes owned on ${chainName} (${pendingSafesOnNetwork.length})`}</Text>
+                      >{`Pending safes on ${chainName} (${pendingSafesOnNetwork.length})`}</Text>
                     }
                     key={String(shouldExpandOwnedSafes)}
                     defaultExpanded={shouldExpandOwnedSafes}

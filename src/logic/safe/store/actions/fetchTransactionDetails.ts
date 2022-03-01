@@ -47,7 +47,7 @@ export const fetchTransactionDetailsByHash = ({ transactionId, txHash }: { trans
     const safeAddress = extractSafeAddress()
     const chainId = currentChainId(getState())
 
-    const txQuery = transactionId
+    const txQuery = txHash || transactionId
 
     if (transaction?.txDetails || !safeAddress || !txQuery) {
       return
@@ -133,7 +133,7 @@ export const fetchTransactionDetailsByHash = ({ transactionId, txHash }: { trans
 
       const transactionDetails: TransactionDetails = {
         txId: Data.Id.toString(),
-        executedAt: Data.Executor.length ? new Date(Data.UpdatedAt).getTime() : null,
+        executedAt: Data.TxHash ? new Date(Data.UpdatedAt).getTime() : null,
         txStatus: (Data.Status == '0' ? TransactionStatus.SUCCESS : Data.Status) as TransactionStatus,
         txInfo: {
           type: 'Transfer',
