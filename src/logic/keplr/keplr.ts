@@ -3,7 +3,7 @@ import { Keplr } from "@keplr-wallet/types";
 import { getChainInfo, getInternalChainId, _getChainId } from "../../config";
 import { makeProvider, ProviderProps } from '../wallets/store/model/provider';
 import { Dispatch } from 'redux';
-import { addProvider } from '../wallets/store/actions';
+import { addProvider, removeProvider } from '../wallets/store/actions';
 import enqueueSnackbar from '../notifications/store/actions/enqueueSnackbar';
 import { enhanceSnackbarForAction, NOTIFICATIONS } from '../notifications';
 import { trackAnalyticsEvent, WALLET_EVENTS } from '../../utils/googleAnalytics';
@@ -108,6 +108,8 @@ export async function connectKeplr(): Promise<KeplrErrors> {
             smartContractWallet: false,
             internalChainId
           }
+
+          store.dispatch(removeProvider({ keepStorageKey: true }))
 
           store.dispatch(fetchProvider(providerInfo))
           saveToStorage(LAST_USED_PROVIDER_KEY, providerInfo.name)

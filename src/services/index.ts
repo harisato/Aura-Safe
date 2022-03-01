@@ -33,7 +33,8 @@ export interface IResponse<T> {
 
 type _ChainInfo = {
   internalChainId: number,
-  denom: string
+  denom: string,
+  symbol: string
 }
 
 export type MChainInfo = ChainInfo & _ChainInfo
@@ -46,7 +47,7 @@ export function getMChainsConfig(): Promise<MChainInfo[]> {
   return axios.post(`${baseUrl}/general/network-list`)
     .then(response => {
       const chainList: MChainInfo[] = response.data.Data.map((e: {
-        chainId: any; name: any; rpc: any, id: number, prefix: string; denom: string
+        chainId: any; name: any; rpc: any, id: number, prefix: string; denom: string, symbol: string
       }) => {
         return {
           transactionService: null,
@@ -75,10 +76,10 @@ export function getMChainsConfig(): Promise<MChainInfo[]> {
             api: "https://explorer.aura.network/api?module={{module}}&action={{action}}&address={{address}}&apiKey={{apiKey}}"
           },
           nativeCurrency: {
-            name: "Aura",
-            symbol: "Aura",
+            name: e.prefix.charAt(0).toUpperCase() + e.prefix.slice(1, e.prefix.length).toLowerCase(),
+            symbol: e.symbol,
             decimals: 6,
-            logoUri: "https://safe-transaction-assets.staging.gnosisdev.com/chains/4/currency_logo.png"
+            logoUri: `img/token/${e.chainId}.svg`
           },
           theme: {
             textColor: '#ffffff',
