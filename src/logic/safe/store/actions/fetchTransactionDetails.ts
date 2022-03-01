@@ -84,7 +84,7 @@ export const fetchTransactionDetailsByHash = ({ transactionId, txHash }: { trans
           refundReceiver: {
             logoUri: null,
             name: null,
-            value: 'aura000000000000000000000000000000000000000'
+            value: '0000000000000000000000000000000000000000'
           },
           safeTxHash: safeAddress,
           executor: !Data.Executor[0] ? null : {
