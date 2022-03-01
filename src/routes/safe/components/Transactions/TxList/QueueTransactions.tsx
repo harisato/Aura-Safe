@@ -39,7 +39,8 @@ export const QueueTransactions = (): ReactElement => {
       </TxLocationContext.Provider>
 
       {/* Queue list */}
-      <TxLocationContext.Provider value={{ txLocation: 'queued.queued' }}>
+      {/* <TxLocationContext.Provider value={{ txLocation: 'queued.queued' }}> */}
+      <TxLocationContext.Provider value={{ txLocation: 'queued.next' }}>
         {transactions.queue.count !== 0 && <QueueTxList transactions={transactions.queue.transactions} />}
       </TxLocationContext.Provider>
     </TxsInfiniteScroll>
