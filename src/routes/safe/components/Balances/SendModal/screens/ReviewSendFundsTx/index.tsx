@@ -192,8 +192,8 @@ const ReviewSendFundsTx = ({ onClose, onPrev, tx }: ReviewTxProps): React.ReactE
       await window.keplr.enable(chainId)
     }
 
-    if (window.getOfflineSigner) {
-      const offlineSigner = window.getOfflineSigner(chainId)
+    if (window.getOfflineSignerOnlyAmino) {
+      const offlineSigner = window.getOfflineSignerOnlyAmino(chainId)
       const accounts = await offlineSigner.getAccounts()
       const tendermintUrl = 'https://tendermint-testnet.aura.network'
       const client = await SigningStargateClient.connectWithSigner(tendermintUrl, offlineSigner)
