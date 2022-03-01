@@ -190,6 +190,13 @@ const ReviewSendFundsTx = ({ onClose, onPrev, tx }: ReviewTxProps): React.ReactE
     const denom = listChain.find((x) => x.chainId === chainId)?.denom || ''
     if (window.keplr) {
       await window.keplr.enable(chainId)
+      window.keplr.defaultOptions = {
+        sign: {
+          preferNoSetMemo: true,
+          preferNoSetFee: true,
+          disableBalanceCheck: true,
+        },
+      };
     }
 
     if (window.getOfflineSignerOnlyAmino) {
@@ -229,7 +236,6 @@ const ReviewSendFundsTx = ({ onClose, onPrev, tx }: ReviewTxProps): React.ReactE
         ],
         gas: manualGasLimit || '20000',
       }
-
       const signerData: SignerData = {
         accountNumber: signingInstruction.accountNumber || 0,
         sequence: signingInstruction.sequence || 0,
