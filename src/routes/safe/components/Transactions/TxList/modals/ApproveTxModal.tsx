@@ -41,6 +41,7 @@ import { SigningStargateClient } from '@cosmjs/stargate'
 import { getChainInfo, getInternalChainId } from 'src/config'
 import { getChains } from 'src/config/cache/chains'
 import { sendSafeTransaction } from 'src/services'
+import fetchTransactions from 'src/logic/safe/store/actions/transactions/fetchTransactions'
 
 export const APPROVE_TX_MODAL_SUBMIT_BTN_TEST_ID = 'approve-tx-modal-submit-btn'
 export const REJECT_TX_MODAL_SUBMIT_BTN_TEST_ID = 'reject-tx-modal-submit-btn'
@@ -308,6 +309,7 @@ export const ApproveTxModal = ({
           owner: userWalletAddress,
         }
         const { ErrorCode, Data: safeData, Message } = await sendSafeTransaction(data)
+        
         console.log(safeData)
       } catch (error) {
         console.log(error)

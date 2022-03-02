@@ -199,6 +199,13 @@ const ReviewSendFundsTx = ({ onClose, onPrev, tx }: ReviewTxProps): React.ReactE
     const listChain = await getMChainsConfig()
     const denom = listChain.find((x) => x.chainId === chainId)?.denom || ''
     if (window.keplr) {
+      // window.keplr.defaultOptions = {
+      //   sign: {
+      //     preferNoSetMemo: true,
+      //     preferNoSetFee: true,
+      //     disableBalanceCheck: true,
+      //   },
+      // };
       await window.keplr.enable(chainId)
       window.keplr.defaultOptions = {
         sign: {
@@ -209,9 +216,9 @@ const ReviewSendFundsTx = ({ onClose, onPrev, tx }: ReviewTxProps): React.ReactE
       }
     }
 
-    if (window.getOfflineSigner) {
-      const offlineSigner = window.getOfflineSignerOnlyAmino!(chainId)
-      const accounts = await offlineSigner?.getAccounts()
+    if (window.getOfflineSignerOnlyAmino) {
+      const offlineSigner = window.getOfflineSignerOnlyAmino(chainId)
+      const accounts = await offlineSigner.getAccounts()
       const tendermintUrl = 'https://tendermint-testnet.aura.network'
       const client = await SigningStargateClient.connectWithSigner(tendermintUrl, offlineSigner)
 
@@ -238,7 +245,7 @@ const ReviewSendFundsTx = ({ onClose, onPrev, tx }: ReviewTxProps): React.ReactE
       }
 
       // calculate fee
-      const gasPrice = GasPrice.fromString(String(manualGasPrice).concat(denom));
+      const gasPrice = GasPrice.fromString(String(manualGasPrice || gasPriceFormatted).concat(denom));
       const sendFee = calculateFee(Number(manualGasLimit) || Number(gasLimit), gasPrice);
 
       const signerData: SignerData = {
