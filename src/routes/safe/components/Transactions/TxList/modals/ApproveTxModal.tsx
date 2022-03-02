@@ -35,13 +35,15 @@ import { makeConfirmation } from 'src/logic/safe/store/models/confirmation'
 import { NOTIFICATIONS } from 'src/logic/notifications'
 import enqueueSnackbar from 'src/logic/notifications/store/actions/enqueueSnackbar'
 import { ExpandedTxDetails, isMultiSigExecutionDetails, Transaction } from 'src/logic/safe/store/models/types/gateway.d'
-import { extractSafeAddress } from 'src/routes/routes'
+import { extractSafeAddress, SAFE_ROUTES, history, generateSafeRoute } from 'src/routes/routes'
 import ExecuteCheckbox from 'src/components/ExecuteCheckbox'
 import { SigningStargateClient } from '@cosmjs/stargate'
-import { getChainInfo, getInternalChainId } from 'src/config'
+import { getChainInfo, getInternalChainId, getShortName } from 'src/config'
 import { getChains } from 'src/config/cache/chains'
 import { sendSafeTransaction } from 'src/services'
 import fetchTransactions from 'src/logic/safe/store/actions/transactions/fetchTransactions'
+import { fetchSafe } from 'src/logic/safe/store/actions/fetchSafe'
+import { generatePath } from 'react-router-dom'
 
 export const APPROVE_TX_MODAL_SUBMIT_BTN_TEST_ID = 'approve-tx-modal-submit-btn'
 export const REJECT_TX_MODAL_SUBMIT_BTN_TEST_ID = 'reject-tx-modal-submit-btn'
@@ -309,13 +311,23 @@ export const ApproveTxModal = ({
           owner: userWalletAddress,
         }
         const { ErrorCode, Data: safeData, Message } = await sendSafeTransaction(data)
-        
-        console.log(safeData)
+        if(ErrorCode === 'SUCCESSFUL') {
+          dispatch(enqueueSnackbar(NOTIFICATIONS.TX_EXECUTED_MSG))
+        } else {
+          dispatch(enqueueSnackbar(NOTIFICATIONS.TX_FAILED_MSG))
+        }
       } catch (error) {
-        console.log(error)
+        dispatch(enqueueSnackbar(NOTIFICATIONS.TX_FAILED_MSG))
       }
     }
     onClose()
+    dispatch(fetchSafe(safeAddress))
+    history.push(
+      generateSafeRoute(SAFE_ROUTES.TRANSACTIONS_HISTORY, {
+        shortName: getShortName(),
+        safeAddress,
+      }),
+    )
   }
 
   const getParametersStatus = () => {

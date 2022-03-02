@@ -95,7 +95,7 @@ export const TxParametersDetail = ({
       </AccordionSummary>
       <AccordionDetails>
         <AccordionDetailsWrapper>
-          <StyledText size="md" color="placeHolder">
+          {/* <StyledText size="md" color="placeHolder">
             Safe transaction
           </StyledText>
 
@@ -114,9 +114,9 @@ export const TxParametersDetail = ({
             >
               {txParameters.safeNonce}
             </ColoredText>
-          </TxParameterWrapper>
+          </TxParameterWrapper> */}
 
-          {showSafeTxGas && (
+          {/* {showSafeTxGas && (
             <TxParameterWrapper>
               <Text
                 size="lg"
@@ -131,7 +131,7 @@ export const TxParametersDetail = ({
                 {txParameters.safeTxGas}
               </Text>
             </TxParameterWrapper>
-          )}
+          )} */}
 
           {areEthereumParamsVisible(parametersStatus || defaultParameterStatus) && (
             <>
@@ -141,10 +141,10 @@ export const TxParametersDetail = ({
                 </StyledText>
               </TxParameterWrapper>
 
-              <TxParameterWrapper>
+              {/* <TxParameterWrapper>
                 <Text size="lg">Nonce</Text>
                 <Text size="lg">{txParameters.ethNonce}</Text>
-              </TxParameterWrapper>
+              </TxParameterWrapper> */}
 
               <TxParameterWrapper>
                 <Text size="lg">Gas limit</Text>
