@@ -52,7 +52,7 @@ import { ICreateSafeTransaction } from 'src/types/transaction'
 import { currentSafeWithNames } from 'src/logic/safe/store/selectors'
 import { TxData } from 'src/routes/safe/components/Transactions/TxList/TxData'
 import { createSafeTransaction, getMChainsConfig, signSafeTransaction } from 'src/services'
-import { coins, GasPrice, MsgSendEncodeObject, SignerData, SigningStargateClient } from '@cosmjs/stargate'
+import { coins, MsgSendEncodeObject, SignerData, SigningStargateClient } from '@cosmjs/stargate'
 import enqueueSnackbar from 'src/logic/notifications/store/actions/enqueueSnackbar'
 import { enhanceSnackbarForAction, NOTIFICATIONS } from 'src/logic/notifications'
 import { AuthInfo, TxBody, TxRaw } from 'cosmjs-types/cosmos/tx/v1beta1/tx'
@@ -61,6 +61,14 @@ import { parseToAdress } from 'src/utils/parseByteAdress'
 import { ChainInfo } from '@gnosis.pm/safe-react-gateway-sdk'
 import { getChains } from 'src/config/cache/chains'
 import { generatePath } from 'react-router-dom'
+import { MsgSend } from 'cosmjs-types/cosmos/bank/v1beta1/tx'
+import {
+  calculateFee,
+  GasPrice,
+  makeMultisignedTx,
+  StargateClient,
+} from '@cosmjs/stargate'
+import { fromBase64, toBase64 } from "@cosmjs/encoding";
 
 const useStyles = makeStyles(styles)
 let chains: ChainInfo[] = []
@@ -157,8 +165,8 @@ const ReviewSendFundsTx = ({ onClose, onPrev, tx }: ReviewTxProps): React.ReactE
     isOffChainSignature,
   } = {
     gasCostFormatted: '',
-    gasPriceFormatted: '',
-    gasLimit: '0',
+    gasPriceFormatted: '1',
+    gasLimit: '80000',
     gasEstimation: '0',
     txEstimationExecutionStatus: EstimationStatus.SUCCESS,
     isExecution: true,
@@ -183,6 +191,8 @@ const ReviewSendFundsTx = ({ onClose, onPrev, tx }: ReviewTxProps): React.ReactE
     // console.log(safeData)
   }
 
+  const toHexString = (bytes) => bytes.reduce((str, byte) => str + byte.toString(16).padStart(2, '0'), '')
+
   const signTransactionWithKeplr = async (safeAddress: string) => {
     const chainInfo = getChainInfo()
     const chainId = chainInfo.chainId
@@ -197,6 +207,13 @@ const ReviewSendFundsTx = ({ onClose, onPrev, tx }: ReviewTxProps): React.ReactE
       //   },
       // };
       await window.keplr.enable(chainId)
+      window.keplr.defaultOptions = {
+        sign: {
+          preferNoSetMemo: true,
+          preferNoSetFee: true,
+          disableBalanceCheck: true,
+        },
+      }
     }
 
     if (window.getOfflineSignerOnlyAmino) {
@@ -217,7 +234,7 @@ const ReviewSendFundsTx = ({ onClose, onPrev, tx }: ReviewTxProps): React.ReactE
         }
       })()
 
-      const msgSend = {
+      const msgSend: MsgSend = {
         fromAddress: safeAddress,
         toAddress: txRecipient,
         amount: coins(amountFinal, denom),
@@ -227,15 +244,10 @@ const ReviewSendFundsTx = ({ onClose, onPrev, tx }: ReviewTxProps): React.ReactE
         value: msgSend,
       }
 
-      const fee = {
-        amount: [
-          {
-            denom: denom,
-            amount: manualGasPrice || '100',
-          },
-        ],
-        gas: manualGasLimit || '20000',
-      }
+      // calculate fee
+      const gasPrice = GasPrice.fromString(String(manualGasPrice || gasPriceFormatted).concat(denom));
+      const sendFee = calculateFee(Number(manualGasLimit) || Number(gasLimit), gasPrice);
+
       const signerData: SignerData = {
         accountNumber: signingInstruction.accountNumber || 0,
         sequence: signingInstruction.sequence || 0,
@@ -245,19 +257,23 @@ const ReviewSendFundsTx = ({ onClose, onPrev, tx }: ReviewTxProps): React.ReactE
       try {
         // Sign On Wallet
         dispatch(enqueueSnackbar(enhanceSnackbarForAction(NOTIFICATIONS.SIGN_TX_MSG)))
-        const signResult = await client.sign(accounts[0]?.address, [msg], fee, '', signerData)
 
-        const signatures = parseToAdress(signResult.signatures[0])
-        const bodyBytes = parseToAdress(signResult.bodyBytes)
+        const signResult = await client.sign(accounts[0]?.address, [msg], sendFee, '', signerData)
+
+        const signatures = toBase64(signResult.signatures[0])
+        const bodyBytes = toBase64(signResult.bodyBytes)
+        const t = fromBase64(bodyBytes)
+        // const signatures = parseToAdress(signResult.signatures[0])
+        // const bodyBytes = parseToAdress(signResult.bodyBytes)
 
         // call api to create transaction
         const data: ICreateSafeTransaction = {
           from: safeAddress,
           to: txRecipient || '',
           amount: amountFinal,
-          gasLimit: manualGasLimit || '',
+          gasLimit: manualGasLimit || '80000',
           internalChainId: getInternalChainId(),
-          fee: Number(manualGasPrice) || 0,
+          fee: Number(manualGasPrice) || 1,
           creatorAddress: userWalletAddress,
           signature: signatures,
           bodyBytes: bodyBytes,

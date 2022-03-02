@@ -133,7 +133,7 @@ export const EditTxParametersForm = ({
         >
           {() => (
             <>
-              <StyledText size="xl" strong>
+              {/* <StyledText size="xl" strong>
                 Safe transaction
               </StyledText>
 
@@ -160,7 +160,7 @@ export const EditTxParametersForm = ({
                     disabled={!areSafeParamsEnabled(parametersStatus)}
                   />
                 )}
-              </SafeOptions>
+              </SafeOptions> */}
 
               {areEthereumParamsVisible(parametersStatus) && (
                 <>
@@ -169,7 +169,7 @@ export const EditTxParametersForm = ({
                   </StyledTextMt>
 
                   <EthereumOptions>
-                    <Field
+                    {/* <Field
                       name="ethNonce"
                       defaultValue={ethNonce}
                       placeholder="Nonce"
@@ -177,7 +177,7 @@ export const EditTxParametersForm = ({
                       type="number"
                       component={TextField}
                       disabled={!areEthereumParamsVisible(parametersStatus)}
-                    />
+                    /> */}
                     <Field
                       name="ethGasLimit"
                       defaultValue={ethGasLimit}
