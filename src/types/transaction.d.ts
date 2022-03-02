@@ -29,6 +29,7 @@ export interface ICreateSafeTransaction {
 export interface ITransactionListQuery {
     safeAddress: string,
     pageSize: number,
+    isHistory: boolean,
     pageIndex: number
 }
 

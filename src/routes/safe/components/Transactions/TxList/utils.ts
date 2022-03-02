@@ -325,6 +325,8 @@ export const makeHistoryTransactionsFromService = (list: ITransactionListItem[])
   )
   let page: TransactionListPage = {
     results: [...transaction],
+    next: undefined,
+    previous: undefined
   }
 
   return page
@@ -336,6 +338,8 @@ export const makeQueueTransactionsFromService = (list: ITransactionListItem[]): 
   )
   let page: TransactionListPage = {
     results: [...transaction],
+    next: undefined,
+    previous: undefined
   }
   return page
 }
