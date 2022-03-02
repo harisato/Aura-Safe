@@ -27,6 +27,7 @@ export const HistoryTransactions = (): ReactElement => {
       safeAddress,
       pageIndex: 1,
       pageSize: 10,
+      isHistory: false
     }
 
     const getTx = async (payload) => {
