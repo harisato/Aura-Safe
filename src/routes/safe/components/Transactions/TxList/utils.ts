@@ -246,7 +246,7 @@ export const makeTransactionDetail = (txDetail: any): any => {
       nonce: 0,
       type: 'MULTISIG',
     },
-    id: txDetail?.Id.toString(),
+    id: txDetail?.Id?.toString(),
     safeAppInfo: undefined,
     timestamp: new Date(txDetail?.CreatedAt).getTime(),
     txDetails: {
@@ -346,8 +346,8 @@ const makeTransactions = (list: ITransactionListItem[]): MTransactionListItem[] 
     type: 'TRANSACTION',
     transaction: {
       executionInfo: {
-        confirmationsRequired: 1,
-        confirmationsSubmitted: 1,
+        confirmationsRequired: 0,
+        confirmationsSubmitted: 0,
         nonce: tx.Id,
         type: 'MULTISIG',
         missingSigners: null,
