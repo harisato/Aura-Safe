@@ -59,7 +59,6 @@ import { MsgSend } from 'cosmjs-types/cosmos/bank/v1beta1/tx'
 export const APPROVE_TX_MODAL_SUBMIT_BTN_TEST_ID = 'approve-tx-modal-submit-btn'
 export const REJECT_TX_MODAL_SUBMIT_BTN_TEST_ID = 'reject-tx-modal-submit-btn'
 
-
 const getModalTitleAndDescription = (
   thresholdReached: boolean,
   isCancelTx: boolean,
@@ -237,10 +236,17 @@ export const ApproveTxModal = ({
   const safeAddress = extractSafeAddress()
   const [approveAndExecute, setApproveAndExecute] = useState(canExecute)
   const executionInfo = transaction.executionInfo as MultisigExecutionInfo
-  const thresholdReached = !!(transaction.executionInfo && isThresholdReached(Number(executionInfo?.confirmationsRequired), (transaction?.txDetails?.detailedExecutionInfo as MultisigExecutionDetails)?.confirmations.length))
+  const thresholdReached = !!(
+    transaction.executionInfo &&
+    isThresholdReached(
+      Number((transaction?.txDetails?.detailedExecutionInfo as MultisigExecutionDetails)?.confirmationsRequired),
+      (transaction?.txDetails?.detailedExecutionInfo as MultisigExecutionDetails)?.confirmations.length,
+    )
+  )
   const _threshold = executionInfo?.confirmationsRequired ?? 0
   // const _countingCurrentConfirmation = (executionInfo?.confirmationsSubmitted ?? 0) + 1
-  const _countingCurrentConfirmation = ((transaction?.txDetails?.detailedExecutionInfo as MultisigExecutionDetails)?.confirmations.length ?? 0) + 1
+  const _countingCurrentConfirmation =
+    ((transaction?.txDetails?.detailedExecutionInfo as MultisigExecutionDetails)?.confirmations.length ?? 0) + 1
   const { description, title } = getModalTitleAndDescription(thresholdReached, isCancelTx)
   const oneConfirmationLeft = !thresholdReached && _countingCurrentConfirmation === _threshold
   const isTheTxReadyToBeExecuted = oneConfirmationLeft ? true : thresholdReached
@@ -349,7 +355,7 @@ export const ApproveTxModal = ({
           const { ErrorCode, Data: safeData, Message } = await sendSafeTransaction(data)
           if (ErrorCode === 'SUCCESSFUL') {
             dispatch(enqueueSnackbar(NOTIFICATIONS.TX_EXECUTED_MSG))
-            window.location.reload();
+            window.location.reload()
           } else {
             dispatch(enqueueSnackbar(NOTIFICATIONS.TX_FAILED_MSG))
           }
@@ -373,7 +379,7 @@ export const ApproveTxModal = ({
           safeAddress,
         }),
       )
-    } 
+    }
   }
 
   const getParametersStatus = () => {
@@ -477,7 +483,7 @@ export const ApproveTxModal = ({
               safeAddress,
             }),
           )
-          window.location.reload();
+          window.location.reload()
         } else {
           dispatch(enqueueSnackbar(enhanceSnackbarForAction(NOTIFICATIONS.TX_FAILED_MSG)))
         }

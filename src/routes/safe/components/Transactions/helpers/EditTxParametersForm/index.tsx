@@ -196,7 +196,7 @@ export const EditTxParametersForm = ({
                       placeholder="Gas price (GWEI)"
                       text="Gas price (GWEI)"
                       component={TextField}
-                      disabled={!areEthereumParamsVisible(parametersStatus)}
+                      // disabled={!areEthereumParamsVisible(parametersStatus)}
                     />
                   </EthereumOptions>
 
