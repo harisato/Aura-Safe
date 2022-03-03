@@ -86,6 +86,7 @@ export interface ITransactionDetail {
     Denom: string;
     GasUsed: string;
     GasWanted: number;
+    GasPrice: number;
     ChainId: string;
     Status: string;
     ConfirmationsRequired: number;
