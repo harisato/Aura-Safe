@@ -251,17 +251,17 @@ export const makeTransactionDetail = (txDetail: any): any => {
     timestamp: new Date(txDetail?.CreatedAt).getTime(),
     txDetails: {
       detailedExecutionInfo: {
-        baseGas: '0',
+        baseGas: txDetail?.GasWanted,
         confirmations: confirmationList,
         confirmationsRequired: txDetail?.ConfirmationsRequired,
         executor: null,
-        gasPrice: txDetail?.GasWanted,
+        gasPrice: txDetail?.GasPrice,
         gasToken: '',
         nonce: 0,
         refundReceiver: {
           value: '',
         },
-        safeTxGas: txDetail?.GasWanted,
+        safeTxGas: txDetail?.GasUsed,
         safeTxHash: txDetail?.TxHash,
         signers: signerList,
         submittedAt: new Date(txDetail?.UpdatedAt).getTime(),

@@ -79,7 +79,7 @@ export const fetchTransactionDetailsByHash = ({ transactionId, txHash }: { trans
           nonce: Data.Id,
           safeTxGas: (Data?.GasUsed || 0)?.toString(),
           baseGas: (Data?.GasWanted || 0)?.toString(),
-          gasPrice: '0',
+          gasPrice: (Data?.GasPrice || 0)?.toString(),
           gasToken: Data.Denom,
           refundReceiver: {
             logoUri: null,

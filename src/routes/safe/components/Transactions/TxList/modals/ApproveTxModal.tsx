@@ -113,7 +113,7 @@ const useTxInfo = (transaction: Props['transaction']) => {
   const gasPrice = useMemo(
     () =>
       isMultiSigExecutionDetails(t.current.txDetails.detailedExecutionInfo)
-        ? t.current.txDetails.detailedExecutionInfo.gasPrice
+        ? t.current.txDetails.detailedExecutionInfo.gasPrice?.toString()
         : '0',
     [],
   )
@@ -448,8 +448,8 @@ export const ApproveTxModal = ({
       }
 
       // calculate fee
-      const gasPrice = GasPrice.fromString(String(manualGasPrice || gasPriceFormatted).concat(denom))
-      const sendFee = calculateFee(Number(manualGasLimit) || Number(baseGas), gasPrice)
+      const gasPriceFee = GasPrice.fromString(String(manualGasPrice || gasPrice).concat(denom))
+      const sendFee = calculateFee(Number(manualGasLimit) || Number(baseGas), gasPriceFee)
 
       const signerData: SignerData = {
         accountNumber: signingInstruction.accountNumber || 0,
@@ -501,7 +501,7 @@ export const ApproveTxModal = ({
         isExecution={doExecute}
         parametersStatus={getParametersStatus()}
         ethGasLimit={baseGas}
-        ethGasPrice={gasPriceFormatted}
+        ethGasPrice={gasPrice}
         safeNonce={nonce.toString()}
         safeTxGas={safeTxGas}
         closeEditModalCallback={closeEditModalCallback}
