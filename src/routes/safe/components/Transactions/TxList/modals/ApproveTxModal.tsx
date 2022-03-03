@@ -2,6 +2,7 @@ import { List } from 'immutable'
 import {
   Erc20Transfer,
   Erc721Transfer,
+  MultisigExecutionDetails,
   MultisigExecutionInfo,
   Operation,
   TokenType,
@@ -32,21 +33,32 @@ import { ModalHeader } from 'src/routes/safe/components/Balances/SendModal/scree
 import { Overwrite } from 'src/types/helpers'
 import { ZERO_ADDRESS } from 'src/logic/wallets/ethAddresses'
 import { makeConfirmation } from 'src/logic/safe/store/models/confirmation'
-import { NOTIFICATIONS } from 'src/logic/notifications'
+import { enhanceSnackbarForAction, NOTIFICATIONS } from 'src/logic/notifications'
 import enqueueSnackbar from 'src/logic/notifications/store/actions/enqueueSnackbar'
 import { ExpandedTxDetails, isMultiSigExecutionDetails, Transaction } from 'src/logic/safe/store/models/types/gateway.d'
-import { extractSafeAddress, SAFE_ROUTES, history, generateSafeRoute } from 'src/routes/routes'
+import {
+  extractSafeAddress,
+  SAFE_ROUTES,
+  history,
+  generateSafeRoute,
+  SAFE_ADDRESS_SLUG,
+  getPrefixedSafeAddressSlug,
+  extractShortChainName,
+} from 'src/routes/routes'
 import ExecuteCheckbox from 'src/components/ExecuteCheckbox'
-import { SigningStargateClient } from '@cosmjs/stargate'
+import { calculateFee, coins, GasPrice, MsgSendEncodeObject, SignerData, SigningStargateClient } from '@cosmjs/stargate'
 import { getChainInfo, getInternalChainId, getShortName } from 'src/config'
 import { getChains } from 'src/config/cache/chains'
-import { sendSafeTransaction } from 'src/services'
+import { confirmSafeTransaction, getMChainsConfig, sendSafeTransaction } from 'src/services'
 import fetchTransactions from 'src/logic/safe/store/actions/transactions/fetchTransactions'
 import { fetchSafe } from 'src/logic/safe/store/actions/fetchSafe'
 import { generatePath } from 'react-router-dom'
+import { fromBase64, toBase64 } from '@cosmjs/encoding'
+import { MsgSend } from 'cosmjs-types/cosmos/bank/v1beta1/tx'
 
 export const APPROVE_TX_MODAL_SUBMIT_BTN_TEST_ID = 'approve-tx-modal-submit-btn'
 export const REJECT_TX_MODAL_SUBMIT_BTN_TEST_ID = 'reject-tx-modal-submit-btn'
+
 
 const getModalTitleAndDescription = (
   thresholdReached: boolean,
@@ -225,9 +237,10 @@ export const ApproveTxModal = ({
   const safeAddress = extractSafeAddress()
   const [approveAndExecute, setApproveAndExecute] = useState(canExecute)
   const executionInfo = transaction.executionInfo as MultisigExecutionInfo
-  const thresholdReached = !!(transaction.executionInfo && isThresholdReached(executionInfo))
+  const thresholdReached = !!(transaction.executionInfo && isThresholdReached(Number(executionInfo?.confirmationsRequired), (transaction?.txDetails?.detailedExecutionInfo as MultisigExecutionDetails)?.confirmations.length))
   const _threshold = executionInfo?.confirmationsRequired ?? 0
-  const _countingCurrentConfirmation = (executionInfo?.confirmationsSubmitted ?? 0) + 1
+  // const _countingCurrentConfirmation = (executionInfo?.confirmationsSubmitted ?? 0) + 1
+  const _countingCurrentConfirmation = ((transaction?.txDetails?.detailedExecutionInfo as MultisigExecutionDetails)?.confirmations.length ?? 0) + 1
   const { description, title } = getModalTitleAndDescription(thresholdReached, isCancelTx)
   const oneConfirmationLeft = !thresholdReached && _countingCurrentConfirmation === _threshold
   const isTheTxReadyToBeExecuted = oneConfirmationLeft ? true : thresholdReached
@@ -269,6 +282,27 @@ export const ApproveTxModal = ({
     manualGasPrice,
     manualGasLimit,
   })
+
+  // const {
+  //   gasCostFormatted,
+  //   gasPriceFormatted,
+  //   gasLimit,
+  //   gasEstimation,
+  //   txEstimationExecutionStatus,
+  //   isExecution,
+  //   isCreation,
+  //   isOffChainSignature,
+  // } = {
+  //   gasCostFormatted: '',
+  //   gasPriceFormatted: '1',
+  //   gasLimit: '80000',
+  //   gasEstimation: '0',
+  //   txEstimationExecutionStatus: EstimationStatus.SUCCESS,
+  //   isExecution: true,
+  //   isCreation: true,
+  //   isOffChainSignature: true,
+  // }
+
   const doExecute = isExecution && approveAndExecute
   const [buttonStatus] = useEstimationStatus(txEstimationExecutionStatus)
 
@@ -305,29 +339,41 @@ export const ApproveTxModal = ({
 
       // call api to broadcast tx
       try {
-        const data = {
-          transactionId: transaction.id,
-          internalChainId: getInternalChainId(),
-          owner: userWalletAddress,
-        }
-        const { ErrorCode, Data: safeData, Message } = await sendSafeTransaction(data)
-        if(ErrorCode === 'SUCCESSFUL') {
-          dispatch(enqueueSnackbar(NOTIFICATIONS.TX_EXECUTED_MSG))
+        if (thresholdReached) {
+          // case when Execute Click
+          const data = {
+            transactionId: transaction.id,
+            internalChainId: getInternalChainId(),
+            owner: userWalletAddress,
+          }
+          const { ErrorCode, Data: safeData, Message } = await sendSafeTransaction(data)
+          if (ErrorCode === 'SUCCESSFUL') {
+            dispatch(enqueueSnackbar(NOTIFICATIONS.TX_EXECUTED_MSG))
+            window.location.reload();
+          } else {
+            dispatch(enqueueSnackbar(NOTIFICATIONS.TX_FAILED_MSG))
+          }
         } else {
-          dispatch(enqueueSnackbar(NOTIFICATIONS.TX_FAILED_MSG))
+          // case when Confirm Click
+          signTransactionWithKeplr(safeAddress)
         }
       } catch (error) {
-        dispatch(enqueueSnackbar(NOTIFICATIONS.TX_FAILED_MSG))
+        if (thresholdReached) {
+          dispatch(enqueueSnackbar(NOTIFICATIONS.TX_FAILED_MSG))
+        }
+
+        dispatch(enqueueSnackbar(NOTIFICATIONS.TX_CONFIRMATION_FAILED_MSG))
       }
     }
     onClose()
-    dispatch(fetchSafe(safeAddress))
-    history.push(
-      generateSafeRoute(SAFE_ROUTES.TRANSACTIONS_HISTORY, {
-        shortName: getShortName(),
-        safeAddress,
-      }),
-    )
+    if (thresholdReached) {
+      history.push(
+        generateSafeRoute(SAFE_ROUTES.TRANSACTIONS_HISTORY, {
+          shortName: getShortName(),
+          safeAddress,
+        }),
+      )
+    } 
   }
 
   const getParametersStatus = () => {
@@ -348,6 +394,97 @@ export const ApproveTxModal = ({
 
     if (txParameters.ethGasLimit && gasLimit !== txParameters.ethGasLimit) {
       setManualGasLimit(txParameters.ethGasLimit)
+    }
+  }
+
+  const signTransactionWithKeplr = async (safeAddress: string) => {
+    const chainInfo = getChainInfo()
+    const chainId = chainInfo.chainId
+    const listChain = await getMChainsConfig()
+    const denom = listChain.find((x) => x.chainId === chainId)?.denom || ''
+    if (window.keplr) {
+      await window.keplr.enable(chainId)
+      window.keplr.defaultOptions = {
+        sign: {
+          preferNoSetMemo: true,
+          preferNoSetFee: true,
+          disableBalanceCheck: true,
+        },
+      }
+    }
+
+    if (window.getOfflineSignerOnlyAmino) {
+      const offlineSigner = window.getOfflineSignerOnlyAmino(chainId)
+      const accounts = await offlineSigner.getAccounts()
+      const tendermintUrl = 'https://tendermint-testnet.aura.network'
+      const client = await SigningStargateClient.connectWithSigner(tendermintUrl, offlineSigner)
+
+      const amountFinal = value
+
+      const signingInstruction = await (async () => {
+        const accountOnChain = await client.getAccount(safeAddress)
+
+        return {
+          accountNumber: accountOnChain?.accountNumber,
+          sequence: accountOnChain?.sequence,
+          memo: '',
+        }
+      })()
+
+      const msgSend: MsgSend = {
+        fromAddress: safeAddress,
+        toAddress: to,
+        amount: coins(amountFinal, denom),
+      }
+      const msg: MsgSendEncodeObject = {
+        typeUrl: '/cosmos.bank.v1beta1.MsgSend',
+        value: msgSend,
+      }
+
+      // calculate fee
+      const gasPrice = GasPrice.fromString(String(manualGasPrice || gasPriceFormatted).concat(denom))
+      const sendFee = calculateFee(Number(manualGasLimit) || 80000, gasPrice)
+
+      const signerData: SignerData = {
+        accountNumber: signingInstruction.accountNumber || 0,
+        sequence: signingInstruction.sequence || 0,
+        chainId: chainId,
+      }
+
+      try {
+        // Sign On Wallet
+        dispatch(enqueueSnackbar(enhanceSnackbarForAction(NOTIFICATIONS.SIGN_TX_MSG)))
+
+        const signResult = await client.sign(accounts[0]?.address, [msg], sendFee, '', signerData)
+
+        const signatures = toBase64(signResult.signatures[0])
+        const bodyBytes = toBase64(signResult.bodyBytes)
+
+        // call api to confirm transaction
+        const data = {
+          fromAddress: userWalletAddress,
+          transactionId: transaction?.id,
+          internalChainId: getInternalChainId(),
+          bodyBytes: bodyBytes,
+          signature: signatures,
+        }
+
+        const { ErrorCode, Data: safeData, Message } = await confirmSafeTransaction(data)
+        if (ErrorCode === 'SUCCESSFUL') {
+          history.push(
+            generateSafeRoute(SAFE_ROUTES.TRANSACTIONS_QUEUE, {
+              shortName: getShortName(),
+              safeAddress,
+            }),
+          )
+          window.location.reload();
+        } else {
+          dispatch(enqueueSnackbar(enhanceSnackbarForAction(NOTIFICATIONS.TX_FAILED_MSG)))
+        }
+      } catch (error) {
+        console.log(error)
+        dispatch(enqueueSnackbar(enhanceSnackbarForAction(NOTIFICATIONS.TX_CANCELLATION_EXECUTED_MSG)))
+      }
     }
   }
 

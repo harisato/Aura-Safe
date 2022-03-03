@@ -162,8 +162,10 @@ export const EditTxParametersForm = ({
                 )}
               </SafeOptions> */}
 
-              {areEthereumParamsVisible(parametersStatus) && (
-                <>
+              {/* {areEthereumParamsVisible(parametersStatus) && (
+                
+              )} */}
+              <>
                   <StyledTextMt size="xl" strong>
                     {ethereumTxParametersTitle(isExecution)}
                   </StyledTextMt>
@@ -208,7 +210,6 @@ export const EditTxParametersForm = ({
                     <Icon size="sm" type="externalLink" color="primary" />
                   </StyledLink>
                 </>
-              )}
 
               <StyledDividerFooter />
 

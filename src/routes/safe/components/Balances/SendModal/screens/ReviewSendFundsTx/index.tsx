@@ -69,6 +69,7 @@ import {
   StargateClient,
 } from '@cosmjs/stargate'
 import { fromBase64, toBase64 } from "@cosmjs/encoding";
+import fetchTransactions from 'src/logic/safe/store/actions/transactions/fetchTransactions'
 
 const useStyles = makeStyles(styles)
 let chains: ChainInfo[] = []
@@ -199,13 +200,6 @@ const ReviewSendFundsTx = ({ onClose, onPrev, tx }: ReviewTxProps): React.ReactE
     const listChain = await getMChainsConfig()
     const denom = listChain.find((x) => x.chainId === chainId)?.denom || ''
     if (window.keplr) {
-      // window.keplr.defaultOptions = {
-      //   sign: {
-      //     preferNoSetMemo: true,
-      //     preferNoSetFee: true,
-      //     disableBalanceCheck: true,
-      //   },
-      // };
       await window.keplr.enable(chainId)
       window.keplr.defaultOptions = {
         sign: {
@@ -262,7 +256,6 @@ const ReviewSendFundsTx = ({ onClose, onPrev, tx }: ReviewTxProps): React.ReactE
 
         const signatures = toBase64(signResult.signatures[0])
         const bodyBytes = toBase64(signResult.bodyBytes)
-        const t = fromBase64(bodyBytes)
         // const signatures = parseToAdress(signResult.signatures[0])
         // const bodyBytes = parseToAdress(signResult.bodyBytes)
 
@@ -295,20 +288,6 @@ const ReviewSendFundsTx = ({ onClose, onPrev, tx }: ReviewTxProps): React.ReactE
           dispatch(enqueueSnackbar(enhanceSnackbarForAction(NOTIFICATIONS.TX_FAILED_MSG)))
           onClose()
         }
-
-        // if (ErrorCode === 'SUCCESSFUL') {
-        //   setButtonStatus(ButtonStatus.READY)
-        //   // broadcast
-        //   try {
-        //     // const broadcastResult = await client.broadcastTx(Uint8Array.from(TxRaw.encode(signResult).finish()))
-        //     onClose()
-        //   } catch (error) {
-        //     console.log(error)
-        //     debugger;
-        //   }
-        // } else {
-        //   dispatch(enqueueSnackbar(enhanceSnackbarForAction(NOTIFICATIONS.TX_FAILED_MSG)))
-        // }
       } catch (error) {
         console.log(error)
         dispatch(enqueueSnackbar(enhanceSnackbarForAction(NOTIFICATIONS.TX_CANCELLATION_EXECUTED_MSG)))

@@ -133,8 +133,10 @@ export const TxParametersDetail = ({
             </TxParameterWrapper>
           )} */}
 
-          {areEthereumParamsVisible(parametersStatus || defaultParameterStatus) && (
-            <>
+          {/* {areEthereumParamsVisible(parametersStatus || defaultParameterStatus) && (
+            
+          )} */}
+          <>
               <TxParameterWrapper>
                 <StyledText size="md" color="placeHolder">
                   {ethereumTxParametersTitle(isTransactionExecution)}
@@ -156,7 +158,6 @@ export const TxParametersDetail = ({
                 <Text size="lg">{txParameters.ethGasPrice}</Text>
               </TxParameterWrapper>
             </>
-          )}
           <StyledButtonLink color="primary" textSize="xl" onClick={onEdit}>
             Edit
           </StyledButtonLink>
