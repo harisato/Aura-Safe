@@ -449,7 +449,7 @@ export const ApproveTxModal = ({
 
       // calculate fee
       const gasPrice = GasPrice.fromString(String(manualGasPrice || gasPriceFormatted).concat(denom))
-      const sendFee = calculateFee(Number(manualGasLimit) || 80000, gasPrice)
+      const sendFee = calculateFee(Number(manualGasLimit) || Number(baseGas), gasPrice)
 
       const signerData: SignerData = {
         accountNumber: signingInstruction.accountNumber || 0,
@@ -500,7 +500,7 @@ export const ApproveTxModal = ({
         isOffChainSignature={isOffChainSignature}
         isExecution={doExecute}
         parametersStatus={getParametersStatus()}
-        ethGasLimit={gasLimit}
+        ethGasLimit={baseGas}
         ethGasPrice={gasPriceFormatted}
         safeNonce={nonce.toString()}
         safeTxGas={safeTxGas}
