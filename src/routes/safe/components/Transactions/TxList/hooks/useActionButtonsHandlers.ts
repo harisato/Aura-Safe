@@ -79,13 +79,22 @@ export const useActionButtonsHandlers = (transaction: Transaction): ActionButton
     hoverContext.current.setActiveHover()
   }, [])
 
-  const signaturePending = addressInList(
-    (transaction.executionInfo as MultisigExecutionInfo)?.missingSigners ?? undefined,
-  )
+  // const signaturePending = addressInList(
+  //   (transaction.executionInfo as MultisigExecutionInfo)?.missingSigners ?? undefined,
+  // )
 
   const isPendingCurrentUserSignature = (currentUser: string): boolean => {
-    if ((transaction?.txDetails?.detailedExecutionInfo as MultisigExecutionDetails)?.signers?.length > 0 ) {
-      const t = (transaction?.txDetails?.detailedExecutionInfo as MultisigExecutionDetails)?.signers?.find(x => x.value === currentUser)
+    if ((transaction?.txDetails?.detailedExecutionInfo as MultisigExecutionDetails)?.confirmations?.length > 0) {
+      const signedCurrentUser = (transaction?.txDetails?.detailedExecutionInfo as MultisigExecutionDetails)?.confirmations.find(x => x.signer?.value === currentUser)
+      if (signedCurrentUser) {
+        return false;
+      }
+    }
+
+    if ((transaction?.txDetails?.detailedExecutionInfo as MultisigExecutionDetails)?.signers?.length > 0) {
+      const t = (transaction?.txDetails?.detailedExecutionInfo as MultisigExecutionDetails)?.signers?.find(
+        (x) => x.value === currentUser,
+      )
       return t ? true : false
     }
 

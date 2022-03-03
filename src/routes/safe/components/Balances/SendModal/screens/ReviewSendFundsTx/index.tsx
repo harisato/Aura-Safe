@@ -69,6 +69,7 @@ import {
   StargateClient,
 } from '@cosmjs/stargate'
 import { fromBase64, toBase64 } from "@cosmjs/encoding";
+import fetchTransactions from 'src/logic/safe/store/actions/transactions/fetchTransactions'
 
 const useStyles = makeStyles(styles)
 let chains: ChainInfo[] = []
