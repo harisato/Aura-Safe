@@ -170,3 +170,7 @@ export function sendSafeTransaction(payload: any): Promise<IResponse<any>> {
 export function confirmSafeTransaction(payload: any): Promise<IResponse<any>> {
   return axios.post(`${baseUrl}/transaction/confirm`, payload).then((res) => res.data)
 }
+
+export async function getAccountOnChain(safeAddress: string, internalChainId): Promise<IResponse<any>> {
+  return axios.get(`${baseUrl}/general/get-account-onchain/${safeAddress}/${internalChainId}`).then(res => res.data)
+}

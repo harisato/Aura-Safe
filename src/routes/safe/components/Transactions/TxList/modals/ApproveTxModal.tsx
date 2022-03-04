@@ -49,7 +49,7 @@ import ExecuteCheckbox from 'src/components/ExecuteCheckbox'
 import { calculateFee, coins, GasPrice, MsgSendEncodeObject, SignerData, SigningStargateClient } from '@cosmjs/stargate'
 import { getChainInfo, getInternalChainId, getShortName } from 'src/config'
 import { getChains } from 'src/config/cache/chains'
-import { confirmSafeTransaction, getMChainsConfig, sendSafeTransaction } from 'src/services'
+import { confirmSafeTransaction, getAccountOnChain, getMChainsConfig, sendSafeTransaction } from 'src/services'
 import fetchTransactions from 'src/logic/safe/store/actions/transactions/fetchTransactions'
 import { fetchSafe } from 'src/logic/safe/store/actions/fetchSafe'
 import { generatePath } from 'react-router-dom'
@@ -372,14 +372,6 @@ export const ApproveTxModal = ({
       }
     }
     onClose()
-    if (thresholdReached) {
-      history.push(
-        generateSafeRoute(SAFE_ROUTES.TRANSACTIONS_HISTORY, {
-          shortName: getShortName(),
-          safeAddress,
-        }),
-      )
-    }
   }
 
   const getParametersStatus = () => {
@@ -422,17 +414,19 @@ export const ApproveTxModal = ({
     if (window.getOfflineSignerOnlyAmino) {
       const offlineSigner = window.getOfflineSignerOnlyAmino(chainId)
       const accounts = await offlineSigner.getAccounts()
-      const tendermintUrl = chainInfo?.rpcUri?.value
-      const client = await SigningStargateClient.connectWithSigner(tendermintUrl, offlineSigner)
+      // const tendermintUrl = chainInfo?.rpcUri?.value
+      const client = await SigningStargateClient.offline(offlineSigner)
 
       const amountFinal = value
 
       const signingInstruction = await (async () => {
-        const accountOnChain = await client.getAccount(safeAddress)
+        // const accountOnChain = await client.getAccount(safeAddress)
+
+        const {ErrorCode, Data: accountOnChainResult, Message} = await getAccountOnChain(accounts[0].address, getInternalChainId())
 
         return {
-          accountNumber: accountOnChain?.accountNumber,
-          sequence: accountOnChain?.sequence,
+          accountNumber: accountOnChainResult?.accountOnChain?.accountNumber,
+          sequence: accountOnChainResult?.accountOnChain?.sequence,
           memo: '',
         }
       })()
