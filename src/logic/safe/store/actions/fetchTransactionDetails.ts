@@ -38,6 +38,10 @@ export const fetchTransactionDetails =
       }
     }
 
+type DetailedExecutionInfoExtended = {
+  gasPrice: string
+}
+
 export const fetchTransactionDetailsByHash = ({ transactionId, txHash }: { transactionId: string, txHash?: string | null }) =>
   async (dispatch: Dispatch, getState: () => AppReduxState): Promise<Transaction['txDetails']> => {
     const transaction = getTransactionByAttribute(getState(), {
@@ -63,7 +67,7 @@ export const fetchTransactionDetailsByHash = ({ transactionId, txHash }: { trans
       const direction: TransferDirection = Data?.Direction as TransferDirection || TransferDirection.UNKNOWN
 
       let safeAppInfo: SafeAppInfo | null = null;
-      let detailedExecutionInfo: DetailedExecutionInfo | null = null;
+      let detailedExecutionInfo: DetailedExecutionInfo & DetailedExecutionInfoExtended | null = null;
       let txData: TransactionData | null = null;
 
       if (direction == TransferDirection.OUTGOING) {

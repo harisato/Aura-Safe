@@ -51,7 +51,7 @@ import { getNativeCurrencyAddress } from 'src/config/utils'
 import { ICreateSafeTransaction } from 'src/types/transaction'
 import { currentSafeWithNames } from 'src/logic/safe/store/selectors'
 import { TxData } from 'src/routes/safe/components/Transactions/TxList/TxData'
-import { createSafeTransaction, getMChainsConfig, signSafeTransaction } from 'src/services'
+import { createSafeTransaction, getAccountOnChain, getMChainsConfig, signSafeTransaction } from 'src/services'
 import { coins, MsgSendEncodeObject, SignerData, SigningStargateClient } from '@cosmjs/stargate'
 import enqueueSnackbar from 'src/logic/notifications/store/actions/enqueueSnackbar'
 import { enhanceSnackbarForAction, NOTIFICATIONS } from 'src/logic/notifications'
@@ -70,6 +70,7 @@ import {
 } from '@cosmjs/stargate'
 import { fromBase64, toBase64 } from "@cosmjs/encoding";
 import fetchTransactions from 'src/logic/safe/store/actions/transactions/fetchTransactions'
+import axios from 'axios'
 
 const useStyles = makeStyles(styles)
 let chains: ChainInfo[] = []
@@ -204,17 +205,19 @@ const ReviewSendFundsTx = ({ onClose, onPrev, tx }: ReviewTxProps): React.ReactE
     if (window.getOfflineSignerOnlyAmino) {
       const offlineSigner = window.getOfflineSignerOnlyAmino(chainId)
       const accounts = await offlineSigner.getAccounts()
-      const tendermintUrl = chainInfo?.rpcUri?.value
-      const client = await SigningStargateClient.connectWithSigner(tendermintUrl, offlineSigner)
+      // const tendermintUrl = chainInfo?.rpcUri?.value
+      const client = await SigningStargateClient.offline(offlineSigner)
 
       const amountFinal = Math.floor(Number(tx?.amount) * Math.pow(10, 6)).toString() || ''
 
       const signingInstruction = await (async () => {
-        const accountOnChain = await client.getAccount(accounts[0].address)
+        // get account on chain from API
+        const {ErrorCode, Data: accountOnChainResult, Message} = await getAccountOnChain(accounts[0].address, getInternalChainId())
+        // const accountOnChain = await client.getAccount()
 
         return {
-          accountNumber: accountOnChain?.accountNumber,
-          sequence: accountOnChain?.sequence,
+          accountNumber: accountOnChainResult?.accountOnChain?.accountNumber,
+          sequence: accountOnChainResult?.accountOnChain?.sequence,
           memo: '',
         }
       })()
