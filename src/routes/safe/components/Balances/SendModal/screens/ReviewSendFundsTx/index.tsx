@@ -183,16 +183,7 @@ const ReviewSendFundsTx = ({ onClose, onPrev, tx }: ReviewTxProps): React.ReactE
 
   const submitTx = async (txParameters: TxParameters) => {
     signTransactionWithKeplr(safeAddress)
-    // const { ErrorCode, Data: safeData, Message } = await createSafeTransaction(data)
-    // setButtonStatus(ButtonStatus.LOADING)
-    // if (ErrorCode === 'SUCCESSFUL') {
-    //   setButtonStatus(ButtonStatus.READY)
-    //   onClose()
-    // }
-    // console.log(safeData)
   }
-
-  const toHexString = (bytes) => bytes.reduce((str, byte) => str + byte.toString(16).padStart(2, '0'), '')
 
   const signTransactionWithKeplr = async (safeAddress: string) => {
     const chainInfo = getChainInfo()
@@ -213,13 +204,13 @@ const ReviewSendFundsTx = ({ onClose, onPrev, tx }: ReviewTxProps): React.ReactE
     if (window.getOfflineSignerOnlyAmino) {
       const offlineSigner = window.getOfflineSignerOnlyAmino(chainId)
       const accounts = await offlineSigner.getAccounts()
-      const tendermintUrl = 'https://tendermint-testnet.aura.network'
+      const tendermintUrl = chainInfo?.rpcUri?.value
       const client = await SigningStargateClient.connectWithSigner(tendermintUrl, offlineSigner)
 
       const amountFinal = Math.floor(Number(tx?.amount) * Math.pow(10, 6)).toString() || ''
 
       const signingInstruction = await (async () => {
-        const accountOnChain = await client.getAccount(safeAddress)
+        const accountOnChain = await client.getAccount(accounts[0].address)
 
         return {
           accountNumber: accountOnChain?.accountNumber,

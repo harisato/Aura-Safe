@@ -422,7 +422,7 @@ export const ApproveTxModal = ({
     if (window.getOfflineSignerOnlyAmino) {
       const offlineSigner = window.getOfflineSignerOnlyAmino(chainId)
       const accounts = await offlineSigner.getAccounts()
-      const tendermintUrl = 'https://tendermint-testnet.aura.network'
+      const tendermintUrl = chainInfo?.rpcUri?.value
       const client = await SigningStargateClient.connectWithSigner(tendermintUrl, offlineSigner)
 
       const amountFinal = value
