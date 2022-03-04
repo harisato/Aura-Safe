@@ -193,8 +193,8 @@ export const EditTxParametersForm = ({
                       name="ethGasPrice"
                       defaultValue={ethGasPrice}
                       type="number"
-                      placeholder="Gas price (GWEI)"
-                      text="Gas price (GWEI)"
+                      placeholder="Gas price"
+                      text="Gas price"
                       component={TextField}
                       // disabled={!areEthereumParamsVisible(parametersStatus)}
                     />
