@@ -243,7 +243,7 @@ export const makeTransactionDetail = (txDetail: any): any => {
       confirmationsRequired: txDetail?.ConfirmationsRequired,
       confirmationsSubmitted: 1,
       missingSigners: null,
-      nonce: 0,
+      nonce: txDetail?.Id,
       type: 'MULTISIG',
     },
     id: txDetail?.Id?.toString(),
@@ -257,7 +257,7 @@ export const makeTransactionDetail = (txDetail: any): any => {
         executor: null,
         gasPrice: txDetail?.GasPrice,
         gasToken: '',
-        nonce: 0,
+        nonce: txDetail?.Id,
         refundReceiver: {
           value: '',
         },
