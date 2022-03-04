@@ -205,15 +205,15 @@ const ReviewSendFundsTx = ({ onClose, onPrev, tx }: ReviewTxProps): React.ReactE
     if (window.getOfflineSignerOnlyAmino) {
       const offlineSigner = window.getOfflineSignerOnlyAmino(chainId)
       const accounts = await offlineSigner.getAccounts()
-      // const tendermintUrl = chainInfo?.rpcUri?.value
+      const tendermintUrl = chainInfo?.rpcUri?.value
       const client = await SigningStargateClient.offline(offlineSigner)
 
       const amountFinal = Math.floor(Number(tx?.amount) * Math.pow(10, 6)).toString() || ''
 
       const signingInstruction = await (async () => {
         // get account on chain from API
-        const {ErrorCode, Data: accountOnChainResult, Message} = await getAccountOnChain(accounts[0].address, getInternalChainId())
-        // const accountOnChain = await client.getAccount()
+        const {ErrorCode, Data: accountOnChainResult, Message} = await getAccountOnChain(safeAddress, getInternalChainId())
+        // const accountOnChain = await client.getAccount(safeAddress)
 
         return {
           accountNumber: accountOnChainResult?.accountOnChain?.accountNumber,

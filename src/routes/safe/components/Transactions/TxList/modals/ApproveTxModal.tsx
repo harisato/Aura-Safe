@@ -422,7 +422,7 @@ export const ApproveTxModal = ({
       const signingInstruction = await (async () => {
         // const accountOnChain = await client.getAccount(safeAddress)
 
-        const {ErrorCode, Data: accountOnChainResult, Message} = await getAccountOnChain(accounts[0].address, getInternalChainId())
+        const {ErrorCode, Data: accountOnChainResult, Message} = await getAccountOnChain(safeAddress, getInternalChainId())
 
         return {
           accountNumber: accountOnChainResult?.accountOnChain?.accountNumber,
