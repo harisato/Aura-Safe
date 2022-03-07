@@ -511,11 +511,11 @@ export const ApproveTxModal = ({
               <Block className={classes.container}>
                 <Row style={{ flexDirection: 'column' }}>
                   <Paragraph>{description}</Paragraph>
-                  <Paragraph color="medium" size="sm">
+                  {/* <Paragraph color="medium" size="sm">
                     Transaction nonce:
                     <br />
                     <Bold className={classes.nonceNumber}>{nonce}</Bold>
-                  </Paragraph>
+                  </Paragraph> */}
 
                   {oneConfirmationLeft && canExecute && !isCancelTx && (
                     <ExecuteCheckbox onChange={setApproveAndExecute} />
