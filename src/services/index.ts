@@ -76,8 +76,8 @@ export function getMChainsConfig(): Promise<MChainInfo[]> {
             // address: "https://explorer.aura.network/address/{{address}}",
             // txHash: "https://explorer.aura.network/transaction/{{txHash}}",
             // api: "https://explorer.aura.network/api?module={{module}}&action={{action}}&address={{address}}&apiKey={{apiKey}}"
-            address: `${e.explorer}{{address}}`,
-            txHash: `${e.explorer}{{txHash}}`,
+            address: `${e.explorer}address/{{address}}`,
+            txHash: `${e.explorer}transaction/{{txHash}}`,
             api: `${e.explorer}api?module={{module}}&action={{action}}&address={{address}}&apiKey={{apiKey}}`
           },
           nativeCurrency: {
