@@ -33,8 +33,14 @@ export const onConnectButtonClick = async (): Promise<void> => {
       if (status === KeplrErrors.NoChainInfo) {
         return suggestChain(chainId)
       }
+
+      return null
     })
-    .then((e) => connectKeplr())
+    .then((e) => {
+      if (e) {
+        connectKeplr()
+      }
+    })
     .catch((error) => {
       store.dispatch(enqueueSnackbar(enhanceSnackbarForAction(NOTIFICATIONS.CONNECT_WALLET_ERROR_MSG)))
     })
