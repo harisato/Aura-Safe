@@ -16,20 +16,20 @@ const WalletSwitch = (): ReactElement => {
   const switchWalletChainAlert = () => {
     const keplrConect = async () => {
       await connectKeplr()
-        .then((status) => {
-          console.error('status', status)
+        .then(async (status) => {
           if (status === KeplrErrors.NoChainInfo) {
-            return suggestChain(chainId)
+            await suggestChain(chainId)
+            return true
           }
 
           return null
         })
-        .then((e) => {
-          if (e) {
+        .then((result) => {
+          if (result) {
             connectKeplr()
           }
         })
-        .catch((error) => {
+        .catch(() => {
           store.dispatch(enqueueSnackbar(enhanceSnackbarForAction(NOTIFICATIONS.CONNECT_WALLET_ERROR_MSG)))
         })
     }

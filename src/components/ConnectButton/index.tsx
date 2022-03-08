@@ -29,9 +29,10 @@ export const onboardUser = async (): Promise<boolean> => {
 export const onConnectButtonClick = async (): Promise<void> => {
   const chainId = _getChainId()
   await connectKeplr()
-    .then((status) => {
+    .then(async (status) => {
       if (status === KeplrErrors.NoChainInfo) {
-        return suggestChain(chainId)
+        await suggestChain(chainId)
+        return true
       }
 
       return null
@@ -41,7 +42,7 @@ export const onConnectButtonClick = async (): Promise<void> => {
         connectKeplr()
       }
     })
-    .catch((error) => {
+    .catch(() => {
       store.dispatch(enqueueSnackbar(enhanceSnackbarForAction(NOTIFICATIONS.CONNECT_WALLET_ERROR_MSG)))
     })
 }
