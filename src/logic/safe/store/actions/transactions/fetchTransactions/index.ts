@@ -17,7 +17,7 @@ export default (chainId: string, safeAddress: string) =>
       try {
         const values = (await loadFn(safeAddress)) as any[]
 
-        const historys = values.filter(item => item.transaction.Status)
+        // const historys = values.filter(item => item.transaction.Status)
         dispatch(actionFn({ chainId, safeAddress, values }))
       } catch (e) {
         e.log()
