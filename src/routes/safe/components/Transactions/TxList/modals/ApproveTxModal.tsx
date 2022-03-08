@@ -355,7 +355,7 @@ export const ApproveTxModal = ({
           const { ErrorCode, Data: safeData, Message } = await sendSafeTransaction(data)
           if (ErrorCode === 'SUCCESSFUL') {
             dispatch(enqueueSnackbar(NOTIFICATIONS.TX_EXECUTED_MSG))
-            window.location.reload()
+            // window.location.reload()
           } else {
             dispatch(enqueueSnackbar(NOTIFICATIONS.TX_FAILED_MSG))
           }
@@ -477,7 +477,7 @@ export const ApproveTxModal = ({
               safeAddress,
             }),
           )
-          window.location.reload()
+          // window.location.reload()
         } else {
           dispatch(enqueueSnackbar(enhanceSnackbarForAction(NOTIFICATIONS.TX_FAILED_MSG)))
         }
