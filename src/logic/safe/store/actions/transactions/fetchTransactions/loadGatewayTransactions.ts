@@ -6,6 +6,7 @@ import { Errors, CodedException } from 'src/logic/exceptions/CodedException'
 import { GATEWAY_URL } from 'src/utils/constants'
 import { getAllTx } from 'src/services'
 import { makeQueueTransactionsFromService, makeHistoryTransactionsFromService } from 'src/routes/safe/components/Transactions/TxList/utils'
+import isEqual from 'lodash/isEqual'
 
 /*************/
 /*  HISTORY  */
@@ -142,7 +143,7 @@ export const loadQueuedTransactions = async (safeAddress: string): Promise<Queue
   }
 }
 
-export const loadQueuedTransactionsFromAuraApi = async (safeAddress: string): Promise<QueuedGatewayResponse['results']> => {
+export const loadQueuedTransactionsFromAuraApi = async (safeAddress: string): Promise<QueuedGatewayResponse['results'] | null> => {
   const chainId = _getChainId()
 
   try {
@@ -152,28 +153,25 @@ export const loadQueuedTransactionsFromAuraApi = async (safeAddress: string): Pr
       pageIndex: 1,
       pageSize: 50
     })
-    const { results, next, previous } = makeQueueTransactionsFromService(list)
+    let { results, next, previous } = makeQueueTransactionsFromService(list)
 
-    console.log({ results, next, previous } )
-
-    const a = queuedPointers[chainId]
-    const b = { current: results, next, previous }
-
-    console.log({
-      a,
-      b
-    })
-
-
+    let ret: QueuedGatewayResponse['results'] | null = results;
     if (!queuedPointers[chainId]) {
       queuedPointers[chainId] = {}
     }
 
-    if (!queuedPointers[chainId][safeAddress]) {
+    if (queuedPointers[chainId][safeAddress]) {
+      const queuedPointerValue = queuedPointers[chainId][safeAddress]?.current
+      if (isEqual(results, queuedPointerValue)) {
+        ret = null
+      } else {
+        queuedPointers[chainId][safeAddress] = { ...queuedPointerValue, current: results }
+      }
+    } else {
       queuedPointers[chainId][safeAddress] = { next, previous, current: results }
     }
 
-    return results
+    return ret
   } catch (e) {
     throw new CodedException(Errors._602, e.message)
   }
