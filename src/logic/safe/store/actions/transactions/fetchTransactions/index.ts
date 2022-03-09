@@ -8,7 +8,7 @@ import {
 import { loadHistoryTransactionsFromAuraApi, loadQueuedTransactionsFromAuraApi } from './loadGatewayTransactions'
 import { AppReduxState } from 'src/store'
 
-export default (chainId: string, safeAddress: string) =>
+export default (chainId: string, safeAddress: string, loadQueued = false) =>
   async (dispatch: ThunkDispatch<AppReduxState, undefined, AnyAction>): Promise<void> => {
     const loadTxs = async (
       loadFn: typeof loadHistoryTransactionsFromAuraApi | typeof loadQueuedTransactionsFromAuraApi,
@@ -27,7 +27,9 @@ export default (chainId: string, safeAddress: string) =>
       }
     }
 
-    await Promise.all([
+    loadQueued ? await Promise.all([
+      loadTxs(loadQueuedTransactionsFromAuraApi, addQueuedTransactions),
+    ]) : await Promise.all([
       loadTxs(loadQueuedTransactionsFromAuraApi, addQueuedTransactions),
       loadTxs(loadHistoryTransactionsFromAuraApi, addHistoryTransactions),
     ])
