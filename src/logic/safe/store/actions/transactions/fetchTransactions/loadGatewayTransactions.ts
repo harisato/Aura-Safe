@@ -7,6 +7,7 @@ import { GATEWAY_URL } from 'src/utils/constants'
 import { getAllTx } from 'src/services'
 import { makeQueueTransactionsFromService, makeHistoryTransactionsFromService } from 'src/routes/safe/components/Transactions/TxList/utils'
 import isEqual from 'lodash/isEqual'
+import { DEFAULT_PAGE_FIRST, DEFAULT_PAGE_SIZE } from 'src/services/constant/common'
 
 /*************/
 /*  HISTORY  */
@@ -69,8 +70,8 @@ export const loadHistoryTransactionsFromAuraApi = async (safeAddress: string): P
     // const { results, next, previous } = await getTransactionHistory(GATEWAY_URL, chainId, checksumAddress(safeAddress))
     const { Data: list } = await getAllTx({
       safeAddress,
-      pageIndex: 1,
-      pageSize: 50,
+      pageIndex: DEFAULT_PAGE_FIRST,
+      pageSize: DEFAULT_PAGE_SIZE,
       isHistory: true
     })
     const { results, next, previous } = makeHistoryTransactionsFromService(list)
@@ -150,8 +151,8 @@ export const loadQueuedTransactionsFromAuraApi = async (safeAddress: string): Pr
     const { Data: list } = await getAllTx({
       safeAddress,
       isHistory: false,
-      pageIndex: 1,
-      pageSize: 50
+      pageIndex: DEFAULT_PAGE_FIRST,
+      pageSize: DEFAULT_PAGE_SIZE,
     })
     let { results, next, previous } = makeQueueTransactionsFromService(list)
 

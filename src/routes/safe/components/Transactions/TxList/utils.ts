@@ -30,6 +30,7 @@ import {
 import { formatAmount } from 'src/logic/tokens/utils/formatAmount'
 import { sameAddress, ZERO_ADDRESS } from 'src/logic/wallets/ethAddresses'
 import { SAFE_ROUTES, TRANSACTION_ID_SLUG, history, extractSafeAddress } from 'src/routes/routes'
+import { DEFAULT_PAGE_FIRST, DEFAULT_PAGE_SIZE } from 'src/services/constant/common'
 import { ITransactionListItem, MTransactionListItem } from 'src/types/transaction'
 
 export const NOT_AVAILABLE = 'n/a'
@@ -319,13 +320,21 @@ export const makeTransactionDetail = (txDetail: any): any => {
     txStatus: txDetail.Status,
   }
 }
-export const makeHistoryTransactionsFromService = (list: ITransactionListItem[]): TransactionListPage => {
+export const makeHistoryTransactionsFromService = (list: ITransactionListItem[], currentIndex = DEFAULT_PAGE_FIRST): TransactionListPage => {
   const transaction: MTransactionListItem[] = makeTransactions(list).filter(
     ({ transaction }: any) => !inQueuedStatus.includes(transaction.txStatus),
   )
+
+  let next: string | undefined = undefined;
+  if (list.length >= DEFAULT_PAGE_SIZE) {
+    next = JSON.stringify({
+      pageIndex: currentIndex + 1,
+      pageSize: DEFAULT_PAGE_SIZE,
+    })
+  }
   let page: TransactionListPage = {
     results: [...transaction],
-    next: undefined,
+    next,
     previous: undefined
   }
 
