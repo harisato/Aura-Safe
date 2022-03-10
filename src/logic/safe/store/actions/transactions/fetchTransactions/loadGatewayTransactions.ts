@@ -8,6 +8,7 @@ import { getAllTx } from 'src/services'
 import { makeQueueTransactionsFromService, makeHistoryTransactionsFromService } from 'src/routes/safe/components/Transactions/TxList/utils'
 import isEqual from 'lodash/isEqual'
 import { DEFAULT_PAGE_FIRST, DEFAULT_PAGE_SIZE } from 'src/services/constant/common'
+import { ITransactionListQuery } from 'src/types/transaction'
 
 /*************/
 /*  HISTORY  */
@@ -67,7 +68,6 @@ export const loadHistoryTransactions = async (safeAddress: string): Promise<Hist
 export const loadHistoryTransactionsFromAuraApi = async (safeAddress: string): Promise<HistoryGatewayResponse['results']> => {
   const chainId = _getChainId()
   try {
-    // const { results, next, previous } = await getTransactionHistory(GATEWAY_URL, chainId, checksumAddress(safeAddress))
     const { Data: list } = await getAllTx({
       safeAddress,
       pageIndex: DEFAULT_PAGE_FIRST,
@@ -89,6 +89,42 @@ export const loadHistoryTransactionsFromAuraApi = async (safeAddress: string): P
   }
 }
 
+export const loadPageHistoryTransactionsFromAuraApi = async (safeAddress: string): Promise<{ values: HistoryGatewayResponse['results']; next?: string } | undefined> => {
+  const chainId = _getChainId()
+  try {
+    // const { results, next, previous } = await getTransactionHistory(GATEWAY_URL, chainId, checksumAddress(safeAddress))
+
+    const history = historyPointers[chainId][safeAddress]
+    if (!history) {
+      return
+    }
+
+    const _next = JSON.parse(history.next || '')
+
+    if (!_next) {
+      return
+    }
+    const pageNext = _next.pageIndex
+
+    const payload: ITransactionListQuery = {
+      safeAddress,
+      pageIndex: pageNext,
+      pageSize: DEFAULT_PAGE_SIZE,
+      isHistory: true
+    }
+
+    const { Data: list } = await getAllTx(payload)
+
+    const { results, next, previous } = makeHistoryTransactionsFromService(list, payload)
+
+    historyPointers[chainId][safeAddress] = { next, previous }
+
+
+    return { values: results, next: historyPointers[chainId][safeAddress].next }
+  } catch (e) {
+    throw new CodedException(Errors._602, e.message)
+  }
+}
 /************/
 /*  QUEUED  */
 /************/
@@ -144,10 +180,15 @@ export const loadQueuedTransactions = async (safeAddress: string): Promise<Queue
   }
 }
 
-export const loadQueuedTransactionsFromAuraApi = async (safeAddress: string): Promise<QueuedGatewayResponse['results'] | null> => {
+export const loadQueuedTransactionsFromAuraApi = async (safeAddress: string, isNext = false): Promise<QueuedGatewayResponse['results'] | null> => {
   const chainId = _getChainId()
 
   try {
+
+    if (isNext) {
+
+    }
+
     const { Data: list } = await getAllTx({
       safeAddress,
       isHistory: false,
