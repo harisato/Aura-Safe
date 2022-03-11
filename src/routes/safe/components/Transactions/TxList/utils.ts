@@ -321,9 +321,7 @@ export const makeTransactionDetail = (txDetail: any): any => {
   }
 }
 export const makeHistoryTransactionsFromService = (list: ITransactionListItem[], currentPayload?: ITransactionListQuery): TransactionListPage => {
-  const transaction: MTransactionListItem[] = makeTransactions(list).filter(
-    ({ transaction }: any) => !inQueuedStatus.includes(transaction.txStatus),
-  )
+  const transaction: MTransactionListItem[] = makeTransactions(list)
 
   let next: string | undefined = undefined;
 
@@ -341,13 +339,17 @@ export const makeHistoryTransactionsFromService = (list: ITransactionListItem[],
   return page
 }
 
-export const makeQueueTransactionsFromService = (list: ITransactionListItem[]): TransactionListPage => {
-  const transaction: MTransactionListItem[] = makeTransactions(list).filter(({ transaction }: any) =>
-    inQueuedStatus.includes(transaction.txStatus),
-  )
+export const makeQueueTransactionsFromService = (list: ITransactionListItem[], currentPayload?: ITransactionListQuery): TransactionListPage => {
+  const transaction: MTransactionListItem[] = makeTransactions(list) 
+  let next: string | undefined = undefined;
+
+  if (list?.length >= DEFAULT_PAGE_SIZE) {
+    const nextPage = currentPayload ? currentPayload.pageIndex + 1 : DEFAULT_PAGE_FIRST + 1
+    next = JSON.stringify({ pageIndex: nextPage })
+  }
   let page: TransactionListPage = {
     results: [...transaction],
-    next: undefined,
+    next,
     previous: undefined
   }
   return page

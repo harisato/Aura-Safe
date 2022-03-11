@@ -184,11 +184,6 @@ export const loadQueuedTransactionsFromAuraApi = async (safeAddress: string, isN
   const chainId = _getChainId()
 
   try {
-
-    if (isNext) {
-
-    }
-
     const { Data: list } = await getAllTx({
       safeAddress,
       isHistory: false,
@@ -196,6 +191,8 @@ export const loadQueuedTransactionsFromAuraApi = async (safeAddress: string, isN
       pageSize: DEFAULT_PAGE_SIZE,
     })
     let { results, next, previous } = makeQueueTransactionsFromService(list)
+
+    console.log('next', next)
 
     let ret: QueuedGatewayResponse['results'] | null = results;
     if (!queuedPointers[chainId]) {
@@ -214,6 +211,41 @@ export const loadQueuedTransactionsFromAuraApi = async (safeAddress: string, isN
     }
 
     return ret
+  } catch (e) {
+    throw new CodedException(Errors._602, e.message)
+  }
+}
+
+export const loadPageQueuedTransactionsFromAuraApi = async (safeAddress: string, isNext = false): Promise<{ values: HistoryGatewayResponse['results']; next?: string } | undefined> => {
+  const chainId = _getChainId()
+
+  try {
+    const queued = queuedPointers[chainId][safeAddress]
+    if (!queued) {
+      return
+    }
+
+    const _next = JSON.parse(queued.next || '')
+    if (!_next) {
+      return
+    }
+    const pageNext = _next.pageIndex
+
+    const payload: ITransactionListQuery = {
+      safeAddress,
+      pageIndex: pageNext,
+      pageSize: DEFAULT_PAGE_SIZE,
+      isHistory: false
+    }
+
+    const { Data: list } = await getAllTx(payload)
+
+    let { results, next, previous } = makeQueueTransactionsFromService(list, payload)
+    queuedPointers[chainId][safeAddress] = { ...queued, next, previous }
+
+    const newList = queued?.current ? [...queued.current, ...results] : results
+
+    return { values: newList, next: queuedPointers[chainId][safeAddress].next }
   } catch (e) {
     throw new CodedException(Errors._602, e.message)
   }
