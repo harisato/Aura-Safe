@@ -257,8 +257,6 @@ export const loadPageQueuedTransactionsFromAuraApi = async (
       isHistory: false,
     }
 
-    console.log('payload', payload)
-
     const { Data: list } = await getAllTx(payload)
 
     let { results, next, previous } = makeQueueTransactionsFromService(list, payload)
