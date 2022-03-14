@@ -103,7 +103,7 @@ export const loadPageHistoryTransactionsFromAuraApi = async (
     // const { results, next, previous } = await getTransactionHistory(GATEWAY_URL, chainId, checksumAddress(safeAddress))
 
     const history = historyPointers[chainId][safeAddress]
-    if (!history) {
+    if (!history?.next) {
       return
     }
 
@@ -205,8 +205,6 @@ export const loadQueuedTransactionsFromAuraApi = async (
     })
     let { results, next, previous } = makeQueueTransactionsFromService(list)
 
-
-
     let ret: QueuedGatewayResponse['results'] | null = results
     if (!queuedPointers[chainId]) {
       queuedPointers[chainId] = {}
@@ -245,14 +243,11 @@ export const loadPageQueuedTransactionsFromAuraApi = async (
 
   try {
     const queued = queuedPointers[chainId][safeAddress]
-    if (!queued) {
+    if (!queued?.next) {
       return
     }
 
     const parseNext = JSON.parse(queued.next || '')
-    if (!parseNext) {
-      return
-    }
     const pageNext = parseNext.pageIndex
 
     const payload: ITransactionListQuery = {
@@ -261,6 +256,8 @@ export const loadPageQueuedTransactionsFromAuraApi = async (
       pageSize: DEFAULT_PAGE_SIZE,
       isHistory: false,
     }
+
+    console.log('payload', payload)
 
     const { Data: list } = await getAllTx(payload)
 
