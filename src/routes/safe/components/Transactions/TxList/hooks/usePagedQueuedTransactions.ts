@@ -26,7 +26,7 @@ export const usePagedQueuedTransactions = (): PagedQueuedTransactions => {
   const [hasMore, setHasMore] = useState(true)
 
   const nextPage = async () => {
-    let results: Await<ReturnType<typeof loadPagedQueuedTransactions>>
+    let results: Await<ReturnType<typeof loadPageQueuedTransactionsFromAuraApi>>
     try {
       // results = await loadPagedQueuedTransactions(safeAddress)
       results = await loadPageQueuedTransactionsFromAuraApi(safeAddress)

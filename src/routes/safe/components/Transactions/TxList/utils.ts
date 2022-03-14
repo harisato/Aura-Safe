@@ -13,7 +13,6 @@ import {
   TransactionSummary,
 } from '@gnosis.pm/safe-react-gateway-sdk'
 import { BigNumber } from 'bignumber.js'
-import { now } from 'lodash'
 import { matchPath } from 'react-router-dom'
 import { getNativeCurrency } from 'src/config'
 import { getNativeCurrencyAddress } from 'src/config/utils'
@@ -343,10 +342,11 @@ export const makeQueueTransactionsFromService = (list: ITransactionListItem[], c
   const transaction: MTransactionListItem[] = makeTransactions(list) 
   let next: string | undefined = undefined;
 
-  if (list?.length >= DEFAULT_PAGE_SIZE) {
+  if (list.length >= DEFAULT_PAGE_SIZE) {
     const nextPage = currentPayload ? currentPayload.pageIndex + 1 : DEFAULT_PAGE_FIRST + 1
     next = JSON.stringify({ pageIndex: nextPage })
   }
+
   let page: TransactionListPage = {
     results: [...transaction],
     next,
