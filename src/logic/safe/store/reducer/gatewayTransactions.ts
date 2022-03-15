@@ -92,13 +92,15 @@ export const gatewayTransactionsReducer = handleActions<GatewayTransactionsState
     },
     [ADD_QUEUED_TRANSACTIONS]: (state, action: Action<QueuedPayload>) => {
       const { chainId, safeAddress, values } = action.payload
-      let newQueueds: StoreStructure['queued'] = cloneDeep(state[chainId]?.[safeAddress]?.queued || {})
+      // let prevQueueds: StoreStructure['queued'] = cloneDeep(state[chainId]?.[safeAddress]?.queued || {})
 
-      if (!newQueueds['txs']) {
-        newQueueds['txs'] = {}
-      }
+      // let newQueueds: StoreStructure['queued']
 
-      let newTxs = newQueueds['txs']
+      // if (!prevQueueds['txs']) {
+      //   prevQueueds['txs'] = {}
+      // }
+
+      // let prevTxs = prevQueueds['txs']
 
       let newNext = {}
       let newQueued = {}
@@ -135,20 +137,20 @@ export const gatewayTransactionsReducer = handleActions<GatewayTransactionsState
 
         const newTx = value.transaction
 
-        if (newTxs[txNonce]) {
-          newTxs[txNonce] = [{ ...newTxs[txNonce], ...newTx }]
-        } else {
-          newTxs = {
-            ...newTxs,
-            [txNonce]: [newTx],
-          }
-        }
-
-        // if (txs?.[txNonce]) {
-        //   txs[txNonce] = [...txs[txNonce], newTx]
+        // if (prevTxs[txNonce]) {
+        //   prevTxs[txNonce] = [{ ...prevTxs[txNonce], ...newTx }]
         // } else {
-        //   txs = { ...txs, [txNonce]: [newTx] }
+        //   prevTxs = {
+        //     ...prevTxs,
+        //     [txNonce]: [newTx],
+        //   }
         // }
+
+        if (txs?.[txNonce]) {
+          txs[txNonce] = [...txs[txNonce], newTx]
+        } else {
+          txs = { ...txs, [txNonce]: [newTx] }
+        }
 
         if (label === 'queued') {
           if (newQueued?.[txNonce]) {
@@ -182,7 +184,7 @@ export const gatewayTransactionsReducer = handleActions<GatewayTransactionsState
             queued: {
               next: newNext,
               queued: newQueued,
-              txs: newTxs,
+              txs,
             },
           },
         },

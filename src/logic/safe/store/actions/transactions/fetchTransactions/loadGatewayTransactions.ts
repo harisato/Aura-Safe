@@ -10,9 +10,8 @@ import {
   makeHistoryTransactionsFromService,
 } from 'src/routes/safe/components/Transactions/TxList/utils'
 import isEqual from 'lodash/isEqual'
-import { DEFAULT_PAGE_FIRST, DEFAULT_PAGE_SIZE } from 'src/services/constant/common'
+import { DEFAULT_PAGE_FIRST, DEFAULT_PAGE_SIZE, QUEUED_PAGE_SIZE } from 'src/services/constant/common'
 import { ITransactionListQuery } from 'src/types/transaction'
-import { CloudCircleOutlined } from '@material-ui/icons'
 
 /*************/
 /*  HISTORY  */
@@ -201,7 +200,7 @@ export const loadQueuedTransactionsFromAuraApi = async (
       safeAddress,
       isHistory: false,
       pageIndex: DEFAULT_PAGE_FIRST,
-      pageSize: DEFAULT_PAGE_SIZE,
+      pageSize: QUEUED_PAGE_SIZE,
     })
     let { results, next, previous } = makeQueueTransactionsFromService(list)
 
