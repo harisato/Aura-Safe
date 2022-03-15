@@ -59,8 +59,6 @@ import { MsgSend } from 'cosmjs-types/cosmos/bank/v1beta1/tx'
 export const APPROVE_TX_MODAL_SUBMIT_BTN_TEST_ID = 'approve-tx-modal-submit-btn'
 export const REJECT_TX_MODAL_SUBMIT_BTN_TEST_ID = 'reject-tx-modal-submit-btn'
 
-let isDisabled = false
-
 const getModalTitleAndDescription = (
   thresholdReached: boolean,
   isCancelTx: boolean,
