@@ -77,7 +77,7 @@ const TxSingularDetails = (): ReactElement => {
       let txDetails: any
       try {
         // txDetails = await fetchSafeTransaction(safeTxHash)
-        txDetails = await fetchSafeTransactionById(Number(txId), safeAddress)
+        txDetails = await fetchSafeTransactionById(txId, safeAddress)
       } catch (e) {
         logError(Errors._614, e.message)
         return

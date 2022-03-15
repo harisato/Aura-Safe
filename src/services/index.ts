@@ -156,7 +156,7 @@ export function signSafeTransaction(transactionInfo: ISignSafeTransaction): Prom
   return axios.post(`${baseUrl}/transaction/sign`, transactionInfo).then((res) => res.data)
 }
 
-export const fetchSafeTransactionById = async (txId: number, safeAddress: string): Promise<any> => {
+export const fetchSafeTransactionById = async (txId: string, safeAddress: string): Promise<any> => {
   return axios.get(`${baseUrl}/transaction/transaction-details/${txId}/${safeAddress}`).then((res) => res.data.Data)
 }
 

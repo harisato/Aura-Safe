@@ -3,9 +3,8 @@ import { generatePath, matchPath } from 'react-router-dom'
 
 import { getChains } from 'src/config/cache/chains'
 import { ChainId, ShortName } from 'src/config/chain.d'
-import { checksumAddress } from 'src/utils/checksumAddress'
 import { PUBLIC_URL } from 'src/utils/constants'
-import { parsePrefixedAddress, parsePrefixedChainIdAddress } from 'src/utils/prefixedAddress'
+import { parsePrefixedAddress } from 'src/utils/prefixedAddress'
 
 export const history = createBrowserHistory({
   basename: PUBLIC_URL,
