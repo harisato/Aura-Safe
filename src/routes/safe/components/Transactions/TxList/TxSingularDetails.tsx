@@ -16,7 +16,7 @@ import {
   SAFE_ADDRESS_SLUG,
 } from 'src/routes/routes'
 import { Centered } from './styled'
-import { getTransactionWithLocationByAttribute } from 'src/logic/safe/store/selectors/gatewayTransactions'
+import { getTransactionWithLocationByAttribute, historyTransactions } from 'src/logic/safe/store/selectors/gatewayTransactions'
 import { TxLocationContext } from './TxLocationProvider'
 import { AppReduxState } from 'src/store'
 import { logError, Errors } from 'src/logic/exceptions/CodedException'
@@ -39,6 +39,7 @@ const TxSingularDetails = (): ReactElement => {
   const [liveTx, setLiveTx] = useState<{ txLocation: TxLocation; transaction: Transaction }>()
   const dispatch = useDispatch()
   const chainId = useSelector(currentChainId)
+  const historyTxs = useSelector(historyTransactions)
   const safeAddress = extractSafeAddress()
 
   // We must use the tx from the store as the queue actions alter the tx
@@ -94,7 +95,7 @@ const TxSingularDetails = (): ReactElement => {
     return () => {
       isCurrent = false
     }
-  }, [safeTxHash, txId, setFetchedTx, setLiveTx])
+  }, [safeTxHash, txId, historyTxs, setFetchedTx, setLiveTx])
 
   // Add the tx to the store
   useEffect(() => {
