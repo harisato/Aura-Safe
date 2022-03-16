@@ -206,7 +206,7 @@ const ReviewSendFundsTx = ({ onClose, onPrev, tx }: ReviewTxProps): React.ReactE
       // const tendermintUrl = chainInfo?.rpcUri?.value
       const client = await SigningStargateClient.offline(offlineSigner)
 
-      const amountFinal = Math.floor(Number(tx?.amount) * Math.pow(10, 6)).toString() || ''
+      const amountFinal = Math.floor(Number(tx?.amount) * Math.pow(10, -6)).toString() || ''
 
       const signingInstruction = await (async () => {
         // get account on chain from API
