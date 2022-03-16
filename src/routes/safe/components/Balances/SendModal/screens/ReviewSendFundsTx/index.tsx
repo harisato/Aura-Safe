@@ -238,8 +238,8 @@ const ReviewSendFundsTx = ({ onClose, onPrev, tx }: ReviewTxProps): React.ReactE
       const gasPrice = GasPrice.fromString(String(manualGasPrice || gasPriceFormatted).concat(denom))
       // const sendFee = calculateFee(Number(manualGasLimit) || Number(gasLimit), gasPrice)
       const sendFee = {
-        amount: coins(4000, 'uosmo'),
-        gas: gasLimit.toString(),
+        amount: coins(manualGasPrice || gasPriceFormatted, denom),
+        gas: manualGasLimit || gasLimit,
       }
 
       const signerData: SignerData = {
