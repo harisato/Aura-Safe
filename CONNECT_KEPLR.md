@@ -4,7 +4,7 @@
 - Aura Testnet:
 Use this [jsfiddle](https://jsfiddle.net/eledra/e9kzawp7/11/) to add the `aura-testnet` chain to your Keplr browser extension.
 - Aura Devnet:
-Use this [jsfiddle](https://jsfiddle.net/andqk/g4mrnva1/1/) to add the `aura-testnet` chain to your Keplr browser extension.
+Use this [jsfiddle](https://jsfiddle.net/andqk/g4mrnva1/1/) to add the `aura-devnet` chain to your Keplr browser extension.
 
 2. Detech Keplr
 ```
@@ -93,6 +93,7 @@ Reference: https://docs.keplr.app/api/
 # II. Connect Keplr Wallet to other testnet
 1. Vega Testnet (ATOM) <br>
 > Deprecated since March 2022 in favor of [v7-Theta Testnet](https://github.com/cosmos/testnets/tree/master/v7-theta)
+
 Use [this jsfiddle](https://jsfiddle.net/qkmecjz2/) to add the `vega-testnet` chain to your Keplr browser extension.
 
 2. Theta Testnet (ATOM) <br>
