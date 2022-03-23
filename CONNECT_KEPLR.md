@@ -1,55 +1,11 @@
 # I. Connect Keplr Wallet to Aura Testnet
 
 1. Add Network to Keplr
-```
-await window['keplr'].experimentalSuggestChain({
-	features: ['no-legacy-stdTx'],
-	chainId: "aura-testnet",
-	chainName: "aura testnet",
-	rpc: "https://tendermint-testnet.aura.network",
-	rest: "https://rpc-testnet.aura.network",
-	bip44: {
-		coinType: 118,
-	},
-	bech32Config: {
-		bech32PrefixAccAddr: "aura",
-		bech32PrefixAccPub: "aura" + "pub",
-		bech32PrefixValAddr: "aura" + "valoper",
-		bech32PrefixValPub: "aura" + "valoperpub",
-		bech32PrefixConsAddr: "aura" + "valcons",
-		bech32PrefixConsPub: "aura" + "valconspub",
-	},
-	currencies: [
-		{
-			coinDenom: "AURA",
-			coinMinimalDenom: "uaura",
-			coinDecimals: 6,
-			// coinGeckoId: "aura",
-		},
-	],
-	feeCurrencies: [
-		{
-			coinDenom: "AURA",
-			coinMinimalDenom: "uaura",
-			coinDecimals: 6,
-			// coinGeckoId: "uaura",
-		},
-	],
-	stakeCurrency: {
-		coinDenom: "AURA",
-		coinMinimalDenom: "uaura",
-		coinDecimals: 6,
-		// coinGeckoId: "uaura",
-	},
-	coinType: 118,
-	gasPriceStep: {
-		low: 1,
-		average: 2.5,
-		high: 4
-	},
-	walletUrlForStaking: "https://aura.network"
-});
-```
+- Aura Testnet:
+Use this [jsfiddle](https://jsfiddle.net/eledra/e9kzawp7/11/) to add the `aura-testnet` chain to your Keplr browser extension.
+-Aura Devnet:
+Use this [jsfiddle](https://jsfiddle.net/andqk/g4mrnva1/1/) to add the `aura-testnet` chain to your Keplr browser extension.
+
 2. Detech Keplr
 ```
 	if (!window.keplr) {
@@ -72,17 +28,20 @@ await window['keplr'].experimentalSuggestChain({
 		console.log(accounts)
     }
 ```
-2. Unlock Keplr
+
+3. Unlock Keplr
 ```
 	window.keplr.enable(chainId);
 ```
-3. Get current address / Public key
+
+4. Get current address / Public key
 ```
 	await offlineSigner.getAccounts();
 	//or
 	await offlineSigner.getAccounts(chainid);
 ```
-4. Sign transaction
+
+5. Sign transaction
 - Require: @cosmjs/stargate
 ```
 	npm install @cosmjs/stargate
@@ -133,142 +92,12 @@ Reference: https://docs.keplr.app/api/
 
 # II. Connect Keplr Wallet to other testnet
 1. Vega Testnet (ATOM) <br>
-:::note Deprecated since March 2022
-:::
-Open a console on your browser, paste the following code to the console and execute.
-```
-var foo = async function(){
-console.log('start request')
-	await window.keplr.experimentalSuggestChain({
-    chainId: "vega-testnet",
-    chainName: "vega",
-    rpc: "http://198.50.215.1:46657",
-    rest: "http://198.50.215.1:4317",
-    bip44: {
-        coinType: 118,
-    },
-    bech32Config: {
-        bech32PrefixAccAddr: "cosmos",
-        bech32PrefixAccPub: "cosmos" + "pub",
-        bech32PrefixValAddr: "cosmos" + "valoper",
-        bech32PrefixValPub: "cosmos" + "valoperpub",
-        bech32PrefixConsAddr: "cosmos" + "valcons",
-        bech32PrefixConsPub: "cosmos" + "valconspub",
-    },
-    currencies: [
-        {
-            coinDenom: "ATOM",
-            coinMinimalDenom: "uatom",
-            coinDecimals: 6,
-            coinGeckoId: "cosmos",
-        },
-    ],
-    feeCurrencies: [
-        {
-            coinDenom: "ATOM",
-            coinMinimalDenom: "uatom",
-            coinDecimals: 6,
-            coinGeckoId: "cosmos",
-        },
-    ],
-    stakeCurrency: {
-        coinDenom: "ATOM",
-        coinMinimalDenom: "uatom",
-        coinDecimals: 6,
-        coinGeckoId: "cosmos",
-    },
-    coinType: 118,
-     gasPriceStep: {
-        low: 1,
-        average: 1,
-        high: 1,
-    },
-    features: ["stargate", "ibc-transfer", "no-legacy-stdTx"],
-})
-console.log('finish request')
-}
-setTimeout(()=> {
-foo()
-console.log(window.keplr)
-}, 1000)
-console.log('hello')
-```
+> Deprecated since March 2022 in favor of [v7-Theta Testnet](https://github.com/cosmos/testnets/tree/master/v7-theta)
+Use [this jsfiddle](https://jsfiddle.net/qkmecjz2/) to add the `vega-testnet` chain to your Keplr browser extension.
+
 2. Theta Testnet (ATOM) <br>
-Open a console on your browser, paste the following code to the console and execute.
-```
-var foo = async function() {
-  console.log('start request')
-  await window.keplr.experimentalSuggestChain({
-    chainId: "theta-testnet-001",
-    chainName: "theta-testnet-001",
-    rpc: "https://rpc.sentry-01.theta-testnet.polypore.xyz/",
-    rest: "https://rest.sentry-01.theta-testnet.polypore.xyz/",
-    bip44: {
-      coinType: 118,
-    },
-    bech32Config: {
-      bech32PrefixAccAddr: "cosmos",
-      bech32PrefixAccPub: "cosmos" + "pub",
-      bech32PrefixValAddr: "cosmos" + "valoper",
-      bech32PrefixValPub: "cosmos" + "valoperpub",
-      bech32PrefixConsAddr: "cosmos" + "valcons",
-      bech32PrefixConsPub: "cosmos" + "valconspub",
-    },
-    currencies: [{
-        coinDenom: "ATOM",
-        coinMinimalDenom: "uatom",
-        coinDecimals: 6,
-        coinGeckoId: "cosmos",
-      },
-      {
-        coinDenom: "THETA",
-        coinMinimalDenom: "theta",
-        coinDecimals: 0,
-      },
-      {
-        coinDenom: "LAMBDA",
-        coinMinimalDenom: "lambda",
-        coinDecimals: 0,
-      },
-      {
-        coinDenom: "RHO",
-        coinMinimalDenom: "rho",
-        coinDecimals: 0,
-      },
-      {
-        coinDenom: "EPSILON",
-        coinMinimalDenom: "epsilon",
-        coinDecimals: 0,
-      }
-    ],
-    feeCurrencies: [{
-      coinDenom: "ATOM",
-      coinMinimalDenom: "uatom",
-      coinDecimals: 6,
-      coinGeckoId: "cosmos"
-    }, ],
-    stakeCurrency: {
-      coinDenom: "ATOM",
-      coinMinimalDenom: "uatom",
-      coinDecimals: 6,
-      coinGeckoId: "cosmos"
-    },
-    coinType: 118,
-    gasPriceStep: {
-      low: 1,
-      average: 1,
-      high: 1,
-    },
-    features: ["stargate", "ibc-transfer", "no-legacy-stdTx"],
-  })
-  console.log('finish request')
-}
-setTimeout(() => {
-  foo()
-  console.log(window.keplr)
-}, 1000)
-console.log('hello')
-```
+Use this [jsfiddle](https://jsfiddle.net/kht96uvo/1/) to add the `theta-testnet-001` chain to your Keplr browser extension.
+
 3. Juno Testnet (JUNO) <br>
 Access JunoTools website: https://test.juno.tools/
 ![](public/img/guide/juno-tools.png) 
@@ -276,6 +105,7 @@ Click on Connect Wallet and approve request add chain. <br>
 ![](public/img/guide/approve-chain-add-juno.png) <br>
 Approve request connect network. <br>
 ![](public/img/guide/approve-request-connect.png) <br>
+
 4. Osmosis Testnet (OSMO) <br>
 Access Osmosis Testnet website: https://testnet.osmosis.zone/
 ![](public/img/guide/osmo-fe.png)
