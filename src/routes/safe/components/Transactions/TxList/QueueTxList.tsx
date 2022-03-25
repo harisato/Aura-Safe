@@ -37,7 +37,7 @@ const Disclaimer = ({ nonce }: { nonce: string }): ReactElement => {
           These transactions conflict as they use the same nonce. Executing one will automatically replace the other(s).{' '}
         </Text>
         <Link
-          href="https://help.gnosis-safe.io/en/articles/4730252-why-are-transactions-with-the-same-nonce-conflicting-with-each-other"
+          href="https://aura.network/"
           target="_blank"
           rel="noreferrer"
           title="Why are transactions with the same nonce conflicting with each other?"

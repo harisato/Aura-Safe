@@ -57,7 +57,7 @@ const TxDataGroup = ({ txDetails }: { txDetails: ExpandedTxDetails }): ReactElem
           <>
             <br />
             <Link
-              href="https://help.gnosis-safe.io/en/articles/4738501-why-do-i-need-to-pay-for-cancelling-a-transaction"
+              href="https://aura.network/"
               target="_blank"
               rel="noreferrer"
               title="Why do I need to pay for rejecting a transaction?"
