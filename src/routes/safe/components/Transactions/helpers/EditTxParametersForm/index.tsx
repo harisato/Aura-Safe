@@ -68,15 +68,15 @@ interface Props {
 const formValidation = (values) => {
   const { ethGasLimit, ethGasPrice, ethNonce, safeNonce, safeTxGas } = values ?? {}
 
-  const ethGasLimitValidation = minValue(0, true)(ethGasLimit)
+  const ethGasLimitValidation = minValue(0, false)(ethGasLimit)
 
-  const ethGasPriceValidation = minValue(0, true)(ethGasPrice)
+  const ethGasPriceValidation = minValue(0, false)(ethGasPrice)
 
-  const ethNonceValidation = minValue(0, true)(ethNonce)
+  const ethNonceValidation = minValue(0, false)(ethNonce)
 
-  const safeNonceValidation = minValue(0, true)(safeNonce)
+  const safeNonceValidation = minValue(0, false)(safeNonce)
 
-  const safeTxGasValidation = minValue(0, true)(safeTxGas)
+  const safeTxGasValidation = minValue(0, false)(safeTxGas)
 
   return {
     ethGasLimit: ethGasLimitValidation,
@@ -200,7 +200,7 @@ export const EditTxParametersForm = ({
                     />
                   </EthereumOptions>
 
-                  <StyledLink
+                  {/* <StyledLink
                     href="https://help.gnosis-safe.io/en/articles/4738445-configure-advanced-transaction-parameters-manually"
                     target="_blank"
                   >
@@ -208,7 +208,7 @@ export const EditTxParametersForm = ({
                       How can I configure these parameters manually?
                     </Text>
                     <Icon size="sm" type="externalLink" color="primary" />
-                  </StyledLink>
+                  </StyledLink> */}
                 </>
 
               <StyledDividerFooter />
