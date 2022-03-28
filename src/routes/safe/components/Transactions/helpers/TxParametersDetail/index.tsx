@@ -60,7 +60,7 @@ export const TxParametersDetail = ({
   const defaultParameterStatus = isOffChainSignature && threshold > 1 ? 'ETH_HIDDEN' : 'ENABLED'
 
   const [isTxNonceOutOfOrder, setIsTxNonceOutOfOrder] = useState(false)
-  const [isAccordionExpanded, setIsAccordionExpanded] = useState(false)
+  const [isAccordionExpanded, setIsAccordionExpanded] = useState(true)
 
   const { safeNonce = '' } = txParameters
   const safeNonceNumber = parseInt(safeNonce, 10)
@@ -137,30 +137,32 @@ export const TxParametersDetail = ({
             
           )} */}
           <>
-              <TxParameterWrapper>
-                <StyledText size="md" color="placeHolder">
-                  {ethereumTxParametersTitle(isTransactionExecution)}
-                </StyledText>
-              </TxParameterWrapper>
+            <TxParameterWrapper>
+              <StyledText size="md" color="placeHolder">
+                {ethereumTxParametersTitle(isTransactionExecution)}
+              </StyledText>
+            </TxParameterWrapper>
 
-              {/* <TxParameterWrapper>
+            {/* <TxParameterWrapper>
                 <Text size="lg">Nonce</Text>
                 <Text size="lg">{txParameters.ethNonce}</Text>
               </TxParameterWrapper> */}
 
-              <TxParameterWrapper>
-                <Text size="lg">Gas limit</Text>
-                <Text size="lg">{txParameters.ethGasLimit}</Text>
-              </TxParameterWrapper>
+            <TxParameterWrapper>
+              <Text size="lg">Gas limit</Text>
+              <Text size="lg">{txParameters.ethGasLimit}</Text>
+            </TxParameterWrapper>
 
-              <TxParameterWrapper>
-                <Text size="lg">Gas price</Text>
-                <Text size="lg">{txParameters.ethGasPrice}</Text>
-              </TxParameterWrapper>
-            </>
-          <StyledButtonLink color="primary" textSize="xl" onClick={onEdit}>
-            Edit
-          </StyledButtonLink>
+            <TxParameterWrapper>
+              <Text size="lg">Gas price</Text>
+              <Text size="lg">{txParameters.ethGasPrice}</Text>
+            </TxParameterWrapper>
+          </>
+          {isTransactionExecution ? null : (
+            <StyledButtonLink color="primary" textSize="xl" onClick={onEdit}>
+              Edit
+            </StyledButtonLink>
+          )}
         </AccordionDetailsWrapper>
       </AccordionDetails>
     </Accordion>

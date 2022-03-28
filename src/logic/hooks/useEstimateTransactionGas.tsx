@@ -176,31 +176,31 @@ export const useEstimateTransactionGas = ({
         }
 
         if (isExecution || approvalAndExecution) {
-          ethGasLimitEstimation = await estimateTransactionGasLimit({
-            safeAddress,
-            safeVersion,
-            txRecipient,
-            txData,
-            txAmount: txAmount || '0',
-            txConfirmations,
-            isExecution,
-            isOffChainSignature,
-            operation: operation || Operation.CALL,
-            from,
-            safeTxGas: safeTxGasEstimation,
-            approvalAndExecution,
-          })
+        //   ethGasLimitEstimation = await estimateTransactionGasLimit({
+        //     safeAddress,
+        //     safeVersion,
+        //     txRecipient,
+        //     txData,
+        //     txAmount: txAmount || '0',
+        //     txConfirmations,
+        //     isExecution,
+        //     isOffChainSignature,
+        //     operation: operation || Operation.CALL,
+        //     from,
+        //     safeTxGas: safeTxGasEstimation,
+        //     approvalAndExecution,
+        //   })
         }
 
-        const gasPrice = manualGasPrice ? toWei(manualGasPrice, 'gwei') : await calculateGasPrice()
+        const gasPrice = manualGasPrice || '1' // ? toWei(manualGasPrice, 'gwei') : await calculateGasPrice()
         const gasPriceFormatted = fromWei(gasPrice, 'gwei')
-        const gasLimit = manualGasLimit || ethGasLimitEstimation.toString()
-        const estimatedGasCosts = parseInt(gasLimit, 10) * parseInt(gasPrice, 10)
+        const gasLimit = manualGasLimit || ''
+        const estimatedGasCosts = parseInt(gasLimit, 10) * parseInt(gasPrice as any, 10)
         const gasCost = fromTokenUnit(estimatedGasCosts, nativeCurrency.decimals)
         const gasCostFormatted = formatAmount(gasCost)
 
         if (isExecution) {
-          transactionCallSuccess = await checkTransactionExecution({
+          transactionCallSuccess = true /*  await checkTransactionExecution({
             safeAddress,
             safeVersion,
             txRecipient,
@@ -215,7 +215,7 @@ export const useEstimateTransactionGas = ({
             refundReceiver: ZERO_ADDRESS,
             safeTxGas: safeTxGasEstimation,
             approvalAndExecution,
-          })
+          }) */
         }
 
         txEstimationExecutionStatus = transactionCallSuccess ? EstimationStatus.SUCCESS : EstimationStatus.FAILURE
@@ -225,7 +225,7 @@ export const useEstimateTransactionGas = ({
           gasEstimation: safeTxGasEstimation,
           gasCost,
           gasCostFormatted,
-          gasPrice,
+          gasPrice: gasPrice  as any,
           gasPriceFormatted,
           gasLimit,
           isExecution,
