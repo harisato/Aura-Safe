@@ -64,6 +64,8 @@ export const useTransactionActions = (transaction: Transaction): TransactionActi
         confirmationsRequired <=
           (transaction?.txDetails?.detailedExecutionInfo as MultisigExecutionDetails)?.confirmations?.length
 
+
+          
       setState({
         canConfirm,
         canConfirmThenExecute: txLocation === 'queued.queued' && canConfirm && oneToGo,
