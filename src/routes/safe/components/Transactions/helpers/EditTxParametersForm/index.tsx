@@ -72,11 +72,11 @@ const formValidation = (values) => {
 
   const ethGasPriceValidation = minValue(0, false)(ethGasPrice)
 
-  const ethNonceValidation = minValue(0, false)(ethNonce)
+  const ethNonceValidation = minValue(0, true)(ethNonce)
 
-  const safeNonceValidation = minValue(0, false)(safeNonce)
+  const safeNonceValidation = minValue(0, true)(safeNonce)
 
-  const safeTxGasValidation = minValue(0, false)(safeTxGas)
+  const safeTxGasValidation = minValue(0, true)(safeTxGas)
 
   return {
     ethGasLimit: ethGasLimitValidation,
