@@ -318,7 +318,6 @@ export const ApproveTxModal = ({
     if (thresholdReached && confirmations.size < _threshold) {
       dispatch(enqueueSnackbar(NOTIFICATIONS.TX_FETCH_SIGNATURES_ERROR_MSG))
     } else {
-
       // call api to broadcast tx
       setDisabled(true)
       try {
@@ -331,15 +330,15 @@ export const ApproveTxModal = ({
             internalChainId: getInternalChainId(),
             owner: userWalletAddress,
           }
-          const {
-            ErrorCode,
-            Data,
-          } = await sendSafeTransaction(data)
+          const { ErrorCode, Data } = await sendSafeTransaction(data)
           if (ErrorCode === 'SUCCESSFUL') {
             dispatch(enqueueSnackbar(NOTIFICATIONS.TX_EXECUTED_MSG))
             const TxHash = Data['TxHash']
             if (TxHash) {
-              const prefixedSafeAddress = getPrefixedSafeAddressSlug({ shortName: extractShortChainName(), safeAddress })
+              const prefixedSafeAddress = getPrefixedSafeAddressSlug({
+                shortName: extractShortChainName(),
+                safeAddress,
+              })
 
               const txRoute = generatePath(SAFE_ROUTES.TRANSACTIONS_SINGULAR, {
                 [SAFE_ADDRESS_SLUG]: prefixedSafeAddress,
@@ -445,7 +444,7 @@ export const ApproveTxModal = ({
         amount: coins(manualGasPrice || gasPrice, denom),
         gas: manualGasLimit || baseGas,
       }
-      
+
       const signerData: SignerData = {
         accountNumber: signingInstruction.accountNumber || 0,
         sequence: signingInstruction.sequence || 0,
@@ -559,7 +558,7 @@ export const ApproveTxModal = ({
                     status: buttonStatus,
                     text: txEstimationExecutionStatus === EstimationStatus.LOADING ? 'Estimating' : undefined,
                     testId: isCancelTx ? REJECT_TX_MODAL_SUBMIT_BTN_TEST_ID : APPROVE_TX_MODAL_SUBMIT_BTN_TEST_ID,
-                    disabled: isDisabled
+                    disabled: isDisabled,
                   }}
                 />
               </GenericModal.Footer>

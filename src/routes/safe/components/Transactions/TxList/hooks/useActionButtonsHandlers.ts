@@ -33,13 +33,14 @@ export const useActionButtonsHandlers = (transaction: Transaction): ActionButton
   const hoverContext = useRef(useContext(TxHoverContext))
   const locationContext = useContext(TxLocationContext)
   const dispatch = useDispatch()
-  const { canCancel, canConfirmThenExecute, canExecute } = useTransactionActions(transaction)
+  const { canCancel, canConfirmThenExecute, canExecute } = useTransactionActions(transaction) // check this
   const txStatus = useLocalTxStatus(transaction)
   const isPending = txStatus === LocalTransactionStatus.PENDING
 
   const handleConfirmButtonClick = useCallback(
     (event: ReactMouseEvent<HTMLButtonElement, MouseEvent>) => {
       event.stopPropagation()
+
       if (transaction.txDetails && isMultiSigExecutionDetails(transaction.txDetails.detailedExecutionInfo)) {
         const details = transaction.txDetails.detailedExecutionInfo
         if (

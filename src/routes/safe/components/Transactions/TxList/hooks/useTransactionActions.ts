@@ -58,16 +58,18 @@ export const useTransactionActions = (transaction: Transaction): TransactionActi
       const currentUserSigned = !missingSigners?.some((missingSigner) => sameAddress(missingSigner.value, currentUser))
       const oneToGo = confirmationsSubmitted === confirmationsRequired - 1
       const canConfirm =
-        ['queued.next', 'queued.queued'].includes(txLocation) && !currentUserSigned && isUserAnOwner && !isWrongChain
+        ['queued.txs'].includes(txLocation) && !currentUserSigned && isUserAnOwner && !isWrongChain
       const thresholdReached =
         confirmationsRequired > 0 &&
         confirmationsRequired <=
           (transaction?.txDetails?.detailedExecutionInfo as MultisigExecutionDetails)?.confirmations?.length
 
+
+
       setState({
         canConfirm,
-        canConfirmThenExecute: txLocation === 'queued.queued' && canConfirm && oneToGo,
-        canExecute: txLocation === 'queued.queued' && thresholdReached && !!currentUser && !isWrongChain,
+        canConfirmThenExecute: txLocation === 'queued.txs' && canConfirm && oneToGo,
+        canExecute: txLocation === 'queued.txs' && thresholdReached && !!currentUser && !isWrongChain,
         canCancel,
         isUserAnOwner,
       })
