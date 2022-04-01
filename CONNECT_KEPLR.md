@@ -108,11 +108,4 @@ Approve request connect network. <br>
 ![](public/img/guide/approve-request-connect.png) <br>
 
 4. Osmosis Testnet (OSMO) <br>
-Access Osmosis Testnet website: https://testnet.osmosis.zone/
-![](public/img/guide/osmo-fe.png)
-Click on Connect Wallet and select Keplr Wallet in the pop-up.
-![](public/img/guide/pop-up-connect-wallet.png) <br>
-Approve request add chain. <br>
-![](public/img/guide/request-add-chain.png) <br>
-Approve request connect network. <br>
-![](public/img/guide/request-connect.png) <br>
+Use this [jsfiddle](https://jsfiddle.net/andqk/3szkyte2/1/) to add the `osmo-test-4` chain to your Keplr browser extension.
