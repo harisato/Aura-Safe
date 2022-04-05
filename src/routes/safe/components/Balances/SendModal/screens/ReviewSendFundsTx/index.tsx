@@ -165,7 +165,7 @@ const ReviewSendFundsTx = ({ onClose, onPrev, tx }: ReviewTxProps): React.ReactE
   } = {
     gasCostFormatted: '',
     gasPriceFormatted: '1',
-    gasLimit: '80000',
+    gasLimit: '100000',
     gasEstimation: '0',
     txEstimationExecutionStatus: EstimationStatus.SUCCESS,
     isExecution: false,
