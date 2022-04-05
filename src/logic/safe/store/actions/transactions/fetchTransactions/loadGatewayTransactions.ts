@@ -1,5 +1,5 @@
 import { getTransactionHistory, getTransactionQueue, TransactionListItem } from '@gnosis.pm/safe-react-gateway-sdk'
-import { _getChainId } from 'src/config'
+import { getInternalChainId, _getChainId } from 'src/config'
 import { HistoryGatewayResponse, QueuedGatewayResponse } from 'src/logic/safe/store/models/types/gateway.d'
 import { checksumAddress } from 'src/utils/checksumAddress'
 import { Errors, CodedException } from 'src/logic/exceptions/CodedException'
@@ -73,12 +73,14 @@ export const loadHistoryTransactionsFromAuraApi = async (
   safeAddress: string,
 ): Promise<HistoryGatewayResponse['results']> => {
   const chainId = _getChainId()
+  const internalChainId = getInternalChainId()
   try {
     const { Data: list } = await getAllTx({
       safeAddress,
       pageIndex: DEFAULT_PAGE_FIRST,
       pageSize: DEFAULT_PAGE_SIZE,
       isHistory: true,
+      internalChainId: internalChainId
     })
     const { results, next, previous } = makeHistoryTransactionsFromService(list)
     if (!historyPointers[chainId]) {
@@ -114,6 +116,7 @@ export const loadPageHistoryTransactionsFromAuraApi = async (
   safeAddress: string,
 ): Promise<{ values: HistoryGatewayResponse['results']; next?: string } | undefined> => {
   const chainId = _getChainId()
+  const internalChainId = getInternalChainId()
   try {
     // const { results, next, previous } = await getTransactionHistory(GATEWAY_URL, chainId, checksumAddress(safeAddress))
 
@@ -128,12 +131,14 @@ export const loadPageHistoryTransactionsFromAuraApi = async (
       return
     }
     const pageNext = _next.pageIndex
-
+    
     const payload: ITransactionListQuery = {
       safeAddress,
       pageIndex: pageNext,
       pageSize: DEFAULT_PAGE_SIZE,
       isHistory: true,
+      internalChainId: internalChainId
+      
     }
 
     const { Data: list } = await getAllTx(payload)
@@ -210,6 +215,7 @@ export const loadQueuedTransactionsFromAuraApi = async (
   isNext = false,
 ): Promise<QueuedGatewayResponse['results'] | null> => {
   const chainId = _getChainId()
+  const internalChainId = getInternalChainId()
 
   try {
     const { Data: list } = await getAllTx({
@@ -217,6 +223,7 @@ export const loadQueuedTransactionsFromAuraApi = async (
       isHistory: false,
       pageIndex: DEFAULT_PAGE_FIRST,
       pageSize: QUEUED_PAGE_SIZE,
+      internalChainId: internalChainId
     })
     let { results, next, previous } = makeQueueTransactionsFromService(list)
 
@@ -255,6 +262,7 @@ export const loadPageQueuedTransactionsFromAuraApi = async (
   isNext = false,
 ): Promise<{ values: HistoryGatewayResponse['results']; next?: string } | undefined> => {
   const chainId = _getChainId()
+  const internalChainId = getInternalChainId()
 
   try {
     const queued = queuedPointers[chainId][safeAddress]
@@ -270,6 +278,7 @@ export const loadPageQueuedTransactionsFromAuraApi = async (
       pageIndex: pageNext,
       pageSize: DEFAULT_PAGE_SIZE,
       isHistory: false,
+      internalChainId: internalChainId
     }
 
     const { Data: list } = await getAllTx(payload)
