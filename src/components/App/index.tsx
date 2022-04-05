@@ -28,6 +28,7 @@ import useAddressBookSync from 'src/logic/addressBook/hooks/useAddressBookSync'
 import { extractSafeAddress, extractSafeId } from 'src/routes/routes'
 import loadSafesFromStorage from 'src/logic/safe/store/actions/loadSafesFromStorage'
 import loadCurrentSessionFromStorage from 'src/logic/currentSession/store/actions/loadCurrentSessionFromStorage'
+import { ConnectWalletModal } from 'src/components/ConnectWalletModal'
 
 const notificationStyles = {
   success: {
@@ -116,6 +117,8 @@ const App: React.FC = ({ children }) => {
           >
             {children}
           </AppLayout>
+
+          <ConnectWalletModal isOpen={true} onClose={() => {}} ></ConnectWalletModal>
 
           <SendModal
             activeScreenType="chooseTxType"
