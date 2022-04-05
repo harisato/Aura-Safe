@@ -262,7 +262,7 @@ const ReviewSendFundsTx = ({ onClose, onPrev, tx }: ReviewTxProps): React.ReactE
           from: safeAddress,
           to: txRecipient || '',
           amount: amountFinal,
-          gasLimit: manualGasLimit || '80000',
+          gasLimit: manualGasLimit || '100000',
           internalChainId: getInternalChainId(),
           fee: Number(manualGasPrice) || 1,
           creatorAddress: userWalletAddress,
