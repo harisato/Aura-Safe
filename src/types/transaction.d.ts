@@ -30,7 +30,8 @@ export interface ITransactionListQuery {
     safeAddress: string,
     pageSize: number,
     isHistory: boolean,
-    pageIndex: number
+    pageIndex: number,
+    internalChainId: number;
 }
 
 export interface ITransactionListItem {
