@@ -61,7 +61,7 @@ function SelectWalletAndNetworkStep(): ReactElement {
             Switch Network
           </ButtonLink>
         ) : (
-          <ConnectButton data-testid="heading-connect-btn" />
+          <ConnectButton onConnectButtonClick={() => console.log} data-testid="heading-connect-btn" />
         )}
       </SwitchNetworkContainer>
 

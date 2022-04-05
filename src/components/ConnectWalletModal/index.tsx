@@ -1,9 +1,14 @@
-import { createStyles, IconButton } from '@material-ui/core'
+import { createStyles } from '@material-ui/core'
 import { makeStyles } from '@material-ui/styles'
 import * as React from 'react'
 import { Modal } from 'src/components/Modal'
 import styled from 'styled-components'
-import { background, error, lg, md, secondaryText, sm } from '../../theme/variables'
+import { _getChainId } from '../../config'
+import { connectKeplr, KeplrErrors, suggestChain } from '../../logic/keplr/keplr'
+import { enhanceSnackbarForAction, NOTIFICATIONS } from '../../logic/notifications'
+import enqueueSnackbar from '../../logic/notifications/store/actions/enqueueSnackbar'
+import { store } from '../../store'
+import { lg } from '../../theme/variables'
 import Img from '../layout/Img'
 import Row from '../layout/Row'
 
@@ -42,8 +47,6 @@ const ImageItem = styled.div`
   cursor: pointer;
   padding: 0.625em 1.25em;
 
-
-
   transition: box-shadow 150ms ease-in-out, background 200ms ease-in-out;
   transition: opacity 200ms;
 
@@ -63,7 +66,26 @@ const useStyles = makeStyles(styles)
 export const ConnectWalletModal = ({ isOpen, onClose }: Props): React.ReactElement => {
   const classes = useStyles()
 
-  const keplrWallet = () => {}
+  const keplrWallet = async () => {
+    const chainId = _getChainId()
+    await connectKeplr()
+      .then(async (status) => {
+        if (status === KeplrErrors.NoChainInfo) {
+          await suggestChain(chainId)
+          return true
+        }
+        onClose()
+        return null
+      })
+      .then((e) => {
+        if (e) {
+          connectKeplr()
+        }
+      })
+      .catch(() => {
+        store.dispatch(enqueueSnackbar(enhanceSnackbarForAction(NOTIFICATIONS.CONNECT_WALLET_ERROR_MSG)))
+      })
+  }
   const terraWallet = () => {}
 
   return (

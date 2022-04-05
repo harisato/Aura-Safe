@@ -26,30 +26,36 @@ export const onboardUser = async (): Promise<boolean> => {
   return walletSelected && checkWallet()
 }
 
-export const onConnectButtonClick = async (): Promise<void> => {
-  const chainId = _getChainId()
-  await connectKeplr()
-    .then(async (status) => {
-      if (status === KeplrErrors.NoChainInfo) {
-        await suggestChain(chainId)
-        return true
-      }
+// export const onConnectButtonClick = async (): Promise<void> => {
+//   const chainId = _getChainId()
+//   await connectKeplr()
+//     .then(async (status) => {
+//       if (status === KeplrErrors.NoChainInfo) {
+//         await suggestChain(chainId)
+//         return true
+//       }
 
-      return null
-    })
-    .then((e) => {
-      if (e) {
-        connectKeplr()
-      }
-    })
-    .catch(() => {
-      store.dispatch(enqueueSnackbar(enhanceSnackbarForAction(NOTIFICATIONS.CONNECT_WALLET_ERROR_MSG)))
-    })
-}
+//       return null
+//     })
+//     .then((e) => {
+//       if (e) {
+//         connectKeplr()
+//       }
+//     })
+//     .catch(() => {
+//       store.dispatch(enqueueSnackbar(enhanceSnackbarForAction(NOTIFICATIONS.CONNECT_WALLET_ERROR_MSG)))
+//     })
+// }
 
-const ConnectButton = (props: { 'data-testid': string }): ReactElement => (
-  <Button color="primary" minWidth={240} onClick={onConnectButtonClick} variant="contained" {...props}>
+const ConnectButton = (props: { 'data-testid': string, onConnectButtonClick : () => void }): ReactElement => {
+
+  const buttonC = () => {
+    props.onConnectButtonClick()
+  }
+  
+  return (
+  <Button color="primary" minWidth={240} onClick={buttonC} variant="contained" {...props}>
     Connect
   </Button>
-)
+)}
 export default ConnectButton
