@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 
 import Layout from './components/Layout'
@@ -18,6 +18,8 @@ import { loadLastUsedProvider } from 'src/logic/wallets/store/middlewares/provid
 import { connectKeplr } from '../../../logic/keplr/keplr'
 
 const HeaderComponent = ({ openConnectWallet }: { openConnectWallet: () => void }): React.ReactElement => {
+  const [ toggleConnect , setToggleConnect ] = useState<boolean>(false) 
+
   const provider = useSelector(providerNameSelector)
   const chainId = useSelector(currentChainId)
   const userAddress = useSelector(userAccountSelector)
@@ -70,6 +72,12 @@ const HeaderComponent = ({ openConnectWallet }: { openConnectWallet: () => void 
     dispatch(removeProvider())
   }
 
+  const onShowConnect = () => {
+    setToggleConnect(!toggleConnect)
+
+    openConnectWallet()
+  }
+
   const getProviderInfoBased = () => {
     if (!loaded || !provider) {
       return <ProviderDisconnected />
@@ -80,7 +88,7 @@ const HeaderComponent = ({ openConnectWallet }: { openConnectWallet: () => void 
 
   const getProviderDetailsBased = () => {
     if (!loaded) {
-      return <ConnectDetails connectButtonClick={() => openConnectWallet()} />
+      return <ConnectDetails connectButtonClick={onShowConnect} />
     }
 
     return (
@@ -97,7 +105,7 @@ const HeaderComponent = ({ openConnectWallet }: { openConnectWallet: () => void 
   const info = getProviderInfoBased()
   const details = getProviderDetailsBased()
 
-  return <Layout providerDetails={details} providerInfo={info} />
+  return <Layout providerDetails={details} providerInfo={info} showConnect={toggleConnect} />
 }
 
 export default HeaderComponent

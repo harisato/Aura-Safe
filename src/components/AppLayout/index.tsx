@@ -101,15 +101,10 @@ const Layout: React.FC<Props> = ({
     path: [SAFE_ROUTES.SETTINGS, WELCOME_ROUTE],
   })
 
-  const openConnectWallet = () => {
-    console.log('openConnectWallet App layout')
-    onConnectClick()
-  }
-
   return (
     <Container>
       <HeaderWrapper>
-        <Header openConnectWallet={() => openConnectWallet()} />
+        <Header openConnectWallet={onConnectClick} />
       </HeaderWrapper>
       <BodyWrapper>
         <SidebarWrapper data-testid="sidebar">

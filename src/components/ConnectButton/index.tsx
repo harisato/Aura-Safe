@@ -1,13 +1,9 @@
 import { ReactElement } from 'react'
 import Button from 'src/components/layout/Button'
 import { _getChainId } from 'src/config'
-import { enhanceSnackbarForAction, NOTIFICATIONS } from 'src/logic/notifications'
-import enqueueSnackbar from 'src/logic/notifications/store/actions/enqueueSnackbar'
 import { getWeb3 } from 'src/logic/wallets/getWeb3'
 import onboard from 'src/logic/wallets/onboard'
 import { shouldSwitchNetwork, switchNetwork } from 'src/logic/wallets/utils/network'
-import { store } from 'src/store'
-import { connectKeplr, KeplrErrors, suggestChain } from '../../logic/keplr/keplr'
 
 const checkWallet = async (): Promise<boolean> => {
   if (shouldSwitchNetwork()) {
@@ -47,12 +43,16 @@ export const onboardUser = async (): Promise<boolean> => {
 //     })
 // }
 
-const ConnectButton = (props: { 'data-testid': string; onConnect: () => void }): ReactElement => {
+const ConnectButton = (props: { 'data-testid': string; onConnect: () => void }): ReactElement => (
+  <Button
+    color="primary"
+    minWidth={240}
+    onClick={props.onConnect}
+    variant="contained"
+    data-testid={props['data-testid']}
+  >
+    Connect
+  </Button>
+)
 
-  return (
-    <Button color="primary" minWidth={240} onClick={props.onConnect} variant="contained" data-testid={props['data-testid']}>
-      Connect
-    </Button>
-  )
-}
 export default ConnectButton
