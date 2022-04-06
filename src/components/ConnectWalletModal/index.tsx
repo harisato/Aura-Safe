@@ -7,6 +7,7 @@ import { _getChainId } from '../../config'
 import { connectKeplr, KeplrErrors, suggestChain } from '../../logic/keplr/keplr'
 import { enhanceSnackbarForAction, NOTIFICATIONS } from '../../logic/notifications'
 import enqueueSnackbar from '../../logic/notifications/store/actions/enqueueSnackbar'
+import { connectToTerra } from '../../logic/terraStation'
 import { store } from '../../store'
 import { lg } from '../../theme/variables'
 import Img from '../layout/Img'
@@ -86,7 +87,10 @@ export const ConnectWalletModal = ({ isOpen, onClose }: Props): React.ReactEleme
         store.dispatch(enqueueSnackbar(enhanceSnackbarForAction(NOTIFICATIONS.CONNECT_WALLET_ERROR_MSG)))
       })
   }
-  const terraWallet = () => {}
+  const terraWallet = () => {
+    console.log('terraWallet')
+    connectToTerra('')
+  }
 
   return (
     <Modal description="Select a Wallet" handleClose={onClose} open={isOpen} title="Select a Wallet">
