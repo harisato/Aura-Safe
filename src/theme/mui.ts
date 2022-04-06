@@ -279,7 +279,7 @@ const theme = createTheme({
       message: {
         color: fontColor,
         flexGrow: '1',
-        fontFamily: 'Averta',
+        fontFamily: 'SFProDisplay !important',
         fontSize: '14px',
         lineHeight: '1.43',
         padding: '0 10px 0 0',

@@ -1,16 +1,16 @@
 const background = '#f7f5f5'
 const border = '#e8e7e6'
-const connectedColor = '#008C73'
+const connectedColor = '#03a9f4'
 const disabled = '#5D6D74'
 const errorColor = '#f02525'
 const fancyColor = '#f02525'
-const fontColor = '#001428'
+const fontColor = '#777E91'
 const headerHeight = '52px'
 const lg = '24px'
 const marginButtonImg = '12px'
 const md = '16px'
-const primary = '#001428'
-const secondary = '#008C73'
+const primary = '#777E91'
+const secondary = '#03a9f4'
 const secondaryTextOrSvg = '#B2B5B2'
 const secondaryBackground = '#f0efee'
 const sm = '8px'
@@ -41,7 +41,7 @@ module.exports = {
   largeFontSize: '16px',
   lg,
   lightFont: 300,
-  mainFontFamily: 'Averta, sans-serif',
+  mainFontFamily: 'SFProDisplay !important',
   marginButtonImg,
   md,
   mediumFontSize: '14px',
@@ -55,7 +55,7 @@ module.exports = {
   screenXs: 480,
   screenXsMax: 767,
   secondary,
-  secondaryFontFamily: 'Averta, monospace',
+  secondaryFontFamily: 'SFProDisplay !important',
   secondaryText: secondaryTextOrSvg,
   secondaryBackground,
   sm,

@@ -88,7 +88,7 @@ export function getMChainsConfig(): Promise<MChainInfo[]> {
           },
           theme: {
             textColor: '#ffffff',
-            backgroundColor: '#E8673C',
+            backgroundColor: '#5EE6D0',
           },
           ensRegistryAddress: '',
           gasPrice: [],
