@@ -4,13 +4,15 @@ import { ConnectType, useWallet, WalletStatus } from '@terra-money/wallet-provid
 import * as React from 'react'
 import { Modal } from 'src/components/Modal'
 import styled from 'styled-components'
-import { _getChainId } from '../../config'
+import { getChainInfo, getInternalChainId, _getChainId } from '../../config'
 import { connectKeplr, KeplrErrors, suggestChain } from '../../logic/keplr/keplr'
 import { enhanceSnackbarForAction, NOTIFICATIONS } from '../../logic/notifications'
 import enqueueSnackbar from '../../logic/notifications/store/actions/enqueueSnackbar'
-import { connectToTerra } from '../../logic/terraStation'
+import { fetchTerraStation } from '../../logic/terraStation'
+import { LAST_USED_PROVIDER_KEY } from '../../logic/wallets/store/middlewares/providerWatcher'
 import { store } from '../../store'
 import { lg } from '../../theme/variables'
+import { saveToStorage } from '../../utils/storage'
 import Img from '../layout/Img'
 import Row from '../layout/Row'
 
@@ -68,7 +70,7 @@ const useStyles = makeStyles(styles)
 export const ConnectWalletModal = ({ isOpen, onClose }: Props): React.ReactElement => {
   const classes = useStyles()
 
-  const { status, availableConnectTypes, connect, availableConnections, wallets, connection, sign } = useWallet()
+  const { status, connect, wallets } = useWallet()
 
   const keplrWallet = async () => {
     const chainId = _getChainId()
@@ -90,16 +92,35 @@ export const ConnectWalletModal = ({ isOpen, onClose }: Props): React.ReactEleme
         store.dispatch(enqueueSnackbar(enhanceSnackbarForAction(NOTIFICATIONS.CONNECT_WALLET_ERROR_MSG)))
       })
   }
-
-  /* 
-    icon: "https://assets.terra.money/icon/station-extension/icon.png"
-identifier: "station"
-name: "Terra Station Wallet"
-type: "EXTENSION"
-  */
   const terraWallet = () => {
     try {
       connect(ConnectType.EXTENSION, 'station')
+
+      if (status === WalletStatus.WALLET_CONNECTED) {
+        const _fetchTerraStation = async () => {
+          const chainInfo = await getChainInfo()
+          const internalChainId = getInternalChainId()
+
+          const providerInfo = {
+            account: wallets[0].terraAddress,
+            available: true,
+            hardwareWallet: false,
+            loaded: true,
+            name: 'Terra Station',
+            network: chainInfo.chainId,
+            smartContractWallet: false,
+            internalChainId,
+          }
+
+          fetchTerraStation(providerInfo)
+
+          saveToStorage(LAST_USED_PROVIDER_KEY, providerInfo.name)
+
+          onClose()
+        }
+
+        _fetchTerraStation()
+      }
     } catch (e) {
       console.error(e)
     }
