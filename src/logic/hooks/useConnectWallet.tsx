@@ -19,7 +19,6 @@ const useConnectWallet = (): Response => {
 
   const onConnectWalletShow = useMemo(
     () => () => {
-      console.log('onConnectWalletShow')
       setConnectWalletState((prevState) => ({
         ...prevState,
         showConnect: true,

@@ -1,5 +1,6 @@
 import { createStyles } from '@material-ui/core'
 import { makeStyles } from '@material-ui/styles'
+import { ConnectType, useWallet, WalletStatus } from '@terra-money/wallet-provider'
 import * as React from 'react'
 import { Modal } from 'src/components/Modal'
 import styled from 'styled-components'
@@ -67,6 +68,8 @@ const useStyles = makeStyles(styles)
 export const ConnectWalletModal = ({ isOpen, onClose }: Props): React.ReactElement => {
   const classes = useStyles()
 
+  const { status, availableConnectTypes, connect, availableConnections, wallets, connection, sign } = useWallet()
+
   const keplrWallet = async () => {
     const chainId = _getChainId()
     await connectKeplr()
@@ -87,9 +90,19 @@ export const ConnectWalletModal = ({ isOpen, onClose }: Props): React.ReactEleme
         store.dispatch(enqueueSnackbar(enhanceSnackbarForAction(NOTIFICATIONS.CONNECT_WALLET_ERROR_MSG)))
       })
   }
+
+  /* 
+    icon: "https://assets.terra.money/icon/station-extension/icon.png"
+identifier: "station"
+name: "Terra Station Wallet"
+type: "EXTENSION"
+  */
   const terraWallet = () => {
-    console.log('terraWallet')
-    connectToTerra('')
+    try {
+      connect(ConnectType.EXTENSION, 'station')
+    } catch (e) {
+      console.error(e)
+    }
   }
 
   return (

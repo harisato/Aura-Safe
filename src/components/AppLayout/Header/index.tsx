@@ -18,7 +18,7 @@ import { loadLastUsedProvider } from 'src/logic/wallets/store/middlewares/provid
 import { connectKeplr } from '../../../logic/keplr/keplr'
 
 const HeaderComponent = ({ openConnectWallet }: { openConnectWallet: () => void }): React.ReactElement => {
-  const [ toggleConnect , setToggleConnect ] = useState<boolean>(false) 
+  const [toggleConnect, setToggleConnect] = useState<boolean>(false)
 
   const provider = useSelector(providerNameSelector)
   const chainId = useSelector(currentChainId)
@@ -56,9 +56,7 @@ const HeaderComponent = ({ openConnectWallet }: { openConnectWallet: () => void 
     tryToConnectToLastUsedProvider()
 
     return () => {
-      window.removeEventListener('keplr_keystorechange', (event) => {
-        console.log('Remove Event', event.type)
-      })
+      window.removeEventListener('keplr_keystorechange', (event) => {})
     }
   }, [chainId])
 

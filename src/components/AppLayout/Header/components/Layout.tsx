@@ -103,11 +103,7 @@ const Layout = ({ classes, providerDetails, providerInfo, showConnect }) => {
   const isWrongChain = useSelector(shouldSwitchWalletChain)
 
   useEffect(() => {
-      clickAway()
-
-      console.log('showConnect', showConnect);
-      
-    
+    clickAway()
   }, [showConnect])
 
   return (
