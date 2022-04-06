@@ -17,7 +17,7 @@ import { removeProvider } from 'src/logic/wallets/store/actions'
 import { loadLastUsedProvider } from 'src/logic/wallets/store/middlewares/providerWatcher'
 import { connectKeplr } from '../../../logic/keplr/keplr'
 
-const HeaderComponent = ({onOpenConnectWallet}): React.ReactElement => {
+const HeaderComponent = ({ openConnectWallet }: { openConnectWallet: () => void }): React.ReactElement => {
   const provider = useSelector(providerNameSelector)
   const chainId = useSelector(currentChainId)
   const userAddress = useSelector(userAccountSelector)
@@ -66,11 +66,6 @@ const HeaderComponent = ({onOpenConnectWallet}): React.ReactElement => {
     return false
   }
 
-  const openConnectWallet = () => {
-    console.log('openConnectWallet')
-    onOpenConnectWallet()
-  }
-
   const onDisconnect = () => {
     dispatch(removeProvider())
   }
@@ -85,7 +80,7 @@ const HeaderComponent = ({onOpenConnectWallet}): React.ReactElement => {
 
   const getProviderDetailsBased = () => {
     if (!loaded) {
-      return <ConnectDetails onConnectButtonClick={() => openConnectWallet()} />
+      return <ConnectDetails connectButtonClick={() => openConnectWallet()} />
     }
 
     return (

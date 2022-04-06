@@ -52,7 +52,7 @@ export const Base = (): React.ReactElement => {
       onToggleSafeList={() => console.log}
       onReceiveClick={() => console.log}
       onNewTransactionClick={() => console.log}
-      onOpenConnectWallet={() => console.log}
+      onConnectClick={() => console.log}
     >
       <div>The content goes here</div>
     </Layout>

@@ -47,15 +47,12 @@ export const onboardUser = async (): Promise<boolean> => {
 //     })
 // }
 
-const ConnectButton = (props: { 'data-testid': string, onConnectButtonClick : () => void }): ReactElement => {
+const ConnectButton = (props: { 'data-testid': string; onConnect: () => void }): ReactElement => {
 
-  const buttonC = () => {
-    props.onConnectButtonClick()
-  }
-  
   return (
-  <Button color="primary" minWidth={240} onClick={buttonC} variant="contained" {...props}>
-    Connect
-  </Button>
-)}
+    <Button color="primary" minWidth={240} onClick={props.onConnect} variant="contained" data-testid={props['data-testid']}>
+      Connect
+    </Button>
+  )
+}
 export default ConnectButton

@@ -116,7 +116,7 @@ const App: React.FC = ({ children }) => {
             onToggleSafeList={toggleSidebar}
             onReceiveClick={onReceiveShow}
             onNewTransactionClick={() => showSendFunds('')}
-            onOpenConnectWallet={() => {onConnectWalletShow()}}
+            onConnectClick={() => {onConnectWalletShow()}}
           >
             {children}
           </AppLayout>
