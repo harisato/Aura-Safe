@@ -30,58 +30,46 @@ const HeaderComponent = ({ openConnectWallet }: { openConnectWallet: () => void 
   const loaded = useSelector(loadedSelector)
   const available = useSelector(availableSelector)
   const dispatch = useDispatch()
-
   const { status, connect, wallets } = useWallet()
 
   useEffect(() => {
     const tryToConnectToLastUsedProvider = async () => {
       const lastUsedProvider = await loadLastUsedProvider()
 
-      if (lastUsedProvider) {
-        if (lastUsedProvider === 'Keplr') {
-          const connected = await connectKeplr()
-          if (connected) {
-            window.addEventListener(
-              'keplr_keystorechange',
-              (event) => {
-                connectKeplr()
-              },
-              // { once: true },
-            )
+      if (lastUsedProvider === 'Terra Station') {
+        try {
+          if (!connect || status === WalletStatus.INITIALIZING) {
+            return
           }
-        } else {
-          try {
-            console.log({ status, connect, wallets });
-            
-            if(!connect || status === WalletStatus.INITIALIZING) { return }
+
+          if (status === WalletStatus.WALLET_NOT_CONNECTED) {
             connect(ConnectType.EXTENSION, 'station')
+          }
 
-            if (status === WalletStatus.WALLET_CONNECTED) {
-              const _fetchTerraStation = async () => {
-                const chainInfo = await getChainInfo()
-                const internalChainId = getInternalChainId()
+          if (wallets && wallets[0]) {
+            const _fetchTerraStation = async () => {
+              const chainInfo = await getChainInfo()
+              const internalChainId = getInternalChainId()
 
-                const providerInfo = {
-                  account: wallets[0].terraAddress,
-                  available: true,
-                  hardwareWallet: false,
-                  loaded: true,
-                  name: 'Terra Station',
-                  network: chainInfo.chainId,
-                  smartContractWallet: false,
-                  internalChainId,
-                }
-
-                fetchTerraStation(providerInfo)
-
-                saveToStorage(LAST_USED_PROVIDER_KEY, providerInfo.name)
+              const providerInfo = {
+                account: wallets[0].terraAddress,
+                available: true,
+                hardwareWallet: false,
+                loaded: true,
+                name: 'Terra Station',
+                network: chainInfo.chainId,
+                smartContractWallet: false,
+                internalChainId,
               }
 
-              _fetchTerraStation()
+              fetchTerraStation(providerInfo)
+
+              saveToStorage(LAST_USED_PROVIDER_KEY, providerInfo.name)
             }
-          } catch (e) {
-            console.error(e)
+            _fetchTerraStation()
           }
+        } catch (e) {
+          console.error(e)
         }
       }
     }
@@ -89,7 +77,28 @@ const HeaderComponent = ({ openConnectWallet }: { openConnectWallet: () => void 
     tryToConnectToLastUsedProvider()
 
     return () => {
-      window.removeEventListener('keplr_keystorechange', (event) => {})
+      window.removeEventListener('keplr_keystorechange', (_) => {})
+    }
+  }, [chainId, status, wallets])
+
+  useEffect(() => {
+    const tryToConnectToLastUsedProvider = async () => {
+      const lastUsedProvider = await loadLastUsedProvider()
+
+      if (lastUsedProvider === 'Keplr') {
+        const connected = await connectKeplr()
+        if (connected) {
+          window.addEventListener('keplr_keystorechange', (event) => {
+            connectKeplr()
+          })
+        }
+      }
+
+      tryToConnectToLastUsedProvider()
+
+      return () => {
+        window.removeEventListener('keplr_keystorechange', (_) => {})
+      }
     }
   }, [chainId])
 

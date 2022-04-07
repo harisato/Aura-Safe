@@ -1,6 +1,6 @@
 import { createStyles } from '@material-ui/core'
 import { makeStyles } from '@material-ui/styles'
-import { ConnectType, useWallet, WalletStatus } from '@terra-money/wallet-provider'
+import { ConnectType, SignBytesResult, useWallet, WalletStatus } from '@terra-money/wallet-provider'
 import * as React from 'react'
 import { Modal } from 'src/components/Modal'
 import styled from 'styled-components'
@@ -65,11 +65,8 @@ const ImageTitle = styled.span`
   text-align: left;
 `
 
-const useStyles = makeStyles(styles)
 
 export const ConnectWalletModal = ({ isOpen, onClose }: Props): React.ReactElement => {
-  const classes = useStyles()
-
   const { status, connect, wallets } = useWallet()
 
   const keplrWallet = async () => {
@@ -115,7 +112,6 @@ export const ConnectWalletModal = ({ isOpen, onClose }: Props): React.ReactEleme
           fetchTerraStation(providerInfo)
 
           saveToStorage(LAST_USED_PROVIDER_KEY, providerInfo.name)
-
           onClose()
         }
 
