@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 
 import Layout from './components/Layout'
@@ -14,10 +14,16 @@ import {
   userAccountSelector,
 } from 'src/logic/wallets/store/selectors'
 import { removeProvider } from 'src/logic/wallets/store/actions'
-import { loadLastUsedProvider } from 'src/logic/wallets/store/middlewares/providerWatcher'
+import { LAST_USED_PROVIDER_KEY, loadLastUsedProvider } from 'src/logic/wallets/store/middlewares/providerWatcher'
 import { connectKeplr } from '../../../logic/keplr/keplr'
+import { ConnectType, useWallet, WalletStatus } from '@terra-money/wallet-provider'
+import { fetchTerraStation } from '../../../logic/terraStation'
+import { getChainInfo, getInternalChainId } from '../../../config'
+import { saveToStorage } from '../../../utils/storage'
 
-const HeaderComponent = (): React.ReactElement => {
+const HeaderComponent = ({ openConnectWallet }: { openConnectWallet: () => void }): React.ReactElement => {
+  const [toggleConnect, setToggleConnect] = useState<boolean>(false)
+
   const provider = useSelector(providerNameSelector)
   const chainId = useSelector(currentChainId)
   const userAddress = useSelector(userAccountSelector)
@@ -25,28 +31,57 @@ const HeaderComponent = (): React.ReactElement => {
   const available = useSelector(availableSelector)
   const dispatch = useDispatch()
 
-  useEffect(() => {
-    // const tryToConnectToLastUsedProvider = async () => {
-    //   const lastUsedProvider = await loadLastUsedProvider()
-    //   if (lastUsedProvider) {
-    //     await onboard().walletSelect(lastUsedProvider)
-    //   }
-    // }
+  const { status, connect, wallets } = useWallet()
 
-    // tryToConnectToLastUsedProvider()
+  useEffect(() => {
     const tryToConnectToLastUsedProvider = async () => {
       const lastUsedProvider = await loadLastUsedProvider()
 
       if (lastUsedProvider) {
-        const connected = await connectKeplr()
-        if (connected) {
-          window.addEventListener(
-            'keplr_keystorechange',
-            (event) => {
-              connectKeplr()
-            },
-            // { once: true },
-          )
+        if (lastUsedProvider === 'Keplr') {
+          const connected = await connectKeplr()
+          if (connected) {
+            window.addEventListener(
+              'keplr_keystorechange',
+              (event) => {
+                connectKeplr()
+              },
+              // { once: true },
+            )
+          }
+        } else {
+          try {
+            console.log({ status, connect, wallets });
+            
+            if(!connect || status === WalletStatus.INITIALIZING) { return }
+            connect(ConnectType.EXTENSION, 'station')
+
+            if (status === WalletStatus.WALLET_CONNECTED) {
+              const _fetchTerraStation = async () => {
+                const chainInfo = await getChainInfo()
+                const internalChainId = getInternalChainId()
+
+                const providerInfo = {
+                  account: wallets[0].terraAddress,
+                  available: true,
+                  hardwareWallet: false,
+                  loaded: true,
+                  name: 'Terra Station',
+                  network: chainInfo.chainId,
+                  smartContractWallet: false,
+                  internalChainId,
+                }
+
+                fetchTerraStation(providerInfo)
+
+                saveToStorage(LAST_USED_PROVIDER_KEY, providerInfo.name)
+              }
+
+              _fetchTerraStation()
+            }
+          } catch (e) {
+            console.error(e)
+          }
         }
       }
     }
@@ -54,9 +89,7 @@ const HeaderComponent = (): React.ReactElement => {
     tryToConnectToLastUsedProvider()
 
     return () => {
-      window.removeEventListener('keplr_keystorechange', (event) => {
-        console.log('Remove Event', event.type)
-      })
+      window.removeEventListener('keplr_keystorechange', (event) => {})
     }
   }, [chainId])
 
@@ -70,6 +103,12 @@ const HeaderComponent = (): React.ReactElement => {
     dispatch(removeProvider())
   }
 
+  const onShowConnect = () => {
+    setToggleConnect(!toggleConnect)
+
+    openConnectWallet()
+  }
+
   const getProviderInfoBased = () => {
     if (!loaded || !provider) {
       return <ProviderDisconnected />
@@ -80,7 +119,7 @@ const HeaderComponent = (): React.ReactElement => {
 
   const getProviderDetailsBased = () => {
     if (!loaded) {
-      return <ConnectDetails />
+      return <ConnectDetails connectButtonClick={onShowConnect} />
     }
 
     return (
@@ -97,7 +136,7 @@ const HeaderComponent = (): React.ReactElement => {
   const info = getProviderInfoBased()
   const details = getProviderDetailsBased()
 
-  return <Layout providerDetails={details} providerInfo={info} />
+  return <Layout providerDetails={details} providerInfo={info} showConnect={toggleConnect} />
 }
 
 export default HeaderComponent

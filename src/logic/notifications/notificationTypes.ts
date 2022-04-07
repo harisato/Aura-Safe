@@ -26,6 +26,8 @@ enum NOTIFICATION_IDS {
   TX_REJECTED_MSG,
   TX_EXECUTED_MSG,
   TX_CANCELLATION_EXECUTED_MSG,
+  TX_CREATE_FAILED_MSG,
+  TX_TIMEOUT_MSG,
   TX_FAILED_MSG,
   TX_PENDING_MSG,
   TX_WAITING_MSG,
@@ -57,7 +59,8 @@ enum NOTIFICATION_IDS {
   ADDRESS_BOOK_EXPORT_ENTRIES_SUCCESS,
   ADDRESS_BOOK_EXPORT_ENTRIES_ERROR,
   SAFE_NEW_VERSION_AVAILABLE,
-  SAFE_CREATION_DUPLICATED
+  SAFE_CREATION_DUPLICATED,
+  SOMETHING_WENT_WRONG
 }
 
 export const NOTIFICATIONS: Record<NotificationId, Notification> = {
@@ -96,8 +99,16 @@ export const NOTIFICATIONS: Record<NotificationId, Notification> = {
     message: 'Rejection successfully submitted',
     options: { variant: SUCCESS, persist: false, autoHideDuration: shortDuration },
   },
+  TX_CREATE_FAILED_MSG: {
+    message: 'Create transaction failed',
+    options: { variant: ERROR, persist: false, autoHideDuration: shortDuration },
+  },
   TX_FAILED_MSG: {
     message: 'Transaction failed',
+    options: { variant: ERROR, persist: false, autoHideDuration: shortDuration },
+  },
+  TX_TIMEOUT_MSG: {
+    message: 'Process timed out',
     options: { variant: ERROR, persist: false, autoHideDuration: shortDuration },
   },
   TX_PENDING_MSG: {
@@ -114,7 +125,6 @@ export const NOTIFICATIONS: Record<NotificationId, Notification> = {
       preventDuplicate: true,
     },
   },
-
   TX_CONFIRMATION_EXECUTED_MSG: {
     message: 'Confirmation transaction was successful',
     options: { variant: SUCCESS, persist: false, autoHideDuration: shortDuration },
@@ -130,6 +140,10 @@ export const NOTIFICATIONS: Record<NotificationId, Notification> = {
   },
   SAFE_APPS_FETCH_ERROR_MSG: {
     message: 'Error fetching the Safe Apps, please refresh the page',
+    options: { variant: ERROR, persist: false, autoHideDuration: shortDuration },
+  },
+  SOMETHING_WENT_WRONG: {
+    message: 'Something went wrong!',
     options: { variant: ERROR, persist: false, autoHideDuration: shortDuration },
   },
   // Safe Name

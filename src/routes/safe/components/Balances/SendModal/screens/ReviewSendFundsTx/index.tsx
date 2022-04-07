@@ -53,6 +53,7 @@ import { calculateFee, GasPrice, makeMultisignedTx, StargateClient } from '@cosm
 import { fromBase64, toBase64 } from '@cosmjs/encoding'
 import { MsgSend, MnemonicKey, Coins, LCDClient, Fee } from '@terra-money/terra.js';
 import { ConnectType, CreateTxFailed, SignResult, Timeout, TxFailed, TxResult, TxUnspecifiedError, useConnectedWallet, UserDenied, useWallet } from '@terra-money/wallet-provider'
+import { loadLastUsedProvider } from 'src/logic/wallets/store/middlewares/providerWatcher'
 
 const useStyles = makeStyles(styles)
 let chains: ChainInfo[] = []
@@ -172,82 +173,69 @@ const ReviewSendFundsTx = ({ onClose, onPrev, tx }: ReviewTxProps): React.ReactE
 
   const submitTx = async (txParameters: TxParameters) => {
     setDisabled(true)
-    signTransactionWithTerra(safeAddress)
+    const lastUsedProvider = await loadLastUsedProvider()
+    if (lastUsedProvider?.toLowerCase() === 'keplr') {
+      signTransactionWithKeplr(safeAddress)
+    } else {
+      signTransactionWithTerra(safeAddress)
+    }
   }
 
   const signTransactionWithTerra = async (safeAddress: string) => {
+    const denom = 'uluna'
     if (!connectedWallet) {
       connect(ConnectType.EXTENSION)
+      signTransactionWithTerra('')
+      return
     }
+
+    const amountFinal = Math.floor(Number(tx?.amount) * Math.pow(10, 6)).toString() || ''
+    const send = new MsgSend(
+      safeAddress,
+      txRecipient,
+      { uluna: amountFinal }
+    );
 
     connectedWallet!
       .sign({
-        fee: new Fee(1000000, '200000uluna'),
-        msgs: [
-          new MsgSend(safeAddress, txRecipient, {
-            uluna: 1000000,
-          }),
-        ],
+        fee: new Fee(Number(manualGasLimit) || Number(gasLimit), String(manualGasPrice || gasPriceFormatted).concat(denom)),
+        msgs: [send],
       })
-      .then((signResult: SignResult) => {
-        console.log(signResult);
-        // setTxResult(nextTxResult);
+      .then(async (signResult: SignResult) => {
+        // call api to create Tx
+        const signatures = signResult.result.signatures[0]
+
+        const data: ICreateSafeTransaction = {
+          from: safeAddress,
+          to: txRecipient || '',
+          amount: amountFinal,
+          gasLimit: manualGasLimit || '100000',
+          internalChainId: getInternalChainId(),
+          fee: Number(manualGasPrice) || 1,
+          creatorAddress: userWalletAddress,
+          signature: signatures,
+          bodyBytes: '',
+        }
+
+        createTxFromApi(data)
       })
       .catch((error: unknown) => {
         if (error instanceof UserDenied) {
-          // setTxError('User Denied');
+          dispatch(enqueueSnackbar(enhanceSnackbarForAction(NOTIFICATIONS.TX_REJECTED_MSG)))
         } else if (error instanceof CreateTxFailed) {
-          // setTxError('Create Tx Failed: ' + error.message);
+          dispatch(enqueueSnackbar(enhanceSnackbarForAction(NOTIFICATIONS.TX_CREATE_FAILED_MSG)))
         } else if (error instanceof TxFailed) {
-          // setTxError('Tx Failed: ' + error.message);
+          dispatch(enqueueSnackbar(enhanceSnackbarForAction(NOTIFICATIONS.TX_FAILED_MSG)))
         } else if (error instanceof Timeout) {
           // setTxError('Timeout');
+          dispatch(enqueueSnackbar(enhanceSnackbarForAction(NOTIFICATIONS.TX_TIMEOUT_MSG)))
         } else if (error instanceof TxUnspecifiedError) {
-          // setTxError('Unspecified Error: ' + error.message);
+          dispatch(enqueueSnackbar(enhanceSnackbarForAction(NOTIFICATIONS.SOMETHING_WENT_WRONG)))
         } else {
-          // setTxError(
-          //   'Unknown Error: ' +
-          //     (error instanceof Error ? error.message : String(error)),
-          // );
+          dispatch(enqueueSnackbar(enhanceSnackbarForAction(NOTIFICATIONS.SOMETHING_WENT_WRONG)))
         }
+        onClose()
       });
-
-    // const amountFinal = Math.floor(Number(tx?.amount) * Math.pow(10, 6)).toString() || ''
-    // const gasPrices = await (await fetch('https://bombay-fcd.terra.dev/v1/txs/gas_prices')).json();
-    // const gasPricesCoins = new Coins(gasPrices);
-
-    // const lcd = new LCDClient({
-    //   URL: "https://bombay.stakesystems.io:2053",
-    //   chainID: "bombay-12",
-    //   gasPrices: gasPricesCoins,
-    //   gasAdjustment: "1.5",
-    //   // gas: 10000000,
-    // });
-
-    // // const mk = new MnemonicKey({mnemonic: 'call orient census marine forest rose place sister proud brain water journey tone marble what lecture laugh flush attack oyster silent please rhythm raise'});
-    // // const wallet = lcd.wallet(mk);
-
-    // const send = new MsgSend(
-    //   wallet.key.accAddress,
-    //   txRecipient,
-    //   { uluna: amountFinal }
-    // );
-
-    // try {
-    //   const signResult = await wallet.createAndSignTx({
-    //     msgs: [send],
-    //     memo: ""
-    //   });
-
-    //   const signatures = signResult.signatures[0]
-    //   const bodyBytes = signResult.body
-
-    //   // call api to create tx
-
-    // } catch (error) {
-    //   dispatch(enqueueSnackbar(enhanceSnackbarForAction(NOTIFICATIONS.TX_CANCELLATION_EXECUTED_MSG)))
-    //   onClose()
-    // }
 
   }
 
@@ -337,82 +325,37 @@ const ReviewSendFundsTx = ({ onClose, onPrev, tx }: ReviewTxProps): React.ReactE
           bodyBytes: bodyBytes,
         }
 
-        const { ErrorCode, Data: safeData, Message } = await createSafeTransaction(data)
-        if (ErrorCode === 'SUCCESSFUL') {
-          setButtonStatus(ButtonStatus.READY)
-          onClose()
-
-          // navigate to tx details
-          const prefixedSafeAddress = getPrefixedSafeAddressSlug({ shortName: extractShortChainName(), safeAddress })
-          const txRoute = generatePath(SAFE_ROUTES.TRANSACTIONS_SINGULAR, {
-            [SAFE_ADDRESS_SLUG]: prefixedSafeAddress,
-            id: safeData,
-          })
-          history.push(txRoute)
-        } else {
-          if (ErrorCode === 'E028') {
-            dispatch(enqueueSnackbar(enhanceSnackbarForAction(NOTIFICATIONS.CREATE_SAFE_PENDING_EXECUTE_MSG)))
-          } else {
-            dispatch(enqueueSnackbar(enhanceSnackbarForAction(NOTIFICATIONS.TX_FAILED_MSG)))
-          }
-
-          onClose()
-        }
+        createTxFromApi(data)
       } catch (error) {
-        dispatch(enqueueSnackbar(enhanceSnackbarForAction(NOTIFICATIONS.TX_CANCELLATION_EXECUTED_MSG)))
+        dispatch(enqueueSnackbar(enhanceSnackbarForAction(NOTIFICATIONS.TX_REJECTED_MSG)))
         onClose()
       }
     }
   }
 
-  // const submitTx = async (txParameters: TxParameters) => {
-  //   setButtonStatus(ButtonStatus.LOADING)
+  const createTxFromApi = async (data: any) => {
+    const { ErrorCode, Data: safeData, Message } = await createSafeTransaction(data)
+    if (ErrorCode === 'SUCCESSFUL') {
+      setButtonStatus(ButtonStatus.READY)
+      onClose()
 
-  //   if (!safeAddress) {
-  //     setButtonStatus(ButtonStatus.READY)
-  //     logError(Errors._802)
-  //     return
-  //   }
+      // navigate to tx details
+      const prefixedSafeAddress = getPrefixedSafeAddressSlug({ shortName: extractShortChainName(), safeAddress })
+      const txRoute = generatePath(SAFE_ROUTES.TRANSACTIONS_SINGULAR, {
+        [SAFE_ADDRESS_SLUG]: prefixedSafeAddress,
+        id: safeData,
+      })
+      history.push(txRoute)
+    } else {
+      if (ErrorCode === 'E028') {
+        dispatch(enqueueSnackbar(enhanceSnackbarForAction(NOTIFICATIONS.CREATE_SAFE_PENDING_EXECUTE_MSG)))
+      } else {
+        dispatch(enqueueSnackbar(enhanceSnackbarForAction(NOTIFICATIONS.TX_FAILED_MSG)))
+      }
 
-  //   if (isSpendingLimit && txToken && tx.tokenSpendingLimit) {
-  //     const spendingLimitTokenAddress = isSendingNativeToken ? ZERO_ADDRESS : txToken.address
-  //     const spendingLimit = getSpendingLimitContract()
-  //     try {
-  //       await spendingLimit.methods
-  //         .executeAllowanceTransfer(
-  //           safeAddress,
-  //           spendingLimitTokenAddress,
-  //           tx.recipientAddress,
-  //           toTokenUnit(tx.amount, txToken.decimals),
-  //           ZERO_ADDRESS,
-  //           0,
-  //           tx.tokenSpendingLimit.delegate,
-  //           EMPTY_DATA,
-  //         )
-  //         .send({ from: tx.tokenSpendingLimit.delegate })
-  //         .on('transactionHash', () => onClose())
-  //     } catch (err) {
-  //       setButtonStatus(ButtonStatus.READY)
-  //       logError(Errors._801, err.message)
-  //     }
-  //     return
-  //   }
-
-  //   dispatch(
-  //     createTransaction({
-  //       safeAddress: safeAddress,
-  //       to: txRecipient as string,
-  //       valueInWei: txValue,
-  //       txData: data,
-  //       txNonce: txParameters.safeNonce,
-  //       safeTxGas: txParameters.safeTxGas,
-  //       ethParameters: txParameters,
-  //       notifiedTransaction: TX_NOTIFICATION_TYPES.STANDARD_TX,
-  //       delayExecution: !executionApproved,
-  //     }),
-  //   )
-  //   onClose()
-  // }
+      onClose()
+    }
+  }
 
   const closeEditModalCallback = (txParameters: TxParameters) => {
     const oldGasPrice = gasPriceFormatted
