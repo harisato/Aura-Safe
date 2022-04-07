@@ -4,7 +4,7 @@ import { ConnectType, SignBytesResult, useWallet, WalletStatus } from '@terra-mo
 import * as React from 'react'
 import { Modal } from 'src/components/Modal'
 import styled from 'styled-components'
-import { getChainInfo, getInternalChainId, _getChainId } from '../../config'
+import { getChainInfo, getChainName, getInternalChainId, _getChainId } from '../../config'
 import { connectKeplr, KeplrErrors, suggestChain } from '../../logic/keplr/keplr'
 import { enhanceSnackbarForAction, NOTIFICATIONS } from '../../logic/notifications'
 import enqueueSnackbar from '../../logic/notifications/store/actions/enqueueSnackbar'
@@ -38,18 +38,19 @@ const WalletList = styled.div`
 `
 
 const ImageContainer = styled(Row)`
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  grid-template-rows: 1fr;
-  grid-column-gap: 24px;
-  grid-row-gap: 0px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 `
 const ImageItem = styled.div`
+  width: 50%; 
   display: flex;
   align-items: center;
+  justify-content: center;
   border-radius: 40px;
   cursor: pointer;
   padding: 0.625em 1.25em;
+  margin-bottom: 2rem;
 
   transition: box-shadow 150ms ease-in-out, background 200ms ease-in-out;
   transition: opacity 200ms;
@@ -65,9 +66,9 @@ const ImageTitle = styled.span`
   text-align: left;
 `
 
-
 export const ConnectWalletModal = ({ isOpen, onClose }: Props): React.ReactElement => {
   const { status, connect, wallets } = useWallet()
+  const internalChainId = getInternalChainId()
 
   const keplrWallet = async () => {
     const chainId = _getChainId()
@@ -134,10 +135,13 @@ export const ConnectWalletModal = ({ isOpen, onClose }: Props): React.ReactEleme
             <Img alt="Keplr" height={40} src={Keplr} />
             <ImageTitle> Keplr</ImageTitle>
           </ImageItem>
-          <ImageItem onClick={terraWallet}>
-            <Img alt="Terra" height={40} src={TerraStation} />
-            <ImageTitle> Terra Station </ImageTitle>
-          </ImageItem>
+
+          {internalChainId === 22 ? null : (
+            <ImageItem onClick={terraWallet}>
+              <Img alt="Terra" height={40} src={TerraStation} />
+              <ImageTitle> Terra Station </ImageTitle>
+            </ImageItem>
+          )}
         </ImageContainer>
       </WalletList>
     </Modal>
