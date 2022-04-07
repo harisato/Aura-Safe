@@ -12,12 +12,7 @@ import Img from 'src/components/layout/Img'
 import Paragraph from 'src/components/layout/Paragraph'
 import Row from 'src/components/layout/Row'
 import PrefixedEthHashInfo from 'src/components/PrefixedEthHashInfo'
-import { getSpendingLimitContract } from 'src/logic/contracts/spendingLimitContracts'
-import { createTransaction } from 'src/logic/safe/store/actions/createTransaction'
-import { TX_NOTIFICATION_TYPES } from 'src/logic/safe/transactions'
-import { getERC20TokenContract } from 'src/logic/tokens/store/actions/fetchTokens'
 import { sameAddress, ZERO_ADDRESS } from 'src/logic/wallets/ethAddresses'
-import { EMPTY_DATA } from 'src/logic/wallets/ethTransactions'
 import SafeInfo from 'src/routes/safe/components/Balances/SendModal/SafeInfo'
 import { setImageToPlaceholder } from 'src/routes/safe/components/Balances/utils'
 import { extendedSafeTokensSelector } from 'src/routes/safe/container/selector'
@@ -25,7 +20,7 @@ import { SpendingLimit } from 'src/logic/safe/store/models/safe'
 import { sameString } from 'src/utils/strings'
 import { TokenProps } from 'src/logic/tokens/store/model/token'
 import { RecordOf } from 'immutable'
-import { EstimationStatus, useEstimateTransactionGas } from 'src/logic/hooks/useEstimateTransactionGas'
+import { EstimationStatus } from 'src/logic/hooks/useEstimateTransactionGas'
 import { useEstimationStatus } from 'src/logic/hooks/useEstimationStatus'
 import { ButtonStatus, Modal } from 'src/components/Modal'
 import { ReviewInfoText } from 'src/components/ReviewInfoText'
@@ -34,38 +29,30 @@ import { styles } from './style'
 import { EditableTxParameters } from 'src/routes/safe/components/Transactions/helpers/EditableTxParameters'
 import { TxParametersDetail } from 'src/routes/safe/components/Transactions/helpers/TxParametersDetail'
 import { TxParameters } from 'src/routes/safe/container/hooks/useTransactionParameters'
-import { Errors, logError } from 'src/logic/exceptions/CodedException'
 import { ModalHeader } from '../ModalHeader'
 import {
-  extractPrefixedSafeAddress,
   extractSafeAddress,
   extractShortChainName,
   getPrefixedSafeAddressSlug,
   history,
   SAFE_ADDRESS_SLUG,
   SAFE_ROUTES,
-  TRANSACTION_ID_SLUG,
 } from 'src/routes/routes'
 import ExecuteCheckbox from 'src/components/ExecuteCheckbox'
 import { getNativeCurrencyAddress } from 'src/config/utils'
 import { ICreateSafeTransaction } from 'src/types/transaction'
-import { currentSafeWithNames } from 'src/logic/safe/store/selectors'
-import { TxData } from 'src/routes/safe/components/Transactions/TxList/TxData'
 import { createSafeTransaction, getAccountOnChain, getMChainsConfig, signSafeTransaction } from 'src/services'
 import { coins, MsgSendEncodeObject, SignerData, SigningStargateClient } from '@cosmjs/stargate'
 import enqueueSnackbar from 'src/logic/notifications/store/actions/enqueueSnackbar'
 import { enhanceSnackbarForAction, NOTIFICATIONS } from 'src/logic/notifications'
-import { AuthInfo, TxBody, TxRaw } from 'cosmjs-types/cosmos/tx/v1beta1/tx'
 import { userAccountSelector } from 'src/logic/wallets/store/selectors'
-import { parseToAdress } from 'src/utils/parseByteAdress'
 import { ChainInfo } from '@gnosis.pm/safe-react-gateway-sdk'
-import { getChains } from 'src/config/cache/chains'
 import { generatePath } from 'react-router-dom'
-import { MsgSend } from 'cosmjs-types/cosmos/bank/v1beta1/tx'
+// import { MsgSend } from 'cosmjs-types/cosmos/bank/v1beta1/tx'
 import { calculateFee, GasPrice, makeMultisignedTx, StargateClient } from '@cosmjs/stargate'
 import { fromBase64, toBase64 } from '@cosmjs/encoding'
-import fetchTransactions from 'src/logic/safe/store/actions/transactions/fetchTransactions'
-import axios from 'axios'
+import { MsgSend, MnemonicKey, Coins, LCDClient, Fee } from '@terra-money/terra.js';
+import { ConnectType, CreateTxFailed, SignResult, Timeout, TxFailed, TxResult, TxUnspecifiedError, useConnectedWallet, UserDenied, useWallet } from '@terra-money/wallet-provider'
 
 const useStyles = makeStyles(styles)
 let chains: ChainInfo[] = []
@@ -178,10 +165,90 @@ const ReviewSendFundsTx = ({ onClose, onPrev, tx }: ReviewTxProps): React.ReactE
   const [executionApproved, setExecutionApproved] = useState<boolean>(true)
   const doExecute = isExecution && executionApproved
   const userWalletAddress = useSelector(userAccountSelector)
+  const {
+    connect
+  } = useWallet();
+  const connectedWallet = useConnectedWallet()
 
   const submitTx = async (txParameters: TxParameters) => {
     setDisabled(true)
-    signTransactionWithKeplr(safeAddress)
+    signTransactionWithTerra(safeAddress)
+  }
+
+  const signTransactionWithTerra = async (safeAddress: string) => {
+    if (!connectedWallet) {
+      connect(ConnectType.EXTENSION)
+    }
+
+    connectedWallet!
+      .sign({
+        fee: new Fee(1000000, '200000uluna'),
+        msgs: [
+          new MsgSend(safeAddress, txRecipient, {
+            uluna: 1000000,
+          }),
+        ],
+      })
+      .then((signResult: SignResult) => {
+        console.log(signResult);
+        // setTxResult(nextTxResult);
+      })
+      .catch((error: unknown) => {
+        if (error instanceof UserDenied) {
+          // setTxError('User Denied');
+        } else if (error instanceof CreateTxFailed) {
+          // setTxError('Create Tx Failed: ' + error.message);
+        } else if (error instanceof TxFailed) {
+          // setTxError('Tx Failed: ' + error.message);
+        } else if (error instanceof Timeout) {
+          // setTxError('Timeout');
+        } else if (error instanceof TxUnspecifiedError) {
+          // setTxError('Unspecified Error: ' + error.message);
+        } else {
+          // setTxError(
+          //   'Unknown Error: ' +
+          //     (error instanceof Error ? error.message : String(error)),
+          // );
+        }
+      });
+
+    // const amountFinal = Math.floor(Number(tx?.amount) * Math.pow(10, 6)).toString() || ''
+    // const gasPrices = await (await fetch('https://bombay-fcd.terra.dev/v1/txs/gas_prices')).json();
+    // const gasPricesCoins = new Coins(gasPrices);
+
+    // const lcd = new LCDClient({
+    //   URL: "https://bombay.stakesystems.io:2053",
+    //   chainID: "bombay-12",
+    //   gasPrices: gasPricesCoins,
+    //   gasAdjustment: "1.5",
+    //   // gas: 10000000,
+    // });
+
+    // // const mk = new MnemonicKey({mnemonic: 'call orient census marine forest rose place sister proud brain water journey tone marble what lecture laugh flush attack oyster silent please rhythm raise'});
+    // // const wallet = lcd.wallet(mk);
+
+    // const send = new MsgSend(
+    //   wallet.key.accAddress,
+    //   txRecipient,
+    //   { uluna: amountFinal }
+    // );
+
+    // try {
+    //   const signResult = await wallet.createAndSignTx({
+    //     msgs: [send],
+    //     memo: ""
+    //   });
+
+    //   const signatures = signResult.signatures[0]
+    //   const bodyBytes = signResult.body
+
+    //   // call api to create tx
+
+    // } catch (error) {
+    //   dispatch(enqueueSnackbar(enhanceSnackbarForAction(NOTIFICATIONS.TX_CANCELLATION_EXECUTED_MSG)))
+    //   onClose()
+    // }
+
   }
 
   const signTransactionWithKeplr = async (safeAddress: string) => {
@@ -224,7 +291,7 @@ const ReviewSendFundsTx = ({ onClose, onPrev, tx }: ReviewTxProps): React.ReactE
         }
       })()
 
-      const msgSend: MsgSend = {
+      const msgSend: any = {
         fromAddress: safeAddress,
         toAddress: txRecipient,
         amount: coins(amountFinal, denom),
