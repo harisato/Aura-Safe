@@ -41,10 +41,8 @@ const styles = () => ({
     zIndex: 1301,
   },
   logo: {
-    flexBasis: '140px',
     flexShrink: '0',
     flexGrow: '0',
-    maxWidth: '55px',
     padding: sm,
     marginTop: '4px',
     [`@media (min-width: ${screenSm}px)`]: {
@@ -151,7 +149,11 @@ const LogoContainer = styled.div`
 `
 
 const LogoTitle = styled.h2`
-  color: black;
+background: linear-gradient(108.46deg, #5EE6D0 12.51%, #BFC6FF 51.13%, #FFBA69 87.49%);
+-webkit-background-clip: text;
+background-clip: text;
+-webkit-text-fill-color: transparent;
+width: max-content;
 `
 
 export default withStyles(styles as any)(Layout)
