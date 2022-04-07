@@ -1,4 +1,4 @@
-import { ReactElement, useState, useEffect } from 'react'
+import { ReactElement, useState, useEffect, useCallback } from 'react'
 import IconButton from '@material-ui/core/IconButton'
 import ChevronLeft from '@material-ui/icons/ChevronLeft'
 import styled from 'styled-components'
@@ -52,6 +52,8 @@ import { MESSAGES_CODE } from '../../services/constant/message'
 import enqueueSnackbar from '../../logic/notifications/store/actions/enqueueSnackbar'
 import { enhanceSnackbarForAction, ERROR, NOTIFICATIONS } from '../../logic/notifications'
 import { loadFromStorage, saveToStorage } from 'src/utils/storage'
+import { SignBytesResult, useWallet, verifyBytes } from '@terra-money/wallet-provider'
+import { loadLastUsedProvider } from '../../logic/wallets/store/middlewares/providerWatcher'
 
 type ModalDataType = {
   safeAddress: string
@@ -79,20 +81,30 @@ function CreateSafePage(): ReactElement {
   const provider = !!providerName && !isWrongNetwork
   const { trackEvent } = useAnalytics()
 
+  const { signBytes } = useWallet()
+
+  const BYTES = Buffer.from('')
+
+  const signSafeCreation = useCallback(async () => {
+    try {
+      if (!signBytes) return
+      const { result } = await signBytes(BYTES)
+
+      const verified: boolean = verifyBytes(BYTES, result)
+
+      if (verified) {
+        return (result.public_key as any).key
+      }
+    } catch (error) {
+      console.log(error)
+    }
+
+    return null
+  }, [])
+
   useEffect(() => {
     const checkIfSafeIsPendingToBeCreated = async (): Promise<void> => {
       setIsLoading(true)
-
-      // Removing the await completely is breaking the tests for a mysterious reason
-      // @TODO: remove the promise
-      // const safePendingToBeCreated = await Promise.resolve(
-      //   loadFromStorage<CreateSafeFormValues>(SAFE_PENDING_CREATION_STORAGE_KEY),
-      // )
-
-      // if (provider) {
-      //   // await instantiateSafeContracts()
-      //   setSafePendingToBeCreated(safePendingToBeCreated)
-      // }
       setIsLoading(false)
     }
     checkIfSafeIsPendingToBeCreated()
@@ -106,7 +118,19 @@ function CreateSafePage(): ReactElement {
   const showSafeCreationProcess = async (newSafeFormValues: CreateSafeFormValues): Promise<void> => {
     // saveToStorage(SAFE_PENDING_CREATION_STORAGE_KEY, { ...newSafeFormValues })
 
-    const payload = await makeSafeCreate(userWalletAddress, newSafeFormValues)
+    const lastUsedProvider = await loadLastUsedProvider()
+
+    let payload
+
+    if (lastUsedProvider === 'Keplr') {
+      payload = await makeSafeCreate(userWalletAddress, newSafeFormValues)
+    } else {
+      const public_key = await signSafeCreation()
+
+      if (public_key) {
+        payload = await makeSafeCreateWithTerra(userWalletAddress, newSafeFormValues, public_key)
+      }
+    }
 
     const { ErrorCode, Data: safeData, Message } = await createMSafe(payload)
 
@@ -371,6 +395,23 @@ async function makeSafeCreate(creatorAddress: string, newSafeFormValues: CreateS
   const internalChainId = getInternalChainId()
   const pubkey = await window.keplr?.getKey(chainId)
   const creatorPubkey = parseToAdress(pubkey?.pubKey as Uint8Array)
+  return {
+    internalChainId,
+    creatorAddress,
+    creatorPubkey,
+    otherOwnersAddress: newSafeFormValues[FIELD_SAFE_OWNERS_LIST].map(
+      ({ addressFieldName }) => newSafeFormValues[addressFieldName],
+    ).filter((e) => e !== creatorAddress),
+    threshold: newSafeFormValues[FIELD_NEW_SAFE_THRESHOLD],
+  } as ISafeCreate
+}
+
+async function makeSafeCreateWithTerra(
+  creatorAddress: string,
+  newSafeFormValues: CreateSafeFormValues,
+  creatorPubkey,
+): Promise<ISafeCreate> {
+  const internalChainId = getInternalChainId()
   return {
     internalChainId,
     creatorAddress,
