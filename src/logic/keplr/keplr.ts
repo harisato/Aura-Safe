@@ -11,6 +11,7 @@ import { saveToStorage } from 'src/utils/storage';
 import { LAST_USED_PROVIDER_KEY } from '../wallets/store/middlewares/providerWatcher';
 import { parseToAdress } from 'src/utils/parseByteAdress';
 import { ChainsInfo } from './constants/chainsInfo';
+import { WALLETS_NAME } from '../wallets/constant/wallets';
 
 
 export type WalletKey = {
@@ -103,7 +104,7 @@ export async function connectKeplr(): Promise<KeplrErrors> {
             available: true,
             hardwareWallet: false,
             loaded: true,
-            name: 'Keplr',
+            name: WALLETS_NAME.Keplr,
             network: chainInfo.chainId,
             smartContractWallet: false,
             internalChainId

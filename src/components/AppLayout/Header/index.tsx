@@ -20,9 +20,13 @@ import { ConnectType, useWallet, WalletStatus } from '@terra-money/wallet-provid
 import { fetchTerraStation } from '../../../logic/terraStation'
 import { getChainInfo, getInternalChainId } from '../../../config'
 import { saveToStorage } from '../../../utils/storage'
+import { WALLETS_NAME } from '../../../logic/wallets/constant/wallets'
 
 const HeaderComponent = ({ openConnectWallet }: { openConnectWallet: () => void }): React.ReactElement => {
   const [toggleConnect, setToggleConnect] = useState<boolean>(false)
+  const [lastUsedProvider, setLastUsedProvider] = useState('')
+
+  const [disconnected, setDisconnected] = useState(false)
 
   const provider = useSelector(providerNameSelector)
   const chainId = useSelector(currentChainId)
@@ -30,58 +34,73 @@ const HeaderComponent = ({ openConnectWallet }: { openConnectWallet: () => void 
   const loaded = useSelector(loadedSelector)
   const available = useSelector(availableSelector)
   const dispatch = useDispatch()
-
-  const { status, connect, wallets } = useWallet()
+  const { status, connect, wallets, disconnect } = useWallet()
 
   useEffect(() => {
     const tryToConnectToLastUsedProvider = async () => {
       const lastUsedProvider = await loadLastUsedProvider()
 
       if (lastUsedProvider) {
-        if (lastUsedProvider === 'Keplr') {
-          const connected = await connectKeplr()
-          if (connected) {
-            window.addEventListener(
-              'keplr_keystorechange',
-              (event) => {
-                connectKeplr()
-              },
-              // { once: true },
-            )
+        setLastUsedProvider(lastUsedProvider)
+      }
+
+      const internalChainId = getInternalChainId()
+
+      const canRetry = internalChainId === 20 && lastUsedProvider === WALLETS_NAME.TerraStation
+
+      if (canRetry) {
+        try {
+          if (status === WalletStatus.WALLET_CONNECTED) {
+            setDisconnected(true)
           }
-        } else {
-          try {
-            console.log({ status, connect, wallets });
-            
-            if(!connect || status === WalletStatus.INITIALIZING) { return }
+
+          if (status === WalletStatus.INITIALIZING || disconnected) {
+            return
+          }
+
+          if (status === WalletStatus.WALLET_NOT_CONNECTED) {
             connect(ConnectType.EXTENSION, 'station')
-
-            if (status === WalletStatus.WALLET_CONNECTED) {
-              const _fetchTerraStation = async () => {
-                const chainInfo = await getChainInfo()
-                const internalChainId = getInternalChainId()
-
-                const providerInfo = {
-                  account: wallets[0].terraAddress,
-                  available: true,
-                  hardwareWallet: false,
-                  loaded: true,
-                  name: 'Terra Station',
-                  network: chainInfo.chainId,
-                  smartContractWallet: false,
-                  internalChainId,
-                }
-
-                fetchTerraStation(providerInfo)
-
-                saveToStorage(LAST_USED_PROVIDER_KEY, providerInfo.name)
-              }
-
-              _fetchTerraStation()
-            }
-          } catch (e) {
-            console.error(e)
           }
+
+          if (wallets && wallets[0]) {
+            const chainInfo = await getChainInfo()
+
+            const providerInfo = {
+              account: wallets[0].terraAddress,
+              available: true,
+              hardwareWallet: false,
+              loaded: true,
+              name: WALLETS_NAME.TerraStation,
+              network: chainInfo.chainId,
+              smartContractWallet: false,
+              internalChainId,
+            }
+
+            fetchTerraStation(providerInfo)
+
+            saveToStorage(LAST_USED_PROVIDER_KEY, providerInfo.name)
+          }
+        } catch (e) {
+          console.error(e)
+        }
+      }
+    }
+
+    tryToConnectToLastUsedProvider()
+  }, [chainId, status, wallets])
+
+  useEffect(() => {
+    const tryToConnectToLastUsedProvider = async () => {
+      const lastUsedProvider = await loadLastUsedProvider()
+
+      if (lastUsedProvider === WALLETS_NAME.Keplr) {
+        setLastUsedProvider(lastUsedProvider)
+        const connected = await connectKeplr()
+
+        if (connected) {
+          window.addEventListener('keplr_keystorechange', (event) => {
+            connectKeplr()
+          })
         }
       }
     }
@@ -89,18 +108,22 @@ const HeaderComponent = ({ openConnectWallet }: { openConnectWallet: () => void 
     tryToConnectToLastUsedProvider()
 
     return () => {
-      window.removeEventListener('keplr_keystorechange', (event) => {})
+      window.removeEventListener('keplr_keystorechange', (_) => {})
     }
   }, [chainId])
 
   const openDashboard = () => {
-    // const { wallet } = onboard().getState()
-    // return wallet.type === 'sdk' && wallet.dashboard
     return false
   }
 
   const onDisconnect = () => {
     dispatch(removeProvider())
+
+    setDisconnected(true)
+
+    if (lastUsedProvider === WALLETS_NAME.TerraStation && status === WalletStatus.WALLET_CONNECTED) {
+      disconnect()
+    }
   }
 
   const onShowConnect = () => {
