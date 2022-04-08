@@ -1,14 +1,15 @@
 import { createStyles } from '@material-ui/core'
-import { makeStyles } from '@material-ui/styles'
-import { ConnectType, SignBytesResult, useWallet, WalletStatus } from '@terra-money/wallet-provider'
-import * as React from 'react'
+import { ConnectType, useWallet, WalletStatus } from '@terra-money/wallet-provider'
+import React, { useEffect } from 'react'
+
 import { Modal } from 'src/components/Modal'
 import styled from 'styled-components'
-import { getChainInfo, getChainName, getInternalChainId, _getChainId } from '../../config'
+import { getChainInfo, getInternalChainId, _getChainId } from '../../config'
 import { connectKeplr, KeplrErrors, suggestChain } from '../../logic/keplr/keplr'
 import { enhanceSnackbarForAction, NOTIFICATIONS } from '../../logic/notifications'
 import enqueueSnackbar from '../../logic/notifications/store/actions/enqueueSnackbar'
 import { fetchTerraStation } from '../../logic/terraStation'
+import { WALLETS_NAME } from '../../logic/wallets/constant/wallets'
 import { LAST_USED_PROVIDER_KEY } from '../../logic/wallets/store/middlewares/providerWatcher'
 import { store } from '../../store'
 import { lg } from '../../theme/variables'
@@ -43,7 +44,7 @@ const ImageContainer = styled(Row)`
   align-items: center;
 `
 const ImageItem = styled.div`
-  width: 50%; 
+  width: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -70,6 +71,32 @@ export const ConnectWalletModal = ({ isOpen, onClose }: Props): React.ReactEleme
   const { status, connect, wallets } = useWallet()
   const internalChainId = getInternalChainId()
 
+  useEffect(() => {
+    if (status === WalletStatus.WALLET_CONNECTED) {
+      const _fetchTerraStation = async () => {
+        const chainInfo = await getChainInfo()
+
+        const providerInfo = {
+          account: wallets[0].terraAddress,
+          available: true,
+          hardwareWallet: false,
+          loaded: true,
+          name: WALLETS_NAME.TerraStation,
+          network: chainInfo.chainId,
+          smartContractWallet: false,
+          internalChainId,
+        }
+
+        fetchTerraStation(providerInfo)
+
+        saveToStorage(LAST_USED_PROVIDER_KEY, providerInfo.name)
+        onClose()
+      }
+
+      _fetchTerraStation()
+    }
+  }, [status])
+
   const keplrWallet = async () => {
     const chainId = _getChainId()
     await connectKeplr()
@@ -92,31 +119,8 @@ export const ConnectWalletModal = ({ isOpen, onClose }: Props): React.ReactEleme
   }
   const terraWallet = () => {
     try {
-      connect(ConnectType.EXTENSION, 'station')
-
-      if (status === WalletStatus.WALLET_CONNECTED) {
-        const _fetchTerraStation = async () => {
-          const chainInfo = await getChainInfo()
-          const internalChainId = getInternalChainId()
-
-          const providerInfo = {
-            account: wallets[0].terraAddress,
-            available: true,
-            hardwareWallet: false,
-            loaded: true,
-            name: 'Terra Station',
-            network: chainInfo.chainId,
-            smartContractWallet: false,
-            internalChainId,
-          }
-
-          fetchTerraStation(providerInfo)
-
-          saveToStorage(LAST_USED_PROVIDER_KEY, providerInfo.name)
-          onClose()
-        }
-
-        _fetchTerraStation()
+      if (status === WalletStatus.WALLET_NOT_CONNECTED) {
+        connect(ConnectType.EXTENSION, 'station')
       }
     } catch (e) {
       console.error(e)
@@ -136,7 +140,7 @@ export const ConnectWalletModal = ({ isOpen, onClose }: Props): React.ReactEleme
             <ImageTitle> Keplr</ImageTitle>
           </ImageItem>
 
-          {internalChainId === 22 ? null : (
+          {internalChainId !== 20 ? null : (
             <ImageItem onClick={terraWallet}>
               <Img alt="Terra" height={40} src={TerraStation} />
               <ImageTitle> Terra Station </ImageTitle>

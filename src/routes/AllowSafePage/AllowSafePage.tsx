@@ -49,6 +49,7 @@ import { getShortName, _getChainId } from 'src/config'
 import { loadStoredSafes, saveSafes } from 'src/logic/safe/utils'
 import { useWallet, verifyBytes } from '@terra-money/wallet-provider'
 import { loadLastUsedProvider } from '../../logic/wallets/store/middlewares/providerWatcher'
+import { WALLETS_NAME } from '../../logic/wallets/constant/wallets'
 
 function Allow(): ReactElement {
   const dispatch = useDispatch()
@@ -143,7 +144,7 @@ function Allow(): ReactElement {
 
     let walletKey
 
-    if (lastUsedProvider === 'Keplr') {
+    if (lastUsedProvider === WALLETS_NAME.Keplr) {
       walletKey = await getKeplrKey(chainId)
     } else {
       const pubKey = await signSafeCreation()

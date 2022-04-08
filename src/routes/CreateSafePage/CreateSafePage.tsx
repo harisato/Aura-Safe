@@ -54,6 +54,7 @@ import { enhanceSnackbarForAction, ERROR, NOTIFICATIONS } from '../../logic/noti
 import { loadFromStorage, saveToStorage } from 'src/utils/storage'
 import { SignBytesResult, useWallet, verifyBytes } from '@terra-money/wallet-provider'
 import { loadLastUsedProvider } from '../../logic/wallets/store/middlewares/providerWatcher'
+import { WALLETS_NAME } from '../../logic/wallets/constant/wallets'
 
 type ModalDataType = {
   safeAddress: string
@@ -122,7 +123,7 @@ function CreateSafePage(): ReactElement {
 
     let payload
 
-    if (lastUsedProvider === 'Keplr') {
+    if (lastUsedProvider === WALLETS_NAME.Keplr) {
       payload = await makeSafeCreate(userWalletAddress, newSafeFormValues)
     } else {
       const public_key = await signSafeCreation()
