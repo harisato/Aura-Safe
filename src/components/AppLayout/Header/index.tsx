@@ -20,7 +20,7 @@ import { ConnectType, useWallet, WalletStatus } from '@terra-money/wallet-provid
 import { fetchTerraStation } from '../../../logic/terraStation'
 import { getChainInfo, getInternalChainId } from '../../../config'
 import { saveToStorage } from '../../../utils/storage'
-import { WALLETS_NAME } from '../../../logic/wallets/constant/wallets'
+import { WALLETS_CHAIN_ID, WALLETS_NAME } from '../../../logic/wallets/constant/wallets'
 
 const HeaderComponent = ({ openConnectWallet }: { openConnectWallet: () => void }): React.ReactElement => {
   const [toggleConnect, setToggleConnect] = useState<boolean>(false)
@@ -44,9 +44,7 @@ const HeaderComponent = ({ openConnectWallet }: { openConnectWallet: () => void 
         setLastUsedProvider(lastUsedProvider)
       }
 
-      const internalChainId = getInternalChainId()
-
-      const canRetry = internalChainId === 20 && lastUsedProvider === WALLETS_NAME.TerraStation
+      const canRetry = chainId === WALLETS_CHAIN_ID.TERRA_TESTNET && lastUsedProvider === WALLETS_NAME.TerraStation
 
       if (canRetry) {
         try {
@@ -64,6 +62,8 @@ const HeaderComponent = ({ openConnectWallet }: { openConnectWallet: () => void 
 
           if (wallets && wallets[0]) {
             const chainInfo = await getChainInfo()
+
+            const internalChainId = getInternalChainId()
 
             const providerInfo = {
               account: wallets[0].terraAddress,
