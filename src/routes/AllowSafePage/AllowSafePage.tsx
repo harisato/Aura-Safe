@@ -1,4 +1,4 @@
-import { ReactElement, useState, useEffect } from 'react'
+import { ReactElement, useState, useEffect, useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useHistory } from 'react-router-dom'
 import styled from 'styled-components'
@@ -47,6 +47,9 @@ import { buildMSafe } from 'src/logic/safe/store/actions/fetchSafe'
 import { addOrUpdateSafe } from 'src/logic/safe/store/actions/addOrUpdateSafe'
 import { getShortName, _getChainId } from 'src/config'
 import { loadStoredSafes, saveSafes } from 'src/logic/safe/utils'
+import { useWallet, verifyBytes } from '@terra-money/wallet-provider'
+import { loadLastUsedProvider } from '../../logic/wallets/store/middlewares/providerWatcher'
+import { WALLETS_NAME } from '../../logic/wallets/constant/wallets'
 
 function Allow(): ReactElement {
   const dispatch = useDispatch()
@@ -56,6 +59,27 @@ function Allow(): ReactElement {
   const [initialFormValues, setInitialFormValues] = useState<AllowSafeFormValues>()
   const addressBook = useSelector(currentNetworkAddressBookAsMap)
   const chainId = useSelector(currentChainId)
+
+  const { signBytes, wallets } = useWallet()
+
+  const BYTES = Buffer.from('')
+
+  const signSafeCreation = useCallback(async () => {
+    try {
+      if (!signBytes) return
+      const { result } = await signBytes(BYTES)
+
+      const verified: boolean = verifyBytes(BYTES, result)
+
+      if (verified) {
+        return (result.public_key as any).key
+      }
+    } catch (error) {
+      console.log(error)
+    }
+
+    return null
+  }, [])
 
   useEffect(() => {
     const checkSafeAddress = async () => {
@@ -115,7 +139,23 @@ function Allow(): ReactElement {
 
   const onSubmitAllowSafe = async (values: AllowSafeFormValues): Promise<void> => {
     const id = values[FIELD_ALLOW_SAFE_ID]
-    const walletKey = await getKeplrKey(chainId)
+
+    let lastUsedProvider = await loadLastUsedProvider()
+
+    let walletKey
+
+    if (lastUsedProvider === WALLETS_NAME.Keplr) {
+      walletKey = await getKeplrKey(chainId)
+    } else {
+      const pubKey = await signSafeCreation()
+
+      if (pubKey) {
+        walletKey = {
+          myAddress: wallets[0].terraAddress,
+          myPubkey: pubKey,
+        }
+      }
+    }
 
     if (!id || !walletKey) {
       return

@@ -63,7 +63,7 @@ export const LS_CONFIG: RLSOptions | LoadOptions = {
   },
 }
 
-const composeEnhancers = ((window as any).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ as typeof compose) || compose
+const composeEnhancers = ((window as any).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ as typeof compose)  && ((window as any).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ as any)({ trace: true, traceLimit: 25 }) || compose
 const enhancer = composeEnhancers(
   applyMiddleware(
     thunk,

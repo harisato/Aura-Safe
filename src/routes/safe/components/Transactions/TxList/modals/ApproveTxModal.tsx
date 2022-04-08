@@ -55,7 +55,10 @@ import fetchTransactions from 'src/logic/safe/store/actions/transactions/fetchTr
 import { fetchSafe } from 'src/logic/safe/store/actions/fetchSafe'
 import { generatePath } from 'react-router-dom'
 import { fromBase64, toBase64 } from '@cosmjs/encoding'
-import { MsgSend } from 'cosmjs-types/cosmos/bank/v1beta1/tx'
+import { ConnectType, CreateTxFailed, SignResult, Timeout, TxFailed, TxUnspecifiedError, useConnectedWallet, UserDenied, useWallet } from '@terra-money/wallet-provider'
+import { ICreateSafeTransaction } from 'src/types/transaction'
+import { MsgSend, MnemonicKey, Coins, LCDClient, Fee } from '@terra-money/terra.js';
+import { loadLastUsedProvider } from 'src/logic/wallets/store/middlewares/providerWatcher'
 
 export const APPROVE_TX_MODAL_SUBMIT_BTN_TEST_ID = 'approve-tx-modal-submit-btn'
 export const REJECT_TX_MODAL_SUBMIT_BTN_TEST_ID = 'reject-tx-modal-submit-btn'
@@ -93,10 +96,10 @@ const useTxInfo = (transaction: Props['transaction']) => {
     () =>
       t.current.txDetails.detailedExecutionInfo && isMultiSigExecutionDetails(t.current.txDetails.detailedExecutionInfo)
         ? List(
-            t.current.txDetails.detailedExecutionInfo.confirmations.map(({ signer, signature }) =>
-              makeConfirmation({ owner: signer.value, signature }),
-            ),
-          )
+          t.current.txDetails.detailedExecutionInfo.confirmations.map(({ signer, signature }) =>
+            makeConfirmation({ owner: signer.value, signature }),
+          ),
+        )
         : List([]),
     [],
   )
@@ -313,6 +316,10 @@ export const ApproveTxModal = ({
 
   const doExecute = isExecution && approveAndExecute
   const [buttonStatus] = useEstimationStatus(txEstimationExecutionStatus)
+  const {
+    connect
+  } = useWallet();
+  const connectedWallet = useConnectedWallet()
 
   const approveTx = async (txParameters: TxParameters) => {
     if (thresholdReached && confirmations.size < _threshold) {
@@ -353,7 +360,12 @@ export const ApproveTxModal = ({
           dispatch(fetchTransactions(chainId, safeAddress))
         } else {
           // case when Confirm Click
-          signTransactionWithKeplr(safeAddress)
+          const lastUsedProvider = await loadLastUsedProvider()
+          if(lastUsedProvider?.toLowerCase() === 'keplr') {
+            signTransactionWithKeplr(safeAddress)
+          } else {
+            signTransactionWithTerra(safeAddress)
+          }
         }
       } catch (error) {
         if (thresholdReached) {
@@ -385,6 +397,62 @@ export const ApproveTxModal = ({
     if (txParameters.ethGasLimit && gasLimit !== txParameters.ethGasLimit) {
       setManualGasLimit(txParameters.ethGasLimit)
     }
+  }
+
+  const signTransactionWithTerra = async (safeAddress: string) => {
+    const chainInfo = getChainInfo()
+    const chainId = chainInfo.chainId
+    const denom = 'uluna'
+    if (!connectedWallet) {
+      connect(ConnectType.EXTENSION)
+      signTransactionWithTerra('')
+      return
+    }
+
+    const amountFinal = value
+    const send = new MsgSend(
+      safeAddress,
+      to,
+      { uluna: amountFinal }
+    );
+
+    connectedWallet!
+      .sign({
+        fee: new Fee(Number(manualGasLimit) || Number(gasLimit), String(manualGasPrice || gasPriceFormatted).concat(denom)),
+        msgs: [send],
+      })
+      .then(async (signResult: SignResult) => {
+        // call api to create Tx
+        const signatures = signResult.result.signatures[0]
+
+        const data = {
+          fromAddress: userWalletAddress,
+          transactionId: transaction?.id,
+          internalChainId: getInternalChainId(),
+          bodyBytes: '',
+          signature: signatures,
+        }
+
+        confirmTxFromApi(data, chainId)
+      })
+      .catch((error: unknown) => {
+        if (error instanceof UserDenied) {
+          dispatch(enqueueSnackbar(enhanceSnackbarForAction(NOTIFICATIONS.TX_REJECTED_MSG)))
+        } else if (error instanceof CreateTxFailed) {
+          dispatch(enqueueSnackbar(enhanceSnackbarForAction(NOTIFICATIONS.TX_CREATE_FAILED_MSG)))
+        } else if (error instanceof TxFailed) {
+          dispatch(enqueueSnackbar(enhanceSnackbarForAction(NOTIFICATIONS.TX_FAILED_MSG)))
+        } else if (error instanceof Timeout) {
+          // setTxError('Timeout');
+          dispatch(enqueueSnackbar(enhanceSnackbarForAction(NOTIFICATIONS.TX_TIMEOUT_MSG)))
+        } else if (error instanceof TxUnspecifiedError) {
+          dispatch(enqueueSnackbar(enhanceSnackbarForAction(NOTIFICATIONS.SOMETHING_WENT_WRONG)))
+        } else {
+          dispatch(enqueueSnackbar(enhanceSnackbarForAction(NOTIFICATIONS.SOMETHING_WENT_WRONG)))
+        }
+        onClose()
+      });
+
   }
 
   const signTransactionWithKeplr = async (safeAddress: string) => {
@@ -427,7 +495,7 @@ export const ApproveTxModal = ({
         }
       })()
 
-      const msgSend: MsgSend = {
+      const msgSend: any = {
         fromAddress: safeAddress,
         toAddress: to,
         amount: coins(amountFinal, denom),
@@ -469,24 +537,28 @@ export const ApproveTxModal = ({
           signature: signatures,
         }
 
-        const { ErrorCode } = await confirmSafeTransaction(data)
-        if (ErrorCode === 'SUCCESSFUL') {
-          history.push(
-            generateSafeRoute(SAFE_ROUTES.TRANSACTIONS_QUEUE, {
-              shortName: getShortName(),
-              safeAddress,
-            }),
-          )
-
-          dispatch(fetchTransactions(chainId, safeAddress, true))
-          // window.location.reload()
-        } else {
-          dispatch(enqueueSnackbar(enhanceSnackbarForAction(NOTIFICATIONS.TX_FAILED_MSG)))
-        }
+        confirmTxFromApi(data, chainId)
       } catch (error) {
         console.log(error)
         dispatch(enqueueSnackbar(enhanceSnackbarForAction(NOTIFICATIONS.TX_REJECTED_MSG)))
       }
+    }
+  }
+
+  const confirmTxFromApi = async (data: any, chainId: any) => {
+    const { ErrorCode } = await confirmSafeTransaction(data)
+    if (ErrorCode === 'SUCCESSFUL') {
+      history.push(
+        generateSafeRoute(SAFE_ROUTES.TRANSACTIONS_QUEUE, {
+          shortName: getShortName(),
+          safeAddress,
+        }),
+      )
+
+      dispatch(fetchTransactions(chainId, safeAddress, true))
+      // window.location.reload()
+    } else {
+      dispatch(enqueueSnackbar(enhanceSnackbarForAction(NOTIFICATIONS.TX_FAILED_MSG)))
     }
   }
 

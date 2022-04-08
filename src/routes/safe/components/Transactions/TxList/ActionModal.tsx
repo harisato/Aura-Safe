@@ -42,7 +42,6 @@ export const ActionModal = (): ReactElement | null => {
       )
 
     case 'execute':
-      console.log('execute')
       return (
         <ApproveTxModal
           canExecute={true}

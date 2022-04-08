@@ -21,6 +21,7 @@ import { shouldSwitchWalletChain } from 'src/logic/wallets/store/selectors'
 import { useSelector } from 'react-redux'
 
 import styled from 'styled-components'
+import { useEffect } from 'react'
 
 const styles = () => ({
   root: {
@@ -94,15 +95,19 @@ const WalletPopup = ({ anchorEl, providerDetails, classes, open, onClose }) => {
   )
 }
 
-const Layout = ({ classes, providerDetails, providerInfo }) => {
+const Layout = ({ classes, providerDetails, providerInfo, showConnect }) => {
   const { clickAway, open, toggle } = useStateHandler()
   const { clickAway: clickAwayNetworks, open: openNetworks, toggle: toggleNetworks } = useStateHandler()
   const isWrongChain = useSelector(shouldSwitchWalletChain)
 
+  useEffect(() => {
+    clickAway()
+  }, [showConnect])
+
   return (
     <Row className={classes.summary}>
       <Col className={classes.logo} middle="xs" start="xs">
-        <Link to={WELCOME_ROUTE}  className={classes.link}>
+        <Link to={WELCOME_ROUTE} className={classes.link}>
           <LogoContainer>
             <Img alt="Aura Safe" height={32} src={SafeLogo} testId="heading-gnosis-logo" />
             <LogoTitle>Aura Safe</LogoTitle>

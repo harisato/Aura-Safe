@@ -12,12 +12,7 @@ import Img from 'src/components/layout/Img'
 import Paragraph from 'src/components/layout/Paragraph'
 import Row from 'src/components/layout/Row'
 import PrefixedEthHashInfo from 'src/components/PrefixedEthHashInfo'
-import { getSpendingLimitContract } from 'src/logic/contracts/spendingLimitContracts'
-import { createTransaction } from 'src/logic/safe/store/actions/createTransaction'
-import { TX_NOTIFICATION_TYPES } from 'src/logic/safe/transactions'
-import { getERC20TokenContract } from 'src/logic/tokens/store/actions/fetchTokens'
 import { sameAddress, ZERO_ADDRESS } from 'src/logic/wallets/ethAddresses'
-import { EMPTY_DATA } from 'src/logic/wallets/ethTransactions'
 import SafeInfo from 'src/routes/safe/components/Balances/SendModal/SafeInfo'
 import { setImageToPlaceholder } from 'src/routes/safe/components/Balances/utils'
 import { extendedSafeTokensSelector } from 'src/routes/safe/container/selector'
@@ -25,7 +20,7 @@ import { SpendingLimit } from 'src/logic/safe/store/models/safe'
 import { sameString } from 'src/utils/strings'
 import { TokenProps } from 'src/logic/tokens/store/model/token'
 import { RecordOf } from 'immutable'
-import { EstimationStatus, useEstimateTransactionGas } from 'src/logic/hooks/useEstimateTransactionGas'
+import { EstimationStatus } from 'src/logic/hooks/useEstimateTransactionGas'
 import { useEstimationStatus } from 'src/logic/hooks/useEstimationStatus'
 import { ButtonStatus, Modal } from 'src/components/Modal'
 import { ReviewInfoText } from 'src/components/ReviewInfoText'
@@ -34,38 +29,31 @@ import { styles } from './style'
 import { EditableTxParameters } from 'src/routes/safe/components/Transactions/helpers/EditableTxParameters'
 import { TxParametersDetail } from 'src/routes/safe/components/Transactions/helpers/TxParametersDetail'
 import { TxParameters } from 'src/routes/safe/container/hooks/useTransactionParameters'
-import { Errors, logError } from 'src/logic/exceptions/CodedException'
 import { ModalHeader } from '../ModalHeader'
 import {
-  extractPrefixedSafeAddress,
   extractSafeAddress,
   extractShortChainName,
   getPrefixedSafeAddressSlug,
   history,
   SAFE_ADDRESS_SLUG,
   SAFE_ROUTES,
-  TRANSACTION_ID_SLUG,
 } from 'src/routes/routes'
 import ExecuteCheckbox from 'src/components/ExecuteCheckbox'
 import { getNativeCurrencyAddress } from 'src/config/utils'
 import { ICreateSafeTransaction } from 'src/types/transaction'
-import { currentSafeWithNames } from 'src/logic/safe/store/selectors'
-import { TxData } from 'src/routes/safe/components/Transactions/TxList/TxData'
 import { createSafeTransaction, getAccountOnChain, getMChainsConfig, signSafeTransaction } from 'src/services'
 import { coins, MsgSendEncodeObject, SignerData, SigningStargateClient } from '@cosmjs/stargate'
 import enqueueSnackbar from 'src/logic/notifications/store/actions/enqueueSnackbar'
 import { enhanceSnackbarForAction, NOTIFICATIONS } from 'src/logic/notifications'
-import { AuthInfo, TxBody, TxRaw } from 'cosmjs-types/cosmos/tx/v1beta1/tx'
 import { userAccountSelector } from 'src/logic/wallets/store/selectors'
-import { parseToAdress } from 'src/utils/parseByteAdress'
 import { ChainInfo } from '@gnosis.pm/safe-react-gateway-sdk'
-import { getChains } from 'src/config/cache/chains'
 import { generatePath } from 'react-router-dom'
-import { MsgSend } from 'cosmjs-types/cosmos/bank/v1beta1/tx'
+// import { MsgSend } from 'cosmjs-types/cosmos/bank/v1beta1/tx'
 import { calculateFee, GasPrice, makeMultisignedTx, StargateClient } from '@cosmjs/stargate'
 import { fromBase64, toBase64 } from '@cosmjs/encoding'
-import fetchTransactions from 'src/logic/safe/store/actions/transactions/fetchTransactions'
-import axios from 'axios'
+import { MsgSend, MnemonicKey, Coins, LCDClient, Fee } from '@terra-money/terra.js';
+import { ConnectType, CreateTxFailed, SignResult, Timeout, TxFailed, TxResult, TxUnspecifiedError, useConnectedWallet, UserDenied, useWallet } from '@terra-money/wallet-provider'
+import { loadLastUsedProvider } from 'src/logic/wallets/store/middlewares/providerWatcher'
 
 const useStyles = makeStyles(styles)
 let chains: ChainInfo[] = []
@@ -178,10 +166,77 @@ const ReviewSendFundsTx = ({ onClose, onPrev, tx }: ReviewTxProps): React.ReactE
   const [executionApproved, setExecutionApproved] = useState<boolean>(true)
   const doExecute = isExecution && executionApproved
   const userWalletAddress = useSelector(userAccountSelector)
+  const {
+    connect
+  } = useWallet();
+  const connectedWallet = useConnectedWallet()
 
   const submitTx = async (txParameters: TxParameters) => {
     setDisabled(true)
-    signTransactionWithKeplr(safeAddress)
+    const lastUsedProvider = await loadLastUsedProvider()
+    if (lastUsedProvider?.toLowerCase() === 'keplr') {
+      signTransactionWithKeplr(safeAddress)
+    } else {
+      signTransactionWithTerra(safeAddress)
+    }
+  }
+
+  const signTransactionWithTerra = async (safeAddress: string) => {
+    const denom = 'uluna'
+    if (!connectedWallet) {
+      connect(ConnectType.EXTENSION)
+      signTransactionWithTerra('')
+      return
+    }
+
+    const amountFinal = Math.floor(Number(tx?.amount) * Math.pow(10, 6)).toString() || ''
+    const send = new MsgSend(
+      safeAddress,
+      txRecipient,
+      { uluna: amountFinal }
+    );
+
+    connectedWallet!
+      .sign({
+        fee: new Fee(Number(manualGasLimit) || Number(gasLimit), String(manualGasPrice || gasPriceFormatted).concat(denom)),
+        msgs: [send],
+      })
+      .then(async (signResult: SignResult) => {
+        // call api to create Tx
+        const signatures = signResult.result.signatures[0]
+
+        const data: ICreateSafeTransaction = {
+          from: safeAddress,
+          to: txRecipient || '',
+          amount: amountFinal,
+          gasLimit: manualGasLimit || '100000',
+          internalChainId: getInternalChainId(),
+          fee: Number(manualGasPrice) || 1,
+          creatorAddress: userWalletAddress,
+          signature: signatures,
+          bodyBytes: '',
+        }
+
+        createTxFromApi(data)
+      })
+      .catch((error: unknown) => {
+        if (error instanceof UserDenied) {
+          dispatch(enqueueSnackbar(enhanceSnackbarForAction(NOTIFICATIONS.TX_REJECTED_MSG)))
+        } else if (error instanceof CreateTxFailed) {
+          dispatch(enqueueSnackbar(enhanceSnackbarForAction(NOTIFICATIONS.TX_CREATE_FAILED_MSG)))
+        } else if (error instanceof TxFailed) {
+          dispatch(enqueueSnackbar(enhanceSnackbarForAction(NOTIFICATIONS.TX_FAILED_MSG)))
+        } else if (error instanceof Timeout) {
+          // setTxError('Timeout');
+          dispatch(enqueueSnackbar(enhanceSnackbarForAction(NOTIFICATIONS.TX_TIMEOUT_MSG)))
+        } else if (error instanceof TxUnspecifiedError) {
+          dispatch(enqueueSnackbar(enhanceSnackbarForAction(NOTIFICATIONS.SOMETHING_WENT_WRONG)))
+        } else {
+          dispatch(enqueueSnackbar(enhanceSnackbarForAction(NOTIFICATIONS.SOMETHING_WENT_WRONG)))
+        }
+        onClose()
+      });
+
   }
 
   const signTransactionWithKeplr = async (safeAddress: string) => {
@@ -224,7 +279,7 @@ const ReviewSendFundsTx = ({ onClose, onPrev, tx }: ReviewTxProps): React.ReactE
         }
       })()
 
-      const msgSend: MsgSend = {
+      const msgSend: any = {
         fromAddress: safeAddress,
         toAddress: txRecipient,
         amount: coins(amountFinal, denom),
@@ -270,82 +325,37 @@ const ReviewSendFundsTx = ({ onClose, onPrev, tx }: ReviewTxProps): React.ReactE
           bodyBytes: bodyBytes,
         }
 
-        const { ErrorCode, Data: safeData, Message } = await createSafeTransaction(data)
-        if (ErrorCode === 'SUCCESSFUL') {
-          setButtonStatus(ButtonStatus.READY)
-          onClose()
-
-          // navigate to tx details
-          const prefixedSafeAddress = getPrefixedSafeAddressSlug({ shortName: extractShortChainName(), safeAddress })
-          const txRoute = generatePath(SAFE_ROUTES.TRANSACTIONS_SINGULAR, {
-            [SAFE_ADDRESS_SLUG]: prefixedSafeAddress,
-            id: safeData,
-          })
-          history.push(txRoute)
-        } else {
-          if (ErrorCode === 'E028') {
-            dispatch(enqueueSnackbar(enhanceSnackbarForAction(NOTIFICATIONS.CREATE_SAFE_PENDING_EXECUTE_MSG)))
-          } else {
-            dispatch(enqueueSnackbar(enhanceSnackbarForAction(NOTIFICATIONS.TX_FAILED_MSG)))
-          }
-
-          onClose()
-        }
+        createTxFromApi(data)
       } catch (error) {
-        dispatch(enqueueSnackbar(enhanceSnackbarForAction(NOTIFICATIONS.TX_CANCELLATION_EXECUTED_MSG)))
+        dispatch(enqueueSnackbar(enhanceSnackbarForAction(NOTIFICATIONS.TX_REJECTED_MSG)))
         onClose()
       }
     }
   }
 
-  // const submitTx = async (txParameters: TxParameters) => {
-  //   setButtonStatus(ButtonStatus.LOADING)
+  const createTxFromApi = async (data: any) => {
+    const { ErrorCode, Data: safeData, Message } = await createSafeTransaction(data)
+    if (ErrorCode === 'SUCCESSFUL') {
+      setButtonStatus(ButtonStatus.READY)
+      onClose()
 
-  //   if (!safeAddress) {
-  //     setButtonStatus(ButtonStatus.READY)
-  //     logError(Errors._802)
-  //     return
-  //   }
+      // navigate to tx details
+      const prefixedSafeAddress = getPrefixedSafeAddressSlug({ shortName: extractShortChainName(), safeAddress })
+      const txRoute = generatePath(SAFE_ROUTES.TRANSACTIONS_SINGULAR, {
+        [SAFE_ADDRESS_SLUG]: prefixedSafeAddress,
+        id: safeData,
+      })
+      history.push(txRoute)
+    } else {
+      if (ErrorCode === 'E028') {
+        dispatch(enqueueSnackbar(enhanceSnackbarForAction(NOTIFICATIONS.CREATE_SAFE_PENDING_EXECUTE_MSG)))
+      } else {
+        dispatch(enqueueSnackbar(enhanceSnackbarForAction(NOTIFICATIONS.TX_FAILED_MSG)))
+      }
 
-  //   if (isSpendingLimit && txToken && tx.tokenSpendingLimit) {
-  //     const spendingLimitTokenAddress = isSendingNativeToken ? ZERO_ADDRESS : txToken.address
-  //     const spendingLimit = getSpendingLimitContract()
-  //     try {
-  //       await spendingLimit.methods
-  //         .executeAllowanceTransfer(
-  //           safeAddress,
-  //           spendingLimitTokenAddress,
-  //           tx.recipientAddress,
-  //           toTokenUnit(tx.amount, txToken.decimals),
-  //           ZERO_ADDRESS,
-  //           0,
-  //           tx.tokenSpendingLimit.delegate,
-  //           EMPTY_DATA,
-  //         )
-  //         .send({ from: tx.tokenSpendingLimit.delegate })
-  //         .on('transactionHash', () => onClose())
-  //     } catch (err) {
-  //       setButtonStatus(ButtonStatus.READY)
-  //       logError(Errors._801, err.message)
-  //     }
-  //     return
-  //   }
-
-  //   dispatch(
-  //     createTransaction({
-  //       safeAddress: safeAddress,
-  //       to: txRecipient as string,
-  //       valueInWei: txValue,
-  //       txData: data,
-  //       txNonce: txParameters.safeNonce,
-  //       safeTxGas: txParameters.safeTxGas,
-  //       ethParameters: txParameters,
-  //       notifiedTransaction: TX_NOTIFICATION_TYPES.STANDARD_TX,
-  //       delayExecution: !executionApproved,
-  //     }),
-  //   )
-  //   onClose()
-  // }
+      onClose()
+    }
+  }
 
   const closeEditModalCallback = (txParameters: TxParameters) => {
     const oldGasPrice = gasPriceFormatted

@@ -77,6 +77,7 @@ type Props = {
   onToggleSafeList: () => void
   onReceiveClick: () => void
   onNewTransactionClick: () => void
+  onConnectClick: () => void
 }
 
 const Layout: React.FC<Props> = ({
@@ -89,6 +90,7 @@ const Layout: React.FC<Props> = ({
   onNewTransactionClick,
   children,
   sidebarItems,
+  onConnectClick,
 }): React.ReactElement => {
   const [mobileNotSupportedClosed, setMobileNotSupportedClosed] = useState(false)
   const { pathname } = useLocation()
@@ -102,7 +104,7 @@ const Layout: React.FC<Props> = ({
   return (
     <Container>
       <HeaderWrapper>
-        <Header />
+        <Header openConnectWallet={onConnectClick} />
       </HeaderWrapper>
       <BodyWrapper>
         <SidebarWrapper data-testid="sidebar">

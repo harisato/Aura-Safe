@@ -14,6 +14,7 @@ import operaIcon from './icon-opera.png'
 import squarelinkIcon from './icon-squarelink.png'
 import keystoneIcon from './icon-keystone.png'
 import keplrIcon from './icon-keplr.svg'
+import terraStationIcon from './icon-terra-station.svg'
 
 import { WALLET_PROVIDER } from 'src/logic/wallets/getWeb3'
 
@@ -78,6 +79,10 @@ const WALLET_ICONS: { [key in WALLET_PROVIDER]: { src: string; height: number } 
     src: keplrIcon,
     height: 25,
   },
+  [WALLET_PROVIDER.TERRASTATION]: {
+    src: terraStationIcon,
+    height: 25,
+  }
 }
 
 export default WALLET_ICONS
