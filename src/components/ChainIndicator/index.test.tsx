@@ -8,7 +8,7 @@ describe('<ChainIndicator>', () => {
     const icon = container.querySelector('svg')
     const label = (container.textContent || '').trim()
 
-    expect(icon?.getAttribute('color')).toBe('#E8673C')
+    expect(icon?.getAttribute('color')).toBe('#5EE6D0')
     expect(label).toBe('Rinkeby')
   })
 

@@ -14,7 +14,7 @@ import { getChainById } from 'src/config'
 
 const useStyles = makeStyles({
   network: {
-    fontFamily: 'Averta, sans-serif',
+    fontFamily: 'SFProDisplay, sans-serif',
   },
   networkLabel: {
     '& div': {

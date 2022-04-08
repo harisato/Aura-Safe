@@ -8,7 +8,7 @@ import { KeyRing } from 'src/components/AppLayout/Header/components/KeyRing'
 
 const styles = () => ({
   network: {
-    fontFamily: 'Averta, sans-serif',
+    fontFamily: 'SFProDisplay, sans-serif',
   },
   account: {
     alignItems: 'start',

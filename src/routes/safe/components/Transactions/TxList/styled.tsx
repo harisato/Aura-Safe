@@ -432,7 +432,7 @@ export const OwnerList = styled.ul`
     }
 
     span::first-of-type {
-      color: #008c73;
+      color: #03a9f4;
       font-weight: bold;
     }
   }
