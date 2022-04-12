@@ -24,7 +24,12 @@ export const CHAIN_ID: Record<ChainName, ChainId> = {
   ARBITRUM: '42161',
   AVALANCHE: '43114',
   VOLTA: '73799',
-  AURA_TESTNET: 'aura-testnet'
+  AURA_TESTNET: 'aura-testnet',
+  AURA_DEVNET: 'aura-devtnet',
+  JUNO_TESTNET: 'uni-2',
+  OSMOSIS_TESTNET: 'osmo-test-4',
+  GAIA_TESTNET: 'theta-testnet-001',
+  TERRA_TESTNET: 'bombay-12',
 }
 
 // Values match that required of onboard and returned by CGW
@@ -44,4 +49,6 @@ export enum WALLETS {
   OPERA_TOUCH = 'operaTouch',
   LATTICE = 'lattice',
   KEYSTONE = 'keystone',
+  KEPLR = 'keplr',
+  TERRA = 'terraStation'
 }

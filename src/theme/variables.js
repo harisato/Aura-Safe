@@ -1,5 +1,5 @@
 const background = '#f7f5f5'
-const border = '#e8e7e6'
+const border = '#f6f6f6'
 const connectedColor = '#03a9f4'
 const disabled = '#5D6D74'
 const errorColor = '#f02525'
@@ -29,8 +29,8 @@ module.exports = {
   disabled,
   error: errorColor,
   extraBoldFont: 800,
-  extraLargeFontSize: '20px',
-  extraSmallFontSize: '11px',
+  extraLargeFontSize: '24px',
+  extraSmallFontSize: '16px',
   fancy: fancyColor,
   fontColor,
   fontSizeHeadingLg: 32,
@@ -44,7 +44,7 @@ module.exports = {
   mainFontFamily: 'SFProDisplay !important',
   marginButtonImg,
   md,
-  mediumFontSize: '14px',
+  mediumFontSize: '18px',
   primary,
   regularFont: 400,
   screenLg: 1200,

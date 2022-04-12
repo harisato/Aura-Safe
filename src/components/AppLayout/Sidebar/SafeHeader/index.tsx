@@ -148,7 +148,7 @@ const SafeHeader = ({
   return (
     <>
       {/* Network */}
-      <StyledTextLabel size="sm" chainInfo={chainInfo}>
+      <StyledTextLabel size="lg" chainInfo={chainInfo}>
         {chainInfo.chainName}
       </StyledTextLabel>
 
