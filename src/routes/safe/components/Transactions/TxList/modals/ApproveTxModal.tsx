@@ -57,7 +57,7 @@ import { generatePath } from 'react-router-dom'
 import { fromBase64, toBase64 } from '@cosmjs/encoding'
 import { ConnectType, CreateTxFailed, SignResult, Timeout, TxFailed, TxUnspecifiedError, useConnectedWallet, UserDenied, useWallet } from '@terra-money/wallet-provider'
 import { ICreateSafeTransaction } from 'src/types/transaction'
-import { MsgSend, MnemonicKey, Coins, LCDClient, Fee } from '@terra-money/terra.js';
+import { MsgSend, MnemonicKey, Coins, LCDClient, Fee, LegacyAminoMultisigPublicKey } from '@terra-money/terra.js';
 import { loadLastUsedProvider } from 'src/logic/wallets/store/middlewares/providerWatcher'
 
 export const APPROVE_TX_MODAL_SUBMIT_BTN_TEST_ID = 'approve-tx-modal-submit-btn'

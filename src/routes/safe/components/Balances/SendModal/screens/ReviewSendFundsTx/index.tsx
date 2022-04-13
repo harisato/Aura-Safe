@@ -120,6 +120,9 @@ const ReviewSendFundsTx = ({ onClose, onPrev, tx }: ReviewTxProps): React.ReactE
   const [manualGasPrice, setManualGasPrice] = useState<string | undefined>()
   const [manualGasLimit, setManualGasLimit] = useState<string | undefined>()
   const [isDisabled, setDisabled] = useState(false)
+  const [gasPriceFormatted, setGasPriceFormatted] = useState('1')
+  let lastUsedProvider = ''
+
   // const { address: safeAddress, ethBalance, name: safeName } = useSelector(currentSafeWithNames)
 
   // const {
@@ -141,9 +144,14 @@ const ReviewSendFundsTx = ({ onClose, onPrev, tx }: ReviewTxProps): React.ReactE
   //   manualGasLimit,
   // })
 
-  const {
+  loadLastUsedProvider().then(result => {
+    lastUsedProvider = result || ''
+    if (result?.toLowerCase() !== 'keplr')
+      setGasPriceFormatted('15000')
+  })
+
+  let {
     gasCostFormatted,
-    gasPriceFormatted,
     gasLimit,
     gasEstimation,
     txEstimationExecutionStatus,
@@ -152,7 +160,6 @@ const ReviewSendFundsTx = ({ onClose, onPrev, tx }: ReviewTxProps): React.ReactE
     isOffChainSignature,
   } = {
     gasCostFormatted: '',
-    gasPriceFormatted: '1',
     gasLimit: '100000',
     gasEstimation: '0',
     txEstimationExecutionStatus: EstimationStatus.SUCCESS,
@@ -160,6 +167,8 @@ const ReviewSendFundsTx = ({ onClose, onPrev, tx }: ReviewTxProps): React.ReactE
     isCreation: true,
     isOffChainSignature: true,
   }
+
+
 
   const [buttonStatus, setButtonStatus] = useEstimationStatus(txEstimationExecutionStatus)
   const isSpendingLimit = sameString(tx.txType, 'spendingLimit')
@@ -173,7 +182,6 @@ const ReviewSendFundsTx = ({ onClose, onPrev, tx }: ReviewTxProps): React.ReactE
 
   const submitTx = async (txParameters: TxParameters) => {
     setDisabled(true)
-    const lastUsedProvider = await loadLastUsedProvider()
     if (lastUsedProvider?.toLowerCase() === 'keplr') {
       signTransactionWithKeplr(safeAddress)
     } else {
@@ -196,9 +204,11 @@ const ReviewSendFundsTx = ({ onClose, onPrev, tx }: ReviewTxProps): React.ReactE
       { uluna: amountFinal }
     );
 
+    const fee = new Fee(Number(manualGasLimit) || Number(gasLimit), String(manualGasPrice || gasPriceFormatted).concat(denom))
+
     connectedWallet!
       .sign({
-        fee: new Fee(Number(manualGasLimit) || Number(gasLimit), String(manualGasPrice || gasPriceFormatted).concat(denom)),
+        fee: fee,
         msgs: [send],
       })
       .then(async (signResult: SignResult) => {
@@ -211,7 +221,7 @@ const ReviewSendFundsTx = ({ onClose, onPrev, tx }: ReviewTxProps): React.ReactE
           amount: amountFinal,
           gasLimit: manualGasLimit || '100000',
           internalChainId: getInternalChainId(),
-          fee: Number(manualGasPrice) || 1,
+          fee: Number(manualGasPrice) || Number(gasPriceFormatted),
           creatorAddress: userWalletAddress,
           signature: signatures,
           bodyBytes: '',

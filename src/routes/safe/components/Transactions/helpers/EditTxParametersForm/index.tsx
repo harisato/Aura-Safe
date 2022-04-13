@@ -17,6 +17,12 @@ import { Modal } from 'src/components/Modal'
 
 import { ParametersStatus, areSafeParamsEnabled, areEthereumParamsVisible, ethereumTxParametersTitle } from '../utils'
 import useSafeTxGas from '../useSafeTxGas'
+import { loadLastUsedProvider } from 'src/logic/wallets/store/middlewares/providerWatcher'
+let lastUsedProvider = ''
+
+loadLastUsedProvider().then(result => {
+  lastUsedProvider = result || ''
+})
 
 const StyledDivider = styled(Divider)`
   margin: 0px;
@@ -70,7 +76,13 @@ const formValidation = (values) => {
 
   const ethGasLimitValidation = minValue(0, false)(ethGasLimit)
 
-  const ethGasPriceValidation = minValue(0, false)(ethGasPrice)
+  let ethGasPriceValidation
+
+  if (lastUsedProvider?.toLowerCase() === 'keplr') {
+    ethGasPriceValidation = minValue(0, false)(ethGasPrice)
+  } else {
+    ethGasPriceValidation = minValue(14999, false)(ethGasPrice)
+  }
 
   const ethNonceValidation = minValue(0, true)(ethNonce)
 
@@ -166,12 +178,12 @@ export const EditTxParametersForm = ({
                 
               )} */}
               <>
-                  <StyledTextMt size="xl" strong>
-                    {ethereumTxParametersTitle(isExecution)}
-                  </StyledTextMt>
+                <StyledTextMt size="xl" strong>
+                  {ethereumTxParametersTitle(isExecution)}
+                </StyledTextMt>
 
-                  <EthereumOptions>
-                    {/* <Field
+                <EthereumOptions>
+                  {/* <Field
                       name="ethNonce"
                       defaultValue={ethNonce}
                       placeholder="Nonce"
@@ -180,27 +192,27 @@ export const EditTxParametersForm = ({
                       component={TextField}
                       disabled={!areEthereumParamsVisible(parametersStatus)}
                     /> */}
-                    <Field
-                      name="ethGasLimit"
-                      defaultValue={ethGasLimit}
-                      placeholder="Gas limit"
-                      text="Gas limit"
-                      type="number"
-                      component={TextField}
-                      disabled={parametersStatus === 'CANCEL_TRANSACTION'}
-                    />
-                    <Field
-                      name="ethGasPrice"
-                      defaultValue={ethGasPrice}
-                      type="number"
-                      placeholder="Gas price"
-                      text="Gas price"
-                      component={TextField}
-                      // disabled={!areEthereumParamsVisible(parametersStatus)}
-                    />
-                  </EthereumOptions>
+                  <Field
+                    name="ethGasLimit"
+                    defaultValue={ethGasLimit}
+                    placeholder="Gas limit"
+                    text="Gas limit"
+                    type="number"
+                    component={TextField}
+                    disabled={parametersStatus === 'CANCEL_TRANSACTION'}
+                  />
+                  <Field
+                    name="ethGasPrice"
+                    defaultValue={ethGasPrice}
+                    type="number"
+                    placeholder="Gas price"
+                    text="Gas price"
+                    component={TextField}
+                  // disabled={!areEthereumParamsVisible(parametersStatus)}
+                  />
+                </EthereumOptions>
 
-                  {/* <StyledLink
+                {/* <StyledLink
                     href="https://help.gnosis-safe.io/en/articles/4738445-configure-advanced-transaction-parameters-manually"
                     target="_blank"
                   >
@@ -209,7 +221,7 @@ export const EditTxParametersForm = ({
                     </Text>
                     <Icon size="sm" type="externalLink" color="primary" />
                   </StyledLink> */}
-                </>
+              </>
 
               <StyledDividerFooter />
 
