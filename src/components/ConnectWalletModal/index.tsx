@@ -140,12 +140,12 @@ export const ConnectWalletModal = ({ isOpen, onClose }: Props): React.ReactEleme
             <ImageTitle> Keplr</ImageTitle>
           </ImageItem>
 
-          {internalChainId !== 20 ? null : (
+          {/* {internalChainId !== 20 ? null : (
             <ImageItem onClick={terraWallet}>
               <Img alt="Terra" height={40} src={TerraStation} />
               <ImageTitle> Terra Station </ImageTitle>
             </ImageItem>
-          )}
+          )} */}
         </ImageContainer>
       </WalletList>
     </Modal>
