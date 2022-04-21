@@ -319,7 +319,6 @@ export const GroupedTransactions = styled(StyledTransaction)`
       }
     }
   }
-}
 `
 
 export const DisclaimerContainer = styled(StyledTransaction)`
@@ -525,6 +524,7 @@ export const StyledAccordionSummary = styled(AccordionSummary).attrs((props) =>
   height: 52px;
   .tx-nonce {
     margin: 0 16px 0 8px;
+    min-width: 80px;
   }
 `
 export const AlignItemsWithMargin = styled.div`
