@@ -39,7 +39,8 @@ Aura-safe use Nodejs, please make sure installed it.
 
 ## Deployed environments
 
-- Dev: https://dev.safe.aura.network/welcome
+- Dev: https://safe.dev.aura.network/
+- Test: https://safe.serenity.aura.network/
 
 ## License
 
