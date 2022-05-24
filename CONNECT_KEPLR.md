@@ -1,10 +1,8 @@
 # I. Connect Keplr Wallet to Aura Testnet
 
 1. Add Network to Keplr
-- Aura Testnet:
-Use this [jsfiddle](https://jsfiddle.net/eledra/e9kzawp7/11/) to add the `aura-testnet` chain to your Keplr browser extension.
 - Aura Devnet:
-Use this [jsfiddle](https://jsfiddle.net/andqk/g4mrnva1/10/) to add the `aura-devnet` chain to your Keplr browser extension.
+Use this [jsfiddle](https://jsfiddle.net/andqk/g4mrnva1/) to add the `aura-devnet` chain to your Keplr browser extension.
 
 2. Detech Keplr
 ```
