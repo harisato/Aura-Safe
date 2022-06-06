@@ -1,21 +1,20 @@
 import { store } from 'src/store'
-import { Keplr } from "@keplr-wallet/types";
-import { getChainInfo, getInternalChainId, _getChainId } from "../../config";
-import { makeProvider, ProviderProps } from '../wallets/store/model/provider';
-import { Dispatch } from 'redux';
-import { addProvider, removeProvider } from '../wallets/store/actions';
-import enqueueSnackbar from '../notifications/store/actions/enqueueSnackbar';
-import { enhanceSnackbarForAction, NOTIFICATIONS } from '../notifications';
-import { trackAnalyticsEvent, WALLET_EVENTS } from '../../utils/googleAnalytics';
-import { saveToStorage } from 'src/utils/storage';
-import { LAST_USED_PROVIDER_KEY } from '../wallets/store/middlewares/providerWatcher';
-import { parseToAdress } from 'src/utils/parseByteAdress';
-import { ChainsInfo } from './constants/chainsInfo';
-import { WALLETS_NAME } from '../wallets/constant/wallets';
-
+import { Keplr } from '@keplr-wallet/types'
+import { getChainInfo, getInternalChainId, _getChainId } from '../../config'
+import { makeProvider, ProviderProps } from '../wallets/store/model/provider'
+import { Dispatch } from 'redux'
+import { addProvider, removeProvider } from '../wallets/store/actions'
+import enqueueSnackbar from '../notifications/store/actions/enqueueSnackbar'
+import { enhanceSnackbarForAction, NOTIFICATIONS } from '../notifications'
+import { trackAnalyticsEvent, WALLET_EVENTS } from '../../utils/googleAnalytics'
+import { saveToStorage } from 'src/utils/storage'
+import { LAST_USED_PROVIDER_KEY } from '../wallets/store/middlewares/providerWatcher'
+import { parseToAdress } from 'src/utils/parseByteAdress'
+import { ChainsInfo } from './constants/chainsInfo'
+import { WALLETS_NAME } from '../wallets/constant/wallets'
 
 export type WalletKey = {
-  myAddress: string,
+  myAddress: string
   myPubkey: string
 }
 
@@ -26,32 +25,28 @@ export enum KeplrErrors {
   SameChain = 'SAME CHAIN IS ALREADY REGISTERED',
   NotRegistered = 'CHAIN IS NOT REGISTERED',
   RequestRejected = 'REQUEST REJECTED',
-  NotInstall = 'NOT INSTALL'
+  NotInstall = 'NOT INSTALL',
 }
 
 export async function getKeplr(): Promise<Keplr | undefined> {
   if (window.keplr) {
-    return window.keplr;
+    return window.keplr
   }
 
-  if (document.readyState === "complete") {
-    return window.keplr;
+  if (document.readyState === 'complete') {
+    return window.keplr
   }
-
 
   return new Promise((resolve) => {
     const documentStateChange = (event: Event) => {
-      if (
-        event.target &&
-        (event.target as Document).readyState === "complete"
-      ) {
-        resolve(window.keplr);
-        document.removeEventListener("readystatechange", documentStateChange);
+      if (event.target && (event.target as Document).readyState === 'complete') {
+        resolve(window.keplr)
+        document.removeEventListener('readystatechange', documentStateChange)
       }
-    };
+    }
 
-    document.addEventListener("readystatechange", documentStateChange);
-  });
+    document.addEventListener('readystatechange', documentStateChange)
+  })
 }
 
 export async function getKeplrKey(chainId: string): Promise<WalletKey | undefined> {
@@ -63,10 +58,9 @@ export async function getKeplrKey(chainId: string): Promise<WalletKey | undefine
 
   return {
     myAddress: String(key.bech32Address),
-    myPubkey: parseToAdress(key.pubKey)
+    myPubkey: parseToAdress(key.pubKey),
   }
 }
-
 
 export async function connectKeplr(): Promise<KeplrErrors> {
   const chainInfo = await getChainInfo()
@@ -75,18 +69,18 @@ export async function connectKeplr(): Promise<KeplrErrors> {
 
   const keplr = await getKeplr()
   if (!keplr) {
-    alert("Please install keplr extension");
-    return KeplrErrors.NotInstall;
+    alert('Please install keplr extension')
+    return KeplrErrors.NotInstall
   }
 
   let error = KeplrErrors.Success
 
-
   try {
-    await keplr.enable(chainId)
-      .then(e => keplr.getKey(chainId))
-      .then(key => {
-        let providerInfo: ProviderProps;
+    await keplr
+      .enable(chainId)
+      .then((e) => keplr.getKey(chainId))
+      .then((key) => {
+        let providerInfo: ProviderProps
         if (!key) {
           providerInfo = {
             account: '',
@@ -96,7 +90,7 @@ export async function connectKeplr(): Promise<KeplrErrors> {
             name: '',
             network: '',
             smartContractWallet: false,
-            internalChainId
+            internalChainId,
           }
         } else {
           providerInfo = {
@@ -107,7 +101,7 @@ export async function connectKeplr(): Promise<KeplrErrors> {
             name: WALLETS_NAME.Keplr,
             network: chainInfo.chainId,
             smartContractWallet: false,
-            internalChainId
+            internalChainId,
           }
 
           store.dispatch(removeProvider({ keepStorageKey: true }))
@@ -115,8 +109,7 @@ export async function connectKeplr(): Promise<KeplrErrors> {
           store.dispatch(fetchProvider(providerInfo))
           saveToStorage(LAST_USED_PROVIDER_KEY, providerInfo.name)
         }
-      });
-
+      })
   } catch (e) {
     const message = e.message.toUpperCase()
 
@@ -125,18 +118,19 @@ export async function connectKeplr(): Promise<KeplrErrors> {
       error = KeplrErrors.NoChainInfo
     } else {
       error = KeplrErrors.Failed
-      store.dispatch(fetchProvider({
-        account: '',
-        available: false,
-        hardwareWallet: false,
-        loaded: false,
-        name: '',
-        network: '',
-        smartContractWallet: false,
-        internalChainId
-      }))
+      store.dispatch(
+        fetchProvider({
+          account: '',
+          available: false,
+          hardwareWallet: false,
+          loaded: false,
+          name: '',
+          network: '',
+          smartContractWallet: false,
+          internalChainId,
+        }),
+      )
     }
-
   }
 
   // await keplr
@@ -199,7 +193,6 @@ export async function connectKeplr(): Promise<KeplrErrors> {
   return error
 }
 
-
 const processProviderResponse = (dispatch: Dispatch, provider: ProviderProps): void => {
   const walletRecord = makeProvider(provider)
   dispatch(addProvider(walletRecord))
@@ -224,13 +217,16 @@ const handleProviderNotification = (provider: ProviderProps, dispatch: Dispatch<
 }
 
 export async function suggestChain(chainId = 'aura-testnet'): Promise<any> {
+  console.log('chainId', chainId)
   if (ChainsInfo[chainId]) {
-    await window['keplr']?.experimentalSuggestChain(ChainsInfo[chainId]);
+    await window['keplr']?.experimentalSuggestChain(ChainsInfo[chainId])
   } else {
     const result = confirm(`Please add the ${chainId} chain to your Wallet!`)
 
     if (result) {
-      window.open('https://github.com/aura-nw/Aura-Safe/blob/dev/CONNECT_KEPLR.md#i-connect-keplr-wallet-to-aura-testnet')
+      window.open(
+        'https://github.com/aura-nw/Aura-Safe/blob/dev/CONNECT_KEPLR.md#i-connect-keplr-wallet-to-aura-testnet',
+      )
     }
   }
 }

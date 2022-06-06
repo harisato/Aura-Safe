@@ -118,22 +118,22 @@ function CreateSafePage(): ReactElement {
 
   const showSafeCreationProcess = async (newSafeFormValues: CreateSafeFormValues): Promise<void> => {
     // saveToStorage(SAFE_PENDING_CREATION_STORAGE_KEY, { ...newSafeFormValues })
-
     const lastUsedProvider = await loadLastUsedProvider()
-
     let payload
-
     if (lastUsedProvider === WALLETS_NAME.Keplr) {
       payload = await makeSafeCreate(userWalletAddress, newSafeFormValues)
     } else {
       const public_key = await signSafeCreation()
-
       if (public_key) {
         payload = await makeSafeCreateWithTerra(userWalletAddress, newSafeFormValues, public_key)
       }
     }
 
     const { ErrorCode, Data: safeData, Message } = await createMSafe(payload)
+    console.log('payload', payload)
+    console.log('safeData', safeData)
+    console.log('ErrorCode', ErrorCode)
+    console.log('Message', Message)
 
     if (ErrorCode === MESSAGES_CODE.SUCCESSFUL.ErrorCode) {
       trackEvent(USER_EVENTS.CREATE_SAFE)
@@ -208,7 +208,6 @@ function CreateSafePage(): ReactElement {
 
   function onClickModalButton() {
     const { safeId, safeAddress } = modalData
-
     if (safeId && safeAddress) {
       history.push({
         pathname: generateSafeRoute(SAFE_ROUTES.ASSETS_BALANCES, {
