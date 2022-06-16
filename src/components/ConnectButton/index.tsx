@@ -1,10 +1,9 @@
 import { ReactElement } from 'react'
-import Button from 'src/components/layout/Button'
 import { _getChainId } from 'src/config'
 import { getWeb3 } from 'src/logic/wallets/getWeb3'
 import onboard from 'src/logic/wallets/onboard'
 import { shouldSwitchNetwork, switchNetwork } from 'src/logic/wallets/utils/network'
-
+import { StyledConnectButton } from './styles'
 const checkWallet = async (): Promise<boolean> => {
   if (shouldSwitchNetwork()) {
     switchNetwork(onboard().getState().wallet, _getChainId()).catch((e) => e.log())
@@ -44,7 +43,7 @@ export const onboardUser = async (): Promise<boolean> => {
 // }
 
 const ConnectButton = (props: { 'data-testid': string; onConnect: () => void }): ReactElement => (
-  <Button
+  <StyledConnectButton
     color="primary"
     minWidth={240}
     onClick={props.onConnect}
@@ -52,7 +51,7 @@ const ConnectButton = (props: { 'data-testid': string; onConnect: () => void }):
     data-testid={props['data-testid']}
   >
     Connect
-  </Button>
+  </StyledConnectButton>
 )
 
 export default ConnectButton

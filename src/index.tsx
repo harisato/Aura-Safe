@@ -13,7 +13,7 @@ BigNumber.set({ EXPONENTIAL_AT: [-7, 255] })
 
 Sentry.init({
   dsn: SENTRY_DSN,
-  release: `safe-react@${process.env.REACT_APP_APP_VERSION}`,
+  release: `aura-safe@${process.env.REACT_APP_APP_VERSION}`,
   integrations: [new Integrations.BrowserTracing()],
   sampleRate: 0.1,
   // ignore MetaMask errors we don't control

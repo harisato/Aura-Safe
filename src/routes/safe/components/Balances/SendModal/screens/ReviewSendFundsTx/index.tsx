@@ -22,7 +22,8 @@ import { TokenProps } from 'src/logic/tokens/store/model/token'
 import { RecordOf } from 'immutable'
 import { EstimationStatus } from 'src/logic/hooks/useEstimateTransactionGas'
 import { useEstimationStatus } from 'src/logic/hooks/useEstimationStatus'
-import { ButtonStatus, Modal } from 'src/components/Modal'
+import { Modal } from 'src/components/Modal'
+import { ButtonStatus } from 'src/components/Modal/type'
 import { ReviewInfoText } from 'src/components/ReviewInfoText'
 
 import { styles } from './style'
@@ -51,12 +52,23 @@ import { generatePath } from 'react-router-dom'
 // import { MsgSend } from 'cosmjs-types/cosmos/bank/v1beta1/tx'
 import { calculateFee, GasPrice, makeMultisignedTx, StargateClient } from '@cosmjs/stargate'
 import { fromBase64, toBase64 } from '@cosmjs/encoding'
-import { MsgSend, MnemonicKey, Coins, LCDClient, Fee } from '@terra-money/terra.js';
-import { ConnectType, CreateTxFailed, SignResult, Timeout, TxFailed, TxResult, TxUnspecifiedError, useConnectedWallet, UserDenied, useWallet } from '@terra-money/wallet-provider'
+import { MsgSend, MnemonicKey, Coins, LCDClient, Fee } from '@terra-money/terra.js'
+import {
+  ConnectType,
+  CreateTxFailed,
+  SignResult,
+  Timeout,
+  TxFailed,
+  TxResult,
+  TxUnspecifiedError,
+  useConnectedWallet,
+  UserDenied,
+  useWallet,
+} from '@terra-money/wallet-provider'
 import { loadLastUsedProvider } from 'src/logic/wallets/store/middlewares/providerWatcher'
 
 const useStyles = makeStyles(styles)
-let chains: ChainInfo[] = []
+const chains: ChainInfo[] = []
 // let isDisabled = false
 
 export type ReviewTxProp = {
@@ -144,13 +156,12 @@ const ReviewSendFundsTx = ({ onClose, onPrev, tx }: ReviewTxProps): React.ReactE
   //   manualGasLimit,
   // })
 
-  loadLastUsedProvider().then(result => {
+  loadLastUsedProvider().then((result) => {
     lastUsedProvider = result || ''
-    if (result?.toLowerCase() !== 'keplr')
-      setGasPriceFormatted('15000')
+    if (result?.toLowerCase() !== 'keplr') setGasPriceFormatted('15000')
   })
 
-  let {
+  const {
     gasCostFormatted,
     gasLimit,
     gasEstimation,
@@ -168,16 +179,12 @@ const ReviewSendFundsTx = ({ onClose, onPrev, tx }: ReviewTxProps): React.ReactE
     isOffChainSignature: true,
   }
 
-
-
   const [buttonStatus, setButtonStatus] = useEstimationStatus(txEstimationExecutionStatus)
   const isSpendingLimit = sameString(tx.txType, 'spendingLimit')
   const [executionApproved, setExecutionApproved] = useState<boolean>(true)
   const doExecute = isExecution && executionApproved
   const userWalletAddress = useSelector(userAccountSelector)
-  const {
-    connect
-  } = useWallet();
+  const { connect } = useWallet()
   const connectedWallet = useConnectedWallet()
 
   const submitTx = async (txParameters: TxParameters) => {
@@ -198,13 +205,12 @@ const ReviewSendFundsTx = ({ onClose, onPrev, tx }: ReviewTxProps): React.ReactE
     }
 
     const amountFinal = Math.floor(Number(tx?.amount) * Math.pow(10, 6)).toString() || ''
-    const send = new MsgSend(
-      safeAddress,
-      txRecipient,
-      { uluna: amountFinal }
-    );
+    const send = new MsgSend(safeAddress, txRecipient, { uluna: amountFinal })
 
-    const fee = new Fee(Number(manualGasLimit) || Number(gasLimit), String(manualGasPrice || gasPriceFormatted).concat(denom))
+    const fee = new Fee(
+      Number(manualGasLimit) || Number(gasLimit),
+      String(manualGasPrice || gasPriceFormatted).concat(denom),
+    )
 
     connectedWallet!
       .sign({
@@ -245,8 +251,7 @@ const ReviewSendFundsTx = ({ onClose, onPrev, tx }: ReviewTxProps): React.ReactE
           dispatch(enqueueSnackbar(enhanceSnackbarForAction(NOTIFICATIONS.SOMETHING_WENT_WRONG)))
         }
         onClose()
-      });
-
+      })
   }
 
   const signTransactionWithKeplr = async (safeAddress: string) => {

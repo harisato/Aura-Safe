@@ -1,5 +1,5 @@
 import { createStyles } from '@material-ui/core/styles'
-import { boldFont, border, lg, sm } from 'src/theme/variables'
+import { boldFont, border, lg, sm, colorLinear } from 'src/theme/variables'
 
 export const styles = createStyles({
   formContainer: {
@@ -12,6 +12,7 @@ export const styles = createStyles({
   saveBtn: {
     fontWeight: boldFont,
     marginRight: sm,
+    background: colorLinear,
   },
   controlsRow: {
     borderTop: `2px solid ${border}`,

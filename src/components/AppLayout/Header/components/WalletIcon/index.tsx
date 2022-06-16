@@ -1,21 +1,10 @@
 import { makeStyles } from '@material-ui/core/styles'
 import * as React from 'react'
-
 import Col from 'src/components/layout/Col'
 import Img from 'src/components/layout/Img'
-import WALLET_ICONS from './icons'
-
-const useStyles = makeStyles({
-  container: {
-    marginLeft: '5px',
-    marginRight: '10px',
-    letterSpacing: '-0.5px',
-    flex: 'none',
-  },
-  icon: {
-    maxWidth: 'none',
-  },
-})
+import WALLET_ICONS from '../../assets/icons'
+import { styles } from './styles'
+const useStyles = makeStyles(styles)
 
 interface WalletIconProps {
   provider: string

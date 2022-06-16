@@ -92,7 +92,14 @@ const Coins = (props: Props): React.ReactElement => {
 
   return (
     <TableContainer>
-      <Table columns={columns} data={filteredData} defaultRowsPerPage={100} label="Balances" size={filteredData.size}>
+      <Table
+        columns={columns}
+        className={classes.table}
+        data={filteredData}
+        defaultRowsPerPage={100}
+        label="Balances"
+        size={filteredData.size}
+      >
         {(sortedData) =>
           sortedData.map((row, index) => (
             <TableRow className={classes.hide} data-testid={BALANCE_ROW_TEST_ID} key={index} tabIndex={-1}>

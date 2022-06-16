@@ -55,7 +55,6 @@ export async function getKeplrKey(chainId: string): Promise<WalletKey | undefine
   if (!keplr) return
 
   const key = await keplr.getKey(chainId)
-
   return {
     myAddress: String(key.bech32Address),
     myPubkey: parseToAdress(key.pubKey),
@@ -217,7 +216,6 @@ const handleProviderNotification = (provider: ProviderProps, dispatch: Dispatch<
 }
 
 export async function suggestChain(chainId = 'aura-testnet'): Promise<any> {
-  console.log('chainId', chainId)
   if (ChainsInfo[chainId]) {
     await window['keplr']?.experimentalSuggestChain(ChainsInfo[chainId])
   } else {

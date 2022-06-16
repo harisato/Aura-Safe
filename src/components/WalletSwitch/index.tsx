@@ -1,5 +1,5 @@
 import { ReactElement, useCallback } from 'react'
-import { Button } from '@material-ui/core'
+import { Button, makeStyles } from '@material-ui/core'
 import { Text } from '@gnosis.pm/safe-react-components'
 import { switchWalletChain } from 'src/logic/wallets/utils/network'
 import ChainIndicator from 'src/components/ChainIndicator'
@@ -15,12 +15,13 @@ import { fetchTerraStation } from '../../logic/terraStation'
 import { WALLETS_CHAIN_ID, WALLETS_NAME } from '../../logic/wallets/constant/wallets'
 import { loadLastUsedProvider, LAST_USED_PROVIDER_KEY } from '../../logic/wallets/store/middlewares/providerWatcher'
 import { saveToStorage } from '../../utils/storage'
+import { styles } from './styles'
 
+const useStyles = makeStyles(styles)
 const WalletSwitch = (): ReactElement => {
+  const classes = useStyles()
   const chainId = useSelector(currentChainId)
-
   const { status, connect, wallets, disconnect } = useWallet()
-
   const keplrConnect = useCallback(async () => {
     await connectKeplr()
       .then(async (status) => {
@@ -93,11 +94,13 @@ const WalletSwitch = (): ReactElement => {
   }
 
   return (
-    <Button variant="outlined" size="medium" color="primary" onClick={switchWalletChainAlert}>
-      <Text size="lg">
+    // <span className={classes.border}>
+    <Button size="medium" onClick={switchWalletChainAlert} color="primary" variant="outlined">
+      <Text size="lg" color="white">
         Switch wallet to <ChainIndicator chainId={chainId} />
       </Text>
     </Button>
+    // </span>
   )
 }
 
