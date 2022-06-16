@@ -88,7 +88,7 @@ const Settings = (): React.ReactElement => {
       <Menu>
         <Col start="sm" sm={6} xs={12}>
           <Breadcrumb>
-            <BreadcrumbElement iconType="settings" text="SETTINGS" />
+            <BreadcrumbElement iconType="settings" text="SETTINGS" color="white" />
             <BreadcrumbElement text={settingsSection} color="placeHolder" />
           </Breadcrumb>
         </Col>

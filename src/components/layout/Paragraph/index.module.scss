@@ -7,7 +7,7 @@
 }
 
 .soft {
-  color: #888888;
+  color: #000000;
 }
 
 .medium {
@@ -28,6 +28,10 @@
 
 .primary {
   color: $fontColor;
+}
+
+.green {
+  color : $green;
 }
 
 .secondary {

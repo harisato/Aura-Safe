@@ -1,11 +1,10 @@
 import { useEffect, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-
-import Layout from './components/Layout'
-import ConnectDetails from './components/ProviderDetails/ConnectDetails'
-import { UserDetails } from './components/ProviderDetails/UserDetails'
-import ProviderAccessible from './components/ProviderInfo/ProviderAccessible'
-import ProviderDisconnected from './components/ProviderInfo/ProviderDisconnected'
+import Layout from './components/Layout/Layout'
+import ConnectDetails from './components/ProviderDetails/ConnectDetails/ConnectDetails'
+import { UserDetails } from './components/ProviderDetails/UserDetails/UserDetails'
+import ProviderAccessible from './components/ProviderInfo/ProviderAccessible/ProviderAccessible'
+import ProviderDisconnected from './components/ProviderInfo/ProviderDisconnected/ProviderDisconnected'
 import { currentChainId } from 'src/logic/config/store/selectors'
 import {
   availableSelector,
@@ -22,7 +21,13 @@ import { getChainInfo, getInternalChainId } from '../../../config'
 import { saveToStorage } from '../../../utils/storage'
 import { WALLETS_CHAIN_ID, WALLETS_NAME } from '../../../logic/wallets/constant/wallets'
 
-const HeaderComponent = ({ openConnectWallet }: { openConnectWallet: () => void }): React.ReactElement => {
+const HeaderComponent = ({
+  openConnectWallet,
+  onToggleSafeList,
+}: {
+  openConnectWallet: () => void
+  onToggleSafeList: () => void
+}): React.ReactElement => {
   const [toggleConnect, setToggleConnect] = useState<boolean>(false)
   const [lastUsedProvider, setLastUsedProvider] = useState('')
 
@@ -159,7 +164,14 @@ const HeaderComponent = ({ openConnectWallet }: { openConnectWallet: () => void 
   const info = getProviderInfoBased()
   const details = getProviderDetailsBased()
 
-  return <Layout providerDetails={details} providerInfo={info} showConnect={toggleConnect} />
+  return (
+    <Layout
+      providerDetails={details}
+      providerInfo={info}
+      showConnect={toggleConnect}
+      onToggleSafeList={onToggleSafeList}
+    />
+  )
 }
 
 export default HeaderComponent

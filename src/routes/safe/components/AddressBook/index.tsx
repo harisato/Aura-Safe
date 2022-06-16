@@ -1,19 +1,9 @@
-import {
-  Breadcrumb,
-  BreadcrumbElement,
-  Button,
-  ButtonLink,
-  FixedIcon,
-  Icon,
-  Menu,
-  Text,
-} from '@gnosis.pm/safe-react-components'
+import { Breadcrumb, BreadcrumbElement, FixedIcon, Icon, Menu, Text } from '@gnosis.pm/safe-react-components'
 import TableCell from '@material-ui/core/TableCell'
 import TableContainer from '@material-ui/core/TableContainer'
 import TableRow from '@material-ui/core/TableRow'
 import { makeStyles } from '@material-ui/core/styles'
 import cn from 'classnames'
-import styled from 'styled-components'
 import { ReactElement, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
@@ -49,19 +39,7 @@ import ImportEntriesModal from './ImportEntriesModal'
 import { isValidAddress } from 'src/utils/isValidAddress'
 import { useHistory } from 'react-router'
 import { currentChainId } from 'src/logic/config/store/selectors'
-
-const StyledButton = styled(Button)`
-  &&.MuiButton-root {
-    margin: 4px 12px 4px 0px;
-    padding: 0 12px;
-    min-width: auto;
-  }
-
-  svg {
-    margin: 0 6px 0 0;
-  }
-`
-
+import { StyledButton, StyledButtonLink } from './style'
 const useStyles = makeStyles(styles)
 
 interface AddressBookSelectedEntry extends AddressBookEntry {
@@ -133,9 +111,7 @@ const AddressBookTable = (): ReactElement => {
     // close the modal
     setEditCreateEntryModalOpen(false)
     // update the store
-    dispatch(
-      addressBookAddOrUpdate(makeAddressBookEntry({ ...entry, address: (entry.address), chainId })),
-    )
+    dispatch(addressBookAddOrUpdate(makeAddressBookEntry({ ...entry, address: entry.address, chainId })))
   }
 
   const editEntryModalHandler = (entry: AddressBookEntry) => {
@@ -144,9 +120,7 @@ const AddressBookTable = (): ReactElement => {
     // close the modal
     setEditCreateEntryModalOpen(false)
     // update the store
-    dispatch(
-      addressBookAddOrUpdate(makeAddressBookEntry({ ...entry, address: (entry.address), chainId })),
-    )
+    dispatch(addressBookAddOrUpdate(makeAddressBookEntry({ ...entry, address: entry.address, chainId })))
   }
 
   const deleteEntryModalHandler = () => {
@@ -168,11 +142,16 @@ const AddressBookTable = (): ReactElement => {
       <Menu>
         <Col start="sm" sm={6} xs={12}>
           <Breadcrumb>
-            <BreadcrumbElement iconType="addressBook" text="Address Book" counter={addressBook?.length.toString()} />
+            <BreadcrumbElement
+              color="white"
+              iconType="addressBook"
+              text="Address Book"
+              counter={addressBook?.length.toString()}
+            />
           </Breadcrumb>
         </Col>
         <Col end="sm" sm={6} xs={12}>
-          <ButtonLink
+          <StyledButtonLink
             onClick={() => {
               setSelectedEntry(initialEntryState)
               setExportEntriesModalOpen(true)
@@ -180,22 +159,22 @@ const AddressBookTable = (): ReactElement => {
             color="primary"
             iconType="exportImg"
             iconSize="sm"
-            textSize="xl"
+            textSize="sm"
           >
             Export
-          </ButtonLink>
-          <ButtonLink
+          </StyledButtonLink>
+          <StyledButtonLink
             onClick={() => {
               setImportEntryModalOpen(true)
             }}
             color="primary"
             iconType="importImg"
             iconSize="sm"
-            textSize="xl"
+            textSize="sm"
           >
             Import
-          </ButtonLink>
-          <ButtonLink
+          </StyledButtonLink>
+          <StyledButtonLink
             onClick={() => {
               setSelectedEntry(initialEntryState)
               setEditCreateEntryModalOpen(true)
@@ -203,10 +182,10 @@ const AddressBookTable = (): ReactElement => {
             color="primary"
             iconType="add"
             iconSize="sm"
-            textSize="xl"
+            textSize="sm"
           >
             Create entry
-          </ButtonLink>
+          </StyledButtonLink>
         </Col>
       </Menu>
       <Block className={classes.formContainer}>

@@ -20,7 +20,7 @@ import useSafeTxGas from '../useSafeTxGas'
 import { loadLastUsedProvider } from 'src/logic/wallets/store/middlewares/providerWatcher'
 let lastUsedProvider = ''
 
-loadLastUsedProvider().then(result => {
+loadLastUsedProvider().then((result) => {
   lastUsedProvider = result || ''
 })
 
@@ -208,7 +208,7 @@ export const EditTxParametersForm = ({
                     placeholder="Gas price"
                     text="Gas price"
                     component={TextField}
-                  // disabled={!areEthereumParamsVisible(parametersStatus)}
+                    // disabled={!areEthereumParamsVisible(parametersStatus)}
                   />
                 </EthereumOptions>
 

@@ -88,22 +88,21 @@ export const ScanQRModal = ({ isOpen, onClose, onScan }: Props): React.ReactElem
       </Col>
       <Hairline />
       <Row align="center" className={classes.buttonRow}>
-        <Button className={classes.button} color="secondary" minWidth={154} onClick={onClose}>
+        <Button className={classes.button} minWidth={154} onClick={onClose}>
           Close
         </Button>
-        <Button
-          className={classes.button}
-          color="primary"
-          minWidth={154}
+        <div
+          className={classes.buttonBorder}
           onClick={() => {
             setCameraBlocked(true)
             setError(null)
             setFileUploadModalOpen(false)
           }}
-          variant="contained"
         >
-          Upload an image
-        </Button>
+          <Button className={classes.buttonBorderInside} color="primary" minWidth={154} variant="contained">
+            Upload an image
+          </Button>
+        </div>
       </Row>
     </Modal>
   )

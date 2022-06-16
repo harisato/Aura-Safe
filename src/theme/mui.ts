@@ -23,7 +23,13 @@ import {
   secondaryText,
   sm,
   smallFontSize,
+  borderButtonRadius,
   xs,
+  bgBox,
+  bgInput,
+  borderLinear,
+  bgDisabledColorStep,
+  colorLinear,
 } from './variables'
 
 const palette = {
@@ -61,17 +67,17 @@ const theme = createTheme({
         fontFamily: secondaryFontFamily,
         letterSpacing: '0.9px',
         '&$disabled': {
-          color: disabled,
+          color: `${disabled} !important`,
         },
         color: disabled,
         textTransform: 'none',
-        borderRadius: sm,
+        borderRadius: borderButtonRadius,
       },
       contained: {
         boxShadow: '1px 2px 10px 0 rgba(212, 212, 211, 0.59)',
       },
       containedPrimary: {
-        backgroundColor: secondary,
+        backgroundColor: 'transparent',
       },
       containedSecondary: {
         backgroundColor: error,
@@ -104,6 +110,10 @@ const theme = createTheme({
       rounded: {
         borderRadius: sm,
       },
+      root: {
+        color: 'white !important',
+        backgroundColor: `${bgBox}`,
+      },
     },
     MuiStepper: {
       root: {
@@ -124,14 +134,20 @@ const theme = createTheme({
     MuiStepIcon: {
       root: {
         fontSize: '22px',
-        color: `${secondaryText} !important`,
+        color: `${bgDisabledColorStep} !important`,
       },
       completed: {
-        color: `${secondary} !important`,
+        color: `${colorLinear} !important`,
+        borderRadius: '50%',
       },
       active: {
-        color: `${secondary} !important`,
+        color: 'transparent !important',
+        borderRadius: '50%',
+        background: `${colorLinear}`,
         fontWeight: boldFont,
+        '& text': {
+          fill: '#121212',
+        },
       },
     },
     MuiStepContent: {
@@ -164,7 +180,7 @@ const theme = createTheme({
     },
     MuiInput: {
       root: {
-        backgroundColor: secondaryBackground,
+        backgroundColor: `${bgInput}`,
         borderRadius: '5px',
         color: primary,
         fontFamily: secondaryFontFamily,
@@ -249,10 +265,7 @@ const theme = createTheme({
     MuiStepLabel: {
       label: {
         textAlign: 'left',
-        color: secondary,
-        '&$active': {
-          color: primary,
-        },
+        color: 'white !important',
       },
     },
     MuiSvgIcon: {
@@ -309,8 +322,14 @@ const theme = createTheme({
         fontFamily: secondaryFontFamily,
         fontWeight: 'normal',
         fontSize: extraSmallFontSize,
+        '& p': {
+          color: 'white !important',
+        },
         '&$selected': {
           fontWeight: boldFont,
+          '& p': {
+            color: '#5ee6d0 !important',
+          },
         },
         '@media (min-width: 960px)': {
           fontSize: extraSmallFontSize, // override material-ui media query
@@ -329,6 +348,7 @@ const theme = createTheme({
     },
     MuiTablePagination: {
       toolbar: {
+        minHeight: '60px',
         paddingRight: '15px',
         '& > span:nth-child(2)': {
           order: 1,
@@ -361,6 +381,7 @@ const theme = createTheme({
     MuiTableSortLabel: {
       root: {
         fontSize: extraSmallFontSize,
+        color: 'white !important',
       },
       active: {
         fontWeight: boldFont,
@@ -368,12 +389,13 @@ const theme = createTheme({
     },
     MuiTableCell: {
       root: {
-        borderBottomWidth: '2px',
+        // borderBottomWidth: '2px',
         fontFamily: secondaryFontFamily,
         fontSize: mediumFontSize,
       },
       head: {
         letterSpacing: '1px',
+        color: 'white',
         textTransform: 'uppercase',
       },
       body: {
@@ -430,6 +452,14 @@ const theme = createTheme({
           color: primary,
         },
       },
+    },
+    MuiDivider: {
+      vertical: {
+        backgroundColor: 'rgba(62, 63, 64, 1)',
+      },
+    },
+    MuiTouchRipple: {
+      root: {},
     },
   },
   palette,

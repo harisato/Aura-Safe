@@ -1,4 +1,4 @@
-import { sm } from 'src/theme/variables'
+import { sm, bgBox } from 'src/theme/variables'
 import { createStyles } from '@material-ui/core'
 
 export const styles = createStyles({
@@ -11,13 +11,10 @@ export const styles = createStyles({
     left: '3px',
   },
   hide: {
-    '&:hover': {
-      backgroundColor: '#f7f5f5',
-    },
-    '&:hover $actions': {
-      visibility: 'initial',
-    },
-    '&:focus $actions': {
+    // '&:hover': {
+    //   backgroundColor: '#f7f5f5',
+    // },
+    '& $actions': {
       visibility: 'initial',
     },
   },
@@ -30,5 +27,8 @@ export const styles = createStyles({
   },
   currencyValueRow: {
     textAlign: 'right',
+  },
+  table: {
+    backgroundColor: bgBox,
   },
 })

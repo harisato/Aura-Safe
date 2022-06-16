@@ -1,6 +1,6 @@
 import { useField, useFormState } from 'react-final-form'
-
-import { ButtonStatus, Modal } from 'src/components/Modal'
+import { Modal } from 'src/components/Modal'
+import { ButtonStatus } from 'src/components/Modal/type'
 import { isReadMethod } from 'src/routes/safe/components/Balances/SendModal/screens/ContractInteraction/utils'
 
 export interface ButtonProps {

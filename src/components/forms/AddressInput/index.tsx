@@ -5,7 +5,13 @@ import InputAdornment from '@material-ui/core/InputAdornment'
 import CircularProgress from '@material-ui/core/CircularProgress'
 
 import TextField from 'src/components/forms/TextField'
-import { Validator, composeValidators, mustBeEthereumAddress, required, mustBeValidAddress } from 'src/components/forms/validator'
+import {
+  Validator,
+  composeValidators,
+  mustBeEthereumAddress,
+  required,
+  mustBeValidAddress,
+} from 'src/components/forms/validator'
 import { trimSpaces } from 'src/utils/strings'
 import { getAddressFromDomain } from 'src/logic/wallets/getWeb3'
 import { isValidEnsName, isValidCryptoDomainName } from 'src/logic/wallets/ethAddresses'

@@ -2,10 +2,6 @@ import FormGroup from '@material-ui/core/FormGroup/FormGroup'
 import Checkbox from '@material-ui/core/Checkbox/Checkbox'
 import FormControlLabel from '@material-ui/core/FormControlLabel/FormControlLabel'
 import { ChangeEvent, ReactElement, useEffect } from 'react'
-
-import Block from 'src/components/layout/Block'
-import styled from 'styled-components'
-import { lg } from 'src/theme/variables'
 import Heading from 'src/components/layout/Heading'
 import Paragraph from 'src/components/layout/Paragraph'
 import { copyShortNameSelector, showShortNameSelector } from 'src/logic/appearance/selectors'
@@ -13,18 +9,10 @@ import { useDispatch, useSelector } from 'react-redux'
 import { setShowShortName } from 'src/logic/appearance/actions/setShowShortName'
 import { setCopyShortName } from 'src/logic/appearance/actions/setCopyShortName'
 import { extractSafeAddress } from 'src/routes/routes'
-import PrefixedEthHashInfo from 'src/components/PrefixedEthHashInfo'
 import { useAnalytics, SETTINGS_EVENTS } from 'src/utils/googleAnalytics'
-
+import { Container, StyledPrefixedEthHashInfo } from './styles'
 // Other settings sections use MUI createStyles .container
 // will adjust that during dark mode implementation
-const Container = styled(Block)`
-  padding: ${lg};
-`
-
-const StyledPrefixedEthHashInfo = styled(PrefixedEthHashInfo)`
-  margin-bottom: 1em;
-`
 
 const Appearance = (): ReactElement => {
   const dispatch = useDispatch()

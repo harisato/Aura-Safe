@@ -3,31 +3,7 @@ import CollapseMUI from '@material-ui/core/Collapse'
 import IconButton from '@material-ui/core/IconButton'
 import ExpandLess from '@material-ui/icons/ExpandLess'
 import ExpandMore from '@material-ui/icons/ExpandMore'
-import styled from 'styled-components'
-
-const Wrapper = styled.div`
-  width: 100%;
-`
-
-const HeaderWrapper = styled.div`
-  display: flex;
-  align-items: center;
-  padding: 15px 0 3px;
-  cursor: pointer;
-  user-select: none;
-
-  & > * {
-    margin-right: 5px;
-  }
-`
-
-const TitleWrapper = styled.div``
-
-const Header = styled.div`
-  display: flex;
-  align-items: center;
-`
-
+import { Wrapper, HeaderWrapper, TitleWrapper, Header } from './styles'
 interface CollapseProps {
   title: React.ReactElement | string
   description?: React.ReactElement | string

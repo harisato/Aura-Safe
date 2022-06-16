@@ -140,7 +140,7 @@ function Allow(): ReactElement {
   const onSubmitAllowSafe = async (values: AllowSafeFormValues): Promise<void> => {
     const id = values[FIELD_ALLOW_SAFE_ID]
 
-    let lastUsedProvider = await loadLastUsedProvider()
+    const lastUsedProvider = await loadLastUsedProvider()
 
     let walletKey
 

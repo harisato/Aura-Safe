@@ -1,0 +1,18 @@
+import styled from 'styled-components'
+import { lg, green } from 'src/theme/variables'
+import Block from 'src/components/layout/Block'
+
+const BlockWithPadding = styled(Block)`
+  padding: ${lg};
+`
+
+const FieldContainer = styled(Block)`
+  display: flex;
+  max-width: 480px;
+  margin-top: 12px;
+`
+
+const Link = styled.a`
+  color: ${green};
+`
+export { BlockWithPadding, FieldContainer, Link }

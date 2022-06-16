@@ -1,20 +1,16 @@
 import { ReactElement, useState, useEffect, useCallback } from 'react'
-import IconButton from '@material-ui/core/IconButton'
 import ChevronLeft from '@material-ui/icons/ChevronLeft'
-import styled from 'styled-components'
 import { useDispatch, useSelector } from 'react-redux'
 import queryString from 'query-string'
 import { useLocation } from 'react-router'
-import { GenericModal, Loader } from '@gnosis.pm/safe-react-components'
-
+import { Loader } from '@gnosis.pm/safe-react-components'
 import Page from 'src/components/layout/Page'
 import Block from 'src/components/layout/Block'
 import Row from 'src/components/layout/Row'
 import Heading from 'src/components/layout/Heading'
 import { generateSafeRoute, generateSafeRouteWithChainId, history, SAFE_ROUTES, WELCOME_ROUTE } from 'src/routes/routes'
-import { sm, secondary, boldFont } from 'src/theme/variables'
 import StepperForm, { StepFormElement } from 'src/components/StepperForm/StepperForm'
-import NameNewSafeStep, { nameNewSafeStepLabel } from './steps/NameNewSafeStep'
+import NameNewSafeStep, { nameNewSafeStepLabel } from './steps/NameNewSafeStep/NameNewSafeStep'
 import {
   CreateSafeFormValues,
   FIELD_CREATE_CUSTOM_SAFE_NAME,
@@ -31,10 +27,12 @@ import { providerNameSelector, shouldSwitchWalletChain, userAccountSelector } fr
 import OwnersAndConfirmationsNewSafeStep, {
   ownersAndConfirmationsNewSafeStepLabel,
   ownersAndConfirmationsNewSafeStepValidations,
-} from './steps/OwnersAndConfirmationsNewSafeStep'
+} from './steps/OwnersAndConfirmationsNewSafeStep/OwnersAndConfirmationsNewSafeStep'
 import { currentNetworkAddressBookAsMap } from 'src/logic/addressBook/store/selectors'
-import ReviewNewSafeStep, { reviewNewSafeStepLabel } from './steps/ReviewNewSafeStep'
-import SelectWalletAndNetworkStep, { selectWalletAndNetworkStepLabel } from './steps/SelectWalletAndNetworkStep'
+import ReviewNewSafeStep, { reviewNewSafeStepLabel } from './steps/ReviewNewSafeStep/ReviewNewSafeStep'
+import SelectWalletAndNetworkStep, {
+  selectWalletAndNetworkStepLabel,
+} from './steps/SelectWalletAndNetworkStep/SelectWalletAndNetworkStep'
 
 import { createMSafe, ISafeCreate } from 'src/services'
 import { getInternalChainId, getShortName, _getChainId } from 'src/config'
@@ -55,6 +53,14 @@ import { loadFromStorage, saveToStorage } from 'src/utils/storage'
 import { SignBytesResult, useWallet, verifyBytes } from '@terra-money/wallet-provider'
 import { loadLastUsedProvider } from '../../logic/wallets/store/middlewares/providerWatcher'
 import { WALLETS_NAME } from '../../logic/wallets/constant/wallets'
+import {
+  LoaderContainer,
+  BackIcon,
+  EmphasisLabel,
+  ButtonContainer,
+  StyledGenericModal,
+  StyledButtonBorder,
+} from './styles'
 
 type ModalDataType = {
   safeAddress: string
@@ -229,7 +235,9 @@ function CreateSafePage(): ReactElement {
             <BackIcon disableRipple onClick={history.goBack}>
               <ChevronLeft />
             </BackIcon>
-            <Heading tag="h2">Create new Safe</Heading>
+            <Heading tag="h2" color="white">
+              Create new Safe
+            </Heading>
           </Row>
           <StepperForm initialValues={initialFormValues} onSubmit={showSafeCreationProcess} testId={'create-safe-form'}>
             <StepFormElement
@@ -257,7 +265,7 @@ function CreateSafePage(): ReactElement {
       </Page>
 
       {showCreatedModal && (
-        <GenericModal
+        <StyledGenericModal
           onClose={onClickModalButton}
           title={pendingSafe ? 'Confirmation' : 'Safe Created!'}
           body={
@@ -292,7 +300,7 @@ function CreateSafePage(): ReactElement {
           }
           footer={
             <ButtonContainer>
-              <Button
+              <StyledButtonBorder
                 testId="safe-created-button"
                 onClick={onClickModalButton}
                 color="primary"
@@ -301,7 +309,7 @@ function CreateSafePage(): ReactElement {
                 variant="contained"
               >
                 Continue
-              </Button>
+              </StyledButtonBorder>
             </ButtonContainer>
           }
         />
@@ -437,23 +445,3 @@ export const updateAddressBook = async (newAddress: string, formValues: CreateSa
   )
   await dispatch(addressBookSafeLoad([...ownersAddressBookEntry]))
 }
-
-const LoaderContainer = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100%;
-`
-
-const BackIcon = styled(IconButton)`
-  color: ${secondary};
-  padding: ${sm};
-  margin-right: 5px;
-`
-const EmphasisLabel = styled.span`
-  font-weight: ${boldFont};
-`
-
-const ButtonContainer = styled.div`
-  text-align: center;
-`
