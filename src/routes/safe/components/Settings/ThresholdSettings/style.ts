@@ -1,5 +1,5 @@
 import { createStyles } from '@material-ui/core/styles'
-import { border, fontColor, lg, secondaryText, smallFontSize, xl } from 'src/theme/variables'
+import { border, fontColor, lg, secondaryText, smallFontSize, xl, bgBox } from 'src/theme/variables'
 
 export const styles = createStyles({
   ownersText: {
@@ -10,6 +10,8 @@ export const styles = createStyles({
   },
   container: {
     padding: lg,
+    backgroundColor: bgBox,
+    borderRadius: 8,
   },
   buttonRow: {
     padding: lg,

@@ -1,4 +1,4 @@
-import { background, lg, secondaryText, sm } from 'src/theme/variables'
+import { lg, secondaryText, sm, bgDisabledColorStep, colorLinear, borderLinear } from 'src/theme/variables'
 import { createStyles } from '@material-ui/core'
 
 export const styles = createStyles({
@@ -18,7 +18,7 @@ export const styles = createStyles({
     color: secondaryText,
   },
   detailsContainer: {
-    backgroundColor: background,
+    backgroundColor: bgDisabledColorStep,
     maxHeight: '450px',
   },
   buttonRow: {
@@ -26,8 +26,20 @@ export const styles = createStyles({
     justifyContent: 'center',
   },
   button: {
+    background: colorLinear,
     '&:last-child': {
       marginLeft: sm,
     },
+  },
+  buttonBorder: {
+    border: ' 2px solid transparent',
+    backgroundImage: borderLinear,
+    backgroundOrigin: 'border-box',
+    backgroundClip: 'content-box, border-box',
+    borderRadius: 50,
+    marginLeft: sm,
+  },
+  buttonBorderInside: {
+    background: 'transparent',
   },
 })

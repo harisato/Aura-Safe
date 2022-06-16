@@ -12,7 +12,8 @@ import { useDispatch, useSelector } from 'react-redux'
 
 import { useStyles } from './style'
 
-import Modal, { ButtonStatus, Modal as GenericModal } from 'src/components/Modal'
+import Modal, { Modal as GenericModal } from 'src/components/Modal'
+import { ButtonStatus } from 'src/components/Modal/type'
 import { ReviewInfoText } from 'src/components/ReviewInfoText'
 import Block from 'src/components/layout/Block'
 import Bold from 'src/components/layout/Bold'
@@ -55,9 +56,19 @@ import fetchTransactions from 'src/logic/safe/store/actions/transactions/fetchTr
 import { fetchSafe } from 'src/logic/safe/store/actions/fetchSafe'
 import { generatePath } from 'react-router-dom'
 import { fromBase64, toBase64 } from '@cosmjs/encoding'
-import { ConnectType, CreateTxFailed, SignResult, Timeout, TxFailed, TxUnspecifiedError, useConnectedWallet, UserDenied, useWallet } from '@terra-money/wallet-provider'
+import {
+  ConnectType,
+  CreateTxFailed,
+  SignResult,
+  Timeout,
+  TxFailed,
+  TxUnspecifiedError,
+  useConnectedWallet,
+  UserDenied,
+  useWallet,
+} from '@terra-money/wallet-provider'
 import { ICreateSafeTransaction } from 'src/types/transaction'
-import { MsgSend, MnemonicKey, Coins, LCDClient, Fee, LegacyAminoMultisigPublicKey } from '@terra-money/terra.js';
+import { MsgSend, MnemonicKey, Coins, LCDClient, Fee, LegacyAminoMultisigPublicKey } from '@terra-money/terra.js'
 import { loadLastUsedProvider } from 'src/logic/wallets/store/middlewares/providerWatcher'
 
 export const APPROVE_TX_MODAL_SUBMIT_BTN_TEST_ID = 'approve-tx-modal-submit-btn'
@@ -96,10 +107,10 @@ const useTxInfo = (transaction: Props['transaction']) => {
     () =>
       t.current.txDetails.detailedExecutionInfo && isMultiSigExecutionDetails(t.current.txDetails.detailedExecutionInfo)
         ? List(
-          t.current.txDetails.detailedExecutionInfo.confirmations.map(({ signer, signature }) =>
-            makeConfirmation({ owner: signer.value, signature }),
-          ),
-        )
+            t.current.txDetails.detailedExecutionInfo.confirmations.map(({ signer, signature }) =>
+              makeConfirmation({ owner: signer.value, signature }),
+            ),
+          )
         : List([]),
     [],
   )
@@ -316,9 +327,7 @@ export const ApproveTxModal = ({
 
   const doExecute = isExecution && approveAndExecute
   const [buttonStatus] = useEstimationStatus(txEstimationExecutionStatus)
-  const {
-    connect
-  } = useWallet();
+  const { connect } = useWallet()
   const connectedWallet = useConnectedWallet()
 
   const approveTx = async (txParameters: TxParameters) => {
@@ -361,7 +370,7 @@ export const ApproveTxModal = ({
         } else {
           // case when Confirm Click
           const lastUsedProvider = await loadLastUsedProvider()
-          if(lastUsedProvider?.toLowerCase() === 'keplr') {
+          if (lastUsedProvider?.toLowerCase() === 'keplr') {
             signTransactionWithKeplr(safeAddress)
           } else {
             signTransactionWithTerra(safeAddress)
@@ -410,15 +419,14 @@ export const ApproveTxModal = ({
     }
 
     const amountFinal = value
-    const send = new MsgSend(
-      safeAddress,
-      to,
-      { uluna: amountFinal }
-    );
+    const send = new MsgSend(safeAddress, to, { uluna: amountFinal })
 
     connectedWallet!
       .sign({
-        fee: new Fee(Number(manualGasLimit) || Number(gasLimit), String(manualGasPrice || gasPriceFormatted).concat(denom)),
+        fee: new Fee(
+          Number(manualGasLimit) || Number(gasLimit),
+          String(manualGasPrice || gasPriceFormatted).concat(denom),
+        ),
         msgs: [send],
       })
       .then(async (signResult: SignResult) => {
@@ -451,8 +459,7 @@ export const ApproveTxModal = ({
           dispatch(enqueueSnackbar(enhanceSnackbarForAction(NOTIFICATIONS.SOMETHING_WENT_WRONG)))
         }
         onClose()
-      });
-
+      })
   }
 
   const signTransactionWithKeplr = async (safeAddress: string) => {

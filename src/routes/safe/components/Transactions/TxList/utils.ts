@@ -124,8 +124,8 @@ export const isCancelTxDetails = (txInfo: Transaction['txInfo']): boolean =>
 
 export const addressInList =
   (list: AddressEx[] = []) =>
-    (address: string): boolean =>
-      list.some((ownerAddress) => sameAddress(ownerAddress.value, address))
+  (address: string): boolean =>
+    list.some((ownerAddress) => sameAddress(ownerAddress.value, address))
 
 export const getTxTo = ({ txInfo }: Pick<Transaction, 'txInfo'>): AddressEx | undefined => {
   switch (txInfo.type) {
@@ -214,7 +214,7 @@ export const isAwaitingExecution = (
 ): boolean => [LocalTransactionStatus.AWAITING_EXECUTION, LocalTransactionStatus.PENDING_FAILED].includes(txStatus)
 
 export const makeTransactionDetail = (txDetail: any): any => {
-  let confirmationList: Array<any> = []
+  const confirmationList: Array<any> = []
   if (txDetail?.Confirmations && txDetail?.Confirmations.length > 0) {
     txDetail?.Confirmations.forEach((confirmationItem) => {
       const item = {
@@ -228,7 +228,7 @@ export const makeTransactionDetail = (txDetail: any): any => {
     })
   }
 
-  let signerList: Array<any> = []
+  const signerList: Array<any> = []
   if (txDetail?.Signers && txDetail?.Signers.length > 0) {
     txDetail?.Signers.forEach((signerItem) => {
       const item = {
@@ -319,38 +319,44 @@ export const makeTransactionDetail = (txDetail: any): any => {
     txStatus: txDetail.Status,
   }
 }
-export const makeHistoryTransactionsFromService = (list: ITransactionListItem[], currentPayload?: ITransactionListQuery): TransactionListPage => {
+export const makeHistoryTransactionsFromService = (
+  list: ITransactionListItem[],
+  currentPayload?: ITransactionListQuery,
+): TransactionListPage => {
   const transaction: MTransactionListItem[] = makeTransactions(list)
 
-  let next: string | undefined = undefined;
+  let next: string | undefined = undefined
 
   if (list?.length >= DEFAULT_PAGE_SIZE) {
     const nextPage = currentPayload ? currentPayload.pageIndex + 1 : DEFAULT_PAGE_FIRST + 1
     next = JSON.stringify({ pageIndex: nextPage })
   }
 
-  let page: TransactionListPage = {
+  const page: TransactionListPage = {
     results: [...transaction],
     next,
-    previous: undefined
+    previous: undefined,
   }
 
   return page
 }
 
-export const makeQueueTransactionsFromService = (list: ITransactionListItem[], currentPayload?: ITransactionListQuery): TransactionListPage => {
-  const transaction: MTransactionListItem[] = makeTransactions(list) 
-  let next: string | undefined = undefined;
+export const makeQueueTransactionsFromService = (
+  list: ITransactionListItem[],
+  currentPayload?: ITransactionListQuery,
+): TransactionListPage => {
+  const transaction: MTransactionListItem[] = makeTransactions(list)
+  let next: string | undefined = undefined
 
   if (list.length >= DEFAULT_PAGE_SIZE) {
     const nextPage = currentPayload ? currentPayload.pageIndex + 1 : DEFAULT_PAGE_FIRST + 1
     next = JSON.stringify({ pageIndex: nextPage })
   }
 
-  let page: TransactionListPage = {
+  const page: TransactionListPage = {
     results: [...transaction],
     next,
-    previous: undefined
+    previous: undefined,
   }
   return page
 }
@@ -370,7 +376,7 @@ const makeTransactions = (list: ITransactionListItem[]): MTransactionListItem[] 
       id: tx.Id.toString(),
       txHash: tx.TxHash,
       timestamp: new Date(tx.UpdatedAt).getTime(),
-      txStatus: (tx.Status) as TransactionStatus,
+      txStatus: tx.Status as TransactionStatus,
       txInfo: {
         type: 'Transfer',
         sender: {

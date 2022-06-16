@@ -1,7 +1,7 @@
 import { Dispatch, SetStateAction, useEffect, useState } from 'react'
 
 import { EstimationStatus } from './useEstimateTransactionGas'
-import { ButtonStatus } from 'src/components/Modal'
+import { ButtonStatus } from 'src/components/Modal/type'
 
 export const useEstimationStatus = (
   txEstimationStatus?: EstimationStatus,

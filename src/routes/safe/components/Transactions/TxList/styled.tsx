@@ -13,6 +13,7 @@ export const ContentWrapper = styled.div`
   flex-direction: column;
   flex-grow: 1;
   align-items: center;
+  color: white;
 `
 
 export const ColumnDisplayAccordionDetails = styled(AccordionDetails)`
@@ -70,7 +71,7 @@ export const SubTitle = styled(Text)`
   font-weight: 600;
   line-height: 1.5;
   letter-spacing: 1px;
-  color: ${({ theme }) => theme.colors.placeHolder};
+  color: ${({ theme }) => theme.colors.white};
   text-transform: uppercase;
 `
 

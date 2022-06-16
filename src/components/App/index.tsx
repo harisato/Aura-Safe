@@ -18,7 +18,7 @@ import { currentCurrencySelector } from 'src/logic/currencyValues/store/selector
 import Modal from 'src/components/Modal'
 import SendModal from 'src/routes/safe/components/Balances/SendModal'
 import { useLoadSafe } from 'src/logic/safe/hooks/useLoadSafe'
-import  useConnectWallet  from 'src/logic/hooks/useConnectWallet'
+import useConnectWallet from 'src/logic/hooks/useConnectWallet'
 import { useSafeScheduledUpdates } from 'src/logic/safe/hooks/useSafeScheduledUpdates'
 import useSafeActions from 'src/logic/safe/hooks/useSafeActions'
 import { formatAmountInUsFormat } from 'src/logic/tokens/utils/formatAmount'
@@ -62,7 +62,7 @@ const App: React.FC = ({ children }) => {
   const addressFromUrl = extractSafeAddress()
   const safeIdFromUrl = extractSafeId()
   const { safeActionsState, onShow, onHide, showSendFunds, hideSendFunds } = useSafeActions()
-  const  { connectWalletState, onConnectWalletShow, onConnectWalletHide } =  useConnectWallet()
+  const { connectWalletState, onConnectWalletShow, onConnectWalletHide } = useConnectWallet()
   const currentCurrency = useSelector(currentCurrencySelector)
   const granted = useSelector(grantedSelector)
   const sidebarItems = useSidebarItems()
@@ -121,7 +121,10 @@ const App: React.FC = ({ children }) => {
             {children}
           </AppLayout>
 
-          <ConnectWalletModal isOpen={connectWalletState.showConnect} onClose={onConnectWalletHide} ></ConnectWalletModal>
+          <ConnectWalletModal
+            isOpen={connectWalletState.showConnect}
+            onClose={onConnectWalletHide}
+          ></ConnectWalletModal>
 
           <SendModal
             activeScreenType="chooseTxType"
