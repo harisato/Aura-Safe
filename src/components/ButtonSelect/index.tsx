@@ -1,68 +1,70 @@
 import React from 'react'
-import { makeStyles, withStyles } from '@material-ui/core/styles'
-import InputLabel from '@material-ui/core/InputLabel'
-import MenuItem from '@material-ui/core/MenuItem'
+import { makeStyles } from '@material-ui/core/styles'
 import FormControl from '@material-ui/core/FormControl'
 import Select from '@material-ui/core/Select'
-import NativeSelect from '@material-ui/core/NativeSelect'
-import InputBase from '@material-ui/core/InputBase'
-
-const BootstrapInput = withStyles((theme) => ({
-  root: {
-    'label + &': {
-      marginTop: theme.spacing(3),
-    },
-  },
-  input: {
-    borderRadius: 4,
-    position: 'relative',
-    backgroundColor: theme.palette.background.paper,
-    border: '1px solid #ced4da',
-    fontSize: 16,
-    padding: '10px 26px 10px 12px',
-    transition: theme.transitions.create(['border-color', 'box-shadow']),
-    // Use the system font instead of the default Roboto font.
-    fontFamily: [
-      '-apple-system',
-      'BlinkMacSystemFont',
-      '"Segoe UI"',
-      'Roboto',
-      '"Helvetica Neue"',
-      'Arial',
-      'sans-serif',
-      '"Apple Color Emoji"',
-      '"Segoe UI Emoji"',
-      '"Segoe UI Symbol"',
-    ].join(','),
-    '&:focus': {
-      borderRadius: 4,
-      borderColor: '#80bdff',
-      boxShadow: '0 0 0 0.2rem rgba(0,123,255,.25)',
-    },
-  },
-}))(InputBase)
+import Input from '@material-ui/core/Input'
+import { borderLinear } from 'src/theme/variables'
 
 const useStyles = makeStyles((theme) => ({
-  margin: {
-    margin: theme.spacing(1),
+  formControl: {
+    '& .MuiInput-underline': {
+      '&::after': {
+        borderBottomColor: 'transparent',
+      },
+    },
+    '& .MuiSelect-select': {
+      border: 'none',
+    },
+    '& .MuiSelect-select:not([multiple]) option, .MuiSelect-select:not([multiple]) optgroup': {
+      backgroundColor: '#131419',
+      borderRadius: 10,
+      fontSize: 16,
+      border: 'none',
+    },
+  },
+  boxSelect: {
+    backgroundColor: 'transparent',
+    color: 'white !important',
+    height: 27,
+  },
+  selectMenu: {
+    marginLeft: 10,
+    border: '2px solid transparent',
+    borderRadius: '20px',
+    backgroundImage: borderLinear,
+    transition: '0.3s',
+    backgroundOrigin: 'border-box',
+    backgroundClip: 'content-box, border-box',
+  },
+  optionSelect: {
+    backgroundColor: 'red',
   },
 }))
 
-export default function CustomizedSelects() {
+export default function CustomizedSelects(props) {
+  const { handleButtonDelegate } = props
   const classes = useStyles()
-  const [age, setAge] = React.useState('')
+  const [age, setAge] = React.useState(1)
+
   const handleChange = (event) => {
     setAge(event.target.value)
+    handleButtonDelegate(event.target.value)
   }
+
   return (
-    <div>
-      <FormControl className={classes.margin}>
-        <NativeSelect id="demo-customized-select-native" value={age} onChange={handleChange} input={<BootstrapInput />}>
-          <option aria-label="None" value="" />
-          <option value={10}>Ten</option>
-          <option value={20}>Twenty</option>
-          <option value={30}>Thirty</option>
-        </NativeSelect>
+    <div className={classes.selectMenu}>
+      <FormControl className={classes.formControl}>
+        <Select
+          native
+          value={age}
+          onChange={handleChange}
+          variant="standard"
+          className={classes.boxSelect}
+          input={<Input id="demo-dialog-native" />}
+        >
+          <option value={1}>Delegate</option>
+          <option value={2}>Redelegate</option>
+        </Select>
       </FormControl>
     </div>
   )
