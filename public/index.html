@@ -1,64 +1,59 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="terra-wallet" />
-    <link rel="shortcut icon" href="favicon.ico" />
-    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
-    <base href="%PUBLIC_URL%/" />
-    <!-- Google Tag Manager -->
-    <script>
-      ;(function (w, d, s, l, i) {
-        w[l] = w[l] || []
-        w[l].push({ 'gtm.start': new Date().getTime(), event: 'gtm.js' })
-        var f = d.getElementsByTagName(s)[0],
-          j = d.createElement(s),
-          dl = l != 'dataLayer' ? '&l=' + l : ''
-        j.async = true
-        j.src = 'https://www.googletagmanager.com/gtm.js?id=' + i + dl
-        f.parentNode.insertBefore(j, f)
-      })(window, document, 'script', 'dataLayer', 'GTM-K3NWXQS')
-    </script>
-    <!-- End Google Tag Manager -->
-    <title>Aura Safe</title>
-  </head>
-  <style>
-    #safe-preloader-animation {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      width: 120px;
-      height: 120px;
-      margin: -60px 0 0 -60px;
-      animation: sk-bounce 2s infinite ease-in-out;
-      animation-delay: -1s;
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="terra-wallet" />
+  <link rel="shortcut icon" href="favicon.ico" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
+  <base href="%PUBLIC_URL%/" />
+  <!-- Google Tag Manager -->
+  <script>(function (w, d, s, l, i) {
+      w[l] = w[l] || []; w[l].push({
+        'gtm.start':
+          new Date().getTime(), event: 'gtm.js'
+      }); var f = d.getElementsByTagName(s)[0],
+        j = d.createElement(s), dl = l != 'dataLayer' ? '&l=' + l : ''; j.async = true; j.src =
+          'https://www.googletagmanager.com/gtm.js?id=' + i + dl; f.parentNode.insertBefore(j, f);
+    })(window, document, 'script', 'dataLayer', 'GTM-K3NWXQS');</script>
+  <!-- End Google Tag Manager -->
+  <title>Aura Safe</title>
+</head>
+<style>
+  #safe-preloader-animation {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 120px;
+    height: 120px;
+    margin: -60px 0 0 -60px;
+    animation: sk-bounce 2s infinite ease-in-out;
+    animation-delay: -1s;
+  }
+
+  @keyframes sk-bounce {
+
+    0%,
+    100% {
+      transform: scale(0.8);
+      -webkit-transform: scale(0.8);
     }
 
-    @keyframes sk-bounce {
-      0%,
-      100% {
-        transform: scale(0.8);
-        -webkit-transform: scale(0.8);
-      }
-      50% {
-        transform: scale(1);
-        -webkit-transform: scale(1);
-      }
+    50% {
+      transform: scale(1);
+      -webkit-transform: scale(1);
     }
-  </style>
-  <body>
-    <!-- Google Tag Manager (noscript) -->
-    <noscript
-      ><iframe
-        src="https://www.googletagmanager.com/ns.html?id=GTM-K3NWXQS"
-        height="0"
-        width="0"
-        style="display: none; visibility: hidden"
-      ></iframe
-    ></noscript>
-    <!-- End Google Tag Manager (noscript) -->
-    <img id="safe-preloader-animation" src="./resources/Logo.svg" />
-    <div id="root" style="overflow: hidden"></div>
-  </body>
+  }
+</style>
+
+<body>
+  <!-- Google Tag Manager (noscript) -->
+  <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-K3NWXQS" height="0" width="0"
+      style="display:none;visibility:hidden"></iframe></noscript>
+  <!-- End Google Tag Manager (noscript) -->
+  <img id="safe-preloader-animation" src="./resources/Logo.svg" />
+  <div id="root" style="overflow: hidden"></div>
+</body>
+
 </html>
