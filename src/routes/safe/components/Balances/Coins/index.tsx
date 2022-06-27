@@ -1,5 +1,4 @@
 import { useEffect, useMemo } from 'react'
-import styled from 'styled-components'
 import { useSelector } from 'react-redux'
 import { List } from 'immutable'
 import TableCell from '@material-ui/core/TableCell'
@@ -7,7 +6,6 @@ import Tooltip from '@material-ui/core/Tooltip'
 import TableContainer from '@material-ui/core/TableContainer'
 import TableRow from '@material-ui/core/TableRow'
 import { Skeleton } from '@material-ui/lab'
-
 import InfoIcon from 'src/assets/icons/info_red.svg'
 import { FixedIcon, Text, Button } from '@gnosis.pm/safe-react-components'
 
@@ -28,19 +26,8 @@ import {
 import { extendedSafeTokensSelector, grantedSelector } from 'src/routes/safe/container/selector'
 import { useAnalytics, SAFE_EVENTS } from 'src/utils/googleAnalytics'
 import { makeStyles } from '@material-ui/core/styles'
-import { styles } from './styles'
+import { styles, StyledButton } from './styles'
 import { currentCurrencySelector } from 'src/logic/currencyValues/store/selectors'
-
-const StyledButton = styled(Button)`
-  &&.MuiButton-root {
-    margin: 4px 12px 4px 0px;
-    padding: 0 12px;
-    min-width: auto;
-  }
-  svg {
-    margin: 0 6px 0 0;
-  }
-`
 
 const useStyles = makeStyles(styles)
 

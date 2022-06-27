@@ -387,9 +387,15 @@ const theme = createTheme({
         fontWeight: boldFont,
       },
     },
+    MuiTableRow: {
+      head: {
+        borderBottom: '1px solid #3E3F40',
+      },
+    },
     MuiTableCell: {
       root: {
         // borderBottomWidth: '2px',
+        borderBottom: '0px',
         fontFamily: secondaryFontFamily,
         fontSize: mediumFontSize,
       },
