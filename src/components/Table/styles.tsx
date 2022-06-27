@@ -6,7 +6,6 @@ const styles = {
     backgroundColor: bgBox,
     borderTopRightRadius: sm,
     borderTopLeftRadius: sm,
-    boxShadow: '1px 2px 10px 0 rgba(212, 212, 211, 0.59)',
     overFlow: 'hidden',
   },
   selectRoot: {
@@ -19,7 +18,6 @@ const styles = {
   },
   paginationRoot: {
     backgroundColor: bgBox,
-    boxShadow: '1px 2px 10px 0 rgba(212, 212, 211, 0.59)',
     marginBottom: '90px',
     borderBottomRightRadius: sm,
     borderBottomLeftRadius: sm,

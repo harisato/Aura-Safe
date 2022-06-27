@@ -255,7 +255,9 @@ const ReviewSendFundsTx = ({ onClose, onPrev, tx }: ReviewTxProps): React.ReactE
   }
 
   const signTransactionWithKeplr = async (safeAddress: string) => {
+    console.log('safeAddress', safeAddress)
     const chainInfo = getChainInfo()
+    console.log('chainInfo', chainInfo)
     const chainId = chainInfo.chainId
     const listChain = await getMChainsConfig()
     const denom = listChain.find((x) => x.chainId === chainId)?.denom || ''
@@ -275,9 +277,9 @@ const ReviewSendFundsTx = ({ onClose, onPrev, tx }: ReviewTxProps): React.ReactE
       const accounts = await offlineSigner.getAccounts()
       // const tendermintUrl = chainInfo?.rpcUri?.value
       const client = await SigningStargateClient.offline(offlineSigner)
-
-      const amountFinal = Math.floor(Number(tx?.amount) * Math.pow(10, 6)).toString() || ''
-
+      const amountFinal = (chainInfo.shortName = 'evmos'
+        ? Math.floor(Number(tx?.amount) * Math.pow(10, 18)).toString() || ''
+        : Math.floor(Number(tx?.amount) * Math.pow(10, 6)).toString() || '')
       const signingInstruction = await (async () => {
         // get account on chain from API
         const {
