@@ -255,7 +255,7 @@ function CreateSafePage(): ReactElement {
           </StepperForm>
         </Block>
       </Page>
-      {true && (
+      {showCreatedModal && (
         <Modal
           description="Select a Wallet"
           handleClose={onClickModalButton}

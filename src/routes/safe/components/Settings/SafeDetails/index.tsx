@@ -3,8 +3,7 @@ import { ReactElement, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import styled from 'styled-components'
 
-import { styles } from './style'
-
+import { styles, StyledBorder, StyledButtonBorder, StyledButtonLabel } from './style'
 import Modal from 'src/components/Modal'
 import Field from 'src/components/forms/Field'
 import GnoForm from 'src/components/forms/GnoForm'
@@ -187,16 +186,17 @@ const SafeDetails = (): ReactElement => {
 
           <Row align="end" className={classes.controlsRow} grow>
             <Col end="xs">
-              <Button
-                className={classes.saveBtn}
-                color="primary"
-                size="small"
-                testId={SAFE_NAME_SUBMIT_BTN_TEST_ID}
-                type="submit"
-                variant="contained"
-              >
-                Save
-              </Button>
+              <StyledBorder>
+                <StyledButtonBorder
+                  testId={SAFE_NAME_SUBMIT_BTN_TEST_ID}
+                  iconType="safe"
+                  iconSize="sm"
+                  size="lg"
+                  type="submit"
+                >
+                  <StyledButtonLabel size="xl"> Save </StyledButtonLabel>
+                </StyledButtonBorder>
+              </StyledBorder>
             </Col>
           </Row>
           <Modal description="Update Safe" handleClose={toggleModal} open={isModalOpen} title="Update Safe">

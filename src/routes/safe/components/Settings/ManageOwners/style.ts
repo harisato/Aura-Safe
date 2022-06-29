@@ -9,13 +9,13 @@ export const useStyles = makeStyles(
       minHeight: 'min-content',
       backgroundColor: `${bgBox}`,
       borderRadius: 8,
+      padding: lg
     },
     title: {
-      padding: lg,
       paddingBottom: 0,
     },
     annotation: {
-      paddingLeft: lg,
+      // paddingLeft: lg,
     },
     hide: {
       // '&:hover': {
@@ -30,6 +30,9 @@ export const useStyles = makeStyles(
       visibility: 'hidden',
       minWidth: '100px',
       gap: '16px',
+    },
+    tr: {
+      height: '60px',
     },
     noBorderBottom: {
       '& > td': {

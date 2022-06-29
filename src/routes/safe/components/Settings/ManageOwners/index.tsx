@@ -97,7 +97,7 @@ const ManageOwners = ({ granted, owners }: Props): ReactElement => {
             {(sortedData) =>
               sortedData.map((row, index) => (
                 <TableRow
-                  className={cn(classes.hide, index >= 3 && index === sortedData.size - 1 && classes.noBorderBottom)}
+                  className={cn(classes.hide, index >= 3 && index === sortedData.size - 1 && classes.noBorderBottom, classes.tr)}
                   data-testid={OWNERS_ROW_TEST_ID}
                   key={index}
                 >
