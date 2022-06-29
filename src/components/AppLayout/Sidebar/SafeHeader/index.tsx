@@ -18,6 +18,7 @@ import {
   StyledPrefixedEthHashInfo,
   StyledLabel,
   StyledText,
+  StyledDotChainName,
 } from './styles'
 
 const SafeHeader = ({
@@ -52,9 +53,9 @@ const SafeHeader = ({
     <>
       {/* Network */}
       <StyledTextLabel size="lg" chainInfo={chainInfo}>
+        <StyledDotChainName />
         {chainInfo.chainName}
       </StyledTextLabel>
-
       <Container>
         {/* Identicon */}
         <IdenticonContainer>
@@ -87,10 +88,10 @@ const SafeHeader = ({
         )}
 
         <StyledText size="xl">{/* balance */}</StyledText>
-        <StyledButton size="md" disabled={!granted} color="primary" variant="contained" onClick={onNewTransactionClick}>
+        <StyledButton size="md" disabled={!granted} color="primary" onClick={onNewTransactionClick}>
           <FixedIcon type="arrowSentWhite" />
           <Text size="xl" color="white">
-            New transaction
+            Send funds
           </Text>
         </StyledButton>
       </Container>

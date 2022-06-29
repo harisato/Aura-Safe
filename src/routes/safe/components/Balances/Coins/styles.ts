@@ -1,7 +1,8 @@
-import { sm, bgBox } from 'src/theme/variables'
+import { sm, bgBox, borderLinear } from 'src/theme/variables'
 import { createStyles } from '@material-ui/core'
 import styled from 'styled-components'
-import { Button } from '@gnosis.pm/safe-react-components'
+import { Button, Text } from '@gnosis.pm/safe-react-components'
+
 const styles = createStyles({
   iconSmall: {
     fontSize: 16,
@@ -34,14 +35,23 @@ const styles = createStyles({
   },
 })
 
-const StyledButton = styled(Button)`
-  &&.MuiButton-root {
-    margin: 4px 12px 4px 0px;
-    padding: 0 12px;
-    min-width: auto;
-  }
+const StyledButton = styled.div`
   svg {
-    margin: 0 6px 0 0;
+    margin-right: 5px;
   }
+  display: flex;
+  border-radius: 50px;
+  justify-content: center;
+  align-items: center;
+  width: 100px;
+  height: 30px;
+  background-color: transparent;
+  border: 2px solid transparent;
+  background-image: ${borderLinear};
+  background-origin: border-box;
+  background-clip: content-box, border-box;
+  cursor: pointer;
+  margin-left: 10px;
 `
+
 export { StyledButton, styles }

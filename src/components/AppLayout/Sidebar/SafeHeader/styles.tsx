@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import PrefixedEthHashInfo from 'src/components/PrefixedEthHashInfo'
 import { Icon, Text, Button } from '@gnosis.pm/safe-react-components'
 import { StyledTextLabelProps } from './type'
-import { colorLinear } from 'src/theme/variables'
+import { borderLinear } from 'src/theme/variables'
 
 const Container = styled.div`
   max-width: 200px;
@@ -43,13 +43,15 @@ const IconContainer = styled.div`
   justify-content: space-evenly;
 `
 const StyledButton = styled(Button)`
-  background: ${colorLinear};
+  border: 2px solid transparent;
+  background-image: ${borderLinear};
+  background-origin: border-box;
+  background-clip: content-box, border-box;
   border-radius: 50px !important;
-  &&.MuiButton-root {
-    padding: 0 12px;
-  }
-  *:first-child {
-    margin: 0 4px 0 0;
+  padding: 0 !important;
+  background-color: transparent !important;
+  svg {
+    margin-right: 5px;
   }
 `
 
@@ -59,7 +61,14 @@ const StyledTextLabel = styled(Text)`
   width: 100%;
   text-align: center;
   color: ${(props: StyledTextLabelProps) => props.chainInfo?.theme?.textColor ?? fontColor};
-  background-color: ${(props: StyledTextLabelProps) => props.chainInfo?.theme?.backgroundColor ?? border};
+  background-color: #3e3f40;
+  font-weight: 590;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  div {
+    margin-right: 5px;
+  }
 `
 
 const StyledTextSafeName = styled(Text)`
@@ -88,6 +97,16 @@ const StyledLabel = styled.div`
 const StyledText = styled(Text)`
   margin: 8px 0 16px 0;
 `
+
+const StyledDotChainName = styled.div`
+  width: 8px;
+  height: 8px;
+  background-color: #5ee6d0;
+  border-radius: 50%;
+`
+
+const ContainerChainName = styled.div``
+
 export {
   Container,
   IdenticonContainer,
@@ -99,4 +118,6 @@ export {
   StyledPrefixedEthHashInfo,
   StyledLabel,
   StyledText,
+  StyledDotChainName,
+  ContainerChainName,
 }
