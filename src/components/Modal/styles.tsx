@@ -2,7 +2,7 @@ import styled from 'styled-components'
 import { Modal as ModalMUI } from '@material-ui/core'
 import { Title as TitleSRC } from '@gnosis.pm/safe-react-components'
 import { bgBox } from 'src/theme/variables'
-import { BodyProps } from './type'
+import { BodyProps, FooterProps } from './type'
 
 const ModalStyled = styled(ModalMUI)`
   & {
@@ -57,10 +57,9 @@ const ModalStyled = styled(ModalMUI)`
 const HeaderSection = styled.div`
   display: flex;
   padding: 24px 18px 24px 24px;
-  border-bottom: 2px solid ${({ theme }) => theme.colors.separator};
-
+  border-bottom: 2px solid #404047;
   h5 {
-    color: ${({ theme }) => theme.colors.text};
+    color: #ffffff;
   }
 
   .close-button {
@@ -100,18 +99,20 @@ const TitleStyled = styled(TitleSRC)`
   }
 `
 
-const BodySection = styled.div<{ withoutPadding: BodyProps['withoutPadding'] }>`
+const BodySection = styled.div<{ withoutPadding: BodyProps['withoutPadding']; fitContent?: boolean }>`
   padding: ${({ withoutPadding }) => (withoutPadding ? 0 : '24px')};
-  min-height: 200px;
+  min-height: ${({ fitContent }) => (fitContent ? 'fit-content' : '200px')};
 `
 
-const FooterSection = styled.div<{ withoutBorder: boolean }>`
+const FooterSection = styled.div<{ withoutBorder: boolean; justifyContent?: FooterProps['justifyContent']}>`
   display: flex;
-  justify-content: center;
+  justify-content: ${({ justifyContent }) => (justifyContent ? justifyContent : 'center')};
   align-items: center;
-  border-top: ${({ withoutBorder }) => (withoutBorder ? '0' : '2px')} solid ${({ theme }) => theme.colors.separator};
+  border-top: ${({ withoutBorder }) => (withoutBorder ? '0' : '2px')} solid #404047;
   height: 84px;
   gap: 16px;
+
+  padding: 0px 24px;
 `
 
 const LoaderText = styled.span`

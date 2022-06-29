@@ -1,16 +1,18 @@
-import { ReactElement, useState, useEffect, useCallback } from 'react'
-import ChevronLeft from '@material-ui/icons/ChevronLeft'
-import { useDispatch, useSelector } from 'react-redux'
-import queryString from 'query-string'
-import { useLocation } from 'react-router'
 import { Loader } from '@gnosis.pm/safe-react-components'
-import Page from 'src/components/layout/Page'
+import ChevronLeft from '@material-ui/icons/ChevronLeft'
+import queryString from 'query-string'
+import { ReactElement, useCallback, useEffect, useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import { useLocation } from 'react-router'
 import Block from 'src/components/layout/Block'
-import Row from 'src/components/layout/Row'
 import Heading from 'src/components/layout/Heading'
-import { generateSafeRoute, generateSafeRouteWithChainId, history, SAFE_ROUTES, WELCOME_ROUTE } from 'src/routes/routes'
+import Page from 'src/components/layout/Page'
+import Row from 'src/components/layout/Row'
 import StepperForm, { StepFormElement } from 'src/components/StepperForm/StepperForm'
-import NameNewSafeStep, { nameNewSafeStepLabel } from './steps/NameNewSafeStep/NameNewSafeStep'
+import { currentNetworkAddressBookAsMap } from 'src/logic/addressBook/store/selectors'
+import { useMnemonicSafeName } from 'src/logic/hooks/useMnemonicName'
+import { providerNameSelector, shouldSwitchWalletChain, userAccountSelector } from 'src/logic/wallets/store/selectors'
+import { generateSafeRoute, history, SAFE_ROUTES, WELCOME_ROUTE } from 'src/routes/routes'
 import {
   CreateSafeFormValues,
   FIELD_CREATE_CUSTOM_SAFE_NAME,
@@ -20,47 +22,37 @@ import {
   FIELD_NEW_SAFE_THRESHOLD,
   FIELD_SAFE_OWNERS_LIST,
   SAFES_PENDING_STORAGE_KEY,
-  SAFE_PENDING_CREATION_STORAGE_KEY,
 } from './fields/createSafeFields'
-import { useMnemonicSafeName } from 'src/logic/hooks/useMnemonicName'
-import { providerNameSelector, shouldSwitchWalletChain, userAccountSelector } from 'src/logic/wallets/store/selectors'
+import NameNewSafeStep, { nameNewSafeStepLabel } from './steps/NameNewSafeStep/NameNewSafeStep'
 import OwnersAndConfirmationsNewSafeStep, {
   ownersAndConfirmationsNewSafeStepLabel,
   ownersAndConfirmationsNewSafeStepValidations,
 } from './steps/OwnersAndConfirmationsNewSafeStep/OwnersAndConfirmationsNewSafeStep'
-import { currentNetworkAddressBookAsMap } from 'src/logic/addressBook/store/selectors'
 import ReviewNewSafeStep, { reviewNewSafeStepLabel } from './steps/ReviewNewSafeStep/ReviewNewSafeStep'
 import SelectWalletAndNetworkStep, {
   selectWalletAndNetworkStepLabel,
 } from './steps/SelectWalletAndNetworkStep/SelectWalletAndNetworkStep'
 
-import { createMSafe, ISafeCreate } from 'src/services'
-import { getInternalChainId, getShortName, _getChainId } from 'src/config'
-import { parseToAdress } from 'src/utils/parseByteAdress'
+import { useWallet, verifyBytes } from '@terra-money/wallet-provider'
 import Paragraph from 'src/components/layout/Paragraph'
+import { Modal } from 'src/components/Modal'
 import NetworkLabel from 'src/components/NetworkLabel/NetworkLabel'
-import Button from 'src/components/layout/Button'
-import { buildMSafe } from '../../logic/safe/store/actions/fetchSafe'
-import { SafeStatus } from '../../logic/safe/hooks/useOwnerSafes'
-import { addOrUpdateSafe } from '../../logic/safe/store/actions/addOrUpdateSafe'
+import { getInternalChainId, getShortName, _getChainId } from 'src/config'
+import { createMSafe, ISafeCreate } from 'src/services'
+import { parseToAdress } from 'src/utils/parseByteAdress'
+import { loadFromStorage, saveToStorage } from 'src/utils/storage'
 import { makeAddressBookEntry } from '../../logic/addressBook/model/addressBook'
 import { addressBookSafeLoad } from '../../logic/addressBook/store/actions'
-import { useAnalytics, USER_EVENTS } from '../../utils/googleAnalytics'
-import { MESSAGES_CODE } from '../../services/constant/message'
-import enqueueSnackbar from '../../logic/notifications/store/actions/enqueueSnackbar'
 import { enhanceSnackbarForAction, ERROR, NOTIFICATIONS } from '../../logic/notifications'
-import { loadFromStorage, saveToStorage } from 'src/utils/storage'
-import { SignBytesResult, useWallet, verifyBytes } from '@terra-money/wallet-provider'
-import { loadLastUsedProvider } from '../../logic/wallets/store/middlewares/providerWatcher'
+import enqueueSnackbar from '../../logic/notifications/store/actions/enqueueSnackbar'
+import { SafeStatus } from '../../logic/safe/hooks/useOwnerSafes'
+import { addOrUpdateSafe } from '../../logic/safe/store/actions/addOrUpdateSafe'
+import { buildMSafe } from '../../logic/safe/store/actions/fetchSafe'
 import { WALLETS_NAME } from '../../logic/wallets/constant/wallets'
-import {
-  LoaderContainer,
-  BackIcon,
-  EmphasisLabel,
-  ButtonContainer,
-  StyledGenericModal,
-  StyledButtonBorder,
-} from './styles'
+import { loadLastUsedProvider } from '../../logic/wallets/store/middlewares/providerWatcher'
+import { MESSAGES_CODE } from '../../services/constant/message'
+import { useAnalytics, USER_EVENTS } from '../../utils/googleAnalytics'
+import { BackIcon, EmphasisLabel, LoaderContainer, StyledBorder, StyledButtonBorder, StyledButtonLabel } from './styles'
 
 type ModalDataType = {
   safeAddress: string
@@ -263,8 +255,71 @@ function CreateSafePage(): ReactElement {
           </StepperForm>
         </Block>
       </Page>
+      {true && (
+        <Modal
+          description="Select a Wallet"
+          handleClose={onClickModalButton}
+          open={true}
+          title={pendingSafe ? 'Confirmation' : 'Safe Created!'}
+        >
+          <Modal.Header onClose={onClickModalButton}>
+            <Modal.Header.Title withoutMargin>Select a Wallet</Modal.Header.Title>
+          </Modal.Header>
 
-      {showCreatedModal && (
+          <Modal.Body>
+            {!pendingSafe ? (
+              <div data-testid="safe-created-popup">
+                <Paragraph>
+                  You just created a new Safe on <NetworkLabel />
+                </Paragraph>
+                <Paragraph>
+                  You will only be able to use this Safe on <NetworkLabel />
+                </Paragraph>
+                <Paragraph>
+                  If you send assets on other networks to this address,{' '}
+                  <EmphasisLabel>you will not be able to access them</EmphasisLabel>
+                </Paragraph>
+              </div>
+            ) : (
+              <div data-testid="safe-created-popup">
+                <Paragraph>
+                  You are about to create a new Safe on <NetworkLabel />
+                </Paragraph>
+                <Paragraph>
+                  You will only be able to use this Safe on <NetworkLabel />
+                </Paragraph>
+                <Paragraph>All other owners must give their permission in order for the Safe to be created.</Paragraph>
+                <Paragraph>
+                  Before that, you can also cancel the Safe creation request by clicking the{' '}
+                  <EmphasisLabel> "Cancel"</EmphasisLabel> button next to your awaiting safe in the Safe list.
+                </Paragraph>
+              </div>
+            )}
+          </Modal.Body>
+          <Modal.Footer justifyContent='flex-end'>
+            {
+              <StyledBorder>
+                <StyledButtonBorder iconType="safe" iconSize="sm" size="lg" onClick={onClickModalButton}>
+                  <StyledButtonLabel size="xl">Add existing Safe</StyledButtonLabel>
+                </StyledButtonBorder>
+              </StyledBorder>
+              // <ButtonContainer>
+              //   <StyledButtonBorder
+              //     testId="safe-created-button"
+              //     onClick={onClickModalButton}
+              //     color="primary"
+              //     type={'button'}
+              //     size="small"
+              //     variant="contained"
+              //   >
+              //     Continue
+              //   </StyledButtonBorder>
+              // </ButtonContainer>
+            }
+          </Modal.Footer>
+        </Modal>
+      )}
+      {/* { showCreatedModal && (
         <StyledGenericModal
           onClose={onClickModalButton}
           title={pendingSafe ? 'Confirmation' : 'Safe Created!'}
@@ -313,7 +368,7 @@ function CreateSafePage(): ReactElement {
             </ButtonContainer>
           }
         />
-      )}
+      )} */}
 
       {/* { true && (
         <GenericModal

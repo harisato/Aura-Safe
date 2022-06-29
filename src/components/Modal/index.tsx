@@ -60,7 +60,7 @@ Header.Title = Title
 /*** Body ***/
 
 const Body = ({ children, withoutPadding = false }: BodyProps): ReactElement => (
-  <BodySection className="modal-body" withoutPadding={withoutPadding}>
+  <BodySection className="modal-body" withoutPadding={withoutPadding} fitContent={true}>
     {children}
   </BodySection>
 )
@@ -122,8 +122,8 @@ const Buttons = ({ cancelButtonProps = {}, confirmButtonProps = {} }: ButtonsPro
     </>
   )
 }
-const Footer = ({ children, withoutBorder = false }: FooterProps): ReactElement => (
-  <FooterSection className="modal-footer" withoutBorder={withoutBorder}>
+const Footer = ({ children, withoutBorder = false, justifyContent = 'center' }: FooterProps): ReactElement => (
+  <FooterSection className="modal-footer" withoutBorder={withoutBorder} justifyContent={justifyContent}>
     {children}
   </FooterSection>
 )

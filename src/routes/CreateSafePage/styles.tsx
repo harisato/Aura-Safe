@@ -1,7 +1,7 @@
 import styled from 'styled-components'
 import IconButton from '@material-ui/core/IconButton'
 import { sm, boldFont, bgBox, borderLinear } from 'src/theme/variables'
-import { GenericModal } from '@gnosis.pm/safe-react-components'
+import { GenericModal, Text } from '@gnosis.pm/safe-react-components'
 import Button from 'src/components/layout/Button'
 
 const LoaderContainer = styled.div`
@@ -28,6 +28,31 @@ const StyledGenericModal = styled(GenericModal)`
   background-color: ${bgBox};
 `
 
-const StyledButtonBorder = styled(Button)``
+const StyledBorder = styled.div`
+  border-radius: 50px !important;
+  border: 2px solid transparent;
+  background-image: ${borderLinear};
+  background-origin: border-box;
+  background-clip: content-box, border-box;
+`
 
-export { LoaderContainer, BackIcon, EmphasisLabel, ButtonContainer, StyledGenericModal, StyledButtonBorder }
+const StyledButtonBorder = styled(Button)`
+  background-color: rgba(18, 18, 18, 1) !important;
+  border-radius: 50px !important;
+`
+
+const StyledButtonLabel = styled(Text)`
+  color: white;
+  background-color: transparent !important;
+`
+
+export {
+  LoaderContainer,
+  BackIcon,
+  EmphasisLabel,
+  ButtonContainer,
+  StyledGenericModal,
+  StyledButtonBorder,
+  StyledBorder,
+  StyledButtonLabel,
+}
