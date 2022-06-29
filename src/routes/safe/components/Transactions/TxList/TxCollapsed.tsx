@@ -128,7 +128,9 @@ export const TxCollapsed = ({
 
   const txCollapsedNonce = (
     <div className={'tx-nonce' + willBeReplaced}>
-      <Text size="xl">{nonce}</Text>
+      <Text size="xl" color="white">
+        {nonce}
+      </Text>
     </div>
   )
 
@@ -153,7 +155,9 @@ export const TxCollapsed = ({
     <div className={'tx-time' + willBeReplaced}>
       <Tooltip title={formatDateTime(time)} arrow backgroundColor="white" size="lg">
         <TooltipContent ref={timestamp}>
-          <Text size="xl">{txLocation === 'history' ? formatTime(time) : formatTimeInWords(time)}</Text>
+          <Text color="white" size="xl">
+            {txLocation === 'history' ? formatTime(time) : formatTimeInWords(time)}
+          </Text>
         </TooltipContent>
       </Tooltip>
     </div>

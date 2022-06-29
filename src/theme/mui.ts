@@ -465,7 +465,9 @@ const theme = createTheme({
       },
     },
     MuiTouchRipple: {
-      root: {},
+      root: {
+        backgroundColor: 'transparent',
+      },
     },
   },
   palette,

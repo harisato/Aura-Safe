@@ -8,6 +8,11 @@ export const Wrapper = styled.div`
   height: 100%;
 `
 
+export const StyledText = styled.span`
+  color: #98989b;
+  font-size: 14px;
+`
+
 export const ContentWrapper = styled.div`
   display: flex;
   flex-direction: column;
@@ -24,8 +29,6 @@ export const NoPaddingAccordion = styled(Accordion).attrs((props) =>
   isDeeplinkedTx() ? { expanded: true, ...props } : props,
 )`
   &.MuiAccordion-root {
-    background-color: transparent;
-
     .MuiAccordionDetails-root {
       padding: 0;
     }
@@ -76,7 +79,7 @@ export const SubTitle = styled(Text)`
 `
 
 export const StyledTransactions = styled.div`
-  background-color: ${({ theme }) => theme.colors.white};
+  background-color: #121212;
   border-radius: 8px;
   box-shadow: #00000026 0 4px 12px 0;
   overflow: hidden;
@@ -120,19 +123,19 @@ export const GroupedTransactionsCard = styled(StyledTransactions)`
     }
   }
 
-  &:hover {
-    background-color: ${({ theme }) => theme.colors.background};
+  // &:hover {
+  //   background-color: ${({ theme }) => theme.colors.background};
 
-    .MuiAccordionDetails-root {
-      div[class^='tx-'] {
-        background-color: ${({ theme }) => theme.colors.background};
-      }
-    }
+  //   .MuiAccordionDetails-root {
+  //     div[class^='tx-'] {
+  //       background-color: ${({ theme }) => theme.colors.background};
+  //     }
+  //   }
 
-    .disclaimer-container {
-      background-color: ${({ theme }) => theme.colors.inputField};
-    }
-  }
+  //   .disclaimer-container {
+  //     background-color: ${({ theme }) => theme.colors.inputField};
+  //   }
+  // }
 `
 const gridColumns = {
   nonce: '0.5fr',
@@ -303,7 +306,7 @@ export const GroupedTransactions = styled(StyledTransaction)`
     &.Mui-expanded {
       justify-self: center;
       width: calc(100% - 32px);
-
+      background-color: rgba(62, 63, 64, 1) !important;
       &:not(:last-of-type) {
         border-bottom: 2px solid ${({ theme }) => theme.colors.separator};
       }
@@ -316,6 +319,7 @@ export const GroupedTransactions = styled(StyledTransaction)`
       }
 
       > .MuiAccordionSummary-root {
+        background-color: #0e0e0f !important;
         padding: 0;
       }
     }
@@ -342,7 +346,7 @@ export const DisclaimerContainer = styled(StyledTransaction)`
 export const TxDetailsContainer = styled.div<{ ownerRows?: number }>`
   ${willBeReplaced};
 
-  background-color: ${({ theme }) => theme.colors.separator} !important;
+  background-color: #484852 !important;
   column-gap: 2px;
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -352,7 +356,7 @@ export const TxDetailsContainer = styled.div<{ ownerRows?: number }>`
   width: 100%;
 
   & > div {
-    background-color: ${({ theme }) => theme.colors.white};
+    background-color: #0e0e0f;
     line-break: anywhere;
     overflow: hidden;
     padding: 20px 24px;
@@ -393,24 +397,24 @@ export const TxDetailsContainer = styled.div<{ ownerRows?: number }>`
       color: ${({ theme }) => theme.colors.white};
       margin: 0 8px;
 
-      &:hover {
-        color: ${({ theme }) => theme.colors.white};
-      }
+      // &:hover {
+      //   color: ${({ theme }) => theme.colors.white};
+      // }
 
       &.error {
         background-color: ${({ theme }) => theme.colors.error};
 
-        &:hover {
-          background-color: ${({ theme }) => theme.colors.errorHover};
-        }
+        // &:hover {
+        //   background-color: ${({ theme }) => theme.colors.errorHover};
+        // }
       }
 
       &.primary {
         background-color: ${({ theme }) => theme.colors.primary};
 
-        &:hover {
-          background-color: ${({ theme }) => theme.colors.secondary};
-        }
+        // &:hover {
+        //   background-color: ${({ theme }) => theme.colors.secondary};
+        // }
       }
     }
   }
@@ -471,7 +475,7 @@ export const OwnerListItem = styled.li`
 
 export const InlineEthHashInfo = styled(EthHashInfo)`
   display: inline-flex;
-
+  color: white;
   span {
     font-weight: normal;
   }
@@ -522,6 +526,7 @@ export const HorizontallyCentered = styled(Centered)<{ isVisible: boolean }>`
 export const StyledAccordionSummary = styled(AccordionSummary).attrs((props) =>
   isDeeplinkedTx() ? { expandIcon: null, ...props } : props,
 )`
+  background-color: rgba(14, 14, 15, 1) !important;
   height: 52px;
   .tx-nonce {
     margin: 0 16px 0 8px;

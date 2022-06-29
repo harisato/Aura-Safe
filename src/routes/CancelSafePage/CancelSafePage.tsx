@@ -43,7 +43,6 @@ function Cancel(): ReactElement {
   const [initialFormValues, setInitialFormValues] = useState<CancelSafeFormValues>()
 
   useEffect(() => {
-
     const checkSafeAddress = async () => {
       if (!safeId) {
         return

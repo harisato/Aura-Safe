@@ -90,7 +90,6 @@ const TxSingularDetails = (): ReactElement => {
         } else {
           txDetails = Data
         }
-
       } catch (e) {
         logError(Errors._614, e.message)
         return

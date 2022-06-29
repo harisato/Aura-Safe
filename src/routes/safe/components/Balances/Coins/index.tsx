@@ -135,20 +135,14 @@ const Coins = (props: Props): React.ReactElement => {
               <TableCell component="td">
                 <Row align="end" className={classes.actions}>
                   {granted && (
-                    <StyledButton
-                      color="primary"
-                      onClick={() => showSendFunds(row.asset.address)}
-                      size="md"
-                      variant="contained"
-                      data-testid="balance-send-btn"
-                    >
+                    <StyledButton onClick={() => showSendFunds(row.asset.address)} data-testid="balance-send-btn">
                       <FixedIcon type="arrowSentWhite" />
                       <Text size="xl" color="white">
                         Send
                       </Text>
                     </StyledButton>
                   )}
-                  <StyledButton color="primary" onClick={showReceiveFunds} size="md" variant="contained">
+                  <StyledButton onClick={showReceiveFunds}>
                     <FixedIcon type="arrowReceivedWhite" />
                     <Text size="xl" color="white">
                       Receive
