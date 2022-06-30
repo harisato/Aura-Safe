@@ -1,7 +1,16 @@
 import { Button, Icon, Loader } from '@gnosis.pm/safe-react-components'
 import cn from 'classnames'
 import { ReactElement } from 'react'
-import { ModalStyled, HeaderSection, TitleStyled, BodySection, FooterSection, LoaderText } from './styles'
+import {
+  ModalStyled,
+  HeaderSection,
+  TitleStyled,
+  BodySection,
+  FooterSection,
+  LoaderText,
+  StyledButtonClose,
+  StyledButtonConfirm,
+} from './styles'
 import {
   GnoModalProps,
   TitleProps,
@@ -85,7 +94,7 @@ const Buttons = ({ cancelButtonProps = {}, confirmButtonProps = {} }: ButtonsPro
 
   return (
     <>
-      <Button
+      <StyledButtonClose
         size="md"
         color="primary"
         variant="outlined"
@@ -102,8 +111,8 @@ const Buttons = ({ cancelButtonProps = {}, confirmButtonProps = {} }: ButtonsPro
         ) : (
           cancelText
         )}
-      </Button>
-      <Button
+      </StyledButtonClose>
+      <StyledButtonConfirm
         size="md"
         type={confirmProps?.onClick ? 'button' : 'submit'}
         disabled={confirmDisabled || [ButtonStatus.DISABLED, ButtonStatus.LOADING].includes(confirmStatus)}
@@ -118,7 +127,7 @@ const Buttons = ({ cancelButtonProps = {}, confirmButtonProps = {} }: ButtonsPro
         ) : (
           confirmText
         )}
-      </Button>
+      </StyledButtonConfirm>
     </>
   )
 }

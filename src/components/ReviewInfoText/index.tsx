@@ -20,7 +20,7 @@ type CustomReviewInfoTextProps = {
 type ReviewInfoTextProps = Parameters<typeof TransactionFees>[0] & CustomReviewInfoTextProps
 
 const ReviewInfoTextWrapper = styled.div`
-  background-color: ${({ theme }) => theme.colors.background};
+  background-color: rgba(18, 18, 18, 1);
   padding: ${sm} ${lg};
 `
 

@@ -3,6 +3,11 @@ import Paragraph from 'src/components/layout/Paragraph'
 import { getNativeCurrency } from 'src/config'
 import { TransactionFailText } from 'src/components/TransactionFailText'
 import { Text } from '@gnosis.pm/safe-react-components'
+import styled from 'styled-components'
+
+const StyledText = styled.span`
+  color: #5ee6d0 !important;
+`
 
 type TransactionFailTextProps = {
   txEstimationExecutionStatus: EstimationStatus
@@ -41,10 +46,10 @@ export const TransactionFees = ({
           {!isOffChainSignature && (
             <>
               Make sure you have
-              <Text size="lg" as="span" color="text" strong>
+              <StyledText>
                 {' '}
                 {gasCostFormatted} {nativeCurrency.symbol}{' '}
-              </Text>
+              </StyledText>
               in this wallet to fund the associated transaction fee.
             </>
           )}
