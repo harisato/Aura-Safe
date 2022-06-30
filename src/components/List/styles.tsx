@@ -8,7 +8,7 @@ const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
       width: '100%',
-      maxWidth: 200,
+      maxWidth: 320,
       backgroundColor: 'transparent',
       overflowX: 'auto',
       margin: '8px 0 -4px 0',

@@ -19,6 +19,7 @@ import {
   StyledLabel,
   StyledText,
   StyledDotChainName,
+  StyledIdenticonContainer,
 } from './styles'
 
 const SafeHeader = ({
@@ -59,33 +60,26 @@ const SafeHeader = ({
       <Container>
         {/* Identicon */}
         <IdenticonContainer>
-          <FlexSpacer />
-          <Identicon address={address} size="lg" />
+          <StyledIdenticonContainer>
+            <Identicon address={address} size="lg" />
+            {/* SafeInfo */}
+            <StyledTextSafeName size="lg" center>
+              {safeName}
+              <StyledPrefixedEthHashInfo hash={address} shortenHash={4} textSize="sm" />
+            </StyledTextSafeName>
+          </StyledIdenticonContainer>
           <ButtonHelper onClick={onToggleSafeList} data-testid={TOGGLE_SIDEBAR_BTN_TESTID}>
             <StyledIcon size="md" type="circleDropdown" />
           </ButtonHelper>
         </IdenticonContainer>
 
-        {/* SafeInfo */}
-        <StyledTextSafeName size="lg" center>
-          {safeName}
-        </StyledTextSafeName>
-        <StyledPrefixedEthHashInfo hash={address} shortenHash={4} textSize="sm" />
         <IconContainer>
           <ButtonHelper onClick={onReceiveClick}>
             <Icon size="sm" type="qrCode" tooltip="Show QR" />
           </ButtonHelper>
           <CopyToClipboardBtn textToCopy={copyChainPrefix ? `${chainInfoShortName}:${address}` : `${address}`} />
-          <ExplorerButton explorerUrl={getExplorerInfo(address)} />
+          {address && <ExplorerButton explorerUrl={getExplorerInfo(address)} />}
         </IconContainer>
-
-        {!granted && (
-          <StyledLabel>
-            <Text size="sm" color="white">
-              READ ONLY
-            </Text>
-          </StyledLabel>
-        )}
 
         <StyledText size="xl">{/* balance */}</StyledText>
         <StyledButton size="md" disabled={!granted} color="primary" onClick={onNewTransactionClick}>
@@ -94,6 +88,14 @@ const SafeHeader = ({
             Send funds
           </Text>
         </StyledButton>
+
+        {!granted && (
+          <StyledLabel>
+            <Text size="sm" color="white">
+              READ ONLY
+            </Text>
+          </StyledLabel>
+        )}
       </Container>
     </>
   )

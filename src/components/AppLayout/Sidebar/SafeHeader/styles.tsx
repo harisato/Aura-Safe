@@ -6,7 +6,7 @@ import { StyledTextLabelProps } from './type'
 import { borderLinear } from 'src/theme/variables'
 
 const Container = styled.div`
-  max-width: 200px;
+  max-width: 320px;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -72,9 +72,11 @@ const StyledTextLabel = styled(Text)`
 `
 
 const StyledTextSafeName = styled(Text)`
-  width: 90%;
+  flex-grow: 1;
   overflow: hidden;
   text-overflow: ellipsis;
+  color:#98989B;
+  text-align: start;
 `
 
 const StyledPrefixedEthHashInfo = styled(PrefixedEthHashInfo)`
@@ -107,6 +109,13 @@ const StyledDotChainName = styled.div`
 
 const ContainerChainName = styled.div``
 
+const StyledIdenticonContainer = styled.div`
+  flex-grow: 1;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+`
+
 export {
   Container,
   IdenticonContainer,
@@ -120,4 +129,5 @@ export {
   StyledText,
   StyledDotChainName,
   ContainerChainName,
+  StyledIdenticonContainer
 }
