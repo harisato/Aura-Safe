@@ -78,16 +78,19 @@ const useSidebarItems = (): ListItemType[] => {
         label: 'Appearance',
         iconType: 'eye',
         href: currentSafeRoutes.SETTINGS_APPEARANCE,
+        disabled: true,
       }),
       makeEntryItem({
         label: 'Owners',
         iconType: 'owners',
         href: currentSafeRoutes.SETTINGS_OWNERS,
+        disabled: true,
       }),
       makeEntryItem({
         label: 'Policies',
         iconType: 'requiredConfirmations',
         href: currentSafeRoutes.SETTINGS_POLICIES,
+        disabled: true,
       }),
       makeEntryItem({
         disabled: true, // !isSpendingLimitEnabled,

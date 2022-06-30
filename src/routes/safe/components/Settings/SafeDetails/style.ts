@@ -6,11 +6,13 @@ import { Text } from '@gnosis.pm/safe-react-components'
 
 export const styles = createStyles({
   formContainer: {
-    padding: lg,
+    padding: `${sm} ${lg}`,
   },
   root: {
     display: 'flex',
     maxWidth: '480px',
+    alignItems: 'center',
+    gap: '24px'
   },
   saveBtn: {
     fontWeight: boldFont,

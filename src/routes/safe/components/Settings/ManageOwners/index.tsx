@@ -117,7 +117,7 @@ const ManageOwners = ({ granted, owners }: Props): ReactElement => {
                       )}
                     </TableCell>
                   ))}
-                  <TableCell component="td">
+                  {/* <TableCell component="td">
                     <Row align="end" className={classes.actions}>
                       <ButtonHelper onClick={onShow('EditOwner', row)} dataTestId={RENAME_OWNER_BTN_TEST_ID}>
                         <Icon size="sm" type="edit" color="icon" tooltip="Edit owner" />
@@ -135,7 +135,7 @@ const ManageOwners = ({ granted, owners }: Props): ReactElement => {
                         </>
                       )}
                     </Row>
-                  </TableCell>
+                  </TableCell> */}
                 </TableRow>
               ))
             }

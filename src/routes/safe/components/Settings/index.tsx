@@ -107,7 +107,10 @@ const Settings = (): React.ReactElement => {
       <Block className={classes.root}>
         <Col className={classes.contents} layout="column">
           <Block className={classes.container}>
-            <Switch>
+            <SafeDetails />
+            <ThresholdSettings />
+            <ManageOwners granted={granted} owners={owners} />
+            {/* <Switch>
               <Route path={SAFE_ROUTES.SETTINGS_DETAILS} exact render={() => <SafeDetails />} />
               <Route path={SAFE_ROUTES.SETTINGS_APPEARANCE} exact render={() => <Appearance />} />
               <Route
@@ -118,7 +121,7 @@ const Settings = (): React.ReactElement => {
               <Route path={SAFE_ROUTES.SETTINGS_POLICIES} exact render={() => <ThresholdSettings />} />
               <Route path={SAFE_ROUTES.SETTINGS_SPENDING_LIMIT} exact render={() => <SpendingLimitSettings />} />
               <Route path={SAFE_ROUTES.SETTINGS_ADVANCED} exact render={() => <Advanced />} />
-            </Switch>
+            </Switch> */}
           </Block>
         </Col>
       </Block>

@@ -8,7 +8,7 @@ export const useStyles = makeStyles(
       fontSize: md,
     },
     formContainer: {
-      padding: `${md} ${lg}`,
+      padding: `${sm} ${lg}`,
       minHeight: '340px',
     },
     ownersText: {

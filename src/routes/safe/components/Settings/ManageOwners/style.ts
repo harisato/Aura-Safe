@@ -9,7 +9,7 @@ export const useStyles = makeStyles(
       minHeight: 'min-content',
       backgroundColor: `${bgBox}`,
       borderRadius: 8,
-      padding: lg
+      padding: `${sm} ${lg}`,
     },
     title: {
       paddingBottom: 0,

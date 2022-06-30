@@ -11,6 +11,8 @@ export const addressBookMiddleware = (store) => (next) => async (action) => {
     const { dispatch } = store
     switch (action.type) {
       case ADDRESS_BOOK_ACTIONS.ADD_OR_UPDATE: {
+        console.log('shouldAvoidUpdatesNotifications', action.payload);
+        
         const { shouldAvoidUpdatesNotifications } = action.payload
         if (!shouldAvoidUpdatesNotifications) {
           const notification = getNotificationsFromTxType(TX_NOTIFICATION_TYPES.ADDRESS_BOOK_NEW_ENTRY)

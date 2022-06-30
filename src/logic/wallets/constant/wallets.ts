@@ -4,7 +4,6 @@ export enum WALLETS_NAME {
 }
 
 export const WALLETS_CHAIN_ID: Record<string, string> = {
-  AURA_TESTNET: 'aura-testnet',
   AURA_DEVNET: 'aura-devtnet',
   JUNO_TESTNET: 'uni-2',
   OSMOSIS_TESTNET: 'osmo-test-4',
