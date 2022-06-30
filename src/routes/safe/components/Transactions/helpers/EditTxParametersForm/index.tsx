@@ -178,7 +178,7 @@ export const EditTxParametersForm = ({
                 
               )} */}
               <>
-                <StyledTextMt size="xl" strong>
+                <StyledTextMt size="xl" color="white" strong>
                   {ethereumTxParametersTitle(isExecution)}
                 </StyledTextMt>
 

@@ -1,6 +1,6 @@
 import styled from 'styled-components'
 import { Modal as ModalMUI } from '@material-ui/core'
-import { Title as TitleSRC } from '@gnosis.pm/safe-react-components'
+import { Title as TitleSRC, Button } from '@gnosis.pm/safe-react-components'
 import { bgBox } from 'src/theme/variables'
 import { BodyProps } from './type'
 
@@ -117,4 +117,27 @@ const FooterSection = styled.div<{ withoutBorder: boolean }>`
 const LoaderText = styled.span`
   margin-left: 10px;
 `
-export { ModalStyled, HeaderSection, TitleStyled, BodySection, FooterSection, LoaderText }
+
+const StyledButtonConfirm = styled(Button)`
+  background-color: transparent !important;
+  border: 1px solid rgba(94, 230, 157, 1);
+  border-radius: 50px !important;
+`
+
+const StyledButtonClose = styled(Button)`
+  background-color: transparent !important;
+  border: 1px solid rgba(230, 94, 94, 1);
+  border-radius: 50px !important;
+  color: white !important;
+`
+
+export {
+  ModalStyled,
+  HeaderSection,
+  TitleStyled,
+  BodySection,
+  FooterSection,
+  LoaderText,
+  StyledButtonClose,
+  StyledButtonConfirm,
+}

@@ -8,11 +8,22 @@ import { Transaction } from 'src/logic/safe/store/models/types/gateway.d'
 import { useActionButtonsHandlers } from 'src/routes/safe/components/Transactions/TxList/hooks/useActionButtonsHandlers'
 import useLocalTxStatus from 'src/logic/hooks/useLocalTxStatus'
 import { isAwaitingExecution } from './utils'
+import styled from 'styled-components'
 
 type TxExpandedActionsProps = {
   transaction: Transaction
 }
 
+const StyledButtonConfirm = styled(Button)`
+  background-color: transparent !important;
+  border: 1px solid rgba(94, 230, 157, 1) !important;
+  border-radius: 50px !important;
+`
+const StyledButtonReject = styled(Button)`
+  background-color: transparent !important;
+  border: 1px solid rgba(230, 94, 94, 1) !important;
+  border-radius: 50px !important;
+`
 export const TxExpandedActions = ({ transaction }: TxExpandedActionsProps): ReactElement => {
   const {
     canCancel,
@@ -48,9 +59,8 @@ export const TxExpandedActions = ({ transaction }: TxExpandedActionsProps): Reac
     <>
       <Tooltip title={getConfirmTooltipTitle()} placement="top">
         <span>
-          <Button
+          <StyledButtonConfirm
             size="md"
-            color="primary"
             disabled={disabledActions}
             onClick={onExecuteOrConfirm}
             onMouseEnter={handleOnMouseEnter}
@@ -58,13 +68,13 @@ export const TxExpandedActions = ({ transaction }: TxExpandedActionsProps): Reac
             className="primary"
           >
             {isAwaitingEx ? 'Execute' : 'Confirm'}
-          </Button>
+          </StyledButtonConfirm>
         </span>
       </Tooltip>
       {canCancel && (
-        <Button size="md" color="error" onClick={handleCancelButtonClick} className="error" disabled={isPending}>
+        <StyledButtonReject size="md" onClick={handleCancelButtonClick} className="error" disabled={isPending}>
           Reject
-        </Button>
+        </StyledButtonReject>
       )}
     </>
   )

@@ -14,6 +14,17 @@ const TxParameterWrapper = styled.div`
   justify-content: space-between;
 `
 
+const Accordioncontainer = styled(Accordion)`
+  background-color: rgba(14, 14, 15, 1);
+  > :nth-child(1) {
+    :hover {
+      p {
+        color: rgba(14, 14, 15, 1);
+      }
+    }
+  }
+`
+
 const AccordionDetailsWrapper = styled.div`
   width: 100%;
   display: flex;
@@ -34,6 +45,10 @@ const StyledButtonLink = styled(ButtonLink)`
   > p {
     margin-left: 0;
   }
+`
+
+const StyledTextGas = styled.span`
+  color: #98989b;
 `
 
 type Props = {
@@ -89,9 +104,11 @@ export const TxParametersDetail = ({
   }
 
   return (
-    <Accordion compact={compact} expanded={isAccordionExpanded} onChange={onChangeExpand}>
+    <Accordioncontainer compact={compact} expanded={isAccordionExpanded} onChange={onChangeExpand}>
       <AccordionSummary>
-        <Text size="lg">Advanced options</Text>
+        <Text size="xl" color={isAccordionExpanded ? 'text' : 'white'}>
+          Advanced options
+        </Text>
       </AccordionSummary>
       <AccordionDetails>
         <AccordionDetailsWrapper>
@@ -149,13 +166,17 @@ export const TxParametersDetail = ({
               </TxParameterWrapper> */}
 
             <TxParameterWrapper>
-              <Text size="lg">Gas limit</Text>
-              <Text size="lg">{txParameters.ethGasLimit}</Text>
+              <StyledTextGas>Gas limit</StyledTextGas>
+              <Text size="lg" color="white">
+                {txParameters.ethGasLimit}
+              </Text>
             </TxParameterWrapper>
 
             <TxParameterWrapper>
-              <Text size="lg">Gas price</Text>
-              <Text size="lg">{txParameters.ethGasPrice}</Text>
+              <StyledTextGas>Gas price</StyledTextGas>
+              <Text size="lg" color="white">
+                {txParameters.ethGasPrice}
+              </Text>
             </TxParameterWrapper>
           </>
           {isTransactionExecution ? null : (
@@ -165,6 +186,6 @@ export const TxParametersDetail = ({
           )}
         </AccordionDetailsWrapper>
       </AccordionDetails>
-    </Accordion>
+    </Accordioncontainer>
   )
 }
