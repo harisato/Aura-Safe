@@ -4,6 +4,8 @@ import ListItem, { ListItemProps } from '@material-ui/core/ListItem'
 import ListItemText from '@material-ui/core/ListItemText'
 import Badge from '@material-ui/core/Badge'
 
+import ListMui, { ListProps } from '@material-ui/core/List'
+
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
@@ -64,6 +66,7 @@ const StyledListItem = styled(ListItem)<ListItemProps>`
 const StyledListSubItem = styled(ListItem)<ListItemProps>`
   &.MuiButtonBase-root.MuiListItem-root {
     margin: 4px 0;
+    margin-left: auto;
     span {
       color: white !important;
     }
@@ -79,7 +82,7 @@ const StyledListSubItem = styled(ListItem)<ListItemProps>`
   &.MuiButtonBase-root.MuiListItem-root.Mui-selected {
     background-color: #3e3f40;
     border-radius: 8px;
-    width: 95%;
+    width: 85%;
     color: ${({ theme }) => theme.colors.primary};
     span {
       color: #5ee6d0 !important;
@@ -124,6 +127,39 @@ const StyledBadge = styled(Badge)`
   }
 `
 
+const StyledSubListMui = styled(ListMui)<ListProps<any>>`
+  position: relative;
+  &::before {
+    content: '';
+    position: absolute;
+    height: calc(100% - 25.859px);
+    width: 2px;
+    background-color: #404047;
+
+    top: 0;
+    left: 20px;
+  }
+
+  a {
+    position: relative;
+
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -18px;
+
+      height: 50%;
+      width: 8%;
+      background-color: transparent;
+
+      border-left: 2px solid #404047;
+      border-bottom: 2px solid #404047;
+      border-bottom-left-radius: 8px;
+    }
+  }
+`
+
 export {
   useStyles,
   StyledListItem,
@@ -132,4 +168,5 @@ export {
   StyledListSubItemText,
   TextAndBadgeWrapper,
   StyledBadge,
+  StyledSubListMui,
 }
