@@ -6,7 +6,7 @@ import { StyledTextLabelProps } from './type'
 import { borderLinear } from 'src/theme/variables'
 
 const Container = styled.div`
-  max-width: 200px;
+  max-width: 320px;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -38,9 +38,11 @@ const StyledIcon = styled(Icon)`
 
 const IconContainer = styled.div`
   width: 100px;
+  flex-grow: 1;
   display: flex;
   padding: 4px 0;
-  justify-content: space-evenly;
+  justify-content: center;
+  gap: 6px;
 `
 const StyledButton = styled(Button)`
   border: 2px solid transparent;
@@ -50,6 +52,7 @@ const StyledButton = styled(Button)`
   border-radius: 50px !important;
   padding: 0 !important;
   background-color: transparent !important;
+  min-width: 112px !important;
   svg {
     margin-right: 5px;
   }
@@ -72,9 +75,11 @@ const StyledTextLabel = styled(Text)`
 `
 
 const StyledTextSafeName = styled(Text)`
-  width: 90%;
+  flex-grow: 1;
   overflow: hidden;
   text-overflow: ellipsis;
+  color: #98989b;
+  text-align: start;
 `
 
 const StyledPrefixedEthHashInfo = styled(PrefixedEthHashInfo)`
@@ -107,6 +112,20 @@ const StyledDotChainName = styled.div`
 
 const ContainerChainName = styled.div``
 
+const StyledIdenticonContainer = styled.div`
+  flex-grow: 1;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+`
+
+const ContainerButton = styled.div`
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+`
+
 export {
   Container,
   IdenticonContainer,
@@ -120,4 +139,6 @@ export {
   StyledText,
   StyledDotChainName,
   ContainerChainName,
+  StyledIdenticonContainer,
+  ContainerButton,
 }

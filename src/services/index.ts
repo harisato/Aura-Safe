@@ -87,9 +87,6 @@ export function getMChainsConfig(): Promise<MChainInfo[]> {
             value: e.rpc,
           },
           blockExplorerUriTemplate: {
-            // address: "https://explorer.aura.network/address/{{address}}",
-            // txHash: "https://explorer.aura.network/transaction/{{txHash}}",
-            // api: "https://explorer.aura.network/api?module={{module}}&action={{action}}&address={{address}}&apiKey={{apiKey}}"
             address: `${e.explorer.endsWith('/') ? e.explorer : e.explorer + '/'}account/{{address}}`,
             txHash: `${e.explorer.endsWith('/') ? e.explorer : e.explorer + '/'}/transaction/{{txHash}}`,
             api: `${e.explorer.endsWith('/') ? e.explorer : e.explorer + '/'}/api?module={{module}}&action={{action}}&address={{address}}&apiKey={{apiKey}}`,

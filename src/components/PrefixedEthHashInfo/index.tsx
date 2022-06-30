@@ -2,8 +2,6 @@ import { ReactElement } from 'react'
 import { useSelector } from 'react-redux'
 import { getChainInfo } from 'src/config'
 import { copyShortNameSelector, showShortNameSelector } from 'src/logic/appearance/selectors'
-import { extractShortChainName } from 'src/routes/routes'
-import { getMChainsConfig } from 'src/services'
 import { parsePrefixedAddress } from 'src/utils/prefixedAddress'
 import { StyledPrefixedEthHashInfo } from './styles'
 

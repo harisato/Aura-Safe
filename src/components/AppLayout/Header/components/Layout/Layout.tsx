@@ -1,23 +1,21 @@
 import { withStyles } from '@material-ui/core/styles'
+import { useEffect } from 'react'
+import { useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
-import Provider from '../Provider/Provider'
-import NetworkSelector from '../NetworkSelector/NetworkSelector'
-import Spacer from 'src/components/Spacer'
 import Col from 'src/components/layout/Col'
+import Divider from 'src/components/layout/Divider'
 import Img from 'src/components/layout/Img'
 import Row from 'src/components/layout/Row'
-import WalletPopup from './WalletPopup/WalletPopup'
-import { useStateHandler } from 'src/logic/hooks/useStateHandler'
-import SafeLogo from '../../assets/logoAura.svg'
-import { WELCOME_ROUTE } from 'src/routes/routes'
+import Spacer from 'src/components/Spacer'
 import WalletSwitch from 'src/components/WalletSwitch'
-import Divider from 'src/components/layout/Divider'
+import { useStateHandler } from 'src/logic/hooks/useStateHandler'
 import { shouldSwitchWalletChain } from 'src/logic/wallets/store/selectors'
-import { useSelector } from 'react-redux'
-import { useEffect } from 'react'
-import MenuIcon from '@material-ui/icons/Menu'
-import IconButton from '@material-ui/core/IconButton'
-import { styles, LogoContainer } from './styles'
+import { WELCOME_ROUTE } from 'src/routes/routes'
+import SafeLogo from '../../assets/logoAura.svg'
+import NetworkSelector from '../NetworkSelector/NetworkSelector'
+import Provider from '../Provider/Provider'
+import { LogoContainer, styles } from './styles'
+import WalletPopup from './WalletPopup/WalletPopup'
 
 const Layout = (props: any) => {
   const { classes, providerDetails, providerInfo, showConnect, onToggleSafeList } = props
@@ -29,12 +27,12 @@ const Layout = (props: any) => {
     clickAway()
   }, [showConnect])
 
-  const TOGGLE_SIDEBAR_BTN_TESTID = 'TOGGLE_SIDEBAR_BTN'
+  // const TOGGLE_SIDEBAR_BTN_TESTID = 'TOGGLE_SIDEBAR_BTN'
   return (
     <Row className={classes.summary}>
-      <IconButton className={classes.menu} onClick={onToggleSafeList} data-testid={TOGGLE_SIDEBAR_BTN_TESTID}>
+      {/* <IconButton className={classes.menu} onClick={onToggleSafeList} data-testid={TOGGLE_SIDEBAR_BTN_TESTID}>
         <MenuIcon type={'button'} />
-      </IconButton>
+      </IconButton> */}
       <Col className={classes.logo} middle="xs" start="xs">
         <Link to={WELCOME_ROUTE} className={classes.link}>
           <LogoContainer>
