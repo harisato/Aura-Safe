@@ -38,9 +38,11 @@ const StyledIcon = styled(Icon)`
 
 const IconContainer = styled.div`
   width: 100px;
+  flex-grow: 1;
   display: flex;
   padding: 4px 0;
-  justify-content: space-evenly;
+  justify-content: center;
+  gap: 6px;
 `
 const StyledButton = styled(Button)`
   border: 2px solid transparent;
@@ -50,6 +52,7 @@ const StyledButton = styled(Button)`
   border-radius: 50px !important;
   padding: 0 !important;
   background-color: transparent !important;
+  min-width: 112px !important;
   svg {
     margin-right: 5px;
   }
@@ -75,7 +78,7 @@ const StyledTextSafeName = styled(Text)`
   flex-grow: 1;
   overflow: hidden;
   text-overflow: ellipsis;
-  color:#98989B;
+  color: #98989b;
   text-align: start;
 `
 
@@ -116,6 +119,13 @@ const StyledIdenticonContainer = styled.div`
   gap: 12px;
 `
 
+const ContainerButton = styled.div`
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+`
+
 export {
   Container,
   IdenticonContainer,
@@ -129,5 +139,6 @@ export {
   StyledText,
   StyledDotChainName,
   ContainerChainName,
-  StyledIdenticonContainer
+  StyledIdenticonContainer,
+  ContainerButton,
 }

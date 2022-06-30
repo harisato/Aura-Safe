@@ -20,6 +20,7 @@ import {
   StyledText,
   StyledDotChainName,
   StyledIdenticonContainer,
+  ContainerButton,
 } from './styles'
 
 const SafeHeader = ({
@@ -73,21 +74,23 @@ const SafeHeader = ({
           </ButtonHelper>
         </IdenticonContainer>
 
-        <IconContainer>
-          <ButtonHelper onClick={onReceiveClick}>
-            <Icon size="sm" type="qrCode" tooltip="Show QR" />
-          </ButtonHelper>
-          <CopyToClipboardBtn textToCopy={copyChainPrefix ? `${chainInfoShortName}:${address}` : `${address}`} />
-          {address && <ExplorerButton explorerUrl={getExplorerInfo(address)} />}
-        </IconContainer>
+        <ContainerButton>
+          <IconContainer>
+            <ButtonHelper onClick={onReceiveClick}>
+              <Icon size="sm" type="qrCode" tooltip="Show QR" />
+            </ButtonHelper>
+            <CopyToClipboardBtn textToCopy={copyChainPrefix ? `${chainInfoShortName}:${address}` : `${address}`} />
+            {address && <ExplorerButton explorerUrl={getExplorerInfo(address)} />}
+          </IconContainer>
 
-        <StyledText size="xl">{/* balance */}</StyledText>
-        <StyledButton size="md" disabled={!granted} color="primary" onClick={onNewTransactionClick}>
-          <FixedIcon type="arrowSentWhite" />
-          <Text size="xl" color="white">
-            Send funds
-          </Text>
-        </StyledButton>
+          {/* <StyledText size="xl">balance</StyledText> */}
+          <StyledButton size="md" disabled={!granted} color="primary" onClick={onNewTransactionClick}>
+            <FixedIcon type="arrowSentWhite" />
+            <Text size="md" color="white">
+              Send funds
+            </Text>
+          </StyledButton>
+        </ContainerButton>
 
         {!granted && (
           <StyledLabel>

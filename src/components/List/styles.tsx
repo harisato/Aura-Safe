@@ -37,10 +37,14 @@ const useStyles = makeStyles((theme: Theme) =>
 const StyledListItem = styled(ListItem)<ListItemProps>`
   &.MuiButtonBase-root.MuiListItem-root {
     margin: 4px 0;
-    background-color: #3e3f40 !important;
+    /* background-color: #3e3f40 !important; */
     border-radius: 8px;
     span {
       color: white;
+    }
+
+    &.Mui-selected {
+      background-color: #252529 !important;
     }
     .icon-color {
       fill: white;
@@ -80,7 +84,7 @@ const StyledListSubItem = styled(ListItem)<ListItemProps>`
   }
 
   &.MuiButtonBase-root.MuiListItem-root.Mui-selected {
-    background-color: #3e3f40;
+    background-color: #252529;
     border-radius: 8px;
     width: 85%;
     color: ${({ theme }) => theme.colors.primary};
