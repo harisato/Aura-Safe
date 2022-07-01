@@ -96,12 +96,7 @@ const ChooseTxType = ({
           </Button> */}
 
           <StyledBorder>
-            <StyledButtonBorder
-              iconSize="sm"
-              size="lg"
-              type="button"
-              onClick={() => setActiveScreen('sendFunds')}
-            >
+            <StyledButtonBorder iconSize="sm" size="lg" type="button" onClick={() => setActiveScreen('sendFunds')}>
               <StyledButtonLabel size="xl"> Send funds </StyledButtonLabel>
             </StyledButtonBorder>
           </StyledBorder>

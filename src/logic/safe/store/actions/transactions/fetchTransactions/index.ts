@@ -15,7 +15,7 @@ export default (chainId: string, safeAddress: string, loadQueued = false) =>
       actionFn: typeof addHistoryTransactions | typeof addQueuedTransactions,
     ) => {
       try {
-        const values = (await loadFn(safeAddress))
+        const values = await loadFn(safeAddress)
 
         if (!values) {
           return
@@ -27,10 +27,10 @@ export default (chainId: string, safeAddress: string, loadQueued = false) =>
       }
     }
 
-    loadQueued ? await Promise.all([
-      loadTxs(loadQueuedTransactionsFromAuraApi, addQueuedTransactions),
-    ]) : await Promise.all([
-      loadTxs(loadQueuedTransactionsFromAuraApi, addQueuedTransactions),
-      loadTxs(loadHistoryTransactionsFromAuraApi, addHistoryTransactions),
-    ])
+    loadQueued
+      ? await Promise.all([loadTxs(loadQueuedTransactionsFromAuraApi, addQueuedTransactions)])
+      : await Promise.all([
+          loadTxs(loadQueuedTransactionsFromAuraApi, addQueuedTransactions),
+          loadTxs(loadHistoryTransactionsFromAuraApi, addHistoryTransactions),
+        ])
   }

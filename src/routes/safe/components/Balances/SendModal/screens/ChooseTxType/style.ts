@@ -28,6 +28,7 @@ export const useStyles = makeStyles(
     closeIcon: {
       height: '35px',
       width: '35px',
+      color: 'white',
     },
     buttonColumn: {
       margin: '52px 0 44px 0',
@@ -62,9 +63,4 @@ const StyledButtonLabel = styled(Text)`
   background-color: transparent !important;
 `
 
-
-export {
-  StyledBorder,
-  StyledButtonBorder,
-  StyledButtonLabel
-}
+export { StyledBorder, StyledButtonBorder, StyledButtonLabel }

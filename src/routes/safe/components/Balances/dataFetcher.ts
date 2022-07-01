@@ -21,11 +21,9 @@ export interface BalanceData {
   value: string
   valueOrder: number
 }
-
 export const getBalanceData = (safeTokens: List<Token>, currencySelected?: string): List<BalanceData> => {
   return safeTokens.map((token) => {
     const { tokenBalance, fiatBalance } = token.balance
-
     return {
       [BALANCE_TABLE_ASSET_ID]: {
         name: token.name,
@@ -72,7 +70,7 @@ export const generateColumns = (): List<TableColumn> => {
     static: true,
   }
 
-/*   const value: TableColumn = {
+  /*   const value: TableColumn = {
     id: BALANCE_TABLE_VALUE_ID,
     align: 'right',
     order: true,

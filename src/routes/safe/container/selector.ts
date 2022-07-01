@@ -34,7 +34,6 @@ export const extendedSafeTokensSelector = createSelector(
   safeEthAsTokenSelector,
   (safeBalances, tokensList, ethAsToken): List<Token> => {
     const extendedTokens: Array<Token> = []
-
     if (!Array.isArray(safeBalances)) {
       // We migrated from immutable Map to array in v3.5.0. Previously stored safes could be still using an object
       // to store balances. We add this check to avoid the app to break and refetch the information correctly

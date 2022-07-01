@@ -20,6 +20,7 @@ export const styles = createStyles({
   closeIcon: {
     height: '35px',
     width: '35px',
+    color: 'white',
   },
   qrCodeBtn: {
     cursor: 'pointer',

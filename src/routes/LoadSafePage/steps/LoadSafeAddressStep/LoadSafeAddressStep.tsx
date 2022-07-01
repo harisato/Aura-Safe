@@ -66,7 +66,6 @@ function LoadSafeAddressStep(): ReactElement {
 
       try {
         const { owners, threshold, id } = await getMSafeInfoWithAdress(safeAddress, Number(internalChainId))
-
         setIsSafeInfoLoading(false)
 
         const ownersWithName = owners.map((address) =>

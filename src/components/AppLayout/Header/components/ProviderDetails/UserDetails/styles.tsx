@@ -50,7 +50,8 @@ export const styles = createStyles({
   disconnectButton: {
     marginBottom: `${md}`,
     background: `${colorLinear}`,
-    color: '#fff',
+    color: '#000',
+    boxShadow: 'none',
   },
   dashboard: {
     padding: `${md} ${lg} ${xs}`,

@@ -40,7 +40,7 @@ const useStyles = (chainInfo: ChainInfo) =>
         border: `1px solid ${secondaryText}`,
       },
       networkInfo: {
-        backgroundColor: `${chainInfo?.theme?.backgroundColor ?? border}`,
+        backgroundColor: 'rgba(38, 38, 41, 1)',
         color: `${chainInfo?.theme?.textColor ?? fontColor}`,
         padding: md,
         marginBottom: 0,
@@ -58,7 +58,9 @@ const useStyles = (chainInfo: ChainInfo) =>
         '& > button': {
           fontFamily: 'SFProDisplay',
           fontSize: md,
-          boxShadow: '1px 2px 10px 0 rgba(212, 212, 211, 0.59)',
+          boxShadow: 'none',
+          backgroundColor: 'transparent !important',
+          border: '1px solid rgba(94, 230, 157, 1)',
         },
       },
       addressContainer: {
