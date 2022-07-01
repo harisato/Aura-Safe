@@ -11,6 +11,7 @@ import {
   StyledListSubItemText,
   TextAndBadgeWrapper,
   StyledBadge,
+  StyledSubListMui,
 } from './styles'
 export type ListItemType = {
   badge?: boolean
@@ -99,9 +100,9 @@ const List = ({ items }: Props): React.ReactElement => {
             {getListItem(item, false)}
             {item.subItems && (
               <Collapse in={groupCollapseStatus[item.href]} timeout="auto" unmountOnExit>
-                <ListMui component="div" disablePadding>
+                <StyledSubListMui component="div" disablePadding>
                   {item.subItems.filter(({ disabled }) => !disabled).map((subItem) => getListItem(subItem))}
-                </ListMui>
+                </StyledSubListMui>
               </Collapse>
             )}
           </div>

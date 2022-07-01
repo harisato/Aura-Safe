@@ -1,5 +1,8 @@
 import { createStyles, makeStyles } from '@material-ui/core/styles'
-import { lg, md, sm, xs } from 'src/theme/variables'
+import { borderLinear, lg, md, sm, xs } from 'src/theme/variables'
+import styled from 'styled-components'
+
+import { Button, Text } from '@gnosis.pm/safe-react-components'
 
 export const useStyles = makeStyles(
   createStyles({
@@ -40,3 +43,28 @@ export const useStyles = makeStyles(
     },
   }),
 )
+
+const StyledBorder = styled.div`
+  border-radius: 50px !important;
+  border: 2px solid transparent;
+  background-image: ${borderLinear};
+  background-origin: border-box;
+  background-clip: content-box, border-box;
+`
+
+const StyledButtonBorder = styled(Button)`
+  background-color: rgba(18, 18, 18, 1) !important;
+  border-radius: 50px !important;
+`
+
+const StyledButtonLabel = styled(Text)`
+  color: white;
+  background-color: transparent !important;
+`
+
+
+export {
+  StyledBorder,
+  StyledButtonBorder,
+  StyledButtonLabel
+}
