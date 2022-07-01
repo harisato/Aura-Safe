@@ -17,7 +17,7 @@ const StyledLabel = styled.span<StyledLabelTypes>`
   font-size: ${extraSmallFontSize};
   padding: ${xs} ${sm};
   background-color: #5ee6d0;
-  color: ${({ textColor }) => textColor ?? fontColor};
+  color: black;
   cursor: ${({ onClick }) => (onClick ? 'pointer' : 'inherit')};
   text-align: center;
   border-radius: 3px;

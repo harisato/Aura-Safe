@@ -63,6 +63,7 @@ export function getMChainsConfig(): Promise<MChainInfo[]> {
         denom: string
         symbol: string
         explorer: string
+        coinDecimals: string
       }) => {
         return {
           transactionService: null,
@@ -96,7 +97,7 @@ export function getMChainsConfig(): Promise<MChainInfo[]> {
           nativeCurrency: {
             name: e.prefix.charAt(0).toUpperCase() + e.prefix.slice(1, e.prefix.length).toLowerCase(),
             symbol: e.symbol,
-            decimals: 6,
+            decimals: e.coinDecimals,
             logoUri: `img/token/${e.chainId}.svg`,
           },
           theme: {

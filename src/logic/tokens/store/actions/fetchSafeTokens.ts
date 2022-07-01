@@ -13,6 +13,7 @@ import { ZERO_ADDRESS, sameAddress } from 'src/logic/wallets/ethAddresses'
 import { Errors, logError } from 'src/logic/exceptions/CodedException'
 import { SafeBalanceResponse } from '@gnosis.pm/safe-react-gateway-sdk'
 import { IMSafeInfo } from 'src/types/safe'
+import { getMChainsConfig } from 'src/services/index'
 
 export type BalanceRecord = {
   tokenAddress?: string
@@ -96,7 +97,10 @@ export const fetchMSafeTokens =
         fiatTotal: '0',
         items: [],
       }
+
       if (safeInfo.balance) {
+        const listChain = await getMChainsConfig()
+        const decimal: any = listChain.find((x: any) => x.internalChainId === safeInfo?.internalChainId)
         safeInfo.balance.forEach((balance) => {
           tokenCurrenciesBalances.items.push({
             balance: balance.amount,
@@ -104,7 +108,7 @@ export const fetchMSafeTokens =
             fiatConversion: '0',
             tokenInfo: {
               address: '0000000000000000000000000000000000000000',
-              decimals: balance.denom === 'atevmos' ? 18 : 6,
+              decimals: decimal.nativeCurrency.decimals,
               logoUri: '',
               name: 'Aura',
               symbol: 'Aura',
