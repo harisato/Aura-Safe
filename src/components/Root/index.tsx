@@ -65,8 +65,10 @@ const RootConsumer = (): React.ReactElement | null => {
           setChainId(DEFAULT_CHAIN_ID)
           history.push(WELCOME_ROUTE)
         }
+
         setHasChains(true)
       } catch (err) {
+        debugger
         logError(Errors._904, err.message)
         setIsError(true)
       }

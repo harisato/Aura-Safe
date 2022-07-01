@@ -71,6 +71,7 @@ const StyledListSubItem = styled(ListItem)<ListItemProps>`
   &.MuiButtonBase-root.MuiListItem-root {
     margin: 4px 0;
     margin-left: auto;
+    width: 85%;
     span {
       color: white !important;
     }
@@ -86,7 +87,7 @@ const StyledListSubItem = styled(ListItem)<ListItemProps>`
   &.MuiButtonBase-root.MuiListItem-root.Mui-selected {
     background-color: #252529;
     border-radius: 8px;
-    width: 85%;
+    /* width: 85%; */
     color: ${({ theme }) => theme.colors.primary};
     span {
       color: #5ee6d0 !important;
@@ -141,7 +142,7 @@ const StyledSubListMui = styled(ListMui)<ListProps<any>>`
     background-color: #404047;
 
     top: 0;
-    left: 20px;
+    left: calc(15% - 18px);
   }
 
   a {
@@ -154,7 +155,7 @@ const StyledSubListMui = styled(ListMui)<ListProps<any>>`
       left: -18px;
 
       height: 50%;
-      width: 8%;
+      width: 16px;
       background-color: transparent;
 
       border-left: 2px solid #404047;

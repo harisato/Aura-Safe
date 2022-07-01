@@ -13,6 +13,10 @@ const PrefixedEthHashInfo = ({ hash, ...rest }: any): ReactElement => {
   const { address } = parsePrefixedAddress(hash)
   const chainInfo = getChainInfo()
 
+  if (!chainInfo) {
+    return <></>
+  }
+
   return (
     <StyledPrefixedEthHashInfo
       hash={address}

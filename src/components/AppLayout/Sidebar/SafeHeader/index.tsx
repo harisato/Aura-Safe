@@ -35,6 +35,7 @@ const SafeHeader = ({
   const copyChainPrefix = useSelector(copyShortNameSelector)
   const chainInfoShortName = getChainInfo().shortName
   const shortName = extractShortChainName()
+  const chainInfo = getChainInfo()
 
   if (!address) {
     return (
@@ -49,13 +50,12 @@ const SafeHeader = ({
       </Container>
     )
   }
-  const chainInfo = getChainInfo()
 
   return (
     <>
       {/* Network */}
       <StyledTextLabel size="lg" chainInfo={chainInfo}>
-        <StyledDotChainName />
+        <StyledDotChainName></StyledDotChainName>
         {chainInfo.chainName}
       </StyledTextLabel>
       <Container>
@@ -66,7 +66,7 @@ const SafeHeader = ({
             {/* SafeInfo */}
             <StyledTextSafeName size="lg" center>
               {safeName}
-              <StyledPrefixedEthHashInfo hash={address} shortenHash={4} textSize="sm" />
+              {/* <StyledPrefixedEthHashInfo hash={address} shortenHash={4} textSize="sm" /> */}
             </StyledTextSafeName>
           </StyledIdenticonContainer>
           <ButtonHelper onClick={onToggleSafeList} data-testid={TOGGLE_SIDEBAR_BTN_TESTID}>
