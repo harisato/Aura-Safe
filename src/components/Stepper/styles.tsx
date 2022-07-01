@@ -19,6 +19,12 @@ const styles = (theme) =>
     },
     nextButton: {
       fontWeight: boldFont,
+      boxShadow: 'none',
+      backgroundColor: 'transparent',
+
+      '&:hover': {
+        backgroundColor: 'transparent',
+      },
     },
     borderNextButton: {
       borderRadius: '50px',

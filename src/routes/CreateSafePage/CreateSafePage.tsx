@@ -128,10 +128,6 @@ function CreateSafePage(): ReactElement {
     }
 
     const { ErrorCode, Data: safeData, Message } = await createMSafe(payload)
-    console.log('payload', payload)
-    console.log('safeData', safeData)
-    console.log('ErrorCode', ErrorCode)
-    console.log('Message', Message)
 
     if (ErrorCode === MESSAGES_CODE.SUCCESSFUL.ErrorCode) {
       trackEvent(USER_EVENTS.CREATE_SAFE)
@@ -296,7 +292,7 @@ function CreateSafePage(): ReactElement {
               </div>
             )}
           </Modal.Body>
-          <Modal.Footer justifyContent='flex-end'>
+          <Modal.Footer justifyContent="flex-end">
             {
               <StyledBorder>
                 <StyledButtonBorder iconType="safe" iconSize="sm" size="lg" onClick={onClickModalButton}>
