@@ -1,4 +1,3 @@
-import { List } from 'immutable'
 import {
   Erc20Transfer,
   Erc721Transfer,
@@ -7,68 +6,53 @@ import {
   Operation,
   TokenType,
 } from '@gnosis.pm/safe-react-gateway-sdk'
+import { List } from 'immutable'
 import { useMemo, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
 import { useStyles } from './style'
 
-import Modal, { Modal as GenericModal } from 'src/components/Modal'
-import { ButtonStatus } from 'src/components/Modal/type'
-import { ReviewInfoText } from 'src/components/ReviewInfoText'
+import { toBase64 } from '@cosmjs/encoding'
+import { coins, GasPrice, MsgSendEncodeObject, SignerData, SigningStargateClient } from '@cosmjs/stargate'
+import { generatePath } from 'react-router-dom'
+import ExecuteCheckbox from 'src/components/ExecuteCheckbox'
 import Block from 'src/components/layout/Block'
-import Bold from 'src/components/layout/Bold'
 import Hairline from 'src/components/layout/Hairline'
 import Paragraph from 'src/components/layout/Paragraph'
 import Row from 'src/components/layout/Row'
-import { TX_NOTIFICATION_TYPES } from 'src/logic/safe/transactions'
-import { processTransaction } from 'src/logic/safe/store/actions/processTransaction'
+import Modal, { Modal as GenericModal } from 'src/components/Modal'
+import { ButtonStatus } from 'src/components/Modal/type'
+import { ReviewInfoText } from 'src/components/ReviewInfoText'
+import { getChainInfo, getInternalChainId, getShortName } from 'src/config'
 import { EstimationStatus, useEstimateTransactionGas } from 'src/logic/hooks/useEstimateTransactionGas'
 import { useEstimationStatus } from 'src/logic/hooks/useEstimationStatus'
-import { TxParameters } from 'src/routes/safe/container/hooks/useTransactionParameters'
-import { TxParametersDetail } from 'src/routes/safe/components/Transactions/helpers/TxParametersDetail'
-import { EditableTxParameters } from 'src/routes/safe/components/Transactions/helpers/EditableTxParameters'
-import { EMPTY_DATA } from 'src/logic/wallets/ethTransactions'
-import { userAccountSelector } from 'src/logic/wallets/store/selectors'
-import { isThresholdReached } from 'src/routes/safe/components/Transactions/TxList/hooks/useTransactionActions'
-import { ModalHeader } from 'src/routes/safe/components/Balances/SendModal/screens/ModalHeader'
-import { Overwrite } from 'src/types/helpers'
-import { ZERO_ADDRESS } from 'src/logic/wallets/ethAddresses'
-import { makeConfirmation } from 'src/logic/safe/store/models/confirmation'
 import { enhanceSnackbarForAction, NOTIFICATIONS } from 'src/logic/notifications'
 import enqueueSnackbar from 'src/logic/notifications/store/actions/enqueueSnackbar'
+import fetchTransactions from 'src/logic/safe/store/actions/transactions/fetchTransactions'
+import { makeConfirmation } from 'src/logic/safe/store/models/confirmation'
 import { ExpandedTxDetails, isMultiSigExecutionDetails, Transaction } from 'src/logic/safe/store/models/types/gateway.d'
+import { ZERO_ADDRESS } from 'src/logic/wallets/ethAddresses'
+import { EMPTY_DATA } from 'src/logic/wallets/ethTransactions'
+import { userAccountSelector } from 'src/logic/wallets/store/selectors'
 import {
   extractSafeAddress,
-  SAFE_ROUTES,
-  history,
-  generateSafeRoute,
-  SAFE_ADDRESS_SLUG,
-  getPrefixedSafeAddressSlug,
   extractShortChainName,
+  generateSafeRoute,
+  getPrefixedSafeAddressSlug,
+  history,
+  SAFE_ADDRESS_SLUG,
+  SAFE_ROUTES,
   TRANSACTION_ID_NUMBER,
 } from 'src/routes/routes'
-import ExecuteCheckbox from 'src/components/ExecuteCheckbox'
-import { calculateFee, coins, GasPrice, MsgSendEncodeObject, SignerData, SigningStargateClient } from '@cosmjs/stargate'
-import { getChainInfo, getInternalChainId, getShortName } from 'src/config'
-import { getChains } from 'src/config/cache/chains'
+import { ModalHeader } from 'src/routes/safe/components/Balances/SendModal/screens/ModalHeader'
+import { EditableTxParameters } from 'src/routes/safe/components/Transactions/helpers/EditableTxParameters'
+import { TxParametersDetail } from 'src/routes/safe/components/Transactions/helpers/TxParametersDetail'
+import { isThresholdReached } from 'src/routes/safe/components/Transactions/TxList/hooks/useTransactionActions'
+import { TxParameters } from 'src/routes/safe/container/hooks/useTransactionParameters'
 import { confirmSafeTransaction, getAccountOnChain, getMChainsConfig, sendSafeTransaction } from 'src/services'
-import fetchTransactions from 'src/logic/safe/store/actions/transactions/fetchTransactions'
-import { fetchSafe } from 'src/logic/safe/store/actions/fetchSafe'
-import { generatePath } from 'react-router-dom'
-import { fromBase64, toBase64 } from '@cosmjs/encoding'
-import {
-  ConnectType,
-  CreateTxFailed,
-  SignResult,
-  Timeout,
-  TxFailed,
-  TxUnspecifiedError,
-  useConnectedWallet,
-  UserDenied,
-  useWallet,
-} from '@terra-money/wallet-provider'
-import { ICreateSafeTransaction } from 'src/types/transaction'
-import { MsgSend, MnemonicKey, Coins, LCDClient, Fee, LegacyAminoMultisigPublicKey } from '@terra-money/terra.js'
+import { Overwrite } from 'src/types/helpers'
+
+import { Fee, MsgSend } from '@terra-money/terra.js'
 import { loadLastUsedProvider } from 'src/logic/wallets/store/middlewares/providerWatcher'
 
 export const APPROVE_TX_MODAL_SUBMIT_BTN_TEST_ID = 'approve-tx-modal-submit-btn'
@@ -305,30 +289,8 @@ export const ApproveTxModal = ({
     manualGasLimit,
   })
 
-  // const {
-  //   gasCostFormatted,
-  //   gasPriceFormatted,
-  //   gasLimit,
-  //   gasEstimation,
-  //   txEstimationExecutionStatus,
-  //   isExecution,
-  //   isCreation,
-  //   isOffChainSignature,
-  // } = {
-  //   gasCostFormatted: '',
-  //   gasPriceFormatted: '1',
-  //   gasLimit: '80000',
-  //   gasEstimation: '0',
-  //   txEstimationExecutionStatus: EstimationStatus.SUCCESS,
-  //   isExecution: true,
-  //   isCreation: true,
-  //   isOffChainSignature: true,
-  // }
-
   const doExecute = isExecution && approveAndExecute
   const [buttonStatus] = useEstimationStatus(txEstimationExecutionStatus)
-  const { connect } = useWallet()
-  const connectedWallet = useConnectedWallet()
 
   const approveTx = async (txParameters: TxParameters) => {
     if (thresholdReached && confirmations.size < _threshold) {
@@ -372,8 +334,6 @@ export const ApproveTxModal = ({
           const lastUsedProvider = await loadLastUsedProvider()
           if (lastUsedProvider?.toLowerCase() === 'keplr') {
             signTransactionWithKeplr(safeAddress)
-          } else {
-            signTransactionWithTerra(safeAddress)
           }
         }
       } catch (error) {
@@ -406,60 +366,6 @@ export const ApproveTxModal = ({
     if (txParameters.ethGasLimit && gasLimit !== txParameters.ethGasLimit) {
       setManualGasLimit(txParameters.ethGasLimit)
     }
-  }
-
-  const signTransactionWithTerra = async (safeAddress: string) => {
-    const chainInfo = getChainInfo()
-    const chainId = chainInfo.chainId
-    const denom = 'uluna'
-    if (!connectedWallet) {
-      connect(ConnectType.EXTENSION)
-      signTransactionWithTerra('')
-      return
-    }
-
-    const amountFinal = value
-    const send = new MsgSend(safeAddress, to, { uluna: amountFinal })
-
-    connectedWallet!
-      .sign({
-        fee: new Fee(
-          Number(manualGasLimit) || Number(gasLimit),
-          String(manualGasPrice || gasPriceFormatted).concat(denom),
-        ),
-        msgs: [send],
-      })
-      .then(async (signResult: SignResult) => {
-        // call api to create Tx
-        const signatures = signResult.result.signatures[0]
-
-        const data = {
-          fromAddress: userWalletAddress,
-          transactionId: transaction?.id,
-          internalChainId: getInternalChainId(),
-          bodyBytes: '',
-          signature: signatures,
-        }
-
-        confirmTxFromApi(data, chainId)
-      })
-      .catch((error: unknown) => {
-        if (error instanceof UserDenied) {
-          dispatch(enqueueSnackbar(enhanceSnackbarForAction(NOTIFICATIONS.TX_REJECTED_MSG)))
-        } else if (error instanceof CreateTxFailed) {
-          dispatch(enqueueSnackbar(enhanceSnackbarForAction(NOTIFICATIONS.TX_CREATE_FAILED_MSG)))
-        } else if (error instanceof TxFailed) {
-          dispatch(enqueueSnackbar(enhanceSnackbarForAction(NOTIFICATIONS.TX_FAILED_MSG)))
-        } else if (error instanceof Timeout) {
-          // setTxError('Timeout');
-          dispatch(enqueueSnackbar(enhanceSnackbarForAction(NOTIFICATIONS.TX_TIMEOUT_MSG)))
-        } else if (error instanceof TxUnspecifiedError) {
-          dispatch(enqueueSnackbar(enhanceSnackbarForAction(NOTIFICATIONS.SOMETHING_WENT_WRONG)))
-        } else {
-          dispatch(enqueueSnackbar(enhanceSnackbarForAction(NOTIFICATIONS.SOMETHING_WENT_WRONG)))
-        }
-        onClose()
-      })
   }
 
   const signTransactionWithKeplr = async (safeAddress: string) => {
