@@ -4,10 +4,11 @@ import Close from '@material-ui/icons/Close'
 import { ReactElement } from 'react'
 
 import ChainIndicator from 'src/components/ChainIndicator'
+import Col from 'src/components/layout/Col'
 import Paragraph from 'src/components/layout/Paragraph'
 import Row from 'src/components/layout/Row'
 import { getChainInfo } from 'src/config'
-import { styles } from './style'
+import { styles, StyledFlexColumn } from './style'
 
 const useStyles = makeStyles(styles)
 
@@ -25,10 +26,12 @@ export const ModalHeader = ({ onClose, subTitle, title, iconUrl }: HeaderProps):
   return (
     <Row align="center" className={classes.heading} grow>
       {iconUrl && <img className={classes.icon} alt={title} src={iconUrl} />}
-      <Paragraph className={classes.headingText} noMargin weight="bolder">
-        {title}
-      </Paragraph>
-      <Paragraph className={classes.annotation}>{subTitle ? subTitle : ''}</Paragraph>
+      <StyledFlexColumn>
+        <Paragraph className={classes.headingText} noMargin weight="bolder">
+          {title}
+        </Paragraph>
+        <Paragraph className={classes.annotation}>{subTitle ? subTitle : ''}</Paragraph>
+      </StyledFlexColumn>
       <Row className={classes.chainIndicator}>
         {connectedNetwork.chainId && <ChainIndicator chainId={connectedNetwork.chainId} />}
       </Row>

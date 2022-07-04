@@ -1,6 +1,7 @@
 import { Button, Icon, Loader } from '@gnosis.pm/safe-react-components'
 import cn from 'classnames'
 import { ReactElement } from 'react'
+
 import {
   ModalStyled,
   HeaderSection,
@@ -10,6 +11,7 @@ import {
   LoaderText,
   StyledButtonClose,
   StyledButtonConfirm,
+  StyledBorderButton,
 } from './styles'
 import {
   GnoModalProps,
@@ -112,22 +114,33 @@ const Buttons = ({ cancelButtonProps = {}, confirmButtonProps = {} }: ButtonsPro
           cancelText
         )}
       </StyledButtonClose>
-      <StyledButtonConfirm
+
+      {/* <GradientButton
         size="md"
+        text={'Review'}
+        testId="review-tx-btn"
         type={confirmProps?.onClick ? 'button' : 'submit'}
+      ></GradientButton> */}
+      <StyledBorderButton
         disabled={confirmDisabled || [ButtonStatus.DISABLED, ButtonStatus.LOADING].includes(confirmStatus)}
-        data-testid={confirmTestId}
-        {...confirmProps}
       >
-        {ButtonStatus.LOADING === confirmStatus ? (
-          <>
-            <Loader size="xs" color="secondaryLight" />
-            <LoaderText>{confirmText}</LoaderText>
-          </>
-        ) : (
-          confirmText
-        )}
-      </StyledButtonConfirm>
+        <StyledButtonConfirm
+          size="md"
+          type={confirmProps?.onClick ? 'button' : 'submit'}
+          disabled={confirmDisabled || [ButtonStatus.DISABLED, ButtonStatus.LOADING].includes(confirmStatus)}
+          data-testid={confirmTestId}
+          {...confirmProps}
+        >
+          {ButtonStatus.LOADING === confirmStatus ? (
+            <>
+              <Loader size="xs" color="secondaryLight" />
+              <LoaderText>{confirmText}</LoaderText>
+            </>
+          ) : (
+            confirmText
+          )}
+        </StyledButtonConfirm>
+      </StyledBorderButton>
     </>
   )
 }

@@ -31,6 +31,7 @@ const StyledRow = styled(Row)`
 const StyledClose = styled(Close)`
   height: 35px;
   width: 35px;
+  color: '#ff0000';
 `
 
 const GoBackWrapper = styled.div`

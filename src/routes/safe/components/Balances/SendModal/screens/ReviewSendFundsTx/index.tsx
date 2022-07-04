@@ -1,9 +1,8 @@
 import { makeStyles } from '@material-ui/core/styles'
-import { memo, useEffect, useMemo, useState } from 'react'
+import { useMemo, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
-import { toTokenUnit } from 'src/logic/tokens/utils/humanReadableValue'
-import { getChainInfo, getExplorerInfo, getInternalChainId, getNativeCurrency, _getChainId } from 'src/config'
+import { RecordOf } from 'immutable'
 import Divider from 'src/components/Divider'
 import Block from 'src/components/layout/Block'
 import Col from 'src/components/layout/Col'
@@ -11,59 +10,59 @@ import Hairline from 'src/components/layout/Hairline'
 import Img from 'src/components/layout/Img'
 import Paragraph from 'src/components/layout/Paragraph'
 import Row from 'src/components/layout/Row'
+import { Modal } from 'src/components/Modal'
+import { ButtonStatus } from 'src/components/Modal/type'
 import PrefixedEthHashInfo from 'src/components/PrefixedEthHashInfo'
-import { sameAddress, ZERO_ADDRESS } from 'src/logic/wallets/ethAddresses'
+import { ReviewInfoText } from 'src/components/ReviewInfoText'
+import { getChainInfo, getExplorerInfo, getInternalChainId, getNativeCurrency } from 'src/config'
+import { EstimationStatus } from 'src/logic/hooks/useEstimateTransactionGas'
+import { useEstimationStatus } from 'src/logic/hooks/useEstimationStatus'
+import { SpendingLimit } from 'src/logic/safe/store/models/safe'
+import { TokenProps } from 'src/logic/tokens/store/model/token'
+import { toTokenUnit } from 'src/logic/tokens/utils/humanReadableValue'
+import { sameAddress } from 'src/logic/wallets/ethAddresses'
 import SafeInfo from 'src/routes/safe/components/Balances/SendModal/SafeInfo'
 import { setImageToPlaceholder } from 'src/routes/safe/components/Balances/utils'
 import { extendedSafeTokensSelector } from 'src/routes/safe/container/selector'
-import { SpendingLimit } from 'src/logic/safe/store/models/safe'
 import { sameString } from 'src/utils/strings'
-import { TokenProps } from 'src/logic/tokens/store/model/token'
-import { RecordOf } from 'immutable'
-import { EstimationStatus } from 'src/logic/hooks/useEstimateTransactionGas'
-import { useEstimationStatus } from 'src/logic/hooks/useEstimationStatus'
-import { Modal } from 'src/components/Modal'
-import { ButtonStatus } from 'src/components/Modal/type'
-import { ReviewInfoText } from 'src/components/ReviewInfoText'
 
-import { styles } from './style'
-import { EditableTxParameters } from 'src/routes/safe/components/Transactions/helpers/EditableTxParameters'
-import { TxParametersDetail } from 'src/routes/safe/components/Transactions/helpers/TxParametersDetail'
-import { TxParameters } from 'src/routes/safe/container/hooks/useTransactionParameters'
-import { ModalHeader } from '../ModalHeader'
+import { coins, MsgSendEncodeObject, SignerData, SigningStargateClient } from '@cosmjs/stargate'
+import { ChainInfo } from '@gnosis.pm/safe-react-gateway-sdk'
+import { generatePath } from 'react-router-dom'
+import ExecuteCheckbox from 'src/components/ExecuteCheckbox'
+import { getNativeCurrencyAddress } from 'src/config/utils'
+import { enhanceSnackbarForAction, NOTIFICATIONS } from 'src/logic/notifications'
+import enqueueSnackbar from 'src/logic/notifications/store/actions/enqueueSnackbar'
+import { userAccountSelector } from 'src/logic/wallets/store/selectors'
 import {
   extractSafeAddress,
   extractShortChainName,
   getPrefixedSafeAddressSlug,
   history,
   SAFE_ADDRESS_SLUG,
-  SAFE_ROUTES,
+  SAFE_ROUTES
 } from 'src/routes/routes'
-import ExecuteCheckbox from 'src/components/ExecuteCheckbox'
-import { getNativeCurrencyAddress } from 'src/config/utils'
+import { EditableTxParameters } from 'src/routes/safe/components/Transactions/helpers/EditableTxParameters'
+import { TxParametersDetail } from 'src/routes/safe/components/Transactions/helpers/TxParametersDetail'
+import { TxParameters } from 'src/routes/safe/container/hooks/useTransactionParameters'
+import { createSafeTransaction, getAccountOnChain, getMChainsConfig } from 'src/services'
 import { ICreateSafeTransaction } from 'src/types/transaction'
-import { createSafeTransaction, getAccountOnChain, getMChainsConfig, signSafeTransaction } from 'src/services'
-import { coins, MsgSendEncodeObject, SignerData, SigningStargateClient } from '@cosmjs/stargate'
-import enqueueSnackbar from 'src/logic/notifications/store/actions/enqueueSnackbar'
-import { enhanceSnackbarForAction, NOTIFICATIONS } from 'src/logic/notifications'
-import { userAccountSelector } from 'src/logic/wallets/store/selectors'
-import { ChainInfo } from '@gnosis.pm/safe-react-gateway-sdk'
-import { generatePath } from 'react-router-dom'
+import { ModalHeader } from '../ModalHeader'
+import { styles } from './style'
 // import { MsgSend } from 'cosmjs-types/cosmos/bank/v1beta1/tx'
-import { calculateFee, GasPrice, makeMultisignedTx, StargateClient } from '@cosmjs/stargate'
-import { fromBase64, toBase64 } from '@cosmjs/encoding'
-import { MsgSend, MnemonicKey, Coins, LCDClient, Fee } from '@terra-money/terra.js'
+import { toBase64 } from '@cosmjs/encoding'
+import { GasPrice } from '@cosmjs/stargate'
+import { Fee, MsgSend } from '@terra-money/terra.js'
 import {
   ConnectType,
   CreateTxFailed,
   SignResult,
   Timeout,
   TxFailed,
-  TxResult,
   TxUnspecifiedError,
   useConnectedWallet,
   UserDenied,
-  useWallet,
+  useWallet
 } from '@terra-money/wallet-provider'
 import { loadLastUsedProvider } from 'src/logic/wallets/store/middlewares/providerWatcher'
 
@@ -134,27 +133,6 @@ const ReviewSendFundsTx = ({ onClose, onPrev, tx }: ReviewTxProps): React.ReactE
   const [isDisabled, setDisabled] = useState(false)
   const [gasPriceFormatted, setGasPriceFormatted] = useState('1')
   let lastUsedProvider = ''
-
-  // const { address: safeAddress, ethBalance, name: safeName } = useSelector(currentSafeWithNames)
-
-  // const {
-  //   gasCostFormatted,
-  //   gasPriceFormatted,
-  //   gasLimit,
-  //   gasEstimation,
-  //   txEstimationExecutionStatus,
-  //   isExecution,
-  //   isCreation,
-  //   isOffChainSignature,
-  // } = useEstimateTransactionGas({
-  //   txData: data,
-  //   txRecipient,
-  //   txType: tx.txType,
-  //   txAmount: txValue,
-  //   safeTxGas: manualSafeTxGas,
-  //   manualGasPrice,
-  //   manualGasLimit,
-  // })
 
   loadLastUsedProvider().then((result) => {
     lastUsedProvider = result || ''
@@ -403,7 +381,7 @@ const ReviewSendFundsTx = ({ onClose, onPrev, tx }: ReviewTxProps): React.ReactE
       {(txParameters, toggleEditMode) => (
         <>
           {/* Header */}
-          <ModalHeader onClose={onClose} subTitle="2 of 2" title="Send funds" />
+          <ModalHeader onClose={onClose} subTitle="Step 2 of 2" title="Send funds" />
 
           <Hairline />
 
@@ -436,6 +414,7 @@ const ReviewSendFundsTx = ({ onClose, onPrev, tx }: ReviewTxProps): React.ReactE
                 Amount
               </Paragraph>
             </Row>
+
             <Row align="center" margin="md">
               <Img alt={txToken?.name as string} height={28} onError={setImageToPlaceholder} src={txToken?.logoUri} />
               <Paragraph

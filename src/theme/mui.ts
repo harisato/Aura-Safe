@@ -241,12 +241,33 @@ const theme = createTheme({
         marginTop: '0 !important',
       },
     },
+    MuiFormLabel: {
+      root: {
+        color: '#98989B',
+        '&.Mui-focused': {
+          color: '#98989B'
+        }
+      }
+    },
     MuiFilledInput: {
-      underline: {
-        '&::before': {
-          borderBottomStyle: 'solid',
-          borderBottomWidth: '2px !important',
+      root: {
+        backgroundColor: '#2E2E33',
+        '&:hover': {
+          backgroundColor: '#2E2E33',
         },
+        '&:focused': {
+          backgroundColor: '#2E2E33',
+        },
+        '&.Mui-focused': {
+          backgroundColor: '#2E2E33',
+          color: '#98989B'
+        }
+      },
+      underline: {
+        // '&::before': {
+        //   borderBottomStyle: 'solid',
+        //   borderBottomWidth: '2px !important',
+        // },
         '&::after': {
           borderBottomStyle: 'solid',
           borderBottomWidth: '2px !important',
