@@ -66,7 +66,7 @@ const SafeHeader = ({
             {/* SafeInfo */}
             <StyledTextSafeName size="lg" center>
               {safeName}
-              {/* <StyledPrefixedEthHashInfo hash={address} shortenHash={4} textSize="sm" /> */}
+              <StyledPrefixedEthHashInfo hash={address} shortenHash={4} textSize="sm" />
             </StyledTextSafeName>
           </StyledIdenticonContainer>
           <ButtonHelper onClick={onToggleSafeList} data-testid={TOGGLE_SIDEBAR_BTN_TESTID}>
@@ -84,7 +84,7 @@ const SafeHeader = ({
           </IconContainer>
 
           {/* <StyledText size="xl">balance</StyledText> */}
-          <StyledButton size="md" disabled={!granted} color="primary" onClick={onNewTransactionClick}>
+          <StyledButton size="md" disabled={!granted} onClick={onNewTransactionClick}>
             <FixedIcon type="arrowSentWhite" />
             <Text size="md" color="white">
               Send funds
