@@ -1,28 +1,30 @@
+import { Accordion, AccordionDetails, AccordionSummary, ButtonLink, Text } from '@gnosis.pm/safe-react-components'
 import { ReactElement, useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import styled from 'styled-components'
-import { Text, ButtonLink, Accordion, AccordionSummary, AccordionDetails } from '@gnosis.pm/safe-react-components'
 
-import { currentSafe, currentSafeThreshold } from 'src/logic/safe/store/selectors'
+import { currentSafe } from 'src/logic/safe/store/selectors'
 import { getLastTxNonce } from 'src/logic/safe/store/selectors/gatewayTransactions'
 import { TxParameters } from 'src/routes/safe/container/hooks/useTransactionParameters'
-import { ParametersStatus, areEthereumParamsVisible, areSafeParamsEnabled, ethereumTxParametersTitle } from '../utils'
-import useSafeTxGas from '../useSafeTxGas'
+import { ethereumTxParametersTitle, ParametersStatus } from '../utils'
 
 const TxParameterWrapper = styled.div`
   display: flex;
   justify-content: space-between;
 `
 
-const Accordioncontainer = styled(Accordion)`
+const AccordionContainer = styled(Accordion)`
   background-color: rgba(14, 14, 15, 1);
-  > :nth-child(1) {
+
+  border: 1px solid #404047 !important;
+
+  /* > :nth-child(1) {
     :hover {
       p {
         color: rgba(14, 14, 15, 1);
       }
     }
-  }
+  } */
 `
 
 const AccordionDetailsWrapper = styled.div`
@@ -47,8 +49,24 @@ const StyledButtonLink = styled(ButtonLink)`
   }
 `
 
+const StyledAccordionSummary = styled(AccordionSummary)`
+  background-color: #1d1d1f !important;
+
+  border-bottom: 1px solid #404047 !important;
+  &::hover {
+    color: #98989b;
+  }
+`
+
 const StyledTextGas = styled.span`
   color: #98989b;
+`
+const StyledTitleText = styled(Text)`
+  color: #98989b;
+
+  &::hover {
+    color: #98989b;
+  }
 `
 
 type Props = {
@@ -65,14 +83,11 @@ export const TxParametersDetail = ({
   onEdit,
   txParameters,
   compact = true,
-  parametersStatus,
   isTransactionCreation,
   isTransactionExecution,
   isOffChainSignature,
 }: Props): ReactElement | null => {
   const { nonce } = useSelector(currentSafe)
-  const threshold = useSelector(currentSafeThreshold) || 1
-  const defaultParameterStatus = isOffChainSignature && threshold > 1 ? 'ETH_HIDDEN' : 'ENABLED'
 
   const [isTxNonceOutOfOrder, setIsTxNonceOutOfOrder] = useState(false)
   const [isAccordionExpanded, setIsAccordionExpanded] = useState(true)
@@ -80,7 +95,6 @@ export const TxParametersDetail = ({
   const { safeNonce = '' } = txParameters
   const safeNonceNumber = parseInt(safeNonce, 10)
   const lastQueuedTxNonce = useSelector(getLastTxNonce)
-  const showSafeTxGas = useSafeTxGas()
 
   useEffect(() => {
     if (Number.isNaN(safeNonceNumber)) return
@@ -104,12 +118,10 @@ export const TxParametersDetail = ({
   }
 
   return (
-    <Accordioncontainer compact={compact} expanded={isAccordionExpanded} onChange={onChangeExpand}>
-      <AccordionSummary>
-        <Text size="xl" color={isAccordionExpanded ? 'text' : 'white'}>
-          Advanced options
-        </Text>
-      </AccordionSummary>
+    <AccordionContainer compact={compact} expanded={isAccordionExpanded} onChange={onChangeExpand}>
+      <StyledAccordionSummary>
+        <StyledTitleText size="xl">Advanced options</StyledTitleText>
+      </StyledAccordionSummary>
       <AccordionDetails>
         <AccordionDetailsWrapper>
           {/* <StyledText size="md" color="placeHolder">
@@ -186,6 +198,6 @@ export const TxParametersDetail = ({
           )}
         </AccordionDetailsWrapper>
       </AccordionDetails>
-    </Accordioncontainer>
+    </AccordionContainer>
   )
 }

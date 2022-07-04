@@ -37,6 +37,7 @@ export const NoPaddingAccordion = styled(Accordion).attrs((props) =>
 
 export const ActionAccordion = styled(Accordion)`
   &.MuiAccordion-root {
+    background-color: #1D1D1F;
     &:first-child {
       border-top: none;
     }

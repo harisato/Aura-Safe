@@ -26,9 +26,9 @@ export const useStyles = makeStyles(
       marginBottom: `${md}`,
     },
     closeIcon: {
-      height: '35px',
-      width: '35px',
-      color: 'white',
+      height: '28px',
+      width: '28px',
+      color: '#777E91',
     },
     buttonColumn: {
       margin: '52px 0 44px 0',

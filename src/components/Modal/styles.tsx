@@ -1,7 +1,7 @@
 import styled from 'styled-components'
 import { Modal as ModalMUI } from '@material-ui/core'
 import { Title as TitleSRC, Button } from '@gnosis.pm/safe-react-components'
-import { bgBox } from 'src/theme/variables'
+import { bgBox, borderLinear } from 'src/theme/variables'
 import { BodyProps, FooterProps } from './type'
 
 const ModalStyled = styled(ModalMUI)`
@@ -104,7 +104,7 @@ const BodySection = styled.div<{ withoutPadding: BodyProps['withoutPadding']; fi
   min-height: ${({ fitContent }) => (fitContent ? 'fit-content' : '200px')};
 `
 
-const FooterSection = styled.div<{ withoutBorder: boolean; justifyContent?: FooterProps['justifyContent']}>`
+const FooterSection = styled.div<{ withoutBorder: boolean; justifyContent?: FooterProps['justifyContent'] }>`
   display: flex;
   justify-content: ${({ justifyContent }) => (justifyContent ? justifyContent : 'center')};
   align-items: center;
@@ -118,16 +118,25 @@ const FooterSection = styled.div<{ withoutBorder: boolean; justifyContent?: Foot
 const LoaderText = styled.span`
   margin-left: 10px;
 `
+const StyledBorderButton = styled.div<{ disabled: boolean }>`
+  border-radius: 50px !important;
+  border: 2px solid transparent;
+  background-image: ${borderLinear};
+  background-origin: border-box;
+  background-clip: content-box, border-box;
+  opacity: ${({ disabled }) => (disabled ? '0.5' : '1')};
+`
 
 const StyledButtonConfirm = styled(Button)`
   background-color: transparent !important;
-  border: 1px solid rgba(94, 230, 157, 1);
+  background-color: rgba(18, 18, 18, 1) !important;
   border-radius: 50px !important;
 `
 
 const StyledButtonClose = styled(Button)`
   background-color: transparent !important;
-  border: 1px solid rgba(230, 94, 94, 1);
+  /* border: 1px solid rgba(230, 94, 94, 1); */
+  border: none;
   border-radius: 50px !important;
   color: white !important;
 `
@@ -141,4 +150,5 @@ export {
   LoaderText,
   StyledButtonClose,
   StyledButtonConfirm,
+  StyledBorderButton,
 }

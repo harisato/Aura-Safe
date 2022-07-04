@@ -13,6 +13,7 @@ const Wrapper = styled.div`
 `
 const StyledDivider = styled(DividerSRC)`
   width: 100%;
+  border-top: 1px solid #3e3f40;
 `
 
 type Props = {
