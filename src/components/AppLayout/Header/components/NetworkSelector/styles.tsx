@@ -17,10 +17,10 @@ export const styles = createStyles({
     },
   },
   networkList: {
-    alignItems: 'center',
+    // alignItems: 'center',
     cursor: 'pointer',
     display: 'flex',
-    backgroundColor: '#222223',
+    // backgroundColor: '#222223',
     borderRadius: '4px',
     height: '70%',
     flex: '1 1 auto',
@@ -35,6 +35,9 @@ export const styles = createStyles({
   },
   popper: {
     zIndex: 1301,
+    backgroundColor: '#0F0F0F',
+    padding: '12px 16px',
+    borderRadius: sm,
   },
   network: {
     borderRadius: sm,
@@ -46,6 +49,8 @@ export const styles = createStyles({
   link: {
     padding: '14px 16px 14px 0',
     display: 'flex',
+    justifyContent: 'space-between',
+    width: '100%',
   },
 })
 
@@ -53,16 +58,16 @@ export const StyledLink = styled.a`
   margin-top: 10px;
   text-decoration: none;
   display: flex;
-  background: #3e3f40;
+  /* background: #3e3f40; */
   border-radius: 4px;
   justify-content: space-between;
   border: 2px solid transparent;
 
-  :hover {
+  /* :hover {
     border: 2px solid transparent;
     background-image: ${borderLinear};
     transition: 0.3s;
     background-origin: border-box;
     background-clip: content-box, border-box;
-  }
+  } */
 `

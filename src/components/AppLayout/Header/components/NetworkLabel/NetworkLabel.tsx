@@ -6,15 +6,17 @@ import { StyledCol, StyledParagraph } from './styles'
 const NetworkLabel = ({
   networkInfo,
   onClick,
+  noBackground = false
 }: {
   networkInfo?: ChainInfo
   onClick?: () => void
+  noBackground?: boolean
 }): React.ReactElement => {
   const chain = networkInfo || getChainInfo()
 
   return (
     <StyledCol middle="xs" start="xs" onClick={onClick}>
-      <StyledParagraph size="md" $theme={chain.theme}>
+      <StyledParagraph size="md" $theme={chain.theme} weight='semiBold' color='soft'>
         {chain.chainName}
       </StyledParagraph>
     </StyledCol>

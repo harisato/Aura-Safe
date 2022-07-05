@@ -24,7 +24,7 @@ class Provider extends React.Component<any> {
           <Divider />
           <Col className={classes.provider} end="sm" middle="xs" onClick={toggle}>
             {info}
-            <IconButton className={classes.expand} disableRipple>
+            <IconButton className={classes.expand} disableRipple color={'primary'}>
               {open ? <ExpandLess /> : <ExpandMore />}
             </IconButton>
           </Col>

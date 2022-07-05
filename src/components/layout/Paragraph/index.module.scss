@@ -4,6 +4,25 @@
   text-overflow: ellipsis;
   overflow-x: inherit;
   line-height: 1.38;
+  font-family: SFProDisplay;
+}
+
+.gradient {
+  --gradient-color-1: #5EE6D0;
+  --gradient-color-2: #BFC6FF;
+  --gradient-color-3: #FFBA69;
+
+  background: linear-gradient(108.46deg, var(--gradient-color-1) 12.51%, var(--gradient-color-2) 51.13%, var(--gradient-color-3) 87.49%);
+
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  width: -moz-fit-content;
+  width: fit-content;
+}
+
+.gray {
+  color: #98989B;
 }
 
 .soft {
@@ -31,7 +50,7 @@
 }
 
 .green {
-  color : $green;
+  color: $green;
 }
 
 .secondary {
@@ -111,8 +130,12 @@
   font-weight: $regularFont;
 }
 
+.semiBold {
+  font-weight: $semiBoldFont;
+}
+
 .bolder {
-  font-weight: $bolderFont;
+  font-weight: $mediumFont;
 }
 
 .bold {

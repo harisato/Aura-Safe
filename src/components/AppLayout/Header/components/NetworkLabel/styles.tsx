@@ -8,6 +8,14 @@ export const StyledCol = styled(Col)`
   flex-grow: 0;
   padding: 0 ${sm};
   cursor: ${(props) => (props.onClick ? 'pointer' : 'inherit')};
+
+  background: #5ee6d0;
+  border-radius: 4px;
+  padding: 6px 8px;
+
+  background: ${(props) => (props.noBackground ? 'transparent' : '#5ee6d0')};
+  color: ${(props) => (props.noBackground ? '#5ee6d0' : '#000')};
+
   @media (min-width: ${screenSm}px) {
     padding-left: ${md};
     padding-right: ${md};
@@ -18,7 +26,7 @@ export const StyledParagraph = styled(Paragraph)<{
 }>`
   // background-color: ${(props) => props?.$theme?.backgroundColor ?? border};
   // color: ${(props) => props?.$theme?.textColor ?? fontColor};
-  color: #5ee6d0;
+  color: inherit;
   border-radius: 3px;
   line-height: normal;
   text-transform: capitalize;

@@ -14,23 +14,22 @@ import { getAddressFromUnstoppableDomain } from './utils/unstoppableDomains'
 
 // This providers have direct relation with name assigned in bnc-onboard configuration
 export enum WALLET_PROVIDER {
-  METAMASK = 'METAMASK',
-  TORUS = 'TORUS',
-  PORTIS = 'PORTIS',
-  FORTMATIC = 'FORTMATIC',
-  SQUARELINK = 'SQUARELINK',
-  WALLETCONNECT = 'WALLETCONNECT',
-  TRUST = 'TRUST',
-  OPERA = 'OPERA',
-  // This is the provider for WALLET_LINK configuration on bnc-onboard
-  COINBASE_WALLET = 'COINBASE WALLET',
-  AUTHEREUM = 'AUTHEREUM',
-  LEDGER = 'LEDGER',
-  TREZOR = 'TREZOR',
-  LATTICE = 'LATTICE',
-  KEYSTONE = 'KEYSTONE',
+  // METAMASK = 'METAMASK',
+  // TORUS = 'TORUS',
+  // PORTIS = 'PORTIS',
+  // FORTMATIC = 'FORTMATIC',
+  // SQUARELINK = 'SQUARELINK',
+  // WALLETCONNECT = 'WALLETCONNECT',
+  // TRUST = 'TRUST',
+  // OPERA = 'OPERA',
+  // // This is the provider for WALLET_LINK configuration on bnc-onboard
+  // COINBASE_WALLET = 'COINBASE WALLET',
+  // AUTHEREUM = 'AUTHEREUM',
+  // LEDGER = 'LEDGER',
+  // TREZOR = 'TREZOR',
+  // LATTICE = 'LATTICE',
+  // KEYSTONE = 'KEYSTONE',
   KEPLR = 'KEPLR',
-  TERRASTATION = 'TERRASTATION'
 }
 
 // With some wallets from web3connect you have to use their provider instance only for signing
@@ -74,8 +73,8 @@ export const getChainIdFrom = (web3Provider: Web3): Promise<number> => {
   return web3Provider.eth.getChainId()
 }
 
-const isHardwareWallet = (walletName: string) =>
-  sameAddress(WALLET_PROVIDER.LEDGER, walletName) || sameAddress(WALLET_PROVIDER.TREZOR, walletName)
+const isHardwareWallet = (walletName: string) => false;
+  // sameAddress(WALLET_PROVIDER.LEDGER, walletName) || sameAddress(WALLET_PROVIDER.TREZOR, walletName)
 
 export const isSmartContractWallet = async (web3Provider: Web3, account: string): Promise<boolean> => {
   if (!account) {
