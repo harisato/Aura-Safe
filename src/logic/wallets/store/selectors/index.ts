@@ -28,7 +28,7 @@ export const shouldSwitchWalletChain = createSelector(
   currentChainId,
   (provider: ProviderState, currentChainId: ChainId): boolean => {
     const account = provider.get('account')
-    const networkId = provider.get('network').toString()
+    const networkId = provider.get('network')?.toString()
     return !!account && networkId !== currentChainId
   },
 )
