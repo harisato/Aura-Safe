@@ -5,7 +5,6 @@ import { Integrations } from '@sentry/tracing'
 import Root from 'src/components/Root'
 import { SENTRY_DSN } from './utils/constants'
 import { disableMMAutoRefreshWarning } from './utils/mm_warnings'
-import { getChainOptions, WalletProvider } from '@terra-money/wallet-provider'
 
 disableMMAutoRefreshWarning()
 
@@ -23,12 +22,9 @@ Sentry.init({
 const root = document.getElementById('root')
 
 if (root !== null) {
-  getChainOptions().then((chainOptions) => {
-    ReactDOM.render(
-      <WalletProvider {...chainOptions}>
-        <Root />
-      </WalletProvider>,
-      root,
-    )
-  })
+  ReactDOM.render(
+    <Root />,
+
+    root,
+  )
 }

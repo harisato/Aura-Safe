@@ -3,7 +3,7 @@ import { alpha } from '@material-ui/core/styles/colorManipulator'
 
 import {
   boldFont,
-  bolderFont,
+  mediumFont,
   border,
   buttonLargeFontSize,
   disabled,
@@ -458,7 +458,7 @@ const theme = createTheme({
         color: primary,
         fontFamily: secondaryFontFamily,
         fontSize: mediumFontSize,
-        fontWeight: bolderFont,
+        fontWeight: mediumFont,
       },
       secondary: {
         color: disabled,

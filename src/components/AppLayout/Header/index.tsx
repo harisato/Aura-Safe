@@ -1,25 +1,21 @@
 import { useEffect, useState } from 'react'
-import { useSelector, useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
+import { currentChainId } from 'src/logic/config/store/selectors'
+import { removeProvider } from 'src/logic/wallets/store/actions'
+import { loadLastUsedProvider } from 'src/logic/wallets/store/middlewares/providerWatcher'
+import {
+  availableSelector,
+  loadedSelector,
+  providerNameSelector,
+  userAccountSelector
+} from 'src/logic/wallets/store/selectors'
+import { connectKeplr } from '../../../logic/keplr/keplr'
+import { WALLETS_NAME } from '../../../logic/wallets/constant/wallets'
 import Layout from './components/Layout/Layout'
 import ConnectDetails from './components/ProviderDetails/ConnectDetails/ConnectDetails'
 import { UserDetails } from './components/ProviderDetails/UserDetails/UserDetails'
 import ProviderAccessible from './components/ProviderInfo/ProviderAccessible/ProviderAccessible'
 import ProviderDisconnected from './components/ProviderInfo/ProviderDisconnected/ProviderDisconnected'
-import { currentChainId } from 'src/logic/config/store/selectors'
-import {
-  availableSelector,
-  loadedSelector,
-  providerNameSelector,
-  userAccountSelector,
-} from 'src/logic/wallets/store/selectors'
-import { removeProvider } from 'src/logic/wallets/store/actions'
-import { LAST_USED_PROVIDER_KEY, loadLastUsedProvider } from 'src/logic/wallets/store/middlewares/providerWatcher'
-import { connectKeplr } from '../../../logic/keplr/keplr'
-import { ConnectType, useWallet, WalletStatus } from '@terra-money/wallet-provider'
-import { fetchTerraStation } from '../../../logic/terraStation'
-import { getChainInfo, getInternalChainId } from '../../../config'
-import { saveToStorage } from '../../../utils/storage'
-import { WALLETS_CHAIN_ID, WALLETS_NAME } from '../../../logic/wallets/constant/wallets'
 
 const HeaderComponent = ({
   openConnectWallet,
@@ -39,60 +35,6 @@ const HeaderComponent = ({
   const loaded = useSelector(loadedSelector)
   const available = useSelector(availableSelector)
   const dispatch = useDispatch()
-  const { status, connect, wallets, disconnect } = useWallet()
-
-  useEffect(() => {
-    const tryToConnectToLastUsedProvider = async () => {
-      const lastUsedProvider = await loadLastUsedProvider()
-
-      if (lastUsedProvider) {
-        setLastUsedProvider(lastUsedProvider)
-      }
-
-      const canRetry = chainId === WALLETS_CHAIN_ID.TERRA_TESTNET && lastUsedProvider === WALLETS_NAME.TerraStation
-
-      if (canRetry) {
-        try {
-          if (status === WalletStatus.WALLET_CONNECTED) {
-            setDisconnected(true)
-          }
-
-          if (status === WalletStatus.INITIALIZING || disconnected) {
-            return
-          }
-
-          if (status === WalletStatus.WALLET_NOT_CONNECTED) {
-            connect(ConnectType.EXTENSION, 'station')
-          }
-
-          if (wallets && wallets[0]) {
-            const chainInfo = await getChainInfo()
-
-            const internalChainId = getInternalChainId()
-
-            const providerInfo = {
-              account: wallets[0].terraAddress,
-              available: true,
-              hardwareWallet: false,
-              loaded: true,
-              name: WALLETS_NAME.TerraStation,
-              network: chainInfo.chainId,
-              smartContractWallet: false,
-              internalChainId,
-            }
-
-            fetchTerraStation(providerInfo)
-
-            saveToStorage(LAST_USED_PROVIDER_KEY, providerInfo.name)
-          }
-        } catch (e) {
-          console.error(e)
-        }
-      }
-    }
-
-    tryToConnectToLastUsedProvider()
-  }, [chainId, status, wallets])
 
   useEffect(() => {
     const tryToConnectToLastUsedProvider = async () => {
@@ -125,10 +67,6 @@ const HeaderComponent = ({
     dispatch(removeProvider())
 
     setDisconnected(true)
-
-    if (lastUsedProvider === WALLETS_NAME.TerraStation && status === WalletStatus.WALLET_CONNECTED) {
-      disconnect()
-    }
   }
 
   const onShowConnect = () => {

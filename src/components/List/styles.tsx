@@ -5,6 +5,9 @@ import ListItemText from '@material-ui/core/ListItemText'
 import Badge from '@material-ui/core/Badge'
 
 import ListMui, { ListProps } from '@material-ui/core/List'
+import { FixedIcon } from '@gnosis.pm/safe-react-components'
+
+import { semiBoldFont, mediumFontSize} from 'src/theme/variables'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -101,20 +104,20 @@ const StyledListSubItem = styled(ListItem)<ListItemProps>`
 const StyledListItemText = styled(ListItemText)`
   span {
     font-family: ${({ theme }) => theme.fonts.fontFamily};
-    font-size: 0.76em;
-    font-weight: 600;
+    font-size: ${mediumFontSize};
+    font-weight: ${semiBoldFont};
     line-height: 1.5;
     letter-spacing: 1px;
     color: ${({ theme }) => theme.colors.placeHolder};
-    text-transform: uppercase;
+    text-transform: capitalize;
   }
 `
 
 const StyledListSubItemText = styled(ListItemText)`
   span {
     font-family: ${({ theme }) => theme.fonts.fontFamily};
-    font-size: 0.85em;
-    font-weight: 400;
+    font-size: ${mediumFontSize};
+    font-weight: ${semiBoldFont};
     letter-spacing: 0px;
     color: ${({ theme }) => theme.colors.placeHolder};
     text-transform: none;
@@ -165,6 +168,10 @@ const StyledSubListMui = styled(ListMui)<ListProps<any>>`
   }
 `
 
+const StyledFixedIcon = styled(FixedIcon)`
+  color: 'blue';
+`
+
 export {
   useStyles,
   StyledListItem,
@@ -174,4 +181,5 @@ export {
   TextAndBadgeWrapper,
   StyledBadge,
   StyledSubListMui,
+  StyledFixedIcon,
 }

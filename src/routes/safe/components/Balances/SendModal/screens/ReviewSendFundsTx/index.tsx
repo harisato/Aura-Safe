@@ -52,18 +52,7 @@ import { styles } from './style'
 // import { MsgSend } from 'cosmjs-types/cosmos/bank/v1beta1/tx'
 import { toBase64 } from '@cosmjs/encoding'
 import { GasPrice } from '@cosmjs/stargate'
-import { Fee, MsgSend } from '@terra-money/terra.js'
-import {
-  ConnectType,
-  CreateTxFailed,
-  SignResult,
-  Timeout,
-  TxFailed,
-  TxUnspecifiedError,
-  useConnectedWallet,
-  UserDenied,
-  useWallet
-} from '@terra-money/wallet-provider'
+
 import { loadLastUsedProvider } from 'src/logic/wallets/store/middlewares/providerWatcher'
 
 const useStyles = makeStyles(styles)
@@ -162,74 +151,12 @@ const ReviewSendFundsTx = ({ onClose, onPrev, tx }: ReviewTxProps): React.ReactE
   const [executionApproved, setExecutionApproved] = useState<boolean>(true)
   const doExecute = isExecution && executionApproved
   const userWalletAddress = useSelector(userAccountSelector)
-  const { connect } = useWallet()
-  const connectedWallet = useConnectedWallet()
 
   const submitTx = async (txParameters: TxParameters) => {
     setDisabled(true)
     if (lastUsedProvider?.toLowerCase() === 'keplr') {
       signTransactionWithKeplr(safeAddress)
-    } else {
-      signTransactionWithTerra(safeAddress)
     }
-  }
-
-  const signTransactionWithTerra = async (safeAddress: string) => {
-    const denom = 'uluna'
-    if (!connectedWallet) {
-      connect(ConnectType.EXTENSION)
-      signTransactionWithTerra('')
-      return
-    }
-
-    const amountFinal = Math.floor(Number(tx?.amount) * Math.pow(10, 6)).toString() || ''
-    const send = new MsgSend(safeAddress, txRecipient, { uluna: amountFinal })
-
-    const fee = new Fee(
-      Number(manualGasLimit) || Number(gasLimit),
-      String(manualGasPrice || gasPriceFormatted).concat(denom),
-    )
-
-    connectedWallet!
-      .sign({
-        fee: fee,
-        msgs: [send],
-      })
-      .then(async (signResult: SignResult) => {
-        // call api to create Tx
-        const signatures = signResult.result.signatures[0]
-
-        const data: ICreateSafeTransaction = {
-          from: safeAddress,
-          to: txRecipient || '',
-          amount: amountFinal,
-          gasLimit: manualGasLimit || '100000',
-          internalChainId: getInternalChainId(),
-          fee: Number(manualGasPrice) || Number(gasPriceFormatted),
-          creatorAddress: userWalletAddress,
-          signature: signatures,
-          bodyBytes: '',
-        }
-
-        createTxFromApi(data)
-      })
-      .catch((error: unknown) => {
-        if (error instanceof UserDenied) {
-          dispatch(enqueueSnackbar(enhanceSnackbarForAction(NOTIFICATIONS.TX_REJECTED_MSG)))
-        } else if (error instanceof CreateTxFailed) {
-          dispatch(enqueueSnackbar(enhanceSnackbarForAction(NOTIFICATIONS.TX_CREATE_FAILED_MSG)))
-        } else if (error instanceof TxFailed) {
-          dispatch(enqueueSnackbar(enhanceSnackbarForAction(NOTIFICATIONS.TX_FAILED_MSG)))
-        } else if (error instanceof Timeout) {
-          // setTxError('Timeout');
-          dispatch(enqueueSnackbar(enhanceSnackbarForAction(NOTIFICATIONS.TX_TIMEOUT_MSG)))
-        } else if (error instanceof TxUnspecifiedError) {
-          dispatch(enqueueSnackbar(enhanceSnackbarForAction(NOTIFICATIONS.SOMETHING_WENT_WRONG)))
-        } else {
-          dispatch(enqueueSnackbar(enhanceSnackbarForAction(NOTIFICATIONS.SOMETHING_WENT_WRONG)))
-        }
-        onClose()
-      })
   }
 
   const signTransactionWithKeplr = async (safeAddress: string) => {

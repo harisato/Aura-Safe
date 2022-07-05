@@ -33,7 +33,6 @@ import SelectWalletAndNetworkStep, {
   selectWalletAndNetworkStepLabel,
 } from './steps/SelectWalletAndNetworkStep/SelectWalletAndNetworkStep'
 
-import { useWallet, verifyBytes } from '@terra-money/wallet-provider'
 import Paragraph from 'src/components/layout/Paragraph'
 import { Modal } from 'src/components/Modal'
 import NetworkLabel from 'src/components/NetworkLabel/NetworkLabel'
@@ -80,26 +79,7 @@ function CreateSafePage(): ReactElement {
   const provider = !!providerName && !isWrongNetwork
   const { trackEvent } = useAnalytics()
 
-  const { signBytes } = useWallet()
-
   const BYTES = Buffer.from('')
-
-  const signSafeCreation = useCallback(async () => {
-    try {
-      if (!signBytes) return
-      const { result } = await signBytes(BYTES)
-
-      const verified: boolean = verifyBytes(BYTES, result)
-
-      if (verified) {
-        return (result.public_key as any).key
-      }
-    } catch (error) {
-      console.log(error)
-    }
-
-    return null
-  }, [])
 
   useEffect(() => {
     const checkIfSafeIsPendingToBeCreated = async (): Promise<void> => {
@@ -117,14 +97,12 @@ function CreateSafePage(): ReactElement {
   const showSafeCreationProcess = async (newSafeFormValues: CreateSafeFormValues): Promise<void> => {
     // saveToStorage(SAFE_PENDING_CREATION_STORAGE_KEY, { ...newSafeFormValues })
     const lastUsedProvider = await loadLastUsedProvider()
-    let payload
+    let payload: ISafeCreate
+
     if (lastUsedProvider === WALLETS_NAME.Keplr) {
       payload = await makeSafeCreate(userWalletAddress, newSafeFormValues)
     } else {
-      const public_key = await signSafeCreation()
-      if (public_key) {
-        payload = await makeSafeCreateWithTerra(userWalletAddress, newSafeFormValues, public_key)
-      }
+      return
     }
 
     const { ErrorCode, Data: safeData, Message } = await createMSafe(payload)
