@@ -37,7 +37,7 @@ const ProviderInfo = ({ connected, provider, userAddress }: ProviderInfoProps): 
           size="md"
           transform="capitalize"
           color="white"
-          weight="bolder"
+          weight="regular"
           data-testid="connected-wallet"
         >
           {provider}

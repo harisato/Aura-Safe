@@ -16,7 +16,7 @@ const NetworkLabel = ({
 
   return (
     <StyledCol middle="xs" start="xs" onClick={onClick}>
-      <StyledParagraph size="md" $theme={chain.theme} weight='semiBold' color='soft'>
+      <StyledParagraph size="sm" $theme={chain.theme} weight='semiBold' color='soft'>
         {chain.chainName}
       </StyledParagraph>
     </StyledCol>

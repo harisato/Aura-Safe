@@ -36,8 +36,8 @@ module.exports = {
 
   lightFont: 300,
   regularFont: 400,
-  mediumFont: 500,
-  semiBoldFont: 600,
+  mediumFont: 510,
+  semiBoldFont: 590,
   boldFont: 700,
   extraBoldFont: 800,
 
