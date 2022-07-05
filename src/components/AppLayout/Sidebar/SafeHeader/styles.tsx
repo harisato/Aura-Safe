@@ -91,7 +91,7 @@ const StyledPrefixedEthHashInfo = styled(PrefixedEthHashInfo)`
 
 const StyledLabel = styled.div`
   background-color: ${({ theme }) => theme.colors.icon};
-  margin: 4px 0 0 0 !important;
+  margin: 8px 0 0 0 !important;
   padding: 4px 8px;
   border-radius: 4px;
   letter-spacing: 1px;

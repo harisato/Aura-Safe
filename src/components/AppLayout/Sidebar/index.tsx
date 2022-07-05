@@ -6,7 +6,7 @@ import SafeHeader from './SafeHeader'
 
 const StyledDivider = styled(Divider)`
   margin: 16px -8px 0;
-  border-top: 1px solid #3e3f40;
+  border-top: 1px solid #404047;
 `
 
 type Props = {

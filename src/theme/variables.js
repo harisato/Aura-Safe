@@ -41,12 +41,12 @@ module.exports = {
   boldFont: 700,
   extraBoldFont: 800,
 
+  extraSmallFontSize: '11px',
   smallFontSize: '12px',
+  mediumFontSize: '14px',
   largeFontSize: '16px',
-  extraLargeFontSize: '24px',
-  extraSmallFontSize: '16px',
+  extraLargeFontSize: '20px',
   xxlFontSize: '32px',
-  mediumFontSize: '18px',
 
   borderButtonRadius,
   border,

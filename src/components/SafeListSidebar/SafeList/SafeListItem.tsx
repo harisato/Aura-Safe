@@ -62,6 +62,7 @@ const StyledText = styled(Text)`
   display: flex;
   align-items: center;
   padding: 0 16px;
+  color: white;
 `
 
 const StyledPrefixedEthHashInfo = styled(PrefixedEthHashInfo)`
@@ -119,7 +120,7 @@ const SafeListItem = ({
     safeAddress: address,
   }
 
-  const rederButton = (status: SafeStatus) => {
+  const renderButton = (status: SafeStatus) => {
     switch (status) {
       case SafeStatus.NeedConfirm:
         return (
@@ -212,7 +213,7 @@ const SafeListItem = ({
             </Text>
           </StyledButton>
         ) : pendingStatus ? (
-          rederButton(pendingStatus)
+          renderButton(pendingStatus)
         ) : null}
       </ListItemSecondaryAction>
     </ListItem>

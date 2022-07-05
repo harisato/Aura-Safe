@@ -3,6 +3,10 @@ import { Link, useHistory } from 'react-router-dom'
 import ListMui from '@material-ui/core/List'
 import Collapse from '@material-ui/core/Collapse'
 import { FixedIcon } from '@gnosis.pm/safe-react-components'
+import IconButton from '@material-ui/core/IconButton'
+
+import ExpandLess from '@material-ui/icons/ExpandLess'
+import ExpandMore from '@material-ui/icons/ExpandMore'
 import {
   useStyles,
   StyledListItem,
@@ -12,6 +16,7 @@ import {
   TextAndBadgeWrapper,
   StyledBadge,
   StyledSubListMui,
+  StyledFixedIcon,
 } from './styles'
 export type ListItemType = {
   badge?: boolean
@@ -73,8 +78,14 @@ const List = ({ items }: Props): React.ReactElement => {
           </StyledBadge>
         </TextAndBadgeWrapper>
 
-        {item.subItems &&
-          (groupCollapseStatus[item.href] ? <FixedIcon type="chevronUp" /> : <FixedIcon type="chevronDown" />)}
+        {
+          item.subItems && (
+            <IconButton disableRipple>
+              {groupCollapseStatus[item.href] ? <ExpandLess /> : <ExpandMore />}
+            </IconButton>
+          )
+          // (groupCollapseStatus[item.href] ? <StyledFixedIcon type="chevronUp"/> : <StyledFixedIcon type="chevronDown" />)
+        }
       </ListItemAux>
     )
   }
