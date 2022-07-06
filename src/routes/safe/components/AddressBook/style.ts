@@ -61,6 +61,10 @@ export const styles = createStyles({
   iconSmall: {
     fontSize: 16,
   },
+  tableCell: {
+    // padding: '6px 0px',
+    height: '56px'
+  }
 })
 
 const StyledButton = styled(Button)`
