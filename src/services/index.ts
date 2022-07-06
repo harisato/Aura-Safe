@@ -193,3 +193,7 @@ export function confirmSafeTransaction(payload: any): Promise<IResponse<any>> {
 export async function getAccountOnChain(safeAddress: string, internalChainId): Promise<IResponse<any>> {
   return axios.get(`${baseUrl}/general/get-account-onchain/${safeAddress}/${internalChainId}`).then((res) => res.data)
 }
+
+export function auth(payload: any): Promise<IResponse<any>> {
+  return axios.post(`${baseUrl}/auth`, payload).then((res) => res.data)
+}

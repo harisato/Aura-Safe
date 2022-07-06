@@ -14,6 +14,7 @@ import Img from '../layout/Img'
 import Keplr from './assets/keplr.svg'
 import TerraStation from './assets/terra-station.svg'
 import { WalletList, ImageContainer, ImageItem, ImageTitle } from './styles'
+import { coins, MsgSendEncodeObject, SignerData, SigningStargateClient } from '@cosmjs/stargate'
 
 type Props = {
   isOpen: boolean
@@ -55,6 +56,7 @@ export const ConnectWalletModal = ({ isOpen, onClose }: Props): React.ReactEleme
     await connectKeplr()
       .then(async (status) => {
         if (status === KeplrErrors.NoChainInfo) {
+          console.log(1)
           await suggestChain(chainId)
           return true
         }
@@ -70,6 +72,7 @@ export const ConnectWalletModal = ({ isOpen, onClose }: Props): React.ReactEleme
         store.dispatch(enqueueSnackbar(enhanceSnackbarForAction(NOTIFICATIONS.CONNECT_WALLET_ERROR_MSG)))
       })
   }
+
   const terraWallet = () => {
     try {
       if (status === WalletStatus.WALLET_NOT_CONNECTED) {

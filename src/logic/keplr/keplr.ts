@@ -12,6 +12,7 @@ import { LAST_USED_PROVIDER_KEY } from '../wallets/store/middlewares/providerWat
 import { parseToAdress } from 'src/utils/parseByteAdress'
 import { ChainsInfo } from './constants/chainsInfo'
 import { WALLETS_NAME } from '../wallets/constant/wallets'
+import { auth } from 'src/services/index'
 
 export type WalletKey = {
   myAddress: string
@@ -53,7 +54,6 @@ export async function getKeplrKey(chainId: string): Promise<WalletKey | undefine
   const keplr = await getKeplr()
 
   if (!keplr) return
-
   const key = await keplr.getKey(chainId)
   return {
     myAddress: String(key.bech32Address),
@@ -73,13 +73,13 @@ export async function connectKeplr(): Promise<KeplrErrors> {
   }
 
   let error = KeplrErrors.Success
-
   try {
     await keplr
       .enable(chainId)
       .then((e) => keplr.getKey(chainId))
-      .then((key) => {
+      .then(async (key: any) => {
         let providerInfo: ProviderProps
+
         if (!key) {
           providerInfo = {
             account: '',
@@ -102,9 +102,24 @@ export async function connectKeplr(): Promise<KeplrErrors> {
             smartContractWallet: false,
             internalChainId,
           }
+          // if (window.keplr) {
+          //   keplr
+          //     ?.signArbitrary(chainId, key.bech32Address, '1000')
+          //     .then((e) => {
+          //       const data = {
+          //         pubkey: e.pub_key.value,
+          //         data: '1000',
+          //         signature: e.signature,
+          //         internalChainId: internalChainId,
+          //       }
+          //       auth(data).then((e) => console.log(e))
+          //     })
+          //     .catch((error) => {
+          //       console.log('error authen')
+          //     })
+          // }
 
           store.dispatch(removeProvider({ keepStorageKey: true }))
-
           store.dispatch(fetchProvider(providerInfo))
           saveToStorage(LAST_USED_PROVIDER_KEY, providerInfo.name)
         }

@@ -15,7 +15,7 @@ import {
 import { removeProvider } from 'src/logic/wallets/store/actions'
 import { LAST_USED_PROVIDER_KEY, loadLastUsedProvider } from 'src/logic/wallets/store/middlewares/providerWatcher'
 import { connectKeplr } from '../../../logic/keplr/keplr'
-import { ConnectType, useWallet, WalletStatus } from '@terra-money/wallet-provider'
+import { ConnectType, useWallet, WalletStatus, useConnectedWallet } from '@terra-money/wallet-provider'
 import { fetchTerraStation } from '../../../logic/terraStation'
 import { getChainInfo, getInternalChainId } from '../../../config'
 import { saveToStorage } from '../../../utils/storage'
@@ -40,6 +40,7 @@ const HeaderComponent = ({
   const available = useSelector(availableSelector)
   const dispatch = useDispatch()
   const { status, connect, wallets, disconnect } = useWallet()
+  const connectedWallet = useConnectedWallet()
 
   useEffect(() => {
     const tryToConnectToLastUsedProvider = async () => {
