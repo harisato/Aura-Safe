@@ -68,7 +68,6 @@ const RootConsumer = (): React.ReactElement | null => {
 
         setHasChains(true)
       } catch (err) {
-        debugger
         logError(Errors._904, err.message)
         setIsError(true)
       }

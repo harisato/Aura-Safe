@@ -34,10 +34,10 @@ const ProviderInfo = ({ connected, provider, userAddress }: ProviderInfoProps): 
         <Paragraph
           className={classes.network}
           noMargin
-          size="xs"
+          size="md"
           transform="capitalize"
           color="white"
-          weight="bolder"
+          weight="regular"
           data-testid="connected-wallet"
         >
           {provider}
@@ -49,9 +49,9 @@ const ProviderInfo = ({ connected, provider, userAddress }: ProviderInfoProps): 
               hash={userAddress}
               shortenHash={4}
               showAvatar
-              avatarSize="xs"
+              avatarSize="sm"
               textColor={addressColor}
-              textSize="sm"
+              textSize="md"
             />
           ) : (
             <Text size="md" color={addressColor}>

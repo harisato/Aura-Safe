@@ -44,7 +44,7 @@ const NetworkSelector = ({ open, toggle, clickAway }: NetworkSelectorProps): Rea
   return (
     <>
       <div className={classes.root} ref={networkRef}>
-        <Col className={classes.networkList} end="sm" middle="xs" onClick={toggle}>
+        <Col className={classes.networkList} between="sm" middle="xs" onClick={toggle}>
           <NetworkLabel />
           <IconButton className={classes.expand} disableRipple>
             {open ? <ExpandLess /> : <ExpandMore />}
@@ -68,7 +68,7 @@ const NetworkSelector = ({ open, toggle, clickAway }: NetworkSelectorProps): Rea
                     <Fragment key={network.chainId}>
                       <StyledLink onClick={(e) => onNetworkSwitch(e, network.chainId)} href={network.route}>
                         <div className={classes.link}>
-                          <NetworkLabel networkInfo={getChainById(network.chainId)} />
+                          <NetworkLabel networkInfo={getChainById(network.chainId)} noBackground={true}/>
                           {chainId === network.chainId && <Icon type="check" size="md" color="primary" />}
                         </div>
                       </StyledLink>

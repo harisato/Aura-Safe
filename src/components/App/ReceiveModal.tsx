@@ -86,9 +86,9 @@ const ReceiveModal = ({ onClose, safeAddress, safeName }: Props): ReactElement =
   const classes = useStyles(chainInfo)
 
   const copyShortName = useSelector(copyShortNameSelector)
-  const [shouldEncodePrefix, setShouldEncodePrefix] = useState<boolean>(copyShortName)
+  // const [shouldEncodePrefix, setShouldEncodePrefix] = useState<boolean>(copyShortName)
 
-  const qrCodeString = shouldEncodePrefix ? getPrefixedSafeAddressSlug() : safeAddress
+  const qrCodeString = safeAddress;
 
   return (
     <>
@@ -106,7 +106,7 @@ const ReceiveModal = ({ onClose, safeAddress, safeName }: Props): ReactElement =
       </Paragraph>
       <Paragraph className={classes.annotation} noMargin size="lg">
         This is the address of your Safe. Deposit funds by scanning the QR code or copying the address below. Only send{' '}
-        {chainInfo.nativeCurrency.symbol} and assets to this address (e.g. ETH, ERC20, ERC721)!
+        {chainInfo.nativeCurrency.symbol} and assets to this address (e.g. AURA, CW20, CW721)!
       </Paragraph>
       <Col layout="column" middle="xs">
         <Paragraph className={classes.safeName} noMargin size="lg" weight="bold">
@@ -115,14 +115,14 @@ const ReceiveModal = ({ onClose, safeAddress, safeName }: Props): ReactElement =
         <Block className={classes.qrContainer}>
           <QRCode size={135} value={qrCodeString} />
         </Block>
-        <FormControlLabel
+        {/* <FormControlLabel
           control={<Switch checked={shouldEncodePrefix} onChange={setShouldEncodePrefix} />}
           label={
             <>
               QR code with chain prefix (<b>{chainInfo.shortName}:</b>)
             </>
           }
-        />
+        /> */}
         <Block className={classes.addressContainer} justify="center">
           <PrefixedEthHashInfo hash={safeAddress} showAvatar showCopyBtn explorerUrl={getExplorerInfo(safeAddress)} />
         </Block>

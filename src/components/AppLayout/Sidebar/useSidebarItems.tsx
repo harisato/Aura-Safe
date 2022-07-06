@@ -108,18 +108,18 @@ const useSidebarItems = (): ListItemType[] => {
 
     return [
       makeEntryItem({
-        label: 'ASSETS',
+        label: 'Assets',
         iconType: 'assets',
         href: currentSafeRoutes.ASSETS_BALANCES,
         subItems: assetsSubItems,
       }),
       makeEntryItem({
-        label: 'TRANSACTIONS',
+        label: 'Transactions',
         iconType: 'transactionsInactive',
         href: currentSafeRoutes.TRANSACTIONS_HISTORY,
       }),
       makeEntryItem({
-        label: 'ADDRESS BOOK',
+        label: 'Address Book',
         iconType: 'addressBook',
         href: currentSafeRoutes.ADDRESS_BOOK,
       }),
