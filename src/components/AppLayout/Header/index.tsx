@@ -7,7 +7,7 @@ import {
   availableSelector,
   loadedSelector,
   providerNameSelector,
-  userAccountSelector
+  userAccountSelector,
 } from 'src/logic/wallets/store/selectors'
 import { connectKeplr } from '../../../logic/keplr/keplr'
 import { WALLETS_NAME } from '../../../logic/wallets/constant/wallets'

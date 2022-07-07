@@ -40,7 +40,7 @@ import {
   getPrefixedSafeAddressSlug,
   history,
   SAFE_ADDRESS_SLUG,
-  SAFE_ROUTES
+  SAFE_ROUTES,
 } from 'src/routes/routes'
 import { EditableTxParameters } from 'src/routes/safe/components/Transactions/helpers/EditableTxParameters'
 import { TxParametersDetail } from 'src/routes/safe/components/Transactions/helpers/TxParametersDetail'
@@ -52,7 +52,6 @@ import { styles } from './style'
 // import { MsgSend } from 'cosmjs-types/cosmos/bank/v1beta1/tx'
 import { toBase64 } from '@cosmjs/encoding'
 import { GasPrice } from '@cosmjs/stargate'
-
 import { loadLastUsedProvider } from 'src/logic/wallets/store/middlewares/providerWatcher'
 
 const useStyles = makeStyles(styles)

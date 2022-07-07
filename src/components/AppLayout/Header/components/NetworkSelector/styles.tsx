@@ -44,7 +44,7 @@ export const styles = createStyles({
     borderRadius: sm,
     // boxShadow: '0 0 10px 0 rgba(33, 48, 77, 0.1)',
     minWidth: '182px',
-    padding: "0px"
+    padding: '0px',
   },
   link: {
     padding: '12px 16px',
@@ -52,9 +52,9 @@ export const styles = createStyles({
     justifyContent: 'space-between',
     width: '100%',
     borderBottom: '1px solid #1D1D1F',
-    ':last-of-type' : {
-      borderBottom: 'none'
-    }
+    ':last-of-type': {
+      borderBottom: 'none',
+    },
   },
 })
 

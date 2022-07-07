@@ -20,6 +20,7 @@ import { currentChainId } from 'src/logic/config/store/selectors'
 import { getChainById, getChainInfoTheme } from 'src/config'
 import { ChainId } from 'src/config/chain.d'
 import { styles, StyledLink } from './styles'
+import 'src/services/interceptor'
 
 const useStyles = makeStyles(styles)
 type NetworkSelectorProps = ReturnValue

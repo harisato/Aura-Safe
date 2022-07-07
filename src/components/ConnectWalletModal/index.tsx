@@ -22,6 +22,7 @@ export const ConnectWalletModal = ({ isOpen, onClose }: Props): React.ReactEleme
     await connectKeplr()
       .then(async (status) => {
         if (status === KeplrErrors.NoChainInfo) {
+          console.log(1)
           await suggestChain(chainId)
           return true
         }
