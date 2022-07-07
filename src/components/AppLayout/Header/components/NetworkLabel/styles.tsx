@@ -9,12 +9,11 @@ export const StyledCol = styled(Col)`
   padding: 0 ${sm};
   cursor: ${(props) => (props.onClick ? 'pointer' : 'inherit')};
 
-  background: #5ee6d0;
   border-radius: 4px;
   padding: 6px 8px;
 
-  background: ${(props) => (props.noBackground ? 'transparent' : '#5ee6d0')};
-  color: ${(props) => (props.noBackground ? '#5ee6d0' : '#000')};
+  background: ${(props) => props.bgColor};
+  color: ${(props) => props.txtColor};
 
   @media (min-width: ${screenSm}px) {
     padding-left: ${md};

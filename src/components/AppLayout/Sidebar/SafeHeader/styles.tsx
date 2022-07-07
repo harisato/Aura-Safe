@@ -106,7 +106,7 @@ const StyledText = styled(Text)`
 const StyledDotChainName = styled.div`
   width: 8px;
   height: 8px;
-  background-color: #5ee6d0;
+  background-color: ${(props) => props.color};
   border-radius: 50%;
 `
 

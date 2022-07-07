@@ -1,18 +1,15 @@
 import { ChainInfo } from '@gnosis.pm/safe-react-gateway-sdk'
 import axios from 'axios'
 import { WalletKey } from 'src/logic/keplr/keplr'
-import { SendCollectibleTxInfo } from 'src/routes/safe/components/Balances/SendModal/screens/SendCollectible'
-import { TxInfo } from 'src/routes/safe/components/Transactions/TxList/TxInfo'
+import { CHAIN_THEMES, THEME_DF } from 'src/services/constant/chainThemes'
 import {
   ICreateSafeTransaction,
   ISignSafeTransaction,
   ITransactionDetail,
-  ITransactionInfoResponse,
   ITransactionListItem,
   ITransactionListQuery,
 } from 'src/types/transaction'
 import { IMSafeInfo, IMSafeResponse, OwnedMSafes } from '../types/safe'
-import { MSAFE_GATEWAY_URL } from '../utils/constants'
 
 let baseUrl = ''
 
@@ -100,10 +97,7 @@ export function getMChainsConfig(): Promise<MChainInfo[]> {
             decimals: e.coinDecimals,
             logoUri: `img/token/${e.chainId}.svg`,
           },
-          theme: {
-            textColor: '#ffffff',
-            backgroundColor: '#00bcd4',
-          },
+          theme: CHAIN_THEMES[e.chainId] || THEME_DF,
           ensRegistryAddress: '',
           gasPrice: [],
           disabledWallets: [],
