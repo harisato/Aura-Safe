@@ -17,7 +17,7 @@ import { ReturnValue } from 'src/logic/hooks/useStateHandler'
 import { getNetworkRootRoutes } from 'src/routes/routes'
 import { useSelector } from 'react-redux'
 import { currentChainId } from 'src/logic/config/store/selectors'
-import { getChainById } from 'src/config'
+import { getChainById, getChainInfoTheme } from 'src/config'
 import { ChainId } from 'src/config/chain.d'
 import { styles, StyledLink } from './styles'
 import 'src/services/interceptor'
@@ -26,6 +26,8 @@ const useStyles = makeStyles(styles)
 type NetworkSelectorProps = ReturnValue
 
 const NetworkSelector = ({ open, toggle, clickAway }: NetworkSelectorProps): ReactElement => {
+  const theme = getChainInfoTheme()
+
   const networkRef = useRef(null)
   const history = useHistory()
   const classes = useStyles()
@@ -69,7 +71,7 @@ const NetworkSelector = ({ open, toggle, clickAway }: NetworkSelectorProps): Rea
                     <Fragment key={network.chainId}>
                       <StyledLink onClick={(e) => onNetworkSwitch(e, network.chainId)} href={network.route}>
                         <div className={classes.link}>
-                          <NetworkLabel networkInfo={getChainById(network.chainId)} noBackground={true} />
+                          <NetworkLabel networkInfo={getChainById(network.chainId)} />
                           {chainId === network.chainId && <Icon type="check" size="md" color="primary" />}
                         </div>
                       </StyledLink>
