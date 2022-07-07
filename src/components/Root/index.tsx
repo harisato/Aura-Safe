@@ -58,8 +58,8 @@ const RootConsumer = (): React.ReactElement | null => {
       return
     }
     const initChains = async () => {
+      await loadChains()
       try {
-        await loadChains()
         const _isValidChainId = !isValidChainId(_getChainId())
         if (_isValidChainId) {
           setChainId(DEFAULT_CHAIN_ID)

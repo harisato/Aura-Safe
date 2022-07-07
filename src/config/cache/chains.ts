@@ -8,7 +8,6 @@ let chains: ChainInfo[] = []
 export const getChains = (): ChainInfo[] => chains
 
 export const loadChains = async () => {
-
   const networkList: ChainInfo[] = await getMChainsConfig();
   chains = networkList
   // const { results = [] } = await getChainsConfig(GATEWAY_URL, { limit: 100 })

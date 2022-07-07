@@ -7,7 +7,7 @@ axios.interceptors.request.use(
     const chainId = _getChainId()
     const arrayTemp = JSON.parse(window.localStorage.getItem('TOKEN') || '[]') || []
 
-    const token = _.find(arrayTemp, ['name', chainId]).token
+    const token = _.find(arrayTemp, ['name', chainId])?.token
     if (token) {
       config.headers['Authorization'] = 'Bearer ' + token
     }
