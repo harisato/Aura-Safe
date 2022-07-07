@@ -1,28 +1,28 @@
+import { CopyToClipboardBtn, ExplorerButton, FixedIcon, Icon, Identicon, Text } from '@gnosis.pm/safe-react-components'
 import { useSelector } from 'react-redux'
-import { Icon, FixedIcon, Text, Identicon, CopyToClipboardBtn, ExplorerButton } from '@gnosis.pm/safe-react-components'
 import ButtonHelper from 'src/components/ButtonHelper'
 import FlexSpacer from 'src/components/FlexSpacer'
 import { getChainInfo, getExplorerInfo } from 'src/config'
 import { copyShortNameSelector } from 'src/logic/appearance/selectors'
 import { extractShortChainName } from 'src/routes/routes'
-import { Props } from './type'
-export const TOGGLE_SIDEBAR_BTN_TESTID = 'TOGGLE_SIDEBAR_BTN'
+import { THEME_DF } from 'src/services/constant/chainThemes'
 import {
   Container,
-  IdenticonContainer,
-  StyledIcon,
+  ContainerButton,
   IconContainer,
+  IdenticonContainer,
   StyledButton,
+  StyledDotChainName,
+  StyledIcon,
+  StyledIdenticonContainer,
+  StyledLabel,
+  StyledPrefixedEthHashInfo,
   StyledTextLabel,
   StyledTextSafeName,
-  StyledPrefixedEthHashInfo,
-  StyledLabel,
-  StyledText,
-  StyledDotChainName,
-  StyledIdenticonContainer,
-  ContainerButton,
 } from './styles'
+import { Props } from './type'
 
+export const TOGGLE_SIDEBAR_BTN_TESTID = 'TOGGLE_SIDEBAR_BTN'
 const SafeHeader = ({
   address,
   safeName,
@@ -34,8 +34,9 @@ const SafeHeader = ({
 }: Props): React.ReactElement => {
   const copyChainPrefix = useSelector(copyShortNameSelector)
   const chainInfoShortName = getChainInfo().shortName
-  const shortName = extractShortChainName()
   const chainInfo = getChainInfo()
+
+  const { backgroundColor } = chainInfo?.theme || THEME_DF
 
   if (!address) {
     return (
@@ -55,7 +56,7 @@ const SafeHeader = ({
     <>
       {/* Network */}
       <StyledTextLabel size="lg" chainInfo={chainInfo}>
-        <StyledDotChainName></StyledDotChainName>
+        <StyledDotChainName color={backgroundColor}></StyledDotChainName>
         {chainInfo.chainName}
       </StyledTextLabel>
       <Container>
