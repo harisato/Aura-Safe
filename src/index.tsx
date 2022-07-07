@@ -5,7 +5,7 @@ import { Integrations } from '@sentry/tracing'
 import Root from 'src/components/Root'
 import { SENTRY_DSN } from './utils/constants'
 import { disableMMAutoRefreshWarning } from './utils/mm_warnings'
-
+import 'src/services/interceptor'
 disableMMAutoRefreshWarning()
 
 BigNumber.set({ EXPONENTIAL_AT: [-7, 255] })

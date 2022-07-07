@@ -13,6 +13,7 @@ import { parseToAdress } from 'src/utils/parseByteAdress'
 import { ChainsInfo } from './constants/chainsInfo'
 import { WALLETS_NAME } from '../wallets/constant/wallets'
 import { auth } from 'src/services/index'
+import * as _ from 'lodash'
 
 export type WalletKey = {
   myAddress: string
@@ -65,7 +66,6 @@ export async function connectKeplr(): Promise<KeplrErrors> {
   const chainInfo = await getChainInfo()
   const internalChainId = getInternalChainId()
   const chainId = _getChainId()
-
   const keplr = await getKeplr()
   if (!keplr) {
     alert('Please install keplr extension')
@@ -79,7 +79,6 @@ export async function connectKeplr(): Promise<KeplrErrors> {
       .then((e) => keplr.getKey(chainId))
       .then(async (key: any) => {
         let providerInfo: ProviderProps
-
         if (!key) {
           providerInfo = {
             account: '',
@@ -102,22 +101,33 @@ export async function connectKeplr(): Promise<KeplrErrors> {
             smartContractWallet: false,
             internalChainId,
           }
-          // if (window.keplr) {
-          //   keplr
-          //     ?.signArbitrary(chainId, key.bech32Address, '1000')
-          //     .then((e) => {
-          //       const data = {
-          //         pubkey: e.pub_key.value,
-          //         data: '1000',
-          //         signature: e.signature,
-          //         internalChainId: internalChainId,
-          //       }
-          //       auth(data).then((e) => console.log(e))
-          //     })
-          //     .catch((error) => {
-          //       console.log('error authen')
-          //     })
-          // }
+          const arrayTemp: any = JSON.parse(window.localStorage.getItem('TOKEN') || '[]') || []
+          if (window.keplr && !_.find(arrayTemp, ['name', chainInfo.chainId])) {
+            const timeStamp = new Date().getTime()
+            keplr
+              ?.signArbitrary(chainId, key.bech32Address, `${timeStamp}`)
+              .then((e) => {
+                const data = {
+                  pubkey: e.pub_key.value,
+                  data: `${timeStamp}`,
+                  signature: e.signature,
+                  internalChainId: internalChainId,
+                }
+                auth(data).then(async (e) => {
+                  const chain = {
+                    name: chainInfo.chainId,
+                    token: e.Data.AccessToken,
+                  }
+                  if (chain) {
+                    arrayTemp.push(chain)
+                    window.localStorage.setItem('TOKEN', JSON.stringify(arrayTemp))
+                  }
+                })
+              })
+              .catch((error) => {
+                console.log('error authen')
+              })
+          }
 
           store.dispatch(removeProvider({ keepStorageKey: true }))
           store.dispatch(fetchProvider(providerInfo))
