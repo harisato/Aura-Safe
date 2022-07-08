@@ -65,7 +65,7 @@ const HeaderComponent = ({
 
   const onDisconnect = () => {
     dispatch(removeProvider())
-
+    window.localStorage.removeItem('TOKEN')
     setDisconnected(true)
   }
 
