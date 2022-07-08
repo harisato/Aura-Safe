@@ -1,6 +1,9 @@
 import { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { loadPagedQueuedTransactions, loadPageQueuedTransactionsFromAuraApi } from 'src/logic/safe/store/actions/transactions/fetchTransactions/loadGatewayTransactions'
+import {
+  loadPagedQueuedTransactions,
+  loadPageQueuedTransactionsFromAuraApi,
+} from 'src/logic/safe/store/actions/transactions/fetchTransactions/loadGatewayTransactions'
 import { addQueuedTransactions } from 'src/logic/safe/store/actions/transactions/gatewayTransactions'
 import { currentChainId } from 'src/logic/config/store/selectors'
 import { QueueTransactionsInfo, useQueueTransactions } from './useQueueTransactions'

@@ -245,9 +245,9 @@ const theme = createTheme({
       root: {
         color: '#98989B',
         '&.Mui-focused': {
-          color: '#98989B'
-        }
-      }
+          color: '#98989B',
+        },
+      },
     },
     MuiFilledInput: {
       root: {
@@ -260,8 +260,8 @@ const theme = createTheme({
         },
         '&.Mui-focused': {
           backgroundColor: '#2E2E33',
-          color: '#98989B'
-        }
+          color: '#98989B',
+        },
       },
       underline: {
         // '&::before': {
@@ -488,6 +488,15 @@ const theme = createTheme({
     MuiTouchRipple: {
       root: {
         backgroundColor: 'transparent',
+      },
+    },
+    MuiTabs: {
+      root: {},
+      indicator: {
+        backgroundColor: '#5ee6d0 !important',
+      },
+      scroller: {
+        borderBottom: '1px solid rgba(55, 55, 61, 1) !important',
       },
     },
   },
