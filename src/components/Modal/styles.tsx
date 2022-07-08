@@ -13,7 +13,7 @@ const ModalStyled = styled(ModalMUI)`
   }
 
   .overlay {
-    background-color: rgba(232, 231, 230, 0.75) !important;
+    background-color: rgba(0, 0, 0, 0.9) !important;
   }
 
   .paper {
@@ -22,7 +22,6 @@ const ModalStyled = styled(ModalMUI)`
     width: 500px;
     border-radius: 8px;
     background-color: ${bgBox};
-    box-shadow: 1px 2px 10px 0 rgba(40, 54, 61, 0.18);
     display: flex;
     flex-direction: column;
 
