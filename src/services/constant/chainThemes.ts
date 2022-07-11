@@ -3,7 +3,7 @@ const THEME_DF = {
   backgroundColor: '#5F5F5F',
 }
 const CHAIN_THEMES: { [chainId: string]: any } = {
-  ['aura-devnet']: {
+  ['aura-testnet']: {
     textColor: '#000000',
     backgroundColor: '#BFC6FF',
   },
