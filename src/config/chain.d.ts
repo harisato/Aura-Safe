@@ -11,7 +11,6 @@ export const CHAIN_ID: Record<ChainName, ChainId> = {
   AURA_TESTNET: 'aura-testnet',
   AURA_SERENITY: 'serenity-testnet-001',
   AURA_HALO: 'halo-testnet-001',
-  AURA_DEVNET: 'aura-devtnet',
   JUNO_TESTNET: 'uni-2',
   OSMOSIS_TESTNET: 'osmo-test-4',
   GAIA_TESTNET: 'theta-testnet-001',

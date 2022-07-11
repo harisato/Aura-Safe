@@ -2,7 +2,7 @@
 
 1. Add Network to Keplr
 - Aura Devnet:
-Use this [jsfiddle](https://jsfiddle.net/andqk/g4mrnva1/) to add the `aura-devnet` chain to your Keplr browser extension.
+Use this [jsfiddle](https://jsfiddle.net/andqk/g4mrnva1/) to add the `aura-testnet` chain to your Keplr browser extension.
 
 2. Detech Keplr
 ```
