@@ -27,6 +27,7 @@ export const styles = createStyles({
   },
   button: {
     background: colorLinear,
+    color: 'black',
     '&:last-child': {
       marginLeft: sm,
     },
@@ -41,5 +42,6 @@ export const styles = createStyles({
   },
   buttonBorderInside: {
     background: 'transparent',
+    boxShadow: 'none',
   },
 })

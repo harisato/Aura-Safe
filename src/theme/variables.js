@@ -20,7 +20,7 @@ const xs = '4px'
 const xxl = '40px'
 const borderButtonRadius = '50px'
 const borderLinear =
-  'linear-gradient(#3e3f40,#3e3f40) ,linear-gradient(108.46deg, #5ee6d0 12.51%, #bfc6ff 51.13%, #ffba69 87.49%)'
+  'linear-gradient(rgba(18, 18, 18, 1),rgba(18, 18, 18, 1)) ,linear-gradient(108.46deg, #5ee6d0 12.51%, #bfc6ff 51.13%, #ffba69 87.49%)'
 const colorLinear = 'linear-gradient(108.46deg, #5ee6d0 12.51%, #bfc6ff 51.13%, #ffba69 87.49%)'
 const bgBox = 'rgba(18, 18, 18, 1)'
 const bgDisabledColorStep = '#666769'
