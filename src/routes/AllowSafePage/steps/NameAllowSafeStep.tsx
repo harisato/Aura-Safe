@@ -54,7 +54,6 @@ function NameAllowSafeStep(): ReactElement {
 
   useEffect(() => {
     const checkSafeAddress = async () => {
-      const safeId = allowSafeForm.getState().values[FIELD_LOAD_SAFE_ID]
       if (!safeId) {
         return
       }
@@ -67,6 +66,7 @@ function NameAllowSafeStep(): ReactElement {
         const ownersWithName = owners.map((address) =>
           makeAddressBookEntry(addressBook[address] || { address, name: '', chainId }),
         )
+
         setOwnersWithName(ownersWithName)
         setThreshold(threshold)
       } catch (error) {
@@ -77,7 +77,7 @@ function NameAllowSafeStep(): ReactElement {
     }
 
     checkSafeAddress()
-  }, [safeId, addressBook, chainId])
+  }, [safeId, addressBook, chainId, allowSafeForm])
 
   useEffect(() => {
     if (threshold) {
