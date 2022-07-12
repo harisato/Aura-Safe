@@ -41,7 +41,11 @@ const getNameByAddress = (addressBook, address: string, chainId: ChainId): strin
   // if (!isValidAddress(address)) {
   //   return ''
   // }
-  return addressBook?.[chainId]?.[(address)]?.name || ''
+  return addressBook?.[chainId]?.[address]?.name || ''
+}
+
+const getNameById = (addressBook, id: string, chainId: ChainId): string => {
+  return addressBook?.[chainId]?.[id]?.name || ''
 }
 
 type GetNameParams = Overwrite<Partial<AddressBookEntry>, { address: string }>
@@ -56,6 +60,8 @@ export const addressBookEntryName = createSelector(
     }),
   ],
   (addressBook, curChainId, { address, chainId }) => {
+    console.log({ address, chainId });
+    
     return getNameByAddress(addressBook, address, chainId || curChainId) || ADDRESS_BOOK_DEFAULT_NAME
   },
 )
@@ -81,6 +87,8 @@ export const addressBookName = createSelector(
 export const currentNetworkAddressBook = createSelector(
   [addressBookState, currentChainId],
   (addressBook, curChainId): AppReduxState['addressBook'] => {
+    console.log("currentNetworkAddressBook", addressBook);
+    
     return addressBook.filter(({ chainId }) => chainId.toString() === curChainId)
   },
 )
