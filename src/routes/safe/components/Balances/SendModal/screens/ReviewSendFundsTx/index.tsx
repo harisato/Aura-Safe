@@ -236,6 +236,7 @@ const ReviewSendFundsTx = ({ onClose, onPrev, tx }: ReviewTxProps): React.ReactE
 
         const signatures = toBase64(signResult.signatures[0])
         const bodyBytes = toBase64(signResult.bodyBytes)
+        const authInfoBytes = toBase64(signResult.authInfoBytes)
 
         // call api to create transaction
         const data: ICreateSafeTransaction = {
@@ -248,6 +249,7 @@ const ReviewSendFundsTx = ({ onClose, onPrev, tx }: ReviewTxProps): React.ReactE
           creatorAddress: userWalletAddress,
           signature: signatures,
           bodyBytes: bodyBytes,
+          authInfoBytes: authInfoBytes,
         }
 
         createTxFromApi(data)
