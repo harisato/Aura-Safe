@@ -30,6 +30,11 @@ import { userAccountSelector } from 'src/logic/wallets/store/selectors'
 import enqueueSnackbar from 'src/logic/notifications/store/actions/enqueueSnackbar'
 import { enhanceSnackbarForAction, ERROR, SUCCESS } from 'src/logic/notifications'
 import { MESSAGES_CODE } from 'src/services/constant/message'
+import { loadFromStorage } from 'src/utils/storage'
+import { PendingSafeListStorage } from '../CreateSafePage/CreateSafePage'
+import { SAFES_PENDING_STORAGE_KEY } from '../CreateSafePage/fields/createSafeFields'
+import ButtonGradient from 'src/components/ButtonGradient'
+import { Text } from '@gnosis.pm/safe-react-components'
 
 function Cancel(): ReactElement {
   const history = useHistory()
@@ -58,6 +63,14 @@ function Cancel(): ReactElement {
       try {
         const { owners, threshold } = await getMSafeInfo(safeId)
 
+        const safesPending = await Promise.resolve(loadFromStorage<PendingSafeListStorage>(SAFES_PENDING_STORAGE_KEY))
+        const pendingSafe = safesPending?.find((e) => e.id === safeId)
+
+        if (pendingSafe) {
+          initialValues[FIELD_CREATE_SUGGESTED_SAFE_NAME] =
+            pendingSafe[FIELD_CREATE_CUSTOM_SAFE_NAME] || pendingSafe[FIELD_CREATE_SUGGESTED_SAFE_NAME]
+        }
+
         const ownerList: Array<OwnerFieldItem> = owners.map((address) => ({
           address: address,
           name: '',
@@ -73,7 +86,7 @@ function Cancel(): ReactElement {
     checkSafeAddress()
   }, [safeAddress, safeRandomName, safeId])
 
-  const onSubmitCancelSafe = async (values: CancelSafeFormValues): Promise<void> => {
+  const onSubmitCancelSafe = async (values?: CancelSafeFormValues): Promise<void> => {
     if (!safeId) {
       return
     }
@@ -119,34 +132,40 @@ function Cancel(): ReactElement {
           </BackIcon>
           <Heading tag="h2">Cancel Safe Creation</Heading>
         </Row>
+        <StyledFormContainer>
+          <GnoForm initialValues={initialFormValues} onSubmit={() => {}}>
+            {() => {
+              return (
+                <Paper elevation={1} className={classes.root}>
+                  <ReviewAllowStep />
 
-        <GnoForm initialValues={initialFormValues} onSubmit={onSubmitCancelSafe}>
-          {() => {
-            return (
-              <Paper elevation={1} className={classes.root}>
-                <ReviewAllowStep />
-
-                <Hairline />
-                <Row align="center" grow className={classes.controlStyle}>
-                  <Col center="xs" xs={12}>
-                    <Button onClick={history.goBack} size="small" className={classes.backButton} type="button">
-                      {backButtonLabel}
-                    </Button>
-                    <Button
-                      color="primary"
-                      type="submit"
-                      size="small"
-                      className={classes.nextButton}
-                      variant="contained"
-                    >
-                      {nextButtonLabel}
-                    </Button>
-                  </Col>
-                </Row>
-              </Paper>
-            )
-          }}
-        </GnoForm>
+                  <Hairline />
+                  <Row align="center" grow className={classes.controlStyle}>
+                    <Col center="xs" xs={12}>
+                      <Button onClick={history.goBack} size="small" className={classes.backButton} type="button">
+                        {backButtonLabel}
+                      </Button>
+                      {/* <Button
+                        color="primary"
+                        type="submit"
+                        size="small"
+                        className={classes.nextButton}
+                        variant="contained"
+                      >
+                        {nextButtonLabel}
+                      </Button> */}
+                      <ButtonGradient size="lg" onClick={() => onSubmitCancelSafe()}>
+                        <Text size="xl" color="white">
+                          Send
+                        </Text>
+                      </ButtonGradient>
+                    </Col>
+                  </Row>
+                </Paper>
+              )
+            }}
+          </GnoForm>
+        </StyledFormContainer>
 
         {/* key={safeAddress} ensures that it goes to step 1 when the address changes */}
       </Block>
@@ -161,6 +180,10 @@ const BackIcon = styled(IconButton)`
   padding: ${sm};
   margin-right: 5px;
 `
+const StyledFormContainer = styled.div`
+  max-width: 770px;
+`
+
 const useStyles = makeStyles((theme) => ({
   root: {
     margin: '10px 0 10px 10px',
@@ -168,16 +191,11 @@ const useStyles = makeStyles((theme) => ({
     boxShadow: '0 0 10px 0 rgba(33,48,77,0.10)',
   },
   controlStyle: {
-    backgroundColor: 'white',
     padding: lg,
     borderRadius: sm,
   },
   backButton: {
     marginRight: sm,
-    fontWeight: boldFont,
-    color: theme.palette.secondary.main,
-  },
-  nextButton: {
     fontWeight: boldFont,
   },
   stepLabel: {

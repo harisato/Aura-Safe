@@ -129,7 +129,7 @@ export const TxCollapsed = ({
   const txCollapsedNonce = (
     <div className={'tx-nonce' + willBeReplaced}>
       <Text size="xl" color="white">
-        {nonce}
+        {/* {nonce} */}{' '}
       </Text>
     </div>
   )

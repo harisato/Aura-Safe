@@ -9,18 +9,19 @@ import { COOKIES_KEY } from 'src/logic/cookies/model/cookie'
 import { openCookieBanner } from 'src/logic/cookies/store/actions/openCookieBanner'
 import { cookieBannerOpen } from 'src/logic/cookies/store/selectors'
 import { loadFromCookie, saveCookie } from 'src/logic/cookies/utils'
-import { mainFontFamily, md, primary, screenSm } from 'src/theme/variables'
+import { mainFontFamily, md, primary, screenSm, colorLinear } from 'src/theme/variables'
 import { loadGoogleAnalytics, removeCookies } from 'src/utils/googleAnalytics'
 import { closeIntercom, isIntercomLoaded } from 'src/utils/intercom'
 import AlertRedIcon from './assets/alert-red.svg'
 import { useSafeAppUrl } from 'src/logic/hooks/useSafeAppUrl'
 import { CookieAttributes } from 'js-cookie'
+import styled from 'styled-components'
 
 const isDesktop = process.env.REACT_APP_BUILD_FOR_DESKTOP
 
 const useStyles = makeStyles({
   container: {
-    backgroundColor: '#fff',
+    backgroundColor: 'black',
     bottom: '0',
     boxShadow: '1px 2px 10px 0 rgba(40, 54, 61, 0.18)',
     boxSizing: 'border-box',
@@ -91,6 +92,10 @@ const useStyles = makeStyles({
   },
 } as any)
 
+const ButtonAccpet = styled(Button)`
+  background: ${colorLinear};
+  box-shadow: none;
+`
 interface CookiesBannerFormProps {
   alertMessage: boolean
 }
@@ -155,7 +160,7 @@ const CookiesBanner = (): ReactElement => {
       }
     }
     fetchCookiesFromStorage()
-  }, [showAnalytics/* , showIntercom */])
+  }, [showAnalytics /* , showIntercom */])
 
   const acceptCookiesHandler = async () => {
     const newState = {
@@ -257,15 +262,15 @@ const CookiesBanner = (): ReactElement => {
               </Button>
             </div>
             <div className={classes.formItem}>
-              <Button
-                color="primary"
+              <ButtonAccpet
+                color="black"
                 component={Link}
                 minWidth={180}
                 onClick={() => acceptCookiesHandler()}
                 variant="contained"
               >
                 Accept all
-              </Button>
+              </ButtonAccpet>
             </div>
           </div>
         </div>

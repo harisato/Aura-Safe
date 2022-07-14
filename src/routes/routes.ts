@@ -9,7 +9,7 @@ import { parsePrefixedAddress } from 'src/utils/prefixedAddress'
 export const history = createBrowserHistory({
   basename: PUBLIC_URL,
 })
- //  8E906198720BB3EE6813FAD4BADDF15AF5E24E2171339D9D8C041D44C67C75DA
+//  8E906198720BB3EE6813FAD4BADDF15AF5E24E2171339D9D8C041D44C67C75DA
 // Safe specific routes
 // const hashRegExp = '0x[0-9A-Fa-f]'
 const hashRegExp = '[0-9A-Za-z]'
@@ -79,7 +79,7 @@ export const getNetworkRootRoutes = (): Array<{ chainId: ChainId; route: string 
     route: `/${chainName.replaceAll(' ', '-').toLowerCase()}`,
   }))
 
-export type SafeRouteParams = { shortName: ShortName; safeAddress: string, safeId?: number }
+export type SafeRouteParams = { shortName: ShortName; safeAddress: string; safeId?: number }
 
 export const isValidShortChainName = (shortName: ShortName): boolean => {
   return getChains().some((chain) => chain.shortName === shortName)
@@ -100,14 +100,11 @@ export const extractPrefixedSafeAddress = (
   return {
     safeId: Number(prefix),
     safeAddress: address,
-    shortName: prefix
+    shortName: prefix,
   }
 }
 
-export const extractPrefixedSafeId = (
-  path = history.location.pathname,
-  route = ADDRESSED_ROUTE,
-): SafeRouteParams => {
+export const extractPrefixedSafeId = (path = history.location.pathname, route = ADDRESSED_ROUTE): SafeRouteParams => {
   const match = matchPath<SafeRouteSlugs>(path, {
     path: route,
   })
@@ -137,7 +134,7 @@ export const getPrefixedSafeAddressSlug = (
   { safeAddress = extractSafeAddress(), shortName = extractShortChainName(), safeId = extractSafeId() } = {
     safeAddress: extractSafeAddress(),
     shortName: extractShortChainName(),
-    safeId: extractSafeId()
+    safeId: extractSafeId(),
   },
 ): string => `${shortName}:${safeAddress}`
 
@@ -145,7 +142,7 @@ export const getPrefixedSafeAddressIdSlug = (
   { safeAddress = extractSafeAddress(), shortName = extractShortChainName(), safeId = extractSafeId() } = {
     safeAddress: extractSafeAddress(),
     shortName: extractShortChainName(),
-    safeId: extractSafeId()
+    safeId: extractSafeId(),
   },
 ): string => `${safeId}:${safeAddress}`
 
@@ -158,7 +155,6 @@ export const generateSafeRoute = (
     [SAFE_ADDRESS_SLUG]: getPrefixedSafeAddressIdSlug(params),
   })
 
-
 export const generateSafeRouteWithChainId = (
   path: typeof SAFE_ROUTES[keyof typeof SAFE_ROUTES],
   params: SafeRouteParams,
@@ -166,7 +162,6 @@ export const generateSafeRouteWithChainId = (
   generatePath(path, {
     [SAFE_ADDRESS_SLUG]: getPrefixedSafeAddressIdSlug(params),
   })
-
 
 // Singular tx route is excluded as it has a required safeTxHash slug
 // This is to give stricter routing, instead of making the slug optional

@@ -21,7 +21,7 @@ import {
 } from '../fields/loadFields'
 import NetworkLabel from 'src/components/NetworkLabel/NetworkLabel'
 import { currentNetworkAddressBookAsMap } from 'src/logic/addressBook/store/selectors'
-import { FIELD_SAFE_OWNERS_LIST } from '../fields/cancelSafeFields'
+import { FIELD_CREATE_SUGGESTED_SAFE_NAME, FIELD_SAFE_OWNERS_LIST } from '../fields/cancelSafeFields'
 
 export const reviewLoadStepLabel = 'Review'
 
@@ -35,6 +35,7 @@ function ReviewAllowStep(): ReactElement {
   const safeAddress = formValues[FIELD_ALLOW_SAFE_ADDRESS] || ''
   const threshold = formValues[FIELD_SAFE_THRESHOLD]
   const ownerList = formValues[FIELD_SAFE_OWNERS_LIST] || []
+  const safeName = formValues[FIELD_CREATE_SUGGESTED_SAFE_NAME] || ''
 
   const ownerListWithNames = ownerList?.map((owner) => {
     const ownerFieldName = `owner-address-${owner.address}`
@@ -64,6 +65,20 @@ function ReviewAllowStep(): ReactElement {
             <StyledParagraph color="disabled" noMargin size="sm" data-testid="load-form-review-safe-network">
               <NetworkLabel />
             </StyledParagraph>
+          </Block>
+          <Block margin="lg">
+            <Paragraph color="white" noMargin size="sm">
+              Name of new Safe
+            </Paragraph>
+            <SafeNameParagraph
+              color="primary"
+              noMargin
+              size="md"
+              weight="bolder"
+              data-testid="create-safe-review-safe-name"
+            >
+              {safeName}
+            </SafeNameParagraph>
           </Block>
           {safeAddress ? (
             <Block margin="lg">
@@ -162,4 +177,9 @@ const SafeAddressContainer = styled(Row)`
 `
 const StyledParagraph = styled(Paragraph)`
   margin-top: 4px;
+`
+
+const SafeNameParagraph = styled(Paragraph)`
+  text-overflow: ellipsis;
+  overflow: hidden;
 `

@@ -10,10 +10,10 @@ import { trackAnalyticsEvent, WALLET_EVENTS } from '../../utils/googleAnalytics'
 import { saveToStorage } from 'src/utils/storage'
 import { LAST_USED_PROVIDER_KEY } from '../wallets/store/middlewares/providerWatcher'
 import { parseToAdress } from 'src/utils/parseByteAdress'
-import { ChainsInfo } from './constants/chainsInfo'
+import * as _ from 'lodash'
 import { WALLETS_NAME } from '../wallets/constant/wallets'
 import { auth } from 'src/services/index'
-import * as _ from 'lodash'
+import { getGatewayUrl } from 'src/services/data/environment'
 
 export type WalletKey = {
   myAddress: string
@@ -67,6 +67,7 @@ export async function connectKeplr(): Promise<KeplrErrors> {
   const internalChainId = getInternalChainId()
   const chainId = _getChainId()
   const keplr = await getKeplr()
+
   if (!keplr) {
     alert('Please install keplr extension')
     return KeplrErrors.NotInstall
@@ -241,17 +242,20 @@ const handleProviderNotification = (provider: ProviderProps, dispatch: Dispatch<
 }
 
 export async function suggestChain(chainId = 'aura-testnet'): Promise<any> {
-  if (ChainsInfo[chainId]) {
-    await window['keplr']?.experimentalSuggestChain(ChainsInfo[chainId])
-  } else {
-    const result = confirm(`Please add the ${chainId} chain to your Wallet!`)
+  getGatewayUrl().then((res: any) => {
+    const chainInfo = _.find(res.chainInfo, ['chainId', chainId])
+    if (chainInfo) {
+      window['keplr']?.experimentalSuggestChain(chainInfo)
+    } else {
+      const result = confirm(`Please add the ${chainId} chain to your Wallet!`)
 
-    if (result) {
-      window.open(
-        'https://github.com/aura-nw/Aura-Safe/blob/dev/CONNECT_KEPLR.md#i-connect-keplr-wallet-to-aura-testnet',
-      )
+      if (result) {
+        window.open(
+          'https://github.com/aura-nw/Aura-Safe/blob/dev/CONNECT_KEPLR.md#i-connect-keplr-wallet-to-aura-testnet',
+        )
+      }
     }
-  }
+  })
 }
 
 function fetchProvider(providerInfo: ProviderProps): (dispatch: Dispatch<any>) => Promise<void> {

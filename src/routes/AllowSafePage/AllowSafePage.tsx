@@ -33,7 +33,7 @@ import {
   extractPrefixedSafeAddress,
   generateSafeRoute,
   SAFE_ROUTES,
-  WELCOME_ROUTE
+  WELCOME_ROUTE,
 } from '../routes'
 import {
   FIELD_ALLOW_CUSTOM_SAFE_NAME,
@@ -43,7 +43,7 @@ import {
   FIELD_SAFE_OWNER_LIST,
   FIELD_SAFE_THRESHOLD,
   LoadSafeFormValues as AllowSafeFormValues,
-  OwnerFieldListItem
+  OwnerFieldListItem,
 } from './fields/allowFields'
 import { getLoadSafeName } from './fields/utils'
 import AllowSafeOwnersStep, { loadSafeOwnersStepLabel } from './steps/AllowSafeOwnersStep'
@@ -53,13 +53,11 @@ import ReviewAllowStep, { reviewLoadStepLabel } from './steps/ReviewAllowStep'
 function Allow(): ReactElement {
   const dispatch = useDispatch()
   const history = useHistory()
-  const { safeAddress, shortName, safeId } = extractPrefixedSafeAddress(undefined, ALLOW_SPECIFIC_SAFE_ROUTE)
+  const { safeAddress, safeId } = extractPrefixedSafeAddress(undefined, ALLOW_SPECIFIC_SAFE_ROUTE)
   const safeRandomName = useMnemonicSafeName()
   const [initialFormValues, setInitialFormValues] = useState<AllowSafeFormValues>()
   const addressBook = useSelector(currentNetworkAddressBookAsMap)
   const chainId = useSelector(currentChainId)
-
-  const BYTES = Buffer.from('')
 
   useEffect(() => {
     const checkSafeAddress = async () => {
