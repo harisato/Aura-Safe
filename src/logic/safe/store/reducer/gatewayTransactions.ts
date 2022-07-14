@@ -197,10 +197,7 @@ export const gatewayTransactionsReducer = handleActions<GatewayTransactionsState
 
       // get the tx group (it will be `queued.next`, `queued.queued` or `history`)
       txLocationLoop: for (const txLocation of ['queued.txs', 'history']) {
-        const txGroup: StoreStructure['queued']['txs'] | StoreStructure['history'] = get(
-          clonedStoredTxs,
-          txLocation,
-        )
+        const txGroup: StoreStructure['queued']['txs'] | StoreStructure['history'] = get(clonedStoredTxs, txLocation)
 
         if (!txGroup) {
           continue

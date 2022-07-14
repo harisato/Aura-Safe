@@ -80,7 +80,7 @@ export const loadHistoryTransactionsFromAuraApi = async (
       pageIndex: DEFAULT_PAGE_FIRST,
       pageSize: DEFAULT_PAGE_SIZE,
       isHistory: true,
-      internalChainId: internalChainId
+      internalChainId: internalChainId,
     })
     const { results, next, previous } = makeHistoryTransactionsFromService(list)
     if (!historyPointers[chainId]) {
@@ -131,14 +131,13 @@ export const loadPageHistoryTransactionsFromAuraApi = async (
       return
     }
     const pageNext = _next.pageIndex
-    
+
     const payload: ITransactionListQuery = {
       safeAddress,
       pageIndex: pageNext,
       pageSize: DEFAULT_PAGE_SIZE,
       isHistory: true,
-      internalChainId: internalChainId
-      
+      internalChainId: internalChainId,
     }
 
     const { Data: list } = await getAllTx(payload)
@@ -223,9 +222,9 @@ export const loadQueuedTransactionsFromAuraApi = async (
       isHistory: false,
       pageIndex: DEFAULT_PAGE_FIRST,
       pageSize: QUEUED_PAGE_SIZE,
-      internalChainId: internalChainId
+      internalChainId: internalChainId,
     })
-    let { results, next, previous } = makeQueueTransactionsFromService(list)
+    const { results, next, previous } = makeQueueTransactionsFromService(list)
 
     let ret: QueuedGatewayResponse['results'] | null = results
     if (!queuedPointers[chainId]) {
@@ -278,12 +277,12 @@ export const loadPageQueuedTransactionsFromAuraApi = async (
       pageIndex: pageNext,
       pageSize: DEFAULT_PAGE_SIZE,
       isHistory: false,
-      internalChainId: internalChainId
+      internalChainId: internalChainId,
     }
 
     const { Data: list } = await getAllTx(payload)
 
-    let { results, next, previous } = makeQueueTransactionsFromService(list, payload)
+    const { results, next, previous } = makeQueueTransactionsFromService(list, payload)
 
     queuedPointers[chainId][safeAddress] = { next, previous }
 

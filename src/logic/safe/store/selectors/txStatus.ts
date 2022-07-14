@@ -17,7 +17,7 @@ export const localStatuses = (state: AppReduxState): LocalStatusesState => {
 // @FIXME: this is a dirty hack.
 // Ask backend to add safeTxHash in tx list items.
 const getSafeTxHashFromId = (id: string): string => {
-  return id.split('_').pop() || ''
+  return id?.split('_').pop() || ''
 }
 
 export const getLocalTxStatus = (
