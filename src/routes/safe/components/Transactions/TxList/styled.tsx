@@ -29,6 +29,7 @@ export const NoPaddingAccordion = styled(Accordion).attrs((props) =>
   isDeeplinkedTx() ? { expanded: true, ...props } : props,
 )`
   &.MuiAccordion-root {
+    border-bottom: none !important;
     .MuiAccordionDetails-root {
       padding: 0;
     }
@@ -37,12 +38,13 @@ export const NoPaddingAccordion = styled(Accordion).attrs((props) =>
 
 export const ActionAccordion = styled(Accordion)`
   &.MuiAccordion-root {
-    background-color: #1D1D1F;
+    background-color: #1d1d1f;
     &:first-child {
       border-top: none;
     }
 
     &.Mui-expanded {
+      border-bottom: none !important;
       &:last-child {
         border-bottom: none;
       }
@@ -121,6 +123,7 @@ export const GroupedTransactionsCard = styled(StyledTransactions)`
     &:hover,
     &.Mui-expanded {
       background-color: transparent;
+      border-bottom: none !important;
     }
   }
 
@@ -321,6 +324,8 @@ export const GroupedTransactions = styled(StyledTransaction)`
 
       > .MuiAccordionSummary-root {
         background-color: #0e0e0f !important;
+        border-bottom: none !important;
+        border-top: none;
         padding: 0;
       }
     }
@@ -527,7 +532,8 @@ export const HorizontallyCentered = styled(Centered)<{ isVisible: boolean }>`
 export const StyledAccordionSummary = styled(AccordionSummary).attrs((props) =>
   isDeeplinkedTx() ? { expandIcon: null, ...props } : props,
 )`
-  background-color: rgba(14, 14, 15, 1) !important;
+  border-bottom: none !important;
+  background-color: #262629 !important;
   height: 52px;
   .tx-nonce {
     margin: 0 16px 0 8px;
