@@ -21,7 +21,8 @@ import { TxParameters } from 'src/routes/safe/container/hooks/useTransactionPara
 import { ParametersStatus } from 'src/routes/safe/components/Transactions/helpers/utils'
 import { ModalHeader } from 'src/routes/safe/components/Balances/SendModal/screens/ModalHeader'
 import { extractSafeAddress } from 'src/routes/routes'
-
+import SafeInfo from 'src/routes/safe/components/Balances/SendModal/SafeInfo'
+import Divider from 'src/components/Divider'
 type Props = {
   isOpen: boolean
   onClose: () => void
@@ -96,29 +97,32 @@ export const RejectTxModal = ({ isOpen, onClose, gwTransaction }: Props): React.
               <ModalHeader onClose={onClose} title="Reject transaction" />
               <Hairline />
               <Block className={classes.container}>
+                <SafeInfo />
+                <Divider />
                 <Row>
                   <Paragraph>
                     This action will reject this transaction. A separate transaction will be performed to submit the
                     rejection.
                   </Paragraph>
-                  <Paragraph color="medium" size="sm">
+                  {/* <Paragraph color="medium" size="sm">
                     Transaction nonce:
                     <br />
                     <Bold className={classes.nonceNumber}>{nonce}</Bold>
-                  </Paragraph>
+                  </Paragraph> */}
                 </Row>
                 {/* Tx Parameters */}
-                <TxParametersDetail
+                {/* <TxParametersDetail
                   txParameters={txParameters}
                   onEdit={toggleEditMode}
                   parametersStatus={getParametersStatus()}
                   isTransactionCreation={isCreation}
                   isTransactionExecution={isExecution}
                   isOffChainSignature={isOffChainSignature}
-                />
+                /> */}
+                <Divider />
               </Block>
 
-              {txEstimationExecutionStatus === EstimationStatus.LOADING ? null : (
+              {/* {txEstimationExecutionStatus === EstimationStatus.LOADING ? null : (
                 <ReviewInfoText
                   gasCostFormatted={gasCostFormatted}
                   isCreation={isCreation}
@@ -127,7 +131,7 @@ export const RejectTxModal = ({ isOpen, onClose, gwTransaction }: Props): React.
                   safeNonce={txParameters.safeNonce}
                   txEstimationExecutionStatus={txEstimationExecutionStatus}
                 />
-              )}
+              )} */}
               <GenericModal.Footer withoutBorder={confirmButtonStatus !== ButtonStatus.LOADING}>
                 <GenericModal.Footer.Buttons
                   cancelButtonProps={{ onClick: onClose, text: 'Close' }}

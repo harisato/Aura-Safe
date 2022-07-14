@@ -7,10 +7,14 @@ export const styles = createStyles({
   },
   amount: {
     marginLeft: sm,
+    alignSelf: 'center',
   },
   buttonRow: {
     height: '84px',
     justifyContent: 'center',
     gap: '16px',
+  },
+  gasInput: {
+    width: '200px',
   },
 })

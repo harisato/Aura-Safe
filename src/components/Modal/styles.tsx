@@ -110,7 +110,7 @@ const FooterSection = styled.div<{ withoutBorder: boolean; justifyContent?: Foot
   border-top: ${({ withoutBorder }) => (withoutBorder ? '0' : '2px')} solid #404047;
   height: 84px;
   gap: 16px;
-
+  border-top: 1px solid rgb(62, 63, 64);
   padding: 0px 24px;
 `
 

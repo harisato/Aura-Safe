@@ -1,7 +1,7 @@
 import { makeStyles } from '@material-ui/core/styles'
 import { useMemo, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-
+import InputAdornment from '@material-ui/core/InputAdornment'
 import { RecordOf } from 'immutable'
 import Divider from 'src/components/Divider'
 import Block from 'src/components/layout/Block'
@@ -53,7 +53,8 @@ import { styles } from './style'
 import { toBase64 } from '@cosmjs/encoding'
 import { GasPrice } from '@cosmjs/stargate'
 import { loadLastUsedProvider } from 'src/logic/wallets/store/middlewares/providerWatcher'
-
+import ButtonLink from 'src/components/layout/ButtonLink'
+import TextField from '@material-ui/core/TextField'
 const useStyles = makeStyles(styles)
 const chains: ChainInfo[] = []
 // let isDisabled = false
@@ -101,6 +102,10 @@ const useTxData = (
   // }, [isSendingNativeToken, recipientAddress, txAmount, txToken])
 
   return data
+}
+
+const InputAdornmentChildSymbol = (symbol: any) => {
+  return <>{symbol}</>
 }
 
 const ReviewSendFundsTx = ({ onClose, onPrev, tx }: ReviewTxProps): React.ReactElement => {
@@ -336,23 +341,11 @@ const ReviewSendFundsTx = ({ onClose, onPrev, tx }: ReviewTxProps): React.ReactE
             </Row>
 
             {/* Amount */}
-            <Row margin="xs">
+            {/* <Row margin="xs">
               <Paragraph color="disabled" noMargin size="md" style={{ letterSpacing: '-0.5px' }}>
                 Amount
               </Paragraph>
-            </Row>
-
-            <Row align="center" margin="md">
-              <Img alt={txToken?.name as string} height={28} onError={setImageToPlaceholder} src={txToken?.logoUri} />
-              <Paragraph
-                className={classes.amount}
-                noMargin
-                size="md"
-                data-testid={`amount-${txToken?.symbol as string}-review-step`}
-              >
-                {tx.amount} {txToken?.symbol}
-              </Paragraph>
-            </Row>
+            </Row> */}
 
             {isExecution && !isSpendingLimit && <ExecuteCheckbox onChange={setExecutionApproved} />}
 
@@ -367,6 +360,63 @@ const ReviewSendFundsTx = ({ onClose, onPrev, tx }: ReviewTxProps): React.ReactE
                 isOffChainSignature={isOffChainSignature}
               />
             )}
+
+            <Row margin="xs">
+              <Paragraph color="white" noMargin size="xl" style={{ letterSpacing: '-0.5px' }}>
+                Transaction fee
+              </Paragraph>
+            </Row>
+            <Row align="center" margin="md">
+              <div style={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}>
+                <div style={{ display: 'flex' }}>
+                  <Img
+                    alt={txToken?.name as string}
+                    height={28}
+                    onError={setImageToPlaceholder}
+                    src={txToken?.logoUri}
+                  />
+                  <Paragraph
+                    className={classes.amount}
+                    noMargin
+                    size="md"
+                    data-testid={`amount-${txToken?.symbol as string}-review-step`}
+                  >
+                    {tx.amount} {txToken?.symbol}
+                  </Paragraph>
+                </div>
+                <div style={{ alignSelf: 'center' }}>
+                  <ButtonLink onClick={() => {}} weight="bold" testId="send-max-btn">
+                    Edit gas
+                  </ButtonLink>
+                </div>
+              </div>
+            </Row>
+            <Row align="center" margin="md">
+              <Row margin="md">
+                <Col xs={11}>
+                  <TextField id="filled-basic" className={classes.gasInput} label="Filled" variant="filled" />
+                </Col>
+                <Col center="xs" middle="xs" xs={1}>
+                  <button>Apply</button>
+                </Col>
+              </Row>
+            </Row>
+            <Row margin="xs">
+              <Paragraph color="white" noMargin size="xl" style={{ letterSpacing: '-0.5px' }}>
+                Total Allocation Amount
+              </Paragraph>
+            </Row>
+            <Row align="center" margin="md">
+              <Img alt={txToken?.name as string} height={28} onError={setImageToPlaceholder} src={txToken?.logoUri} />
+              <Paragraph
+                className={classes.amount}
+                noMargin
+                size="md"
+                data-testid={`amount-${txToken?.symbol as string}-review-step`}
+              >
+                {tx.amount} {txToken?.symbol}
+              </Paragraph>
+            </Row>
           </Block>
 
           {/* Disclaimer */}
