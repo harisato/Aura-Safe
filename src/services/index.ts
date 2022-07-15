@@ -168,6 +168,10 @@ export const fetchSafeTransactionById = async (txId: string, safeAddress: string
   return axios.get(`${baseUrl}/transaction/transaction-details/${txId}/${safeAddress}`).then((res) => res.data)
 }
 
+export const rejectTransactionById = async (payload: any): Promise<IResponse<any>> => {
+  return axios.post(`${baseUrl}/transaction/reject`, payload).then((res) => res.data)
+}
+
 export async function getAllTx(payload: ITransactionListQuery): Promise<IResponse<Array<ITransactionListItem>>> {
   return axios.post(`${baseUrl}/transaction/get-all-txs`, payload).then((res) => res.data)
 }
