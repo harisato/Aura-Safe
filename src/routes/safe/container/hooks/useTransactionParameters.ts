@@ -2,15 +2,12 @@ import { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { toWei } from 'web3-utils'
 
-import { getUserNonce } from 'src/logic/wallets/ethTransactions'
-import { userAccountSelector } from 'src/logic/wallets/store/selectors'
 import { currentSafeCurrentVersion } from 'src/logic/safe/store/selectors'
-import { ParametersStatus } from 'src/routes/safe/components/Transactions/helpers/utils'
-import { sameString } from 'src/utils/strings'
+import { userAccountSelector } from 'src/logic/wallets/store/selectors'
 import { extractSafeAddress } from 'src/routes/routes'
+import { ParametersStatus } from 'src/routes/safe/components/Transactions/helpers/utils'
 import { AppReduxState } from 'src/store'
-import { getRecommendedNonce } from 'src/logic/safe/api/fetchSafeTxGasEstimation'
-import { Errors, logError } from 'src/logic/exceptions/CodedException'
+import { sameString } from 'src/utils/strings'
 
 export type TxParameters = {
   safeNonce: string | undefined
