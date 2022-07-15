@@ -1,12 +1,10 @@
 import { createSelector } from 'reselect'
 
 import { ChainId } from 'src/config/chain.d'
-import { ADDRESS_BOOK_DEFAULT_NAME, AddressBookEntry } from 'src/logic/addressBook/model/addressBook'
+import { AddressBookEntry, ADDRESS_BOOK_DEFAULT_NAME } from 'src/logic/addressBook/model/addressBook'
 import { currentChainId } from 'src/logic/config/store/selectors'
 import { AppReduxState } from 'src/store'
 import { Overwrite } from 'src/types/helpers'
-import { checksumAddress } from 'src/utils/checksumAddress'
-import { isValidAddress } from 'src/utils/isValidAddress'
 
 export const addressBookState = (state: AppReduxState): AppReduxState['addressBook'] => state['addressBook']
 
@@ -60,8 +58,6 @@ export const addressBookEntryName = createSelector(
     }),
   ],
   (addressBook, curChainId, { address, chainId }) => {
-    console.log({ address, chainId });
-    
     return getNameByAddress(addressBook, address, chainId || curChainId) || ADDRESS_BOOK_DEFAULT_NAME
   },
 )
@@ -87,8 +83,8 @@ export const addressBookName = createSelector(
 export const currentNetworkAddressBook = createSelector(
   [addressBookState, currentChainId],
   (addressBook, curChainId): AppReduxState['addressBook'] => {
-    console.log("currentNetworkAddressBook", addressBook);
-    
+    console.log('currentNetworkAddressBook', addressBook)
+
     return addressBook.filter(({ chainId }) => chainId.toString() === curChainId)
   },
 )

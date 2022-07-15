@@ -1,8 +1,7 @@
 import { makeStyles } from '@material-ui/core/styles'
+import { RecordOf } from 'immutable'
 import { useMemo, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import InputAdornment from '@material-ui/core/InputAdornment'
-import { RecordOf } from 'immutable'
 import Divider from 'src/components/Divider'
 import Block from 'src/components/layout/Block'
 import Col from 'src/components/layout/Col'
@@ -26,7 +25,7 @@ import { setImageToPlaceholder } from 'src/routes/safe/components/Balances/utils
 import { extendedSafeTokensSelector } from 'src/routes/safe/container/selector'
 import { sameString } from 'src/utils/strings'
 
-import { coins, MsgSendEncodeObject, SignerData, SigningStargateClient } from '@cosmjs/stargate'
+import { calculateFee, coins, MsgSendEncodeObject, SigningStargateClient } from '@cosmjs/stargate'
 import { ChainInfo } from '@gnosis.pm/safe-react-gateway-sdk'
 import { generatePath } from 'react-router-dom'
 import ExecuteCheckbox from 'src/components/ExecuteCheckbox'
@@ -43,7 +42,6 @@ import {
   SAFE_ROUTES,
 } from 'src/routes/routes'
 import { EditableTxParameters } from 'src/routes/safe/components/Transactions/helpers/EditableTxParameters'
-import { TxParametersDetail } from 'src/routes/safe/components/Transactions/helpers/TxParametersDetail'
 import { TxParameters } from 'src/routes/safe/container/hooks/useTransactionParameters'
 import { createSafeTransaction, getAccountOnChain, getMChainsConfig } from 'src/services'
 import { ICreateSafeTransaction } from 'src/types/transaction'
@@ -51,11 +49,10 @@ import { ModalHeader } from '../ModalHeader'
 import { styles } from './style'
 // import { MsgSend } from 'cosmjs-types/cosmos/bank/v1beta1/tx'
 import { toBase64 } from '@cosmjs/encoding'
-import { GasPrice } from '@cosmjs/stargate'
-import { loadLastUsedProvider } from 'src/logic/wallets/store/middlewares/providerWatcher'
 import ButtonLink from 'src/components/layout/ButtonLink'
-import TextField from '@material-ui/core/TextField'
-import Button from '@material-ui/core/Button'
+import { loadLastUsedProvider } from 'src/logic/wallets/store/middlewares/providerWatcher'
+import { useTransactionFees } from 'src/routes/safe/container/hooks/useTransactionFee'
+
 const useStyles = makeStyles(styles)
 const chains: ChainInfo[] = []
 // let isDisabled = false
@@ -126,6 +123,8 @@ const ReviewSendFundsTx = ({ onClose, onPrev, tx }: ReviewTxProps): React.ReactE
   const [manualGasLimit, setManualGasLimit] = useState<string | undefined>()
   const [isDisabled, setDisabled] = useState(false)
   const [gasPriceFormatted, setGasPriceFormatted] = useState('1')
+  const chainInfo = getChainInfo()
+
   let lastUsedProvider = ''
 
   loadLastUsedProvider().then((result) => {
@@ -135,8 +134,8 @@ const ReviewSendFundsTx = ({ onClose, onPrev, tx }: ReviewTxProps): React.ReactE
 
   const {
     gasCostFormatted,
-    gasLimit,
-    gasEstimation,
+    gasLimit: _gasLimit,
+    gasEstimation: _gasEstimation,
     txEstimationExecutionStatus,
     isExecution,
     isCreation,
@@ -150,6 +149,14 @@ const ReviewSendFundsTx = ({ onClose, onPrev, tx }: ReviewTxProps): React.ReactE
     isCreation: true,
     isOffChainSignature: true,
   }
+
+  const {
+    sendFee,
+    gasPrice,
+    gasEstimation,
+    signerData,
+    gasPriceFormatted: priceFormatted,
+  } = useTransactionFees(chainInfo, tx, safeAddress)
 
   const [buttonStatus, setButtonStatus] = useEstimationStatus(txEstimationExecutionStatus)
   const isSpendingLimit = sameString(tx.txType, 'spendingLimit')
@@ -166,7 +173,6 @@ const ReviewSendFundsTx = ({ onClose, onPrev, tx }: ReviewTxProps): React.ReactE
   }
 
   const signTransactionWithKeplr = async (safeAddress: string) => {
-    const chainInfo = getChainInfo()
     const chainId = chainInfo.chainId
     const listChain = await getMChainsConfig()
     const denom = listChain.find((x) => x.chainId === chainId)?.denom || ''
@@ -217,24 +223,42 @@ const ReviewSendFundsTx = ({ onClose, onPrev, tx }: ReviewTxProps): React.ReactE
       }
 
       // calculate fee
-      const gasPrice = GasPrice.fromString(String(manualGasPrice || gasPriceFormatted).concat(denom))
-      // const sendFee = calculateFee(Number(manualGasLimit) || Number(gasLimit), gasPrice)
-      const sendFee = {
-        amount: coins(manualGasPrice || gasPriceFormatted, denom),
-        gas: manualGasLimit || gasLimit,
-      }
+      // const gasPrice = GasPrice.fromString(String(manualGasPrice || gasPriceFormatted).concat(denom))
+      // // const sendFee = calculateFee(Number(manualGasLimit) || Number(gasLimit), gasPrice)
+      // const sendFee = {
+      //   amount: coins(manualGasPrice || gasPriceFormatted, denom),
+      //   gas: manualGasLimit || gasLimit,
+      // }
 
-      const signerData: SignerData = {
-        accountNumber: signingInstruction.accountNumber || 0,
-        sequence: signingInstruction.sequence || 0,
-        chainId: chainId,
-      }
+      // const onlineClient = await SigningCosmWasmClient.connectWithSigner('https://rpc.dev.aura.network/', offlineSigner)
+      // const gasEstimation = await onlineClient.simulate(accounts[0].address, [msg], signingInstruction.memo)
+      // const multiplier = 1.3
+      // const defaultGasPrice = '0.0002uaura'
+      // const gasPrice = GasPrice.fromString(defaultGasPrice)
+      // const gasPrice = GasPrice.fromString(String(manualGasPrice || gasPriceFormatted).concat(denom))
+      // const sendFee = calculateFee(Math.round(gasEstimation * multiplier), gasPrice)
+
+      // const signerData: SignerData = {
+      //   accountNumber: signingInstruction.accountNumber || 0,
+      //   sequence: signingInstruction.sequence || 0,
+      //   chainId: chainId,
+      // }
 
       try {
         // Sign On Wallet
         dispatch(enqueueSnackbar(enhanceSnackbarForAction(NOTIFICATIONS.SIGN_TX_MSG)))
 
-        const signResult = await client.sign(accounts[0]?.address, [msg], sendFee, '', signerData)
+        if (!gasPrice || !gasEstimation) {
+          return
+        }
+
+        const signResult = await client.sign(
+          accounts[0]?.address,
+          [msg],
+          sendFee || calculateFee(gasEstimation, gasPrice),
+          '',
+          signerData,
+        )
 
         const signatures = toBase64(signResult.signatures[0])
         const bodyBytes = toBase64(signResult.bodyBytes)
@@ -289,14 +313,14 @@ const ReviewSendFundsTx = ({ onClose, onPrev, tx }: ReviewTxProps): React.ReactE
   const closeEditModalCallback = (txParameters: TxParameters) => {
     const oldGasPrice = gasPriceFormatted
     const newGasPrice = txParameters.ethGasPrice
-    const oldSafeTxGas = gasEstimation
+    const oldSafeTxGas = gasEstimation?.toString()
     const newSafeTxGas = txParameters.safeTxGas
 
     if (newGasPrice && oldGasPrice !== newGasPrice) {
       setManualGasPrice(txParameters.ethGasPrice)
     }
 
-    if (txParameters.ethGasLimit && gasLimit !== txParameters.ethGasLimit) {
+    if (txParameters.ethGasLimit && _gasLimit !== txParameters.ethGasLimit) {
       setManualGasLimit(txParameters.ethGasLimit)
     }
 
@@ -313,9 +337,9 @@ const ReviewSendFundsTx = ({ onClose, onPrev, tx }: ReviewTxProps): React.ReactE
     <EditableTxParameters
       isOffChainSignature={isOffChainSignature}
       isExecution={doExecute}
-      ethGasLimit={gasLimit}
-      ethGasPrice={gasPriceFormatted}
-      safeTxGas={gasEstimation}
+      ethGasLimit={sendFee?.gas || '100000'}
+      ethGasPrice={priceFormatted}
+      safeTxGas={gasEstimation?.toString()}
       closeEditModalCallback={closeEditModalCallback}
     >
       {(txParameters, toggleEditMode) => (
