@@ -55,6 +55,7 @@ import { GasPrice } from '@cosmjs/stargate'
 import { loadLastUsedProvider } from 'src/logic/wallets/store/middlewares/providerWatcher'
 import ButtonLink from 'src/components/layout/ButtonLink'
 import TextField from '@material-ui/core/TextField'
+import Button from '@material-ui/core/Button'
 const useStyles = makeStyles(styles)
 const chains: ChainInfo[] = []
 // let isDisabled = false
@@ -155,6 +156,7 @@ const ReviewSendFundsTx = ({ onClose, onPrev, tx }: ReviewTxProps): React.ReactE
   const [executionApproved, setExecutionApproved] = useState<boolean>(true)
   const doExecute = isExecution && executionApproved
   const userWalletAddress = useSelector(userAccountSelector)
+  const [openGas, setOpenGas] = useState<boolean>(false)
 
   const submitTx = async (txParameters: TxParameters) => {
     setDisabled(true)
@@ -303,6 +305,10 @@ const ReviewSendFundsTx = ({ onClose, onPrev, tx }: ReviewTxProps): React.ReactE
     }
   }
 
+  const ShowGasFrom = () => {
+    setOpenGas(!openGas)
+  }
+
   return (
     <EditableTxParameters
       isOffChainSignature={isOffChainSignature}
@@ -353,7 +359,7 @@ const ReviewSendFundsTx = ({ onClose, onPrev, tx }: ReviewTxProps): React.ReactE
 
             {/* Tx Parameters */}
             {/* FIXME TxParameters should be updated to be used with spending limits */}
-            {!isSpendingLimit && (
+            {/* {!isSpendingLimit && (
               <TxParametersDetail
                 txParameters={txParameters}
                 onEdit={toggleEditMode}
@@ -361,7 +367,7 @@ const ReviewSendFundsTx = ({ onClose, onPrev, tx }: ReviewTxProps): React.ReactE
                 isTransactionExecution={doExecute}
                 isOffChainSignature={isOffChainSignature}
               />
-            )}
+            )} */}
 
             <Row margin="xs">
               <Paragraph color="white" noMargin size="xl" style={{ letterSpacing: '-0.5px' }}>
@@ -387,27 +393,28 @@ const ReviewSendFundsTx = ({ onClose, onPrev, tx }: ReviewTxProps): React.ReactE
                   </Paragraph>
                 </div>
                 <div style={{ alignSelf: 'center' }}>
-                  <ButtonLink onClick={() => {}} weight="bold" testId="send-max-btn">
+                  <ButtonLink onClick={ShowGasFrom} weight="bold" testId="send-max-btn">
                     Edit gas
                   </ButtonLink>
                 </div>
               </div>
             </Row>
-            <Row align="center" margin="md">
-              <Row margin="md">
-                <Col xs={11}>
-                  <TextField id="filled-basic" className={classes.gasInput} label="Filled" variant="filled" />
+            {openGas && (
+              <Row margin="md" xs={12}>
+                <Col xs={9}>
+                  <input className={classes.gasInput} placeholder="Gas Amount" />
                 </Col>
-                <Col center="xs" middle="xs" xs={1}>
-                  <button>Apply</button>
+                <Col center="xs" middle="xs" xs={3}>
+                  <div className={classes.gasButton}>Apply</div>
                 </Col>
               </Row>
-            </Row>
+            )}
             <Row margin="xs">
               <Paragraph color="white" noMargin size="xl" style={{ letterSpacing: '-0.5px' }}>
                 Total Allocation Amount
               </Paragraph>
             </Row>
+
             <Row align="center" margin="md">
               <Img alt={txToken?.name as string} height={28} onError={setImageToPlaceholder} src={txToken?.logoUri} />
               <Paragraph

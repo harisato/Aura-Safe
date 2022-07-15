@@ -4,25 +4,21 @@ import { useDispatch } from 'react-redux'
 import { useStyles } from './style'
 import Modal, { Modal as GenericModal } from 'src/components/Modal'
 import { ButtonStatus } from 'src/components/Modal/type'
-import { ReviewInfoText } from 'src/components/ReviewInfoText'
 import Block from 'src/components/layout/Block'
-import Bold from 'src/components/layout/Bold'
 import Hairline from 'src/components/layout/Hairline'
 import Paragraph from 'src/components/layout/Paragraph'
 import Row from 'src/components/layout/Row'
-import { TX_NOTIFICATION_TYPES } from 'src/logic/safe/transactions'
 import { EMPTY_DATA } from 'src/logic/wallets/ethTransactions'
-import { createTransaction } from 'src/logic/safe/store/actions/createTransaction'
 import { Transaction } from 'src/logic/safe/store/models/types/gateway.d'
 import { EstimationStatus, useEstimateTransactionGas } from 'src/logic/hooks/useEstimateTransactionGas'
-import { TxParametersDetail } from 'src/routes/safe/components/Transactions/helpers/TxParametersDetail'
 import { EditableTxParameters } from 'src/routes/safe/components/Transactions/helpers/EditableTxParameters'
 import { TxParameters } from 'src/routes/safe/container/hooks/useTransactionParameters'
 import { ParametersStatus } from 'src/routes/safe/components/Transactions/helpers/utils'
 import { ModalHeader } from 'src/routes/safe/components/Balances/SendModal/screens/ModalHeader'
 import { extractSafeAddress } from 'src/routes/routes'
-import SafeInfo from 'src/routes/safe/components/Balances/SendModal/SafeInfo'
-import Divider from 'src/components/Divider'
+import Col from 'src/components/layout/Col'
+import { rejectTransactionById } from 'src/services/index'
+import { getInternalChainId } from 'src/config'
 type Props = {
   isOpen: boolean
   onClose: () => void
@@ -46,26 +42,22 @@ export const RejectTxModal = ({ isOpen, onClose, gwTransaction }: Props): React.
     txData: EMPTY_DATA,
     txRecipient: safeAddress,
   })
-
   const origin = gwTransaction.safeAppInfo
     ? JSON.stringify({ name: gwTransaction.safeAppInfo.name, url: gwTransaction.safeAppInfo.url })
     : ''
 
   const nonce = (gwTransaction.executionInfo as MultisigExecutionInfo)?.nonce ?? 0
-
+  const internalId = getInternalChainId()
   const sendReplacementTransaction = (txParameters: TxParameters) => {
-    dispatch(
-      createTransaction({
-        safeAddress,
-        to: safeAddress,
-        valueInWei: '0',
-        txNonce: nonce,
-        origin,
-        safeTxGas: txParameters.safeTxGas,
-        ethParameters: txParameters,
-        notifiedTransaction: TX_NOTIFICATION_TYPES.CANCELLATION_TX,
-      }),
-    )
+    const data = {
+      transactionId: nonce,
+      internalChainId: internalId,
+    }
+    if (data) {
+      rejectTransactionById(data).then((res) => {
+        console.log('res', res)
+      })
+    }
     onClose()
   }
 
@@ -97,8 +89,25 @@ export const RejectTxModal = ({ isOpen, onClose, gwTransaction }: Props): React.
               <ModalHeader onClose={onClose} title="Reject transaction" />
               <Hairline />
               <Block className={classes.container}>
-                <SafeInfo />
-                <Divider />
+                {/* <SafeInfo />
+                <Divider withArrow /> */}
+
+                {/* <Row margin="xs">
+                  <Paragraph color="disabled" noMargin size="md" style={{ letterSpacing: '-0.5px' }}>
+                    Recipient
+                  </Paragraph>
+                </Row> */}
+                <Row align="center" margin="md" data-testid="recipient-review-step">
+                  <Col xs={12}>
+                    {/* <PrefixedEthHashInfo
+                      hash={tx.recipientAddress}
+                      name={tx.recipientName}
+                      showCopyBtn
+                      showAvatar
+                      explorerUrl={getExplorerInfo(tx.recipientAddress)}
+                    /> */}
+                  </Col>
+                </Row>
                 <Row>
                   <Paragraph>
                     This action will reject this transaction. A separate transaction will be performed to submit the
@@ -119,7 +128,6 @@ export const RejectTxModal = ({ isOpen, onClose, gwTransaction }: Props): React.
                   isTransactionExecution={isExecution}
                   isOffChainSignature={isOffChainSignature}
                 /> */}
-                <Divider />
               </Block>
 
               {/* {txEstimationExecutionStatus === EstimationStatus.LOADING ? null : (
