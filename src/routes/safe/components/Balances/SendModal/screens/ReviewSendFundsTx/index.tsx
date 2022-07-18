@@ -1,5 +1,4 @@
 import { makeStyles } from '@material-ui/core/styles'
-import { RecordOf } from 'immutable'
 import { useMemo, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import Divider from 'src/components/Divider'
@@ -13,25 +12,23 @@ import { Modal } from 'src/components/Modal'
 import { ButtonStatus } from 'src/components/Modal/type'
 import PrefixedEthHashInfo from 'src/components/PrefixedEthHashInfo'
 import { ReviewInfoText } from 'src/components/ReviewInfoText'
-import { getChainInfo, getExplorerInfo, getInternalChainId, getNativeCurrency } from 'src/config'
+import { getChainInfo, getExplorerInfo, getInternalChainId } from 'src/config'
 import { EstimationStatus } from 'src/logic/hooks/useEstimateTransactionGas'
 import { useEstimationStatus } from 'src/logic/hooks/useEstimationStatus'
 import { SpendingLimit } from 'src/logic/safe/store/models/safe'
-import { TokenProps } from 'src/logic/tokens/store/model/token'
-import { toTokenUnit } from 'src/logic/tokens/utils/humanReadableValue'
 import { sameAddress } from 'src/logic/wallets/ethAddresses'
 import SafeInfo from 'src/routes/safe/components/Balances/SendModal/SafeInfo'
 import { setImageToPlaceholder } from 'src/routes/safe/components/Balances/utils'
 import { extendedSafeTokensSelector } from 'src/routes/safe/container/selector'
 import { sameString } from 'src/utils/strings'
 
+import { toBase64 } from '@cosmjs/encoding'
 import { calculateFee, coins, MsgSendEncodeObject, SigningStargateClient } from '@cosmjs/stargate'
-import { ChainInfo } from '@gnosis.pm/safe-react-gateway-sdk'
 import { generatePath } from 'react-router-dom'
-import ExecuteCheckbox from 'src/components/ExecuteCheckbox'
-import { getNativeCurrencyAddress } from 'src/config/utils'
+import ButtonLink from 'src/components/layout/ButtonLink'
 import { enhanceSnackbarForAction, NOTIFICATIONS } from 'src/logic/notifications'
 import enqueueSnackbar from 'src/logic/notifications/store/actions/enqueueSnackbar'
+import { loadLastUsedProvider } from 'src/logic/wallets/store/middlewares/providerWatcher'
 import { userAccountSelector } from 'src/logic/wallets/store/selectors'
 import {
   extractSafeAddress,
@@ -42,21 +39,15 @@ import {
   SAFE_ROUTES,
 } from 'src/routes/routes'
 import { EditableTxParameters } from 'src/routes/safe/components/Transactions/helpers/EditableTxParameters'
+import { useTransactionFees } from 'src/routes/safe/container/hooks/useTransactionFee'
 import { TxParameters } from 'src/routes/safe/container/hooks/useTransactionParameters'
-import { createSafeTransaction, getAccountOnChain, getMChainsConfig } from 'src/services'
+import { createSafeTransaction, getMChainsConfig } from 'src/services'
+import { DEFAULT_GAS } from 'src/services/constant/common'
 import { ICreateSafeTransaction } from 'src/types/transaction'
 import { ModalHeader } from '../ModalHeader'
 import { styles } from './style'
-// import { MsgSend } from 'cosmjs-types/cosmos/bank/v1beta1/tx'
-import { toBase64 } from '@cosmjs/encoding'
-import ButtonLink from 'src/components/layout/ButtonLink'
-import { loadLastUsedProvider } from 'src/logic/wallets/store/middlewares/providerWatcher'
-import { useTransactionFees } from 'src/routes/safe/container/hooks/useTransactionFee'
-import { DEFAULT_GAS } from 'src/services/constant/common'
 
 const useStyles = makeStyles(styles)
-const chains: ChainInfo[] = []
-// let isDisabled = false
 
 export type ReviewTxProp = {
   recipientAddress: string
@@ -74,53 +65,16 @@ type ReviewTxProps = {
   tx: ReviewTxProp
 }
 
-const useTxData = (
-  isSendingNativeToken: boolean,
-  txAmount: string,
-  recipientAddress: string,
-  txToken?: RecordOf<TokenProps>,
-): string => {
-  const [data, setData] = useState('')
-
-  // useEffect(() => {
-  //   const updateTxDataAsync = async () => {
-  //     if (!txToken) {
-  //       return
-  //     }
-
-  //     let txData = EMPTY_DATA
-  //     if (!isSendingNativeToken) {
-  //       const ERC20TokenInstance = getERC20TokenContract(txToken.address)
-  //       const erc20TransferAmount = toTokenUnit(txAmount, txToken.decimals)
-  //       txData = ERC20TokenInstance.methods.transfer(recipientAddress, erc20TransferAmount).encodeABI()
-  //     }
-  //     setData(txData)
-  //   }
-
-  //   updateTxDataAsync()
-  // }, [isSendingNativeToken, recipientAddress, txAmount, txToken])
-
-  return data
-}
-
-const InputAdornmentChildSymbol = (symbol: any) => {
-  return <>{symbol}</>
-}
-
 const ReviewSendFundsTx = ({ onClose, onPrev, tx }: ReviewTxProps): React.ReactElement => {
   const classes = useStyles()
   const dispatch = useDispatch()
   const safeAddress = extractSafeAddress()
-  const nativeCurrency = getNativeCurrency()
   const tokens: any = useSelector(extendedSafeTokensSelector)
   const txToken = useMemo(() => tokens.find((token) => sameAddress(token.address, tx.token)), [tokens, tx.token])
-  const isSendingNativeToken = useMemo(() => sameAddress(txToken?.address, getNativeCurrencyAddress()), [txToken])
   // const txRecipient = isSendingNativeToken ? tx.recipientAddress : txToken?.address || ''
   const txRecipient = tx.recipientAddress || ''
-  const txValue = isSendingNativeToken ? toTokenUnit(tx.amount, nativeCurrency.decimals) : '0'
-  const data = useTxData(isSendingNativeToken, tx.amount, tx.recipientAddress, txToken)
-  const [manualSafeTxGas, setManualSafeTxGas] = useState(DEFAULT_GAS)
-  const [manualGasPrice, setManualGasPrice] = useState<string | undefined>()
+  const [manualSafeTxGas, setManualSafeTxGas] = useState<string | undefined>(DEFAULT_GAS)
+  const [manualGasPrice, setManualGasPrice] = useState<string | undefined>(DEFAULT_GAS)
   const [manualGasLimit, setManualGasLimit] = useState<string | undefined>()
   const [isDisabled, setDisabled] = useState(false)
   const [gasPriceFormatted, setGasPriceFormatted] = useState('1')
@@ -133,21 +87,10 @@ const ReviewSendFundsTx = ({ onClose, onPrev, tx }: ReviewTxProps): React.ReactE
     if (result?.toLowerCase() !== 'keplr') setGasPriceFormatted('15000')
   })
 
-  const {
-    gasCostFormatted,
-    gasLimit: _gasLimit,
-    gasEstimation: _gasEstimation,
-    txEstimationExecutionStatus,
-    isExecution,
-    isCreation,
-    isOffChainSignature,
-  } = {
+  const { gasCostFormatted, txEstimationExecutionStatus, isExecution, isOffChainSignature } = {
     gasCostFormatted: '',
-    gasLimit: '100000',
-    gasEstimation: '0',
     txEstimationExecutionStatus: EstimationStatus.SUCCESS,
     isExecution: false,
-    isCreation: true,
     isOffChainSignature: true,
   }
 
@@ -158,7 +101,7 @@ const ReviewSendFundsTx = ({ onClose, onPrev, tx }: ReviewTxProps): React.ReactE
     signerData,
     gasPriceFormatted: priceFormatted,
     txEstimationStatus,
-  } = useTransactionFees(chainInfo, tx, safeAddress, manualSafeTxGas)
+  } = useTransactionFees(chainInfo, tx, safeAddress, manualGasPrice)
 
   const [buttonStatus, setButtonStatus] = useEstimationStatus(txEstimationStatus)
 
@@ -199,21 +142,21 @@ const ReviewSendFundsTx = ({ onClose, onPrev, tx }: ReviewTxProps): React.ReactE
         chainInfo.shortName === 'evmos'
           ? Math.floor(Number(tx?.amount) * Math.pow(10, 18)).toString() || ''
           : Math.floor(Number(tx?.amount) * Math.pow(10, 6)).toString() || ''
-      const signingInstruction = await (async () => {
-        // get account on chain from API
-        const {
-          ErrorCode,
-          Data: accountOnChainResult,
-          Message,
-        } = await getAccountOnChain(safeAddress, getInternalChainId())
-        // const accountOnChain = await client.getAccount(safeAddress)
+      // const signingInstruction = await (async () => {
+      //   // get account on chain from API
+      //   const {
+      //     ErrorCode,
+      //     Data: accountOnChainResult,
+      //     Message,
+      //   } = await getAccountOnChain(safeAddress, getInternalChainId())
+      //   // const accountOnChain = await client.getAccount(safeAddress)
 
-        return {
-          accountNumber: accountOnChainResult?.accountNumber,
-          sequence: accountOnChainResult?.sequence,
-          memo: '',
-        }
-      })()
+      //   return {
+      //     accountNumber: accountOnChainResult?.accountNumber,
+      //     sequence: accountOnChainResult?.sequence,
+      //     memo: '',
+      //   }
+      // })()
 
       const msgSend: any = {
         fromAddress: safeAddress,
@@ -316,26 +259,33 @@ const ReviewSendFundsTx = ({ onClose, onPrev, tx }: ReviewTxProps): React.ReactE
   }
 
   const closeEditModalCallback = (txParameters: TxParameters) => {
-    const oldGasPrice = gasPriceFormatted
-    const newGasPrice = txParameters.ethGasPrice
-    const oldSafeTxGas = gasEstimation?.toString()
-    const newSafeTxGas = txParameters.safeTxGas
-
-    if (newGasPrice && oldGasPrice !== newGasPrice) {
-      setManualGasPrice(txParameters.ethGasPrice)
-    }
-
-    if (txParameters.ethGasLimit && _gasLimit !== txParameters.ethGasLimit) {
-      setManualGasLimit(txParameters.ethGasLimit)
-    }
-
-    if (newSafeTxGas && oldSafeTxGas !== newSafeTxGas) {
-      setManualSafeTxGas(newSafeTxGas)
-    }
+    // const oldGasPrice = gasPriceFormatted
+    // const newGasPrice = txParameters.ethGasPrice
+    // const oldSafeTxGas = gasEstimation?.toString()
+    // const newSafeTxGas = txParameters.safeTxGas
+    // if (newGasPrice && oldGasPrice !== newGasPrice) {
+    //   setManualGasPrice(txParameters.ethGasPrice)
+    // }
+    // if (txParameters.ethGasLimit && _gasLimit !== txParameters.ethGasLimit) {
+    //   setManualGasLimit(txParameters.ethGasLimit)
+    // }
+    // if (newSafeTxGas && oldSafeTxGas !== newSafeTxGas) {
+    //   setManualSafeTxGas(newSafeTxGas)
+    // }
   }
 
   const ShowGasFrom = () => {
     setOpenGas(!openGas)
+  }
+
+  const recalculateFee = () => {
+    setManualGasPrice(manualSafeTxGas)
+
+    setOpenGas(!openGas)
+  }
+
+  const handleManualSafeTxGasChange = (e) => {
+    setManualSafeTxGas(e.target.value)
   }
 
   return (
@@ -347,7 +297,7 @@ const ReviewSendFundsTx = ({ onClose, onPrev, tx }: ReviewTxProps): React.ReactE
       safeTxGas={gasEstimation?.toString()}
       closeEditModalCallback={closeEditModalCallback}
     >
-      {(txParameters, toggleEditMode) => (
+      {(txParameters, _) => (
         <>
           {/* Header */}
           <ModalHeader onClose={onClose} subTitle="Step 2 of 2" title="Send funds" />
@@ -376,27 +326,6 @@ const ReviewSendFundsTx = ({ onClose, onPrev, tx }: ReviewTxProps): React.ReactE
                 />
               </Col>
             </Row>
-
-            {/* Amount */}
-            {/* <Row margin="xs">
-              <Paragraph color="disabled" noMargin size="md" style={{ letterSpacing: '-0.5px' }}>
-                Amount
-              </Paragraph>
-            </Row> */}
-
-            {isExecution && !isSpendingLimit && <ExecuteCheckbox onChange={setExecutionApproved} />}
-
-            {/* Tx Parameters */}
-            {/* FIXME TxParameters should be updated to be used with spending limits */}
-            {/* {!isSpendingLimit && (
-              <TxParametersDetail
-                txParameters={txParameters}
-                onEdit={toggleEditMode}
-                isTransactionCreation={isCreation}
-                isTransactionExecution={doExecute}
-                isOffChainSignature={isOffChainSignature}
-              />
-            )} */}
 
             <Row margin="xs">
               <Paragraph color="white" noMargin size="xl" style={{ letterSpacing: '-0.5px' }}>
@@ -431,10 +360,17 @@ const ReviewSendFundsTx = ({ onClose, onPrev, tx }: ReviewTxProps): React.ReactE
             {openGas && (
               <Row margin="md" xs={12}>
                 <Col xs={9}>
-                  <input className={classes.gasInput} placeholder="Gas Amount" value={manualSafeTxGas} />
+                  <input
+                    className={classes.gasInput}
+                    placeholder="Gas Amount"
+                    value={manualSafeTxGas}
+                    onChange={handleManualSafeTxGasChange}
+                  />
                 </Col>
                 <Col center="xs" middle="xs" xs={3}>
-                  <div className={classes.gasButton}>Apply</div>
+                  <div className={classes.gasButton} onClick={recalculateFee}>
+                    Apply
+                  </div>
                 </Col>
               </Row>
             )}
