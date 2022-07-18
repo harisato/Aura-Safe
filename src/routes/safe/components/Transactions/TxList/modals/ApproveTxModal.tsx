@@ -492,9 +492,7 @@ export const ApproveTxModal = ({
           return (
             <>
               <ModalHeader onClose={onClose} title={title} />
-
               <Hairline />
-
               {/* Tx info */}
               <Block className={classes.container}>
                 <Row style={{ flexDirection: 'column' }}>
@@ -510,7 +508,7 @@ export const ApproveTxModal = ({
                   )}
 
                   {/* Tx Parameters */}
-                  {(approveAndExecute || !isOffChainSignature) && (
+                  {/* {(approveAndExecute || !isOffChainSignature) && (
                     <TxParametersDetail
                       txParameters={txParameters}
                       onEdit={toggleEditMode}
@@ -519,20 +517,19 @@ export const ApproveTxModal = ({
                       isTransactionExecution={doExecute}
                       isOffChainSignature={isOffChainSignature}
                     />
+                  )} */}
+                  {txEstimationExecutionStatus === EstimationStatus.LOADING ? null : (
+                    <ReviewInfoText
+                      gasCostFormatted={gasCostFormatted}
+                      isCreation={isCreation}
+                      isExecution={doExecute}
+                      isOffChainSignature={isOffChainSignature}
+                      safeNonce={txParameters.safeNonce}
+                      txEstimationExecutionStatus={txEstimationExecutionStatus}
+                    />
                   )}
                 </Row>
               </Block>
-
-              {txEstimationExecutionStatus === EstimationStatus.LOADING ? null : (
-                <ReviewInfoText
-                  gasCostFormatted={gasCostFormatted}
-                  isCreation={isCreation}
-                  isExecution={doExecute}
-                  isOffChainSignature={isOffChainSignature}
-                  safeNonce={txParameters.safeNonce}
-                  txEstimationExecutionStatus={txEstimationExecutionStatus}
-                />
-              )}
 
               {/* Footer */}
               <GenericModal.Footer withoutBorder={buttonStatus !== ButtonStatus.LOADING}>
