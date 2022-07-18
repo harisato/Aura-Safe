@@ -4,7 +4,6 @@ import ButtonHelper from 'src/components/ButtonHelper'
 import FlexSpacer from 'src/components/FlexSpacer'
 import { getChainInfo, getExplorerInfo } from 'src/config'
 import { copyShortNameSelector } from 'src/logic/appearance/selectors'
-import { extractShortChainName } from 'src/routes/routes'
 import { THEME_DF } from 'src/services/constant/chainThemes'
 import {
   Container,
@@ -19,6 +18,7 @@ import {
   StyledPrefixedEthHashInfo,
   StyledTextLabel,
   StyledTextSafeName,
+  StyledTextSafeNameWrapper,
 } from './styles'
 import { Props } from './type'
 
@@ -65,10 +65,12 @@ const SafeHeader = ({
           <StyledIdenticonContainer>
             <Identicon address={address} size="lg" />
             {/* SafeInfo */}
-            <StyledTextSafeName size="lg" center>
-              {safeName}
+            <StyledTextSafeNameWrapper>
+              <StyledTextSafeName size="lg" center>
+                {safeName}
+              </StyledTextSafeName>
               <StyledPrefixedEthHashInfo hash={address} shortenHash={4} textSize="sm" />
-            </StyledTextSafeName>
+            </StyledTextSafeNameWrapper>
           </StyledIdenticonContainer>
           <ButtonHelper onClick={onToggleSafeList} data-testid={TOGGLE_SIDEBAR_BTN_TESTID}>
             <StyledIcon size="md" type="circleDropdown" />

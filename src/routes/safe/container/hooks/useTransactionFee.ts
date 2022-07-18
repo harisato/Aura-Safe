@@ -24,7 +24,7 @@ export const useTransactionFees = (
   chainInfo: ChainInfo,
   tx: ReviewTxProp,
   safeAddress: string,
-  gasDefault: string,
+  gasDefault: string | undefined,
 ): TxFee => {
   const [gasEstimation, setGasEstimation] = useState<number | undefined>()
   const [gasPrice, setGasPrice] = useState<GasPrice | undefined>()
@@ -34,8 +34,6 @@ export const useTransactionFees = (
   const [txEstimationStatus, setTxEstimationStatus] = useState<EstimationStatus>(EstimationStatus.LOADING)
 
   const { chainId, rpcUri, shortName } = chainInfo
-
-  console.log('chainInfo', chainInfo)
 
   useEffect(() => {
     const loadFee = async () => {

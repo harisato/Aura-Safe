@@ -1,10 +1,10 @@
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 import Col from 'src/components/layout/Col'
 import Paragraph from 'src/components/layout/Paragraph'
 import { border, md, screenSm, sm, xs, fontColor } from 'src/theme/variables'
 import { ChainInfo } from '@gnosis.pm/safe-react-gateway-sdk'
 
-export const StyledCol = styled(Col)`
+export const StyledCol = styled(({ bgColor, txtColor, ...props }) => <Col {...props} />)`
   flex-grow: 0;
   padding: 0 ${sm};
   cursor: ${(props) => (props.onClick ? 'pointer' : 'inherit')};
@@ -12,14 +12,31 @@ export const StyledCol = styled(Col)`
   border-radius: 4px;
   padding: 6px 8px;
 
-  background: ${(props) => props.bgColor};
-  color: ${(props) => props.txtColor};
+  background: ${(props) => props?.bgColor};
+  color: ${(props) => props?.txtColor};
 
   @media (min-width: ${screenSm}px) {
     padding-left: ${md};
     padding-right: ${md};
   }
 `
+
+// export const StyledCol = styled(Col)`
+//   flex-grow: 0;
+//   padding: 0 ${sm};
+//   cursor: ${(props) => (props.onClick ? 'pointer' : 'inherit')};
+
+//   border-radius: 4px;
+//   padding: 6px 8px;
+
+//   background: ${(props) => props?.bgColor};
+//   color: ${(props) => props?.txtColor};
+
+//   @media (min-width: ${screenSm}px) {
+//     padding-left: ${md};
+//     padding-right: ${md};
+//   }
+// `
 export const StyledParagraph = styled(Paragraph)<{
   $theme: ChainInfo['theme']
 }>`
