@@ -200,6 +200,7 @@ export const StyledTransaction = styled.div`
   display: grid;
   grid-template-columns: ${Object.values(gridColumns).join(' ')};
   width: 100%;
+  font-family: 'SFProDisplay !important';
 
   & > div {
     align-self: center;
@@ -245,6 +246,7 @@ export const StyledTransaction = styled.div`
 export const StyledGroupedTransactions = styled(StyledTransaction)`
   // no \`tx-nonce\` column required
   grid-template-columns: ${Object.values(gridColumns).slice(1).join(' ')};
+  font-family: 'SFProDisplay !important';
 `
 
 export const GroupedTransactions = styled(StyledTransaction)`

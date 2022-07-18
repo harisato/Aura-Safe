@@ -29,6 +29,10 @@ import { userAccountSelector } from 'src/logic/wallets/store/selectors'
 import { useKnownAddress } from './hooks/useKnownAddress'
 import useLocalTxStatus from 'src/logic/hooks/useLocalTxStatus'
 
+export const TextFont = styled(Text)<any>`
+  font-family: 'SFProDisplay';
+`
+
 const TxInfo = ({ info, name }: { info: AssetInfo; name?: string }) => {
   if (isTokenTransferAsset(info)) {
     return <TokenTransferAmount assetInfo={info} />
@@ -48,9 +52,9 @@ const TxInfo = ({ info, name }: { info: AssetInfo; name?: string }) => {
       case 'ENABLE_MODULE':
       case 'DISABLE_MODULE':
         return (
-          <Text size="xl" as="span">
+          <TextFont size="xl" as="span">
             {name || UNKNOWN_MODULE}
-          </Text>
+          </TextFont>
         )
     }
   }
@@ -58,16 +62,16 @@ const TxInfo = ({ info, name }: { info: AssetInfo; name?: string }) => {
   if (isCustomTxInfo(info)) {
     if (isMultiSendTxInfo(info)) {
       return (
-        <Text size="xl" as="span">
+        <TextFont size="xl" as="span">
           {info.actionCount} {`action${(info as MultiSend).actionCount > 1 ? 's' : ''}`}
-        </Text>
+        </TextFont>
       )
     }
 
     return (
-      <Text size="xl" as="span">
+      <TextFont size="xl" as="span">
         {(info as Custom).methodName}
-      </Text>
+      </TextFont>
     )
   }
   return null
@@ -86,6 +90,7 @@ const SmallDot = styled(Dot)`
 const IconText = styled(IconTextSrc)`
   p {
     font-weight: bold;
+    font-family: SFProDisplay;
   }
 `
 
@@ -128,9 +133,9 @@ export const TxCollapsed = ({
 
   const txCollapsedNonce = (
     <div className={'tx-nonce' + willBeReplaced}>
-      <Text size="xl" color="white">
+      <TextFont size="xl" color="white">
         {/* {nonce} */}{' '}
-      </Text>
+      </TextFont>
     </div>
   )
 
@@ -155,9 +160,9 @@ export const TxCollapsed = ({
     <div className={'tx-time' + willBeReplaced}>
       <Tooltip title={formatDateTime(time)} arrow backgroundColor="white" size="lg">
         <TooltipContent ref={timestamp}>
-          <Text color="white" size="xl">
+          <TextFont color="white" size="xl">
             {txLocation === 'history' ? formatTime(time) : formatTimeInWords(time)}
-          </Text>
+          </TextFont>
         </TooltipContent>
       </Tooltip>
     </div>
@@ -197,9 +202,9 @@ export const TxCollapsed = ({
           <SmallDot color={status.color} />
         )
       )}
-      <Text size="md" color={status.color} className="col" strong>
+      <TextFont size="md" color={status.color} className="col" strong>
         {status.text}
-      </Text>
+      </TextFont>
     </div>
   )
 
