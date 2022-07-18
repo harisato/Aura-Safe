@@ -77,7 +77,6 @@ export const fetchTransactionDetailsByHash =
       }
 
       const direction: TransferDirection = (Data?.Direction as TransferDirection) || TransferDirection.UNKNOWN
-      console.log('Data', Data)
       let safeAppInfo: SafeAppInfo | null = null
       let detailedExecutionInfo: (DetailedExecutionInfo & DetailedExecutionInfoExtended) | null = null
       let txData: TransactionData | null = null
