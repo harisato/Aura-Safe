@@ -1,53 +1,43 @@
-import { Fragment, ReactElement } from 'react'
-import { useSelector } from 'react-redux'
-import { useForm } from 'react-final-form'
 import TableContainer from '@material-ui/core/TableContainer'
+import { Fragment, ReactElement } from 'react'
+import { useForm } from 'react-final-form'
+import { useSelector } from 'react-redux'
 import styled from 'styled-components'
 
 import Block from 'src/components/layout/Block'
-import { border, lg, sm, xs } from 'src/theme/variables'
-import Row from 'src/components/layout/Row'
 import Col from 'src/components/layout/Col'
-import Paragraph from 'src/components/layout/Paragraph'
-import { getExplorerInfo } from 'src/config'
-import { userAccountSelector } from 'src/logic/wallets/store/selectors'
 import Hairline from 'src/components/layout/Hairline'
-import PrefixedEthHashInfo from 'src/components/PrefixedEthHashInfo'
-import {
-  FIELD_ALLOW_SAFE_ADDRESS,
-  FIELD_SAFE_THRESHOLD,
-  LoadSafeFormValues,
-  OwnerFieldListItem,
-} from '../fields/loadFields'
+import Paragraph from 'src/components/layout/Paragraph'
+import Row from 'src/components/layout/Row'
 import NetworkLabel from 'src/components/NetworkLabel/NetworkLabel'
+import PrefixedEthHashInfo from 'src/components/PrefixedEthHashInfo'
+import { getExplorerInfo } from 'src/config'
 import { currentNetworkAddressBookAsMap } from 'src/logic/addressBook/store/selectors'
-import { FIELD_CREATE_SUGGESTED_SAFE_NAME, FIELD_SAFE_OWNERS_LIST } from '../fields/cancelSafeFields'
+import { border, lg, sm, xs } from 'src/theme/variables'
+import {
+  CancelSafeFormValues,
+  FIELD_CREATE_SUGGESTED_SAFE_NAME,
+  FIELD_SAFE_CREATED_ADDRESS,
+  FIELD_SAFE_OWNERS_LIST,
+  FIELD_SAFE_THRESHOLD,
+} from '../fields/cancelSafeFields'
 
 export const reviewLoadStepLabel = 'Review'
 
 function ReviewAllowStep(): ReactElement {
   const loadSafeForm = useForm()
-  const userAddress = useSelector(userAccountSelector)
   const addressBook = useSelector(currentNetworkAddressBookAsMap)
 
-  const formValues = loadSafeForm.getState().values as LoadSafeFormValues
+  const formValues = loadSafeForm.getState().values as CancelSafeFormValues
 
-  const safeAddress = formValues[FIELD_ALLOW_SAFE_ADDRESS] || ''
   const threshold = formValues[FIELD_SAFE_THRESHOLD]
   const ownerList = formValues[FIELD_SAFE_OWNERS_LIST] || []
   const safeName = formValues[FIELD_CREATE_SUGGESTED_SAFE_NAME] || ''
+  const safeCreatedAddress = formValues[FIELD_SAFE_CREATED_ADDRESS] || ''
 
-  const ownerListWithNames = ownerList?.map((owner) => {
-    const ownerFieldName = `owner-address-${owner.address}`
-    const ownerNameValue = formValues[ownerFieldName]
-    return {
-      ...owner,
-      name: ownerNameValue,
-    }
-  })
+  const safeCreatedAddressName = addressBook[safeCreatedAddress]?.name || ''
 
-  const isUserConnectedWalletASAfeOwner =
-    !!ownerList && !!userAddress ? checkIfUserAddressIsAnOwner(ownerList, userAddress) : null
+  const ownerListWithNames = [...ownerList]
 
   return (
     <Row data-testid={'load-safe-review-step'}>
@@ -67,8 +57,8 @@ function ReviewAllowStep(): ReactElement {
             </StyledParagraph>
           </Block>
           <Block margin="lg">
-            <Paragraph color="white" noMargin size="sm">
-              Name of new Safe
+            <Paragraph color="disabled" noMargin size="sm">
+              Name of the Safe
             </Paragraph>
             <SafeNameParagraph
               color="primary"
@@ -80,30 +70,23 @@ function ReviewAllowStep(): ReactElement {
               {safeName}
             </SafeNameParagraph>
           </Block>
-          {safeAddress ? (
+          {safeCreatedAddress ? (
             <Block margin="lg">
               <Paragraph color="disabled" noMargin size="sm">
-                Safe address
+                Created by
               </Paragraph>
               <SafeAddressContainer>
                 <PrefixedEthHashInfo
-                  hash={safeAddress}
+                  hash={safeCreatedAddress}
+                  name={safeCreatedAddressName}
                   shortenHash={4}
                   showAvatar
                   showCopyBtn
-                  explorerUrl={getExplorerInfo(safeAddress)}
+                  explorerUrl={getExplorerInfo(safeCreatedAddress)}
                 />
               </SafeAddressContainer>
             </Block>
           ) : null}
-          <Block margin="lg">
-            <Paragraph color="disabled" noMargin size="sm">
-              Connected wallet client is owner?
-            </Paragraph>
-            <Paragraph data-testid={'connected-wallet-is-owner'} color="primary" noMargin size="lg" weight="bolder">
-              {isUserConnectedWalletASAfeOwner ? 'Yes' : 'No (read-only)'}
-            </Paragraph>
-          </Block>
           {ownerList ? (
             <Block margin="lg">
               <Paragraph color="disabled" noMargin size="sm">
@@ -149,10 +132,6 @@ function ReviewAllowStep(): ReactElement {
 }
 
 export default ReviewAllowStep
-
-function checkIfUserAddressIsAnOwner(owners: OwnerFieldListItem[], userAddress: string) {
-  return owners.some((owner) => owner.address === userAddress)
-}
 
 const DetailsContainer = styled(Block)`
   padding: ${lg};

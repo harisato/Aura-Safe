@@ -17,6 +17,7 @@ export interface IMSafeInfo {
   threshold: number
   status: string
   internalChainId: number
+  createdAddress?: string
   balance: {
     denom: string
     amount: string

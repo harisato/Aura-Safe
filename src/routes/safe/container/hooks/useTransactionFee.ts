@@ -1,10 +1,12 @@
 import { SigningCosmWasmClient } from '@cosmjs/cosmwasm-stargate'
+import { MsgSend } from 'cosmjs-types/cosmos/bank/v1beta1/tx'
 import { calculateFee, coins, GasPrice, MsgSendEncodeObject, SignerData, StdFee } from '@cosmjs/stargate'
 import { ChainInfo } from '@gnosis.pm/safe-react-gateway-sdk'
 import { useEffect, useState } from 'react'
 import { getAccountOnChain, getMChainsConfig } from 'src/services'
 import { ReviewTxProp } from '../../components/Balances/SendModal/screens/ReviewSendFundsTx'
 import { getInternalChainId } from 'src/config'
+import { EstimationStatus } from 'src/logic/hooks/useEstimateTransactionGas'
 
 export type TxFee = {
   sendFee: StdFee | undefined
@@ -12,21 +14,28 @@ export type TxFee = {
   gasPrice: GasPrice | undefined
   signerData: SignerData | undefined
   gasPriceFormatted: string | undefined
+  txEstimationStatus: EstimationStatus
 }
 /**
  * This hooks is used to store tx parameter
  * It needs to be initialized calling setGasEstimation.
  */
-export const useTransactionFees = (chainInfo: ChainInfo, tx: ReviewTxProp, safeAddress: string): TxFee => {
-  const defaultGasPrice = '0.000250taura'
-
+export const useTransactionFees = (
+  chainInfo: ChainInfo,
+  tx: ReviewTxProp,
+  safeAddress: string,
+  gasDefault: string,
+): TxFee => {
   const [gasEstimation, setGasEstimation] = useState<number | undefined>()
   const [gasPrice, setGasPrice] = useState<GasPrice | undefined>()
   const [gasPriceFormatted, setGasPriceFormatted] = useState<string | undefined>()
   const [sendFee, setSendFee] = useState<StdFee | undefined>()
   const [signerData, setSignerData] = useState<SignerData | undefined>()
+  const [txEstimationStatus, setTxEstimationStatus] = useState<EstimationStatus>(EstimationStatus.LOADING)
 
   const { chainId, rpcUri, shortName } = chainInfo
+
+  console.log('chainInfo', chainInfo)
 
   useEffect(() => {
     const loadFee = async () => {
@@ -54,7 +63,7 @@ export const useTransactionFees = (chainInfo: ChainInfo, tx: ReviewTxProp, safeA
           }
         })()
 
-        const msgSend: any = {
+        const msgSend: Partial<MsgSend> = {
           fromAddress: safeAddress,
           toAddress: tx.recipientAddress,
           amount: coins(amountFinal, denom),
@@ -74,12 +83,25 @@ export const useTransactionFees = (chainInfo: ChainInfo, tx: ReviewTxProp, safeA
         const gasEstimation = await Promise.all([
           offlineSigner.getAccounts(),
           SigningCosmWasmClient.connectWithSigner(rpcUri.value, offlineSigner),
-        ]).then(([accounts, onlineClient]) =>
-          onlineClient.simulate(accounts[0].address, [msg], signingInstruction.memo),
-        )
+        ])
+          .then(([accounts, onlineClient]) =>
+            onlineClient.simulate(accounts[0].address, [msg], signingInstruction.memo),
+          )
+          .then((gasEstimation) => {
+            gasEstimation && setTxEstimationStatus(EstimationStatus.SUCCESS)
+
+            return gasEstimation
+          })
+          .catch((error) => {
+            console.log({ error })
+
+            setTxEstimationStatus(EstimationStatus.FAILURE)
+
+            return 80000
+          })
 
         const multiplier = 1.3
-        const gasPrice = GasPrice.fromString(defaultGasPrice)
+        const gasPrice = GasPrice.fromString(`${gasDefault}${denom}`)
         const sendFee = calculateFee(Math.round(gasEstimation * multiplier), gasPrice)
 
         const signerData: SignerData = {
@@ -99,7 +121,7 @@ export const useTransactionFees = (chainInfo: ChainInfo, tx: ReviewTxProp, safeA
     }
 
     loadFee()
-  }, [chainId, rpcUri, shortName, tx, safeAddress])
+  }, [chainId, rpcUri, shortName, tx, safeAddress, gasDefault])
 
   return {
     sendFee,
@@ -107,5 +129,6 @@ export const useTransactionFees = (chainInfo: ChainInfo, tx: ReviewTxProp, safeA
     gasPrice,
     gasPriceFormatted,
     signerData,
+    txEstimationStatus,
   }
 }
