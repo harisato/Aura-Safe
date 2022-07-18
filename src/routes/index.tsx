@@ -106,13 +106,12 @@ const Routes = (): React.ReactElement => {
           }
 
           if (defaultSafe) {
-            
             return (
               <Redirect
                 to={generateSafeRoute(SAFE_ROUTES.ASSETS_BALANCES, {
                   shortName: getShortName(),
                   safeAddress: defaultSafe?.safeAddress,
-                  safeId: Number(defaultSafe?.safeId)
+                  safeId: Number(defaultSafe?.safeId),
                 })}
               />
             )

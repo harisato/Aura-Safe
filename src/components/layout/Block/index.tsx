@@ -8,7 +8,7 @@ const cx = classNames.bind(styles)
 
 class Block extends React.PureComponent<any> {
   render(): React.ReactElement {
-    const { children, className, justify, margin, padding, ...props } = this.props
+    const { children, className, justify, margin, padding, bgColor, ...props } = this.props
 
     const paddingStyle = padding ? capitalize(padding, 'padding') : undefined
     return (

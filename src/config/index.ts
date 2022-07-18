@@ -181,3 +181,7 @@ export const getContractABI = async (contractAddress: string) => {
     return undefined
   }
 }
+
+export const getChainInfoTheme = (): MChainInfo['theme'] => {
+  return (getChainInfo() as MChainInfo).theme
+}

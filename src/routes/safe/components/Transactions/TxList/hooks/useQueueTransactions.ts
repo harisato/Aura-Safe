@@ -3,7 +3,11 @@ import { useDispatch, useSelector } from 'react-redux'
 import { _getChainId } from 'src/config'
 
 import { TransactionDetails } from 'src/logic/safe/store/models/types/gateway.d'
-import { nextTransactions, queuedTransactions, txTransactions as txsTransactions } from 'src/logic/safe/store/selectors/gatewayTransactions'
+import {
+  nextTransactions,
+  queuedTransactions,
+  txTransactions as txsTransactions,
+} from 'src/logic/safe/store/selectors/gatewayTransactions'
 
 export type QueueTransactionsInfo = {
   next: TransactionDetails
@@ -19,7 +23,7 @@ export const useQueueTransactions = (): QueueTransactionsInfo | undefined => {
   const queuedTxs = useSelector(queuedTransactions)
   const allTxs = useSelector(txsTransactions)
   const dispatch = useDispatch()
-  const [txsCount, setTxsCount] = useState<{ next: number; queued: number, txs: number } | undefined>()
+  const [txsCount, setTxsCount] = useState<{ next: number; queued: number; txs: number } | undefined>()
 
   useEffect(() => {
     const next = nextTxs
@@ -29,9 +33,7 @@ export const useQueueTransactions = (): QueueTransactionsInfo | undefined => {
       ? Object.entries(queuedTxs).reduce((acc, [, transactions]) => (acc += transactions.length), 0)
       : 0
 
-    const txs = allTxs
-      ? Object.entries(allTxs).reduce((acc, [, transactions]) => (acc += transactions.length), 0)
-      : 0
+    const txs = allTxs ? Object.entries(allTxs).reduce((acc, [, transactions]) => (acc += transactions.length), 0) : 0
 
     // If 'queued.queued' deeplinked tx was open then queue visited before next poll
     // const hasDeeplinkLoaded = next === 0 && queued === 1
@@ -65,6 +67,6 @@ export const useQueueTransactions = (): QueueTransactionsInfo | undefined => {
     txs: {
       count: txsCount.txs,
       transactions: allTxs ? Object.entries(allTxs) : [],
-    }
+    },
   }
 }

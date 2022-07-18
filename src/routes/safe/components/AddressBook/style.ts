@@ -1,5 +1,8 @@
 import { lg, md, sm } from 'src/theme/variables'
 import { createStyles } from '@material-ui/core'
+import styled from 'styled-components'
+
+import { Button, ButtonLink } from '@gnosis.pm/safe-react-components'
 
 export const styles = createStyles({
   formContainer: {
@@ -13,10 +16,10 @@ export const styles = createStyles({
     paddingLeft: lg,
   },
   hide: {
-    '&:hover': {
-      backgroundColor: '#f7f5f5',
-    },
-    '&:hover $actions': {
+    // '&:hover': {
+    //   backgroundColor: '#f7f5f5',
+    // },
+    '& $actions': {
       visibility: 'initial',
     },
   },
@@ -58,4 +61,30 @@ export const styles = createStyles({
   iconSmall: {
     fontSize: 16,
   },
+  tableCell: {
+    // padding: '6px 0px',
+    height: '56px'
+  }
 })
+
+const StyledButton = styled(Button)`
+  &&.MuiButton-root {
+    margin: 4px 12px 4px 0px;
+    padding: 0 12px;
+    min-width: auto;
+  }
+
+  svg {
+    margin: 0 6px 0 0;
+  }
+`
+const StyledButtonLink = styled(ButtonLink)`
+  text-decoration: none !important;
+  p {
+    color: #5ee6d0;
+  }
+  span {
+    fill: #5ee6d0 !important;
+  }
+`
+export { StyledButton, StyledButtonLink }

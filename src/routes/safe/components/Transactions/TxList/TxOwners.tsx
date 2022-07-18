@@ -9,6 +9,9 @@ import TransactionListInactive from './assets/transactions-list-inactive.svg'
 import { AddressInfo } from './AddressInfo'
 import { OwnerList, OwnerListItem } from './styled'
 import { isCancelTxDetails } from './utils'
+import PlusIcon from '../TxList/assets/plus-icon.svg'
+import ExcuteIcon from '../TxList/assets/excute-icon.svg'
+import DoneIcon from '../TxList/assets/done-icon.svg'
 
 const StyledImg = styled(Img)`
   background-color: transparent;
@@ -44,7 +47,7 @@ export const TxOwners = ({
   ) : (
     <OwnerListItem>
       <span className="icon">
-        <Icon size="sm" type="add" color="primary" />
+        <img src={PlusIcon} alt="Aura Safe" />
       </span>
       <div className="legend">
         <Text color="primary" size="xl" strong>
@@ -60,7 +63,7 @@ export const TxOwners = ({
       {detailedExecutionInfo.confirmations.map(({ signer }) => (
         <OwnerListItem key={signer.value}>
           <span className="icon">
-            <Icon size="sm" type="circleCheck" color="primary" />
+            <img src={DoneIcon} alt="Aura Safe" />
           </span>
           <div className="legend">
             <Text color="primary" size="xl" strong>
@@ -79,7 +82,7 @@ export const TxOwners = ({
         <OwnerListItem>
           <span className="icon">
             {detailedExecutionInfo.executor ? (
-              <Icon type="circleCheck" size="sm" color="primary" />
+              <img src={DoneIcon} alt="Aura Safe" />
             ) : (
               <StyledImg alt="" src={TransactionListActive} />
             )}

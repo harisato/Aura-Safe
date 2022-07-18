@@ -1,17 +1,17 @@
 import { createStyles } from '@material-ui/core'
 
-import { border, fontColor, screenSm, sm, xs } from 'src/theme/variables'
+import { border, fontColor, md, screenSm, sm, xs } from 'src/theme/variables'
 
 export const styles = createStyles({
   root: {
-    backgroundColor: 'white',
+    backgroundColor: '#0E0E0F',
     borderRadius: sm,
-    boxShadow: '1px 2px 10px 0 rgba(212, 212, 211, 0.59)',
     display: 'flex',
     flexDirection: 'column',
     marginBottom: '54px',
-    // minHeight: '505px',
     minHeight: 'min-content',
+    border: `1px solid ${border}`,
+    padding: `${md} 0`,
 
     [`@media (min-width: ${screenSm}px)`]: {
       flexDirection: 'row',
@@ -24,6 +24,8 @@ export const styles = createStyles({
     flexGrow: 1,
     height: '100%',
     position: 'relative',
+    backgroundColor: '#0E0E0F',
+    borderRadius: sm,
   },
   links: {
     textDecoration: 'underline',
@@ -46,4 +48,11 @@ export const styles = createStyles({
     padding: xs,
     fontSize: '11px',
   },
+  checkbox: {
+    '& input[type="checkbox"]': {
+      backgroundColor: '#fff !important',
+      color: '#dddfff'
+    }
+  }
 })
+ 

@@ -174,7 +174,7 @@ const SendFunds = ({
 
   return (
     <>
-      <ModalHeader onClose={onClose} subTitle="1 of 2" title="Send funds" />
+      <ModalHeader onClose={onClose} subTitle="Step 1 of 2" title="Send funds" />
       <Hairline />
       <GnoForm
         formMutators={formMutators}
@@ -333,7 +333,7 @@ const SendFunds = ({
                   </Col>
                 </Row>
               </Block>
-              <Modal.Footer>
+              <Modal.Footer justifyContent={'flex-end'}>
                 <Modal.Footer.Buttons
                   cancelButtonProps={{ onClick: onClose }}
                   confirmButtonProps={{
@@ -342,6 +342,7 @@ const SendFunds = ({
                     text: 'Review',
                   }}
                 />
+                {/* <GradientButton text={'Review'} onClick={handleSubmit} testId="review-tx-btn"></GradientButton> */}
               </Modal.Footer>
             </>
           )

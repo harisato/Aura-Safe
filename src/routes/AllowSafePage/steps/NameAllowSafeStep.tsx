@@ -18,7 +18,12 @@ import { currentNetworkAddressBookAsMap } from '../../../logic/addressBook/store
 import { currentChainId } from '../../../logic/config/store/selectors'
 import { AddressBookEntry, makeAddressBookEntry } from '../../../logic/addressBook/model/addressBook'
 
-import { FIELD_LOAD_IS_LOADING_SAFE_ADDRESS, FIELD_LOAD_SAFE_ID, FIELD_SAFE_THRESHOLD } from '../../LoadSafePage/fields/loadFields'
+import {
+  FIELD_LOAD_IS_LOADING_SAFE_ADDRESS,
+  FIELD_LOAD_SAFE_ID,
+  FIELD_SAFE_THRESHOLD,
+} from '../../LoadSafePage/fields/loadFields'
+
 import { getMSafeInfo } from 'src/services'
 
 export const nameNewSafeStepLabel = 'Name'
@@ -49,21 +54,19 @@ function NameAllowSafeStep(): ReactElement {
 
   useEffect(() => {
     const checkSafeAddress = async () => {
-      
-      const safeId = allowSafeForm.getState().values[FIELD_LOAD_SAFE_ID]
       if (!safeId) {
         return
       }
 
       setIsSafeInfoLoading(true)
       try {
-        
         const { owners, threshold } = await getMSafeInfo(safeId)
 
         setIsSafeInfoLoading(false)
         const ownersWithName = owners.map((address) =>
           makeAddressBookEntry(addressBook[address] || { address, name: '', chainId }),
         )
+
         setOwnersWithName(ownersWithName)
         setThreshold(threshold)
       } catch (error) {
@@ -74,7 +77,7 @@ function NameAllowSafeStep(): ReactElement {
     }
 
     checkSafeAddress()
-  }, [safeId, addressBook, chainId])
+  }, [safeId, addressBook, chainId, allowSafeForm])
 
   useEffect(() => {
     if (threshold) {
@@ -98,9 +101,9 @@ function NameAllowSafeStep(): ReactElement {
     <BlockWithPadding data-testid={'create-safe-name-step'}>
       <Block margin="md">
         <Paragraph color="primary" noMargin size="lg">
-          You are about to create a new Aura Safe wallet with one or more owners. First, let&apos;s give your new
-          wallet a name. This name is only stored locally and will never be shared with Aura or any third parties. The
-          new Safe will ONLY be available on <NetworkLabel />
+          You are about to create a new Aura Safe wallet with one or more owners. First, let&apos;s give your new wallet
+          a name. This name is only stored locally and will never be shared with Aura or any third parties. The new Safe
+          will ONLY be available on <NetworkLabel />
         </Paragraph>
       </Block>
       <label htmlFor={FIELD_CREATE_CUSTOM_SAFE_NAME}>Name of the new Safe</label>

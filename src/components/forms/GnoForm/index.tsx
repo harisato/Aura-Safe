@@ -1,12 +1,6 @@
 import { ReactElement } from 'react'
 import { Form } from 'react-final-form'
-
-const stylesBasedOn = (padding) => ({
-  padding: `0 ${padding}%`,
-  flexDirection: 'column',
-  flex: '1 0 auto',
-})
-
+import { stylesBasedOn } from './styles'
 const GnoForm = ({
   children,
   decorators,

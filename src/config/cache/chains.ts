@@ -8,10 +8,8 @@ let chains: ChainInfo[] = []
 export const getChains = (): ChainInfo[] => chains
 
 export const loadChains = async () => {
-
   const networkList: ChainInfo[] = await getMChainsConfig();
   chains = networkList
-
   // const { results = [] } = await getChainsConfig(GATEWAY_URL, { limit: 100 })
   // chains = results
   // Set the initail web3 provider after loading chains

@@ -13,6 +13,7 @@ import { ZERO_ADDRESS, sameAddress } from 'src/logic/wallets/ethAddresses'
 import { Errors, logError } from 'src/logic/exceptions/CodedException'
 import { SafeBalanceResponse } from '@gnosis.pm/safe-react-gateway-sdk'
 import { IMSafeInfo } from 'src/types/safe'
+import { getMChainsConfig } from 'src/services/index'
 
 export type BalanceRecord = {
   tokenAddress?: string
@@ -31,7 +32,6 @@ const extractDataFromResult = (
   { balance, fiatBalance, tokenInfo }: TokenBalance,
 ): ExtractedData => {
   const { address, decimals } = tokenInfo
-
   acc.balances.push({
     tokenAddress: address,
     fiatBalance,
@@ -50,24 +50,71 @@ const extractDataFromResult = (
 
 export const fetchSafeTokens =
   (safeAddress: string, currency?: string) =>
-    async (dispatch: Dispatch, getState: () => AppReduxState): Promise<void> => {
-      const state = getState()
-      const safe = currentSafe(state)
+  async (dispatch: Dispatch, getState: () => AppReduxState): Promise<void> => {
+    const state = getState()
+    const safe = currentSafe(state)
 
-      if (!safe) {
-        return
+    if (!safe) {
+      return
+    }
+    const selectedCurrency = currency ?? currentCurrencySelector(state)
+
+    let tokenCurrenciesBalances: SafeBalanceResponse
+    try {
+      tokenCurrenciesBalances = await fetchTokenCurrenciesBalances({
+        safeAddress,
+        selectedCurrency,
+      })
+    } catch (e) {
+      logError(Errors._601, e.message)
+      return
+    }
+
+    const { balances, ethBalance, tokens } = tokenCurrenciesBalances.items.reduce<ExtractedData>(
+      extractDataFromResult,
+      {
+        balances: [],
+        ethBalance: '0',
+        tokens: [],
+      },
+    )
+
+    dispatch(
+      updateSafe({
+        address: safeAddress,
+        balances,
+        ethBalance: '0',
+        totalFiatBalance: new BigNumber(tokenCurrenciesBalances.fiatTotal).toFixed(2),
+      }),
+    )
+    dispatch(addTokens(tokens))
+  }
+export const fetchMSafeTokens =
+  (safeInfo: IMSafeInfo) =>
+  async (dispatch: Dispatch, getState: () => AppReduxState): Promise<void> => {
+    if (safeInfo) {
+      const tokenCurrenciesBalances: SafeBalanceResponse = {
+        fiatTotal: '0',
+        items: [],
       }
-      const selectedCurrency = currency ?? currentCurrencySelector(state)
 
-      let tokenCurrenciesBalances: SafeBalanceResponse
-      try {
-        tokenCurrenciesBalances = await fetchTokenCurrenciesBalances({
-          safeAddress,
-          selectedCurrency,
+      if (safeInfo.balance) {
+        const listChain = await getMChainsConfig()
+        const decimal: any = listChain.find((x: any) => x.internalChainId === safeInfo?.internalChainId)
+        safeInfo.balance.forEach((balance) => {
+          tokenCurrenciesBalances.items.push({
+            balance: balance.amount,
+            fiatBalance: '0',
+            fiatConversion: '0',
+            tokenInfo: {
+              address: '0000000000000000000000000000000000000000',
+              decimals: decimal.nativeCurrency.decimals,
+              logoUri: '',
+              name: 'Aura',
+              symbol: 'Aura',
+            },
+          })
         })
-      } catch (e) {
-        logError(Errors._601, e.message)
-        return
       }
 
       const { balances, ethBalance, tokens } = tokenCurrenciesBalances.items.reduce<ExtractedData>(
@@ -81,64 +128,16 @@ export const fetchSafeTokens =
 
       dispatch(
         updateSafe({
-          address: safeAddress,
+          address: safeInfo.address,
           balances,
-          ethBalance: '0',
+          ethBalance,
           totalFiatBalance: new BigNumber(tokenCurrenciesBalances.fiatTotal).toFixed(2),
         }),
       )
       dispatch(addTokens(tokens))
     }
 
-
-
-export const fetchMSafeTokens =
-  (safeInfo: IMSafeInfo) =>
-    async (dispatch: Dispatch, getState: () => AppReduxState): Promise<void> => {
-      if (safeInfo) {
-        let tokenCurrenciesBalances: SafeBalanceResponse = {
-          fiatTotal: '0',
-          items: []
-        }
-        if (safeInfo.balance) {
-          safeInfo.balance.forEach(balance => {
-            tokenCurrenciesBalances.items.push({
-              balance: balance.amount,
-              fiatBalance: '0',
-              fiatConversion: '0',
-              tokenInfo: {
-                address: '0000000000000000000000000000000000000000',
-                decimals: 6,
-                logoUri: '',
-                name: 'Aura',
-                symbol: 'Aura'
-              }
-            })
-          })
-        }
-
-        const { balances, ethBalance, tokens } = tokenCurrenciesBalances.items.reduce<ExtractedData>(
-          extractDataFromResult,
-          {
-            balances: [],
-            ethBalance: '0',
-            tokens: [],
-          },
-        )
-
-        dispatch(
-          updateSafe({
-            address: safeInfo.address,
-            balances,
-            ethBalance,
-            totalFiatBalance: new BigNumber(tokenCurrenciesBalances.fiatTotal).toFixed(2),
-          }),
-        )
-        dispatch(addTokens(tokens))
-      }
-
-
-      /* 
+    /* 
       const state = getState()
       const safe = currentSafe(state)
 
@@ -177,4 +176,4 @@ export const fetchMSafeTokens =
       )
       dispatch(addTokens(tokens)) 
       */
-    }
+  }

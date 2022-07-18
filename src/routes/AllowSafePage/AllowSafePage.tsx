@@ -1,19 +1,40 @@
-import { ReactElement, useState, useEffect, useCallback } from 'react'
+import IconButton from '@material-ui/core/IconButton'
+import ChevronLeft from '@material-ui/icons/ChevronLeft'
+import { ReactElement, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useHistory } from 'react-router-dom'
 import styled from 'styled-components'
-import IconButton from '@material-ui/core/IconButton'
-import ChevronLeft from '@material-ui/icons/ChevronLeft'
 
 import Block from 'src/components/layout/Block'
-import Page from 'src/components/layout/Page'
 import Heading from 'src/components/layout/Heading'
+import Page from 'src/components/layout/Page'
 import Row from 'src/components/layout/Row'
-import { secondary, sm } from 'src/theme/variables'
-import AllowSafeOwnersStep, { loadSafeOwnersStepLabel } from './steps/AllowSafeOwnersStep'
-import ReviewAllowStep, { reviewLoadStepLabel } from './steps/ReviewAllowStep'
-import { useMnemonicSafeName } from 'src/logic/hooks/useMnemonicName'
 import StepperForm, { StepFormElement } from 'src/components/StepperForm/StepperForm'
+import { getShortName } from 'src/config'
+import { AddressBookEntry, makeAddressBookEntry } from 'src/logic/addressBook/model/addressBook'
+import { addressBookSafeLoad } from 'src/logic/addressBook/store/actions'
+import { currentNetworkAddressBookAsMap } from 'src/logic/addressBook/store/selectors'
+import { currentChainId } from 'src/logic/config/store/selectors'
+import { useMnemonicSafeName } from 'src/logic/hooks/useMnemonicName'
+import { getKeplrKey } from 'src/logic/keplr/keplr'
+import { enhanceSnackbarForAction, ERROR } from 'src/logic/notifications'
+import enqueueSnackbar from 'src/logic/notifications/store/actions/enqueueSnackbar'
+import { SafeStatus } from 'src/logic/safe/hooks/useOwnerSafes'
+import { addOrUpdateSafe } from 'src/logic/safe/store/actions/addOrUpdateSafe'
+import { buildMSafe } from 'src/logic/safe/store/actions/fetchSafe'
+import { loadStoredSafes, saveSafes } from 'src/logic/safe/utils'
+import { allowMSafe, getMSafeInfo } from 'src/services'
+import { MESSAGES_CODE } from 'src/services/constant/message'
+import { secondary, sm } from 'src/theme/variables'
+import { WALLETS_NAME } from '../../logic/wallets/constant/wallets'
+import { loadLastUsedProvider } from '../../logic/wallets/store/middlewares/providerWatcher'
+import {
+  ALLOW_SPECIFIC_SAFE_ROUTE,
+  extractPrefixedSafeAddress,
+  generateSafeRoute,
+  SAFE_ROUTES,
+  WELCOME_ROUTE,
+} from '../routes'
 import {
   FIELD_ALLOW_CUSTOM_SAFE_NAME,
   FIELD_ALLOW_IS_LOADING_SAFE_ADDRESS,
@@ -24,62 +45,19 @@ import {
   LoadSafeFormValues as AllowSafeFormValues,
   OwnerFieldListItem,
 } from './fields/allowFields'
-import {
-  ALLOW_SPECIFIC_SAFE_ROUTE,
-  extractPrefixedSafeAddress,
-  generateSafeRoute,
-  SAFE_ROUTES,
-  WELCOME_ROUTE,
-} from '../routes'
-import NameAllowSafeStep, { nameNewSafeStepLabel } from './steps/NameAllowSafeStep'
-import { allowMSafe, getMSafeInfo } from 'src/services'
-import { AddressBookEntry, makeAddressBookEntry } from 'src/logic/addressBook/model/addressBook'
-import { currentNetworkAddressBookAsMap } from 'src/logic/addressBook/store/selectors'
 import { getLoadSafeName } from './fields/utils'
-import { currentChainId } from 'src/logic/config/store/selectors'
-import { addressBookSafeLoad } from 'src/logic/addressBook/store/actions'
-import { getKeplrKey } from 'src/logic/keplr/keplr'
-import { MESSAGES_CODE } from 'src/services/constant/message'
-import enqueueSnackbar from 'src/logic/notifications/store/actions/enqueueSnackbar'
-import { enhanceSnackbarForAction, ERROR } from 'src/logic/notifications'
-import { SafeStatus } from 'src/logic/safe/hooks/useOwnerSafes'
-import { buildMSafe } from 'src/logic/safe/store/actions/fetchSafe'
-import { addOrUpdateSafe } from 'src/logic/safe/store/actions/addOrUpdateSafe'
-import { getShortName, _getChainId } from 'src/config'
-import { loadStoredSafes, saveSafes } from 'src/logic/safe/utils'
-import { useWallet, verifyBytes } from '@terra-money/wallet-provider'
-import { loadLastUsedProvider } from '../../logic/wallets/store/middlewares/providerWatcher'
-import { WALLETS_NAME } from '../../logic/wallets/constant/wallets'
+import AllowSafeOwnersStep, { loadSafeOwnersStepLabel } from './steps/AllowSafeOwnersStep'
+import NameAllowSafeStep, { nameNewSafeStepLabel } from './steps/NameAllowSafeStep'
+import ReviewAllowStep, { reviewLoadStepLabel } from './steps/ReviewAllowStep'
 
 function Allow(): ReactElement {
   const dispatch = useDispatch()
   const history = useHistory()
-  const { safeAddress, shortName, safeId } = extractPrefixedSafeAddress(undefined, ALLOW_SPECIFIC_SAFE_ROUTE)
+  const { safeAddress, safeId } = extractPrefixedSafeAddress(undefined, ALLOW_SPECIFIC_SAFE_ROUTE)
   const safeRandomName = useMnemonicSafeName()
   const [initialFormValues, setInitialFormValues] = useState<AllowSafeFormValues>()
   const addressBook = useSelector(currentNetworkAddressBookAsMap)
   const chainId = useSelector(currentChainId)
-
-  const { signBytes, wallets } = useWallet()
-
-  const BYTES = Buffer.from('')
-
-  const signSafeCreation = useCallback(async () => {
-    try {
-      if (!signBytes) return
-      const { result } = await signBytes(BYTES)
-
-      const verified: boolean = verifyBytes(BYTES, result)
-
-      if (verified) {
-        return (result.public_key as any).key
-      }
-    } catch (error) {
-      console.log(error)
-    }
-
-    return null
-  }, [])
 
   useEffect(() => {
     const checkSafeAddress = async () => {
@@ -140,21 +118,12 @@ function Allow(): ReactElement {
   const onSubmitAllowSafe = async (values: AllowSafeFormValues): Promise<void> => {
     const id = values[FIELD_ALLOW_SAFE_ID]
 
-    let lastUsedProvider = await loadLastUsedProvider()
+    const lastUsedProvider = await loadLastUsedProvider()
 
     let walletKey
 
     if (lastUsedProvider === WALLETS_NAME.Keplr) {
       walletKey = await getKeplrKey(chainId)
-    } else {
-      const pubKey = await signSafeCreation()
-
-      if (pubKey) {
-        walletKey = {
-          myAddress: wallets[0].terraAddress,
-          myPubkey: pubKey,
-        }
-      }
     }
 
     if (!id || !walletKey) {

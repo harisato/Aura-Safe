@@ -15,6 +15,7 @@ import { useStyles } from 'src/routes/safe/components/Balances/SendModal/screens
 import Token from '../assets/token.svg'
 
 import { getExplorerInfo } from 'src/config'
+import { StyledBorder, StyledButtonBorder, StyledButtonLabel } from './style'
 
 type ActiveScreen = 'sendFunds' | 'sendCollectible' | 'contractInteraction'
 
@@ -81,7 +82,7 @@ const ChooseTxType = ({
       )}
       <Row align="center">
         <Col className={classes.buttonColumn} layout="column" middle="xs">
-          <Button
+          {/* <Button
             className={classes.firstButton}
             color="primary"
             minHeight={52}
@@ -92,7 +93,13 @@ const ChooseTxType = ({
           >
             <Img alt="Send funds" className={classNames(classes.leftIcon, classes.iconSmall)} src={Token} />
             Send funds
-          </Button>
+          </Button> */}
+
+          <StyledBorder>
+            <StyledButtonBorder iconSize="sm" size="lg" type="button" onClick={() => setActiveScreen('sendFunds')}>
+              <StyledButtonLabel size="xl"> Send funds </StyledButtonLabel>
+            </StyledButtonBorder>
+          </StyledBorder>
           {/* {erc721Enabled && (
             <Button
               className={classes.firstButton}

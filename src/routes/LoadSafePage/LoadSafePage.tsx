@@ -1,22 +1,18 @@
 import { ReactElement, useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useHistory } from 'react-router-dom'
-import styled from 'styled-components'
-import IconButton from '@material-ui/core/IconButton'
 import ChevronLeft from '@material-ui/icons/ChevronLeft'
-
 import Block from 'src/components/layout/Block'
 import Page from 'src/components/layout/Page'
 import Heading from 'src/components/layout/Heading'
 import Row from 'src/components/layout/Row'
-import { secondary, sm } from 'src/theme/variables'
-import SelectNetworkStep, { selectNetworkStepLabel } from './steps/SelectNetworkStep'
+import SelectNetworkStep, { selectNetworkStepLabel } from './steps/SelectNetworkStep/SelectNetworkStep'
 import LoadSafeAddressStep, {
   loadSafeAddressStepLabel,
   loadSafeAddressStepValidations,
-} from './steps/LoadSafeAddressStep'
-import LoadSafeOwnersStep, { loadSafeOwnersStepLabel } from './steps/LoadSafeOwnersStep'
-import ReviewLoadStep, { reviewLoadStepLabel } from './steps/ReviewLoadStep'
+} from './steps/LoadSafeAddressStep/LoadSafeAddressStep'
+import LoadSafeOwnersStep, { loadSafeOwnersStepLabel } from './steps/LoadSafeOwnersStep/LoadSafeOwnersStep'
+import ReviewLoadStep, { reviewLoadStepLabel } from './steps/ReviewLoadStep/ReviewLoadStep'
 import { useMnemonicSafeName } from 'src/logic/hooks/useMnemonicName'
 import StepperForm, { StepFormElement } from 'src/components/StepperForm/StepperForm'
 import { AddressBookEntry, makeAddressBookEntry } from 'src/logic/addressBook/model/addressBook'
@@ -38,6 +34,7 @@ import { getShortName } from 'src/config'
 import { currentNetworkAddressBookAsMap } from 'src/logic/addressBook/store/selectors'
 import { getLoadSafeName } from './fields/utils'
 import { currentChainId } from 'src/logic/config/store/selectors'
+import { BackIcon } from './styles'
 
 function Load(): ReactElement {
   const dispatch = useDispatch()
@@ -88,17 +85,12 @@ function Load(): ReactElement {
     if (!address || !id) {
       return
     }
-
     updateAddressBook(values)
-
     const safeProps = await buildMSafe(String(address), id)
-
     // const checksummedAddress = checksumAddress(address || '')
     // const safeProps = await buildSafe(checksummedAddress)
     const storedSafes = loadStoredSafes() || {}
-
     storedSafes[String(address)] = safeProps
-
     saveSafes(storedSafes)
     dispatch(addOrUpdateSafe(safeProps))
 
@@ -150,9 +142,3 @@ function Load(): ReactElement {
 }
 
 export default Load
-
-const BackIcon = styled(IconButton)`
-  color: ${secondary};
-  padding: ${sm};
-  margin-right: 5px;
-`

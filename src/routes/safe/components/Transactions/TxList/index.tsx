@@ -34,7 +34,7 @@ const GatewayTransactions = (): ReactElement => {
       <Menu>
         <Col start="sm" xs={12}>
           <Breadcrumb>
-            <BreadcrumbElement iconType="transactionsInactive" text="TRANSACTIONS" />
+            <BreadcrumbElement iconType="transactionsInactive" text="TRANSACTIONS" color="white" />
             {isDeeplinkedTx() && <BreadcrumbElement text="DETAILS" color="placeHolder" />}
           </Breadcrumb>
         </Col>

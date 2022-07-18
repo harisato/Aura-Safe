@@ -48,6 +48,7 @@ class GnoTableHead extends React.PureComponent<any> {
                   direction={order}
                   onClick={this.changeSort(column.id, column.order)}
                   style={column.style}
+                  color="#98989B"
                 >
                   {column.label}
                 </TableSortLabel>

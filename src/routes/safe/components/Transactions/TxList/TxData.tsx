@@ -42,7 +42,6 @@ const DetailsWithTxInfo = ({ children, txData, txInfo }: DetailsWithTxInfoProps)
         avatarUrl={avatarUrl}
         title={`Send ${amount} ${nativeCurrency.symbol} to:`}
       />
-
       {children}
     </>
   )

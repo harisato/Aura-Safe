@@ -97,7 +97,7 @@ const ManageOwners = ({ granted, owners }: Props): ReactElement => {
             {(sortedData) =>
               sortedData.map((row, index) => (
                 <TableRow
-                  className={cn(classes.hide, index >= 3 && index === sortedData.size - 1 && classes.noBorderBottom)}
+                  className={cn(classes.hide, index >= 3 && index === sortedData.size - 1 && classes.noBorderBottom, classes.tr)}
                   data-testid={OWNERS_ROW_TEST_ID}
                   key={index}
                 >
@@ -117,7 +117,7 @@ const ManageOwners = ({ granted, owners }: Props): ReactElement => {
                       )}
                     </TableCell>
                   ))}
-                  <TableCell component="td">
+                  {/* <TableCell component="td">
                     <Row align="end" className={classes.actions}>
                       <ButtonHelper onClick={onShow('EditOwner', row)} dataTestId={RENAME_OWNER_BTN_TEST_ID}>
                         <Icon size="sm" type="edit" color="icon" tooltip="Edit owner" />
@@ -135,7 +135,7 @@ const ManageOwners = ({ granted, owners }: Props): ReactElement => {
                         </>
                       )}
                     </Row>
-                  </TableCell>
+                  </TableCell> */}
                 </TableRow>
               ))
             }

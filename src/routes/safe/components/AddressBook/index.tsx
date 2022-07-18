@@ -1,67 +1,46 @@
-import {
-  Breadcrumb,
-  BreadcrumbElement,
-  Button,
-  ButtonLink,
-  FixedIcon,
-  Icon,
-  Menu,
-  Text,
-} from '@gnosis.pm/safe-react-components'
+import { Breadcrumb, BreadcrumbElement, FixedIcon, Icon, Menu, Text } from '@gnosis.pm/safe-react-components'
+import { makeStyles } from '@material-ui/core/styles'
 import TableCell from '@material-ui/core/TableCell'
 import TableContainer from '@material-ui/core/TableContainer'
 import TableRow from '@material-ui/core/TableRow'
-import { makeStyles } from '@material-ui/core/styles'
 import cn from 'classnames'
-import styled from 'styled-components'
 import { ReactElement, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
-import { styles } from './style'
-import { getExplorerInfo } from 'src/config'
+import { useHistory } from 'react-router'
+import ButtonGradient from 'src/components/ButtonGradient'
 import ButtonHelper from 'src/components/ButtonHelper'
-import Table from 'src/components/Table'
-import { cellWidth } from 'src/components/Table/TableHead'
 import Block from 'src/components/layout/Block'
 import Col from 'src/components/layout/Col'
+import Paragraph from 'src/components/layout/Paragraph'
 import Row from 'src/components/layout/Row'
 import PrefixedEthHashInfo from 'src/components/PrefixedEthHashInfo'
+import Table from 'src/components/Table'
+import { cellWidth } from 'src/components/Table/TableHead'
+import { getExplorerInfo } from 'src/config'
 import { AddressBookEntry, makeAddressBookEntry } from 'src/logic/addressBook/model/addressBook'
 import { addressBookAddOrUpdate, addressBookImport, addressBookRemove } from 'src/logic/addressBook/store/actions'
 import { currentNetworkAddressBook } from 'src/logic/addressBook/store/selectors'
-import { isUserAnOwnerOfAnySafe, sameAddress } from 'src/logic/wallets/ethAddresses'
-import { CreateEditEntryModal } from 'src/routes/safe/components/AddressBook/CreateEditEntryModal'
-import { ExportEntriesModal } from 'src/routes/safe/components/AddressBook/ExportEntriesModal'
-import { DeleteEntryModal } from 'src/routes/safe/components/AddressBook/DeleteEntryModal'
-import {
-  AB_NAME_ID,
-  AB_ADDRESS_ID,
-  ADDRESS_BOOK_ROW_ID,
-  SEND_ENTRY_BUTTON,
-  generateColumns,
-} from 'src/routes/safe/components/AddressBook/columns'
-import SendModal from 'src/routes/safe/components/Balances/SendModal'
-import { safesAsList } from 'src/logic/safe/store/selectors'
-import { checksumAddress } from 'src/utils/checksumAddress'
-import { grantedSelector } from 'src/routes/safe/container/selector'
-import { useAnalytics, SAFE_EVENTS } from 'src/utils/googleAnalytics'
-import ImportEntriesModal from './ImportEntriesModal'
-import { isValidAddress } from 'src/utils/isValidAddress'
-import { useHistory } from 'react-router'
 import { currentChainId } from 'src/logic/config/store/selectors'
-
-const StyledButton = styled(Button)`
-  &&.MuiButton-root {
-    margin: 4px 12px 4px 0px;
-    padding: 0 12px;
-    min-width: auto;
-  }
-
-  svg {
-    margin: 0 6px 0 0;
-  }
-`
-
+import { safesAsList } from 'src/logic/safe/store/selectors'
+import { isUserAnOwnerOfAnySafe, sameAddress } from 'src/logic/wallets/ethAddresses'
+import {
+  AB_ADDRESS_ID,
+  AB_NAME_ID,
+  ADDRESS_BOOK_ROW_ID,
+  generateColumns,
+  SEND_ENTRY_BUTTON,
+} from 'src/routes/safe/components/AddressBook/columns'
+import { CreateEditEntryModal } from 'src/routes/safe/components/AddressBook/CreateEditEntryModal'
+import { DeleteEntryModal } from 'src/routes/safe/components/AddressBook/DeleteEntryModal'
+import { ExportEntriesModal } from 'src/routes/safe/components/AddressBook/ExportEntriesModal'
+import SendModal from 'src/routes/safe/components/Balances/SendModal'
+import { grantedSelector } from 'src/routes/safe/container/selector'
+import { checksumAddress } from 'src/utils/checksumAddress'
+import { SAFE_EVENTS, useAnalytics } from 'src/utils/googleAnalytics'
+import { isValidAddress } from 'src/utils/isValidAddress'
+import ImportEntriesModal from './ImportEntriesModal'
+import { StyledButtonLink, styles } from './style'
 const useStyles = makeStyles(styles)
 
 interface AddressBookSelectedEntry extends AddressBookEntry {
@@ -133,9 +112,7 @@ const AddressBookTable = (): ReactElement => {
     // close the modal
     setEditCreateEntryModalOpen(false)
     // update the store
-    dispatch(
-      addressBookAddOrUpdate(makeAddressBookEntry({ ...entry, address: (entry.address), chainId })),
-    )
+    dispatch(addressBookAddOrUpdate(makeAddressBookEntry({ ...entry, address: entry.address, chainId })))
   }
 
   const editEntryModalHandler = (entry: AddressBookEntry) => {
@@ -144,9 +121,7 @@ const AddressBookTable = (): ReactElement => {
     // close the modal
     setEditCreateEntryModalOpen(false)
     // update the store
-    dispatch(
-      addressBookAddOrUpdate(makeAddressBookEntry({ ...entry, address: (entry.address), chainId })),
-    )
+    dispatch(addressBookAddOrUpdate(makeAddressBookEntry({ ...entry, address: entry.address, chainId })))
   }
 
   const deleteEntryModalHandler = () => {
@@ -168,11 +143,16 @@ const AddressBookTable = (): ReactElement => {
       <Menu>
         <Col start="sm" sm={6} xs={12}>
           <Breadcrumb>
-            <BreadcrumbElement iconType="addressBook" text="Address Book" counter={addressBook?.length.toString()} />
+            <BreadcrumbElement
+              color="white"
+              iconType="addressBook"
+              text="Address Book"
+              counter={addressBook?.length.toString()}
+            />
           </Breadcrumb>
         </Col>
         <Col end="sm" sm={6} xs={12}>
-          <ButtonLink
+          <StyledButtonLink
             onClick={() => {
               setSelectedEntry(initialEntryState)
               setExportEntriesModalOpen(true)
@@ -180,22 +160,22 @@ const AddressBookTable = (): ReactElement => {
             color="primary"
             iconType="exportImg"
             iconSize="sm"
-            textSize="xl"
+            textSize="sm"
           >
             Export
-          </ButtonLink>
-          <ButtonLink
+          </StyledButtonLink>
+          <StyledButtonLink
             onClick={() => {
               setImportEntryModalOpen(true)
             }}
             color="primary"
             iconType="importImg"
             iconSize="sm"
-            textSize="xl"
+            textSize="sm"
           >
             Import
-          </ButtonLink>
-          <ButtonLink
+          </StyledButtonLink>
+          <StyledButtonLink
             onClick={() => {
               setSelectedEntry(initialEntryState)
               setEditCreateEntryModalOpen(true)
@@ -203,10 +183,10 @@ const AddressBookTable = (): ReactElement => {
             color="primary"
             iconType="add"
             iconSize="sm"
-            textSize="xl"
+            textSize="sm"
           >
             Create entry
-          </ButtonLink>
+          </StyledButtonLink>
         </Col>
       </Menu>
       <Block className={classes.formContainer}>
@@ -234,23 +214,31 @@ const AddressBookTable = (): ReactElement => {
                   >
                     {autoColumns.map((column) => {
                       return (
-                        <TableCell align={column.align} component="td" key={column.id} style={cellWidth(column.width)}>
+                        <TableCell
+                          align={column.align}
+                          component="td"
+                          key={column.id}
+                          style={cellWidth(column.width)}
+                          className={classes.tableCell}
+                        >
                           {column.id === AB_ADDRESS_ID ? (
                             <Block justify="left">
                               <PrefixedEthHashInfo
                                 hash={row[column.id]}
                                 showCopyBtn
                                 showAvatar
-                                // explorerUrl={getExplorerInfo(row[column.id])}
+                                explorerUrl={getExplorerInfo(row[column.id])}
                               />
                             </Block>
                           ) : (
-                            row[column.id]
+                            <Paragraph color="white" size="md">
+                              {row[column.id]}
+                            </Paragraph>
                           )}
                         </TableCell>
                       )
                     })}
-                    <TableCell component="td">
+                    <TableCell component="td" className={classes.tableCell}>
                       <Row align="end" className={classes.actions}>
                         <ButtonHelper
                           onClick={() => {
@@ -277,28 +265,24 @@ const AddressBookTable = (): ReactElement => {
                           <Icon
                             size="sm"
                             type="delete"
-                            color="error"
                             tooltip="Delete entry"
                             className={granted ? classes.removeEntryButton : classes.removeEntryButtonNonOwner}
                           />
                         </ButtonHelper>
                         {granted ? (
-                          <StyledButton
-                            color="primary"
+                          <ButtonGradient
+                            disabled
+                            size="md"
                             onClick={() => {
                               setSelectedEntry({ entry: row })
                               setSendFundsModalOpen(true)
                             }}
-                            size="md"
-                            variant="contained"
-                            data-testid={SEND_ENTRY_BUTTON}
-                            disabled
                           >
                             <FixedIcon type="arrowSentWhite" />
-                            <Text size="xl" color="white">
+                            <Text size="md" color="white">
                               Send
                             </Text>
-                          </StyledButton>
+                          </ButtonGradient>
                         ) : null}
                       </Row>
                     </TableCell>

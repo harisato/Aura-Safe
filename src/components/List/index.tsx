@@ -1,121 +1,23 @@
-import Badge from '@material-ui/core/Badge'
 import { useEffect, useState } from 'react'
-import styled from 'styled-components'
 import { Link, useHistory } from 'react-router-dom'
-import { makeStyles, Theme, createStyles } from '@material-ui/core/styles'
-
 import ListMui from '@material-ui/core/List'
-import ListItem, { ListItemProps } from '@material-ui/core/ListItem'
-import ListItemText from '@material-ui/core/ListItemText'
 import Collapse from '@material-ui/core/Collapse'
 import { FixedIcon } from '@gnosis.pm/safe-react-components'
+import IconButton from '@material-ui/core/IconButton'
 
-const StyledListItem = styled(ListItem)<ListItemProps>`
-  &.MuiButtonBase-root.MuiListItem-root {
-    margin: 4px 0;
-  }
-
-  &.MuiListItem-button:hover {
-    border-radius: 8px;
-  }
-
-  &.MuiListItem-root.Mui-selected {
-    background-color: ${({ theme }) => theme.colors.background};
-    border-radius: 8px;
-    color: ${({ theme }) => theme.colors.primary};
-    span {
-      color: ${({ theme }) => theme.colors.primary};
-    }
-    .icon-color {
-      fill: ${({ theme }) => theme.colors.primary};
-    }
-  }
-`
-
-const StyledListSubItem = styled(ListItem)<ListItemProps>`
-  &.MuiButtonBase-root.MuiListItem-root {
-    margin: 4px 0;
-  }
-
-  &.MuiListItem-button:hover {
-    border-radius: 8px;
-  }
-
-  &.MuiButtonBase-root.MuiListItem-root.Mui-selected {
-    background-color: ${({ theme }) => theme.colors.background};
-    border-radius: 8px;
-    color: ${({ theme }) => theme.colors.primary};
-    span {
-      color: ${({ theme }) => theme.colors.primary};
-    }
-    .icon-color {
-      fill: ${({ theme }) => theme.colors.primary};
-    }
-  }
-`
-
-const StyledListItemText = styled(ListItemText)`
-  span {
-    font-family: ${({ theme }) => theme.fonts.fontFamily};
-    font-size: 0.76em;
-    font-weight: 600;
-    line-height: 1.5;
-    letter-spacing: 1px;
-    color: ${({ theme }) => theme.colors.placeHolder};
-    text-transform: uppercase;
-  }
-`
-
-const StyledListSubItemText = styled(ListItemText)`
-  span {
-    font-family: ${({ theme }) => theme.fonts.fontFamily};
-    font-size: 0.85em;
-    font-weight: 400;
-    letter-spacing: 0px;
-    color: ${({ theme }) => theme.colors.placeHolder};
-    text-transform: none;
-  }
-`
-
-const TextAndBadgeWrapper = styled.div`
-  flex: 1 1 auto;
-`
-
-const StyledBadge = styled(Badge)`
-  .MuiBadge-badge {
-    top: 50%;
-    right: -1rem;
-  }
-`
-
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    root: {
-      width: '100%',
-      maxWidth: 200,
-      backgroundColor: theme.palette.background.paper,
-      overflowX: 'auto',
-      margin: '8px 0 -4px 0',
-      '&::-webkit-scrollbar': {
-        width: '0.5em',
-      },
-      '&::-webkit-scrollbar-track': {
-        boxShadow: 'inset 0 0 6px rgba(0, 0, 0, 0.3)',
-        webkitBoxShadow: 'inset 0 0 6px rgba(0, 0, 0, 0.3)',
-        borderRadius: '20px',
-      },
-      '&::-webkit-scrollbar-thumb': {
-        backgroundColor: 'darkgrey',
-        outline: '1px solid #dadada',
-        borderRadius: '20px',
-      },
-    },
-    nested: {
-      paddingLeft: theme.spacing(3),
-    },
-  }),
-)
-
+import ExpandLess from '@material-ui/icons/ExpandLess'
+import ExpandMore from '@material-ui/icons/ExpandMore'
+import {
+  useStyles,
+  StyledListItem,
+  StyledListSubItem,
+  StyledListItemText,
+  StyledListSubItemText,
+  TextAndBadgeWrapper,
+  StyledBadge,
+  StyledSubListMui,
+  StyledFixedIcon,
+} from './styles'
 export type ListItemType = {
   badge?: boolean
   disabled?: boolean
@@ -176,8 +78,14 @@ const List = ({ items }: Props): React.ReactElement => {
           </StyledBadge>
         </TextAndBadgeWrapper>
 
-        {item.subItems &&
-          (groupCollapseStatus[item.href] ? <FixedIcon type="chevronUp" /> : <FixedIcon type="chevronDown" />)}
+        {
+          item.subItems && (
+            <IconButton disableRipple>
+              {groupCollapseStatus[item.href] ? <ExpandLess /> : <ExpandMore />}
+            </IconButton>
+          )
+          // (groupCollapseStatus[item.href] ? <StyledFixedIcon type="chevronUp"/> : <StyledFixedIcon type="chevronDown" />)
+        }
       </ListItemAux>
     )
   }
@@ -203,9 +111,9 @@ const List = ({ items }: Props): React.ReactElement => {
             {getListItem(item, false)}
             {item.subItems && (
               <Collapse in={groupCollapseStatus[item.href]} timeout="auto" unmountOnExit>
-                <ListMui component="div" disablePadding>
+                <StyledSubListMui component="div" disablePadding>
                   {item.subItems.filter(({ disabled }) => !disabled).map((subItem) => getListItem(subItem))}
-                </ListMui>
+                </StyledSubListMui>
               </Collapse>
             )}
           </div>

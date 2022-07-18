@@ -1,107 +1,28 @@
-import { createStyles } from '@material-ui/core'
-import { ConnectType, useWallet, WalletStatus } from '@terra-money/wallet-provider'
-import React, { useEffect } from 'react'
-
+import React from 'react'
 import { Modal } from 'src/components/Modal'
-import styled from 'styled-components'
-import { getChainInfo, getInternalChainId, _getChainId } from '../../config'
+import { getInternalChainId, _getChainId } from '../../config'
 import { connectKeplr, KeplrErrors, suggestChain } from '../../logic/keplr/keplr'
 import { enhanceSnackbarForAction, NOTIFICATIONS } from '../../logic/notifications'
 import enqueueSnackbar from '../../logic/notifications/store/actions/enqueueSnackbar'
-import { fetchTerraStation } from '../../logic/terraStation'
-import { WALLETS_NAME } from '../../logic/wallets/constant/wallets'
-import { LAST_USED_PROVIDER_KEY } from '../../logic/wallets/store/middlewares/providerWatcher'
 import { store } from '../../store'
-import { lg } from '../../theme/variables'
-import { saveToStorage } from '../../utils/storage'
 import Img from '../layout/Img'
-import Row from '../layout/Row'
-
 import Keplr from './assets/keplr.svg'
-import TerraStation from './assets/terra-station.svg'
+import { ImageContainer, ImageItem, ImageTitle, WalletList } from './styles'
 
 type Props = {
   isOpen: boolean
   onClose: () => void
 }
 
-const styles = createStyles({
-  heading: {
-    padding: lg,
-    justifyContent: 'space-between',
-    maxHeight: '75px',
-    boxSizing: 'border-box',
-  },
-})
-const WalletList = styled.div`
-  height: fit-content;
-  padding: ${lg};
-`
-
-const ImageContainer = styled(Row)`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-`
-const ImageItem = styled.div`
-  width: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 40px;
-  cursor: pointer;
-  padding: 0.625em 1.25em;
-  margin-bottom: 2rem;
-
-  transition: box-shadow 150ms ease-in-out, background 200ms ease-in-out;
-  transition: opacity 200ms;
-
-  &:hover {
-    box-shadow: 0 2px 10px 0 rgba(0, 0, 0, 0.1);
-  }
-`
-const ImageTitle = styled.span`
-  margin-left: 0.66em;
-  font-size: 18px;
-  font-weight: bold;
-  text-align: left;
-`
-
 export const ConnectWalletModal = ({ isOpen, onClose }: Props): React.ReactElement => {
-  const { status, connect, wallets } = useWallet()
   const internalChainId = getInternalChainId()
-
-  useEffect(() => {
-    if (status === WalletStatus.WALLET_CONNECTED) {
-      const _fetchTerraStation = async () => {
-        const chainInfo = await getChainInfo()
-
-        const providerInfo = {
-          account: wallets[0].terraAddress,
-          available: true,
-          hardwareWallet: false,
-          loaded: true,
-          name: WALLETS_NAME.TerraStation,
-          network: chainInfo.chainId,
-          smartContractWallet: false,
-          internalChainId,
-        }
-
-        fetchTerraStation(providerInfo)
-
-        saveToStorage(LAST_USED_PROVIDER_KEY, providerInfo.name)
-        onClose()
-      }
-
-      _fetchTerraStation()
-    }
-  }, [status])
 
   const keplrWallet = async () => {
     const chainId = _getChainId()
     await connectKeplr()
       .then(async (status) => {
         if (status === KeplrErrors.NoChainInfo) {
+          console.log(1)
           await suggestChain(chainId)
           return true
         }
@@ -116,15 +37,6 @@ export const ConnectWalletModal = ({ isOpen, onClose }: Props): React.ReactEleme
       .catch(() => {
         store.dispatch(enqueueSnackbar(enhanceSnackbarForAction(NOTIFICATIONS.CONNECT_WALLET_ERROR_MSG)))
       })
-  }
-  const terraWallet = () => {
-    try {
-      if (status === WalletStatus.WALLET_NOT_CONNECTED) {
-        connect(ConnectType.EXTENSION, 'station')
-      }
-    } catch (e) {
-      console.error(e)
-    }
   }
 
   return (

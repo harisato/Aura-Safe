@@ -1,5 +1,5 @@
 import { Text, Icon, Button } from '@gnosis.pm/safe-react-components'
-import { useEffect, useRef, ReactElement } from 'react'
+import { useEffect, useRef, ReactElement, useState } from 'react'
 import { useHistory } from 'react-router'
 import ListItem from '@material-ui/core/ListItem/ListItem'
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction/ListItemSecondaryAction'
@@ -25,6 +25,13 @@ import { currentChainId } from 'src/logic/config/store/selectors'
 import { ChainId } from 'src/config/chain.d'
 import { getChainById, getInternalChainId } from 'src/config'
 import { SafeStatus } from 'src/logic/safe/hooks/useOwnerSafes'
+import { loadFromStorage } from 'src/utils/storage'
+import { PendingSafeListStorage } from 'src/routes/CreateSafePage/CreateSafePage'
+import {
+  FIELD_CREATE_CUSTOM_SAFE_NAME,
+  FIELD_CREATE_SUGGESTED_SAFE_NAME,
+  SAFES_PENDING_STORAGE_KEY,
+} from 'src/routes/CreateSafePage/fields/createSafeFields'
 
 const StyledIcon = styled(Icon)<{ checked: boolean }>`
   ${({ checked }) => (checked ? { marginRight: '4px' } : { visibility: 'hidden', width: '28px' })}
@@ -62,6 +69,7 @@ const StyledText = styled(Text)`
   display: flex;
   align-items: center;
   padding: 0 16px;
+  color: white;
 `
 
 const StyledPrefixedEthHashInfo = styled(PrefixedEthHashInfo)`
@@ -107,11 +115,26 @@ const SafeListItem = ({
   const internalChainId = getInternalChainId()
   const nativeCurrencySymbol = nativeCurrency?.symbol ?? 'ETH'
 
+  const [pendingSafeName, setPendingSafeName] = useState('')
+
   useEffect(() => {
     if (isCurrentSafe && shouldScrollToSafe) {
       safeRef?.current?.scrollIntoView({ behavior: 'smooth' })
     }
   }, [isCurrentSafe, shouldScrollToSafe])
+
+  useEffect(() => {
+    const saveCallback = async () => {
+      const safesPending = await Promise.resolve(loadFromStorage<PendingSafeListStorage>(SAFES_PENDING_STORAGE_KEY))
+      const pendingSafe = safesPending?.find((e) => e.id === safeId)
+
+      if (pendingSafe) {
+        setPendingSafeName(pendingSafe[FIELD_CREATE_CUSTOM_SAFE_NAME] || pendingSafe[FIELD_CREATE_SUGGESTED_SAFE_NAME])
+      }
+    }
+
+    saveCallback()
+  }, [safeId])
 
   const routesSlug: SafeRouteParams = {
     shortName,
@@ -119,7 +142,7 @@ const SafeListItem = ({
     safeAddress: address,
   }
 
-  const rederButton = (status: SafeStatus) => {
+  const renderButton = (status: SafeStatus) => {
     switch (status) {
       case SafeStatus.NeedConfirm:
         return (
@@ -147,6 +170,28 @@ const SafeListItem = ({
             </Text>
           </StyledButton>
         )
+    }
+  }
+
+  const hashText = (status: SafeStatus, address: string): string => {
+    switch (status) {
+      case SafeStatus.Pending:
+        return 'Created by you'
+
+      default:
+        return address || ''
+    }
+  }
+
+  const nameText = (status: SafeStatus, safeName: string): string => {
+    switch (status) {
+      case SafeStatus.NeedConfirm:
+      case SafeStatus.Confirmed:
+        return 'Created by:'
+      case SafeStatus.Pending:
+        return pendingSafeName
+      default:
+        return safeName || ''
     }
   }
 
@@ -194,11 +239,11 @@ const SafeListItem = ({
     <ListItem button onClick={handleOpenSafe} ref={safeRef}>
       <StyledIcon type="check" size="md" color="primary" checked={isCurrentSafe} />
       <StyledPrefixedEthHashInfo
-        hash={address}
-        name={!pendingStatus ? safeName ? safeName : '' : 'Created by:'}
+        hash={hashText(pendingStatus!, address)}
+        name={nameText(pendingStatus!, safeName)}
         shortName={shortName}
         showAvatar
-        shortenHash={4}
+        shortenHash={pendingStatus === SafeStatus.Pending ? 100 : 4}
       />
       <ListItemSecondaryAction>
         {ethBalance ? (
@@ -212,7 +257,7 @@ const SafeListItem = ({
             </Text>
           </StyledButton>
         ) : pendingStatus ? (
-          rederButton(pendingStatus)
+          renderButton(pendingStatus)
         ) : null}
       </ListItemSecondaryAction>
     </ListItem>

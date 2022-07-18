@@ -1,15 +1,13 @@
-FROM node:16 as build
+FROM ghcr.io/aura-nw/safe-react-base:1.0 as build
 
-RUN apt-get update && apt-get install -y libusb-1.0-0 libusb-1.0-0-dev libudev-dev
+# RUN apt-get update && apt-get install -y libusb-1.0-0 libusb-1.0-0-dev libudev-dev
 
 WORKDIR /app
-COPY . .
 # COPY package.json ./
 
 # COPY yarn.lock ./
 
-# COPY  src/logic/contracts/artifacts ./src/logic/contracts/artifacts
-
+COPY . .
 RUN yarn install
 
 RUN yarn run build

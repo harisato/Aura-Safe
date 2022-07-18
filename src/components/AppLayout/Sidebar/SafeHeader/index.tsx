@@ -1,122 +1,28 @@
-import styled from 'styled-components'
+import { CopyToClipboardBtn, ExplorerButton, FixedIcon, Icon, Identicon, Text } from '@gnosis.pm/safe-react-components'
 import { useSelector } from 'react-redux'
-import {
-  Icon,
-  FixedIcon,
-  Text,
-  Identicon,
-  Button,
-  CopyToClipboardBtn,
-  ExplorerButton,
-} from '@gnosis.pm/safe-react-components'
-
 import ButtonHelper from 'src/components/ButtonHelper'
 import FlexSpacer from 'src/components/FlexSpacer'
 import { getChainInfo, getExplorerInfo } from 'src/config'
-import { border, fontColor } from 'src/theme/variables'
-import { ChainInfo } from '@gnosis.pm/safe-react-gateway-sdk'
-import PrefixedEthHashInfo from 'src/components/PrefixedEthHashInfo'
 import { copyShortNameSelector } from 'src/logic/appearance/selectors'
 import { extractShortChainName } from 'src/routes/routes'
+import { THEME_DF } from 'src/services/constant/chainThemes'
+import {
+  Container,
+  ContainerButton,
+  IconContainer,
+  IdenticonContainer,
+  StyledButton,
+  StyledDotChainName,
+  StyledIcon,
+  StyledIdenticonContainer,
+  StyledLabel,
+  StyledPrefixedEthHashInfo,
+  StyledTextLabel,
+  StyledTextSafeName,
+} from './styles'
+import { Props } from './type'
 
 export const TOGGLE_SIDEBAR_BTN_TESTID = 'TOGGLE_SIDEBAR_BTN'
-
-const Container = styled.div`
-  max-width: 200px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-`
-
-const IdenticonContainer = styled.div`
-  width: 100%;
-  margin: 8px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-
-  div:first-of-type {
-    width: 32px;
-  }
-`
-const StyledIcon = styled(Icon)`
-  svg {
-    height: 26px;
-    width: 26px;
-    transform: rotateZ(-90deg);
-
-    path:nth-child(2) {
-      display: none;
-    }
-  }
-`
-
-const IconContainer = styled.div`
-  width: 100px;
-  display: flex;
-  padding: 4px 0;
-  justify-content: space-evenly;
-`
-const StyledButton = styled(Button)`
-  &&.MuiButton-root {
-    padding: 0 12px;
-  }
-  *:first-child {
-    margin: 0 4px 0 0;
-  }
-`
-
-type StyledTextLabelProps = {
-  chainInfo: ChainInfo
-}
-
-const StyledTextLabel = styled(Text)`
-  margin: -8px 0 4px -8px;
-  padding: 4px 8px;
-  width: 100%;
-  text-align: center;
-  color: ${(props: StyledTextLabelProps) => props.chainInfo?.theme?.textColor ?? fontColor};
-  background-color: ${(props: StyledTextLabelProps) => props.chainInfo?.theme?.backgroundColor ?? border};
-`
-
-const StyledTextSafeName = styled(Text)`
-  width: 90%;
-  overflow: hidden;
-  text-overflow: ellipsis;
-`
-
-const StyledPrefixedEthHashInfo = styled(PrefixedEthHashInfo)`
-  p {
-    color: ${({ theme }) => theme.colors.placeHolder};
-    font-size: 14px;
-  }
-`
-
-const StyledLabel = styled.div`
-  background-color: ${({ theme }) => theme.colors.icon};
-  margin: 4px 0 0 0 !important;
-  padding: 4px 8px;
-  border-radius: 4px;
-  letter-spacing: 1px;
-  p {
-    line-height: 18px;
-  }
-`
-const StyledText = styled(Text)`
-  margin: 8px 0 16px 0;
-`
-
-type Props = {
-  address: string | undefined
-  safeName: string | undefined
-  granted: boolean
-  balance: string | undefined
-  onToggleSafeList: () => void
-  onReceiveClick: () => void
-  onNewTransactionClick: () => void
-}
-
 const SafeHeader = ({
   address,
   safeName,
@@ -128,7 +34,9 @@ const SafeHeader = ({
 }: Props): React.ReactElement => {
   const copyChainPrefix = useSelector(copyShortNameSelector)
   const chainInfoShortName = getChainInfo().shortName
-  const shortName = extractShortChainName()
+  const chainInfo = getChainInfo()
+
+  const { backgroundColor } = chainInfo?.theme || THEME_DF
 
   if (!address) {
     return (
@@ -143,37 +51,47 @@ const SafeHeader = ({
       </Container>
     )
   }
-  const chainInfo = getChainInfo()
 
   return (
     <>
       {/* Network */}
       <StyledTextLabel size="lg" chainInfo={chainInfo}>
+        <StyledDotChainName color={backgroundColor}></StyledDotChainName>
         {chainInfo.chainName}
       </StyledTextLabel>
-
       <Container>
         {/* Identicon */}
         <IdenticonContainer>
-          <FlexSpacer />
-          <Identicon address={address} size="lg" />
+          <StyledIdenticonContainer>
+            <Identicon address={address} size="lg" />
+            {/* SafeInfo */}
+            <StyledTextSafeName size="lg" center>
+              {safeName}
+              <StyledPrefixedEthHashInfo hash={address} shortenHash={4} textSize="sm" />
+            </StyledTextSafeName>
+          </StyledIdenticonContainer>
           <ButtonHelper onClick={onToggleSafeList} data-testid={TOGGLE_SIDEBAR_BTN_TESTID}>
             <StyledIcon size="md" type="circleDropdown" />
           </ButtonHelper>
         </IdenticonContainer>
 
-        {/* SafeInfo */}
-        <StyledTextSafeName size="lg" center>
-          {safeName}
-        </StyledTextSafeName>
-        <StyledPrefixedEthHashInfo hash={address} shortenHash={4} textSize="sm" />
-        <IconContainer>
-          <ButtonHelper onClick={onReceiveClick}>
-            <Icon size="sm" type="qrCode" tooltip="Show QR" />
-          </ButtonHelper>
-          <CopyToClipboardBtn textToCopy={copyChainPrefix ? `${chainInfoShortName}:${address}` : `${address}`} />
-          <ExplorerButton explorerUrl={getExplorerInfo(address)} />
-        </IconContainer>
+        <ContainerButton>
+          <IconContainer>
+            <ButtonHelper onClick={onReceiveClick}>
+              <Icon size="sm" type="qrCode" tooltip="Show QR" />
+            </ButtonHelper>
+            <CopyToClipboardBtn textToCopy={copyChainPrefix ? `${chainInfoShortName}:${address}` : `${address}`} />
+            {address && <ExplorerButton explorerUrl={getExplorerInfo(address)} />}
+          </IconContainer>
+
+          {/* <StyledText size="xl">balance</StyledText> */}
+          <StyledButton size="md" disabled={!granted} onClick={onNewTransactionClick}>
+            <FixedIcon type="arrowSentWhite" />
+            <Text size="md" color="white">
+              Send funds
+            </Text>
+          </StyledButton>
+        </ContainerButton>
 
         {!granted && (
           <StyledLabel>
@@ -182,14 +100,6 @@ const SafeHeader = ({
             </Text>
           </StyledLabel>
         )}
-
-        <StyledText size="xl">{/* balance */}</StyledText>
-        <StyledButton size="md" disabled={!granted} color="primary" variant="contained" onClick={onNewTransactionClick}>
-          <FixedIcon type="arrowSentWhite" />
-          <Text size="xl" color="white">
-            New transaction
-          </Text>
-        </StyledButton>
       </Container>
     </>
   )

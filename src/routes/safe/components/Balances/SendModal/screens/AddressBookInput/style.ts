@@ -15,7 +15,7 @@ export const useTextFieldInputStyle = makeStyles(
   createStyles({
     root: {
       fontSize: '14px',
-      width: '420px',
+      width: '100%',
     },
   }),
 )

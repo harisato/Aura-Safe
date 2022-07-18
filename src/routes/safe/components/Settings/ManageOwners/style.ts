@@ -1,25 +1,27 @@
 import { createStyles, makeStyles } from '@material-ui/core'
 
-import { lg, sm } from 'src/theme/variables'
+import { lg, sm, bgBox } from 'src/theme/variables'
 
 export const useStyles = makeStyles(
   createStyles({
     formContainer: {
       // minHeight: '420px',
       minHeight: 'min-content',
+      backgroundColor: `${bgBox}`,
+      borderRadius: 8,
+      padding: `${sm} ${lg}`,
     },
     title: {
-      padding: lg,
       paddingBottom: 0,
     },
     annotation: {
-      paddingLeft: lg,
+      // paddingLeft: lg,
     },
     hide: {
-      '&:hover': {
-        backgroundColor: '#f7f5f5',
-      },
-      '&:hover $actions': {
+      // '&:hover': {
+      //   backgroundColor: '#f7f5f5',
+      // },
+      '& $actions': {
         visibility: 'initial',
       },
     },
@@ -28,6 +30,9 @@ export const useStyles = makeStyles(
       visibility: 'hidden',
       minWidth: '100px',
       gap: '16px',
+    },
+    tr: {
+      height: '60px',
     },
     noBorderBottom: {
       '& > td': {

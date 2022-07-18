@@ -5,7 +5,7 @@ import { getExplorerInfo } from 'src/config'
 import { formatDateTime } from 'src/utils/date'
 import { Transaction } from 'src/logic/safe/store/models/types/gateway.d'
 import { NOT_AVAILABLE } from './utils'
-import { InlineEthHashInfo, TxDetailsContainer } from './styled'
+import { InlineEthHashInfo, TxDetailsContainer, StyledText } from './styled'
 import { Creation } from '@gnosis.pm/safe-react-gateway-sdk'
 import { useKnownAddress } from './hooks/useKnownAddress'
 import PrefixedEthHashInfo from 'src/components/PrefixedEthHashInfo'
@@ -22,11 +22,10 @@ export const TxInfoCreation = ({ transaction }: { transaction: Transaction }): R
     <TxDetailsContainer>
       <div className="tx-summary">
         <div className="tx-hash">
-          <Text size="xl" strong as="span">
-            Transaction hash:{' '}
-          </Text>
+          <StyledText>Transaction hash: </StyledText>
           <InlineEthHashInfo
-            textSize="xl"
+            textSize="lg"
+            textColor="white"
             hash={txInfo.transactionHash}
             shortenHash={8}
             showCopyBtn
@@ -34,21 +33,17 @@ export const TxInfoCreation = ({ transaction }: { transaction: Transaction }): R
           />
         </div>
         <div className="tx-created">
-          <Text size="xl" strong as="span">
-            Created:{' '}
-          </Text>
-          <Text size="xl" as="span">
+          <StyledText>Created: </StyledText>
+          <Text size="lg" color="white" as="span">
             {formatDateTime(timestamp)}
           </Text>
         </div>
       </div>
       <div className="tx-details">
         <div className="tx-creator">
-          <Text size="xl" strong>
-            Creator:{' '}
-          </Text>
+          <StyledText>Creator: </StyledText>
           <PrefixedEthHashInfo
-            textSize="xl"
+            textSize="lg"
             hash={txInfo.creator.value}
             showCopyBtn
             explorerUrl={getExplorerInfo(txInfo.creator.value)}
@@ -58,12 +53,10 @@ export const TxInfoCreation = ({ transaction }: { transaction: Transaction }): R
           />
         </div>
         <div className="tx-factory">
-          <Text size="xl" strong>
-            Factory:{' '}
-          </Text>
+          <StyledText>Factory: </StyledText>
           {txInfo.factory ? (
             <PrefixedEthHashInfo
-              textSize="xl"
+              textSize="lg"
               hash={txInfo.factory.value}
               showCopyBtn
               explorerUrl={getExplorerInfo(txInfo.factory.value)}
@@ -72,15 +65,13 @@ export const TxInfoCreation = ({ transaction }: { transaction: Transaction }): R
               showAvatar
             />
           ) : (
-            <Text size="xl" as="span">
+            <Text size="lg" color="white" as="span">
               {NOT_AVAILABLE}
             </Text>
           )}
         </div>
         <div className="tx-mastercopy">
-          <Text size="xl" strong>
-            Mastercopy:{' '}
-          </Text>
+          <StyledText>Mastercopy: </StyledText>
           {txInfo.implementation ? (
             <PrefixedEthHashInfo
               textSize="xl"
@@ -92,7 +83,7 @@ export const TxInfoCreation = ({ transaction }: { transaction: Transaction }): R
               showAvatar
             />
           ) : (
-            <Text size="xl" as="span">
+            <Text size="lg" color="white" as="span">
               {NOT_AVAILABLE}
             </Text>
           )}

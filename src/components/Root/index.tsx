@@ -57,14 +57,16 @@ const RootConsumer = (): React.ReactElement | null => {
     if (!gatewayUrl) {
       return
     }
+
     const initChains = async () => {
+      await loadChains()
       try {
-        await loadChains()
         const _isValidChainId = !isValidChainId(_getChainId())
         if (_isValidChainId) {
           setChainId(DEFAULT_CHAIN_ID)
           history.push(WELCOME_ROUTE)
         }
+
         setHasChains(true)
       } catch (err) {
         logError(Errors._904, err.message)

@@ -1,43 +1,13 @@
+import * as React from 'react'
 import { Loader } from '@gnosis.pm/safe-react-components'
 import Table from '@material-ui/core/Table'
 import TableBody from '@material-ui/core/TableBody'
 import TablePagination from '@material-ui/core/TablePagination'
 import { withStyles } from '@material-ui/core/styles'
-import * as React from 'react'
-
 import TableHead from 'src/components/Table/TableHead'
 import { getSorting, stableSort } from 'src/components/Table/sorting'
 import Row from 'src/components/layout/Row'
-import { sm, xxl } from 'src/theme/variables'
-
-const styles = {
-  root: {
-    backgroundColor: 'white',
-    borderTopRightRadius: sm,
-    borderTopLeftRadius: sm,
-    boxShadow: '1px 2px 10px 0 rgba(212, 212, 211, 0.59)',
-  },
-  selectRoot: {
-    lineHeight: xxl,
-    backgroundColor: 'white',
-  },
-  white: {
-    backgroundColor: 'white',
-  },
-  paginationRoot: {
-    backgroundColor: 'white',
-    boxShadow: '1px 2px 10px 0 rgba(212, 212, 211, 0.59)',
-    marginBottom: '90px',
-    borderBottomRightRadius: sm,
-    borderBottomLeftRadius: sm,
-  },
-  loader: {
-    boxShadow: '1px 2px 10px 0 rgba(212, 212, 211, 0.59)',
-  },
-}
-
-const FIXED_EMPTY_HEIGHT = 255
-
+import { styles, getEmptyStyle } from './styles'
 const backProps = {
   'aria-label': 'Previous Page',
 }
@@ -101,17 +71,6 @@ class GnoTable extends React.Component<any, any> {
     }))
   }
 
-  getEmptyStyle = () => ({
-    height: `calc(100vh - ${FIXED_EMPTY_HEIGHT}px)`,
-    borderTopRightRadius: sm,
-    borderTopLeftRadius: sm,
-    backgroundColor: 'white',
-    width: '100%',
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-  })
-
   handleChangePage = (e, page) => {
     this.setState({ page })
   }
@@ -159,17 +118,19 @@ class GnoTable extends React.Component<any, any> {
     }
 
     const isEmpty = size === 0 && !disableLoadingOnEmptyTable
-
+    const column = {
+      color: 'white',
+    }
     return (
       <>
         {!isEmpty && (
           <Table aria-labelledby={label} className={noBorder ? '' : classes.root}>
-            <TableHead columns={columns} onSort={this.onSort} order={order} orderBy={orderByParam} />
+            <TableHead columns={columns} column={column} onSort={this.onSort} order={order} orderBy={orderByParam} />
             <TableBody>{children(sortedData)}</TableBody>
           </Table>
         )}
         {isEmpty && (
-          <Row className={classes.loader} style={this.getEmptyStyle()}>
+          <Row className={classes.loader} style={getEmptyStyle}>
             <Loader size="sm" />
           </Row>
         )}

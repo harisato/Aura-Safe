@@ -97,7 +97,7 @@ const AppsList = (): React.ReactElement => {
       <Menu>
         <Col start="sm" xs={12}>
           <Breadcrumb>
-            <BreadcrumbElement iconType="apps" text="Apps" />
+            <BreadcrumbElement color="white" iconType="apps" text="Apps" />
           </Breadcrumb>
         </Col>
       </Menu>
