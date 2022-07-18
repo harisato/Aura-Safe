@@ -1,40 +1,43 @@
+import { Text } from '@gnosis.pm/safe-react-components'
 import { makeStyles, Paper } from '@material-ui/core'
 import IconButton from '@material-ui/core/IconButton'
 import ChevronLeft from '@material-ui/icons/ChevronLeft'
 import { ReactElement, useEffect, useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 import { useHistory } from 'react-router-dom'
+import ButtonGradient from 'src/components/ButtonGradient'
 import Block from 'src/components/layout/Block'
+import Button from 'src/components/layout/Button'
+import Col from 'src/components/layout/Col'
 import Heading from 'src/components/layout/Heading'
 import Page from 'src/components/layout/Page'
 import Row from 'src/components/layout/Row'
+import { currentNetworkAddressBookAsMap } from 'src/logic/addressBook/store/selectors'
 import { useMnemonicSafeName } from 'src/logic/hooks/useMnemonicName'
+import { enhanceSnackbarForAction, ERROR, SUCCESS } from 'src/logic/notifications'
+import enqueueSnackbar from 'src/logic/notifications/store/actions/enqueueSnackbar'
+import { userAccountSelector } from 'src/logic/wallets/store/selectors'
+import { cancelMSafe, getMSafeInfo, ISafeCancel } from 'src/services'
+import { MESSAGES_CODE } from 'src/services/constant/message'
 import { boldFont, lg, secondary, sm } from 'src/theme/variables'
+import { loadFromStorage } from 'src/utils/storage'
 import styled from 'styled-components'
 import GnoForm from '../../components/forms/GnoForm'
-import Button from 'src/components/layout/Button'
-import Col from 'src/components/layout/Col'
-import { CANCEL_SPECIFIC_SAFE_ROUTE, extractPrefixedSafeAddress, ROOT_ROUTE } from '../routes'
-import ReviewAllowStep from './steps/ReviewAllowStep'
 import Hairline from '../../components/layout/Hairline'
-import {
-  CancelSafeFormValues,
-  FIELD_CREATE_CUSTOM_SAFE_NAME,
-  FIELD_CREATE_SUGGESTED_SAFE_NAME,
-  FIELD_SAFE_THRESHOLD,
-  FIELD_SAFE_OWNERS_LIST,
-  OwnerFieldItem,
-} from './fields/cancelSafeFields'
-import { cancelMSafe, getMSafeInfo, ISafeCancel } from 'src/services'
-import { useDispatch, useSelector } from 'react-redux'
-import { userAccountSelector } from 'src/logic/wallets/store/selectors'
-import enqueueSnackbar from 'src/logic/notifications/store/actions/enqueueSnackbar'
-import { enhanceSnackbarForAction, ERROR, SUCCESS } from 'src/logic/notifications'
-import { MESSAGES_CODE } from 'src/services/constant/message'
-import { loadFromStorage } from 'src/utils/storage'
 import { PendingSafeListStorage } from '../CreateSafePage/CreateSafePage'
 import { SAFES_PENDING_STORAGE_KEY } from '../CreateSafePage/fields/createSafeFields'
-import ButtonGradient from 'src/components/ButtonGradient'
-import { Text } from '@gnosis.pm/safe-react-components'
+import { CANCEL_SPECIFIC_SAFE_ROUTE, extractPrefixedSafeAddress, ROOT_ROUTE } from '../routes'
+import {
+  CancelSafeFormValues,
+  FIELD_ALLOW_SAFE_ADDRESS,
+  FIELD_CREATE_CUSTOM_SAFE_NAME,
+  FIELD_CREATE_SUGGESTED_SAFE_NAME,
+  FIELD_SAFE_CREATED_ADDRESS,
+  FIELD_SAFE_OWNERS_LIST,
+  FIELD_SAFE_THRESHOLD,
+  OwnerFieldItem,
+} from './fields/cancelSafeFields'
+import ReviewAllowStep from './steps/ReviewAllowStep'
 
 function Cancel(): ReactElement {
   const history = useHistory()
@@ -44,6 +47,8 @@ function Cancel(): ReactElement {
   const { safeAddress, safeId } = extractPrefixedSafeAddress(undefined, CANCEL_SPECIFIC_SAFE_ROUTE)
   const safeRandomName = useMnemonicSafeName()
   const myAddress = useSelector(userAccountSelector)
+
+  const addressBook = useSelector(currentNetworkAddressBookAsMap)
 
   const [initialFormValues, setInitialFormValues] = useState<CancelSafeFormValues>()
 
@@ -58,10 +63,12 @@ function Cancel(): ReactElement {
         [FIELD_CREATE_CUSTOM_SAFE_NAME]: '',
         [FIELD_SAFE_OWNERS_LIST]: [],
         [FIELD_SAFE_THRESHOLD]: 0,
+        [FIELD_ALLOW_SAFE_ADDRESS]: '',
+        [FIELD_SAFE_CREATED_ADDRESS]: '',
       }
 
       try {
-        const { owners, threshold } = await getMSafeInfo(safeId)
+        const { owners, threshold, createdAddress } = await getMSafeInfo(safeId)
 
         const safesPending = await Promise.resolve(loadFromStorage<PendingSafeListStorage>(SAFES_PENDING_STORAGE_KEY))
         const pendingSafe = safesPending?.find((e) => e.id === safeId)
@@ -73,18 +80,19 @@ function Cancel(): ReactElement {
 
         const ownerList: Array<OwnerFieldItem> = owners.map((address) => ({
           address: address,
-          name: '',
+          name: addressBook[address]?.name || '',
         }))
 
         initialValues[FIELD_SAFE_OWNERS_LIST] = [...ownerList]
         initialValues[FIELD_SAFE_THRESHOLD] = threshold
+        initialValues[FIELD_SAFE_CREATED_ADDRESS] = createdAddress || ''
 
         setInitialFormValues(initialValues)
       } catch (error) {}
     }
 
     checkSafeAddress()
-  }, [safeAddress, safeRandomName, safeId])
+  }, [safeAddress, safeRandomName, safeId, addressBook])
 
   const onSubmitCancelSafe = async (values?: CancelSafeFormValues): Promise<void> => {
     if (!safeId) {
@@ -145,18 +153,9 @@ function Cancel(): ReactElement {
                       <Button onClick={history.goBack} size="small" className={classes.backButton} type="button">
                         {backButtonLabel}
                       </Button>
-                      {/* <Button
-                        color="primary"
-                        type="submit"
-                        size="small"
-                        className={classes.nextButton}
-                        variant="contained"
-                      >
-                        {nextButtonLabel}
-                      </Button> */}
                       <ButtonGradient size="lg" onClick={() => onSubmitCancelSafe()}>
                         <Text size="xl" color="white">
-                          Send
+                          {nextButtonLabel}
                         </Text>
                       </ButtonGradient>
                     </Col>
@@ -166,8 +165,6 @@ function Cancel(): ReactElement {
             }}
           </GnoForm>
         </StyledFormContainer>
-
-        {/* key={safeAddress} ensures that it goes to step 1 when the address changes */}
       </Block>
     </Page>
   )
@@ -184,7 +181,7 @@ const StyledFormContainer = styled.div`
   max-width: 770px;
 `
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles((_) => ({
   root: {
     margin: '10px 0 10px 10px',
     maxWidth: '770px',

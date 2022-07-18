@@ -4,6 +4,7 @@ export const FIELD_ALLOW_SUGGESTED_SAFE_NAME = 'suggestedSafeName'
 export const FIELD_ALLOW_IS_LOADING_SAFE_ADDRESS = 'isLoadingSafeAddress'
 export const FIELD_SAFE_OWNER_LIST = 'safeOwnerList'
 export const FIELD_SAFE_THRESHOLD = 'safeThreshold'
+export const FIELD_SAFE_CREATED_ADDRESS = 'safeCreatedAddress'
 
 export type OwnerFieldListItem = {
   address: string
@@ -17,4 +18,5 @@ export type LoadSafeFormValues = {
   [FIELD_ALLOW_IS_LOADING_SAFE_ADDRESS]: boolean
   [FIELD_SAFE_OWNER_LIST]: Array<OwnerFieldListItem>
   [FIELD_SAFE_THRESHOLD]?: number
+  [FIELD_SAFE_CREATED_ADDRESS]?: string
 }
