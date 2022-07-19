@@ -1,12 +1,12 @@
 import { Loader, Title } from '@gnosis.pm/safe-react-components'
 import { ReactElement } from 'react'
 
-import { usePagedHistoryTransactions } from './hooks/usePagedHistoryTransactions'
-import { Centered, NoTransactions } from './styled'
-import { HistoryTxList } from './HistoryTxList'
-import { TxsInfiniteScroll } from './TxsInfiniteScroll'
 import Img from 'src/components/layout/Img'
 import NoTransactionsImage from './assets/no-transactions.svg'
+import { HistoryTxList } from './HistoryTxList'
+import { usePagedHistoryTransactions } from './hooks/usePagedHistoryTransactions'
+import { Centered, NoTransactions } from './styled'
+import { TxsInfiniteScroll } from './TxsInfiniteScroll'
 
 export const HistoryTransactions = (): ReactElement => {
   const { count, hasMore, next, transactions, isLoading } = usePagedHistoryTransactions()
