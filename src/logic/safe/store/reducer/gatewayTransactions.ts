@@ -1,8 +1,9 @@
 import { TransactionSummary } from '@gnosis.pm/safe-react-gateway-sdk'
-import get from 'lodash/get'
 import cloneDeep from 'lodash/cloneDeep'
+import get from 'lodash/get'
 import { Action, handleActions } from 'redux-actions'
 
+import { UPDATE_TRANSACTION_DETAILS } from 'src/logic/safe/store/actions/fetchTransactionDetails'
 import {
   ADD_HISTORY_TRANSACTIONS,
   ADD_QUEUED_TRANSACTIONS,
@@ -18,12 +19,11 @@ import {
   StoreStructure,
   Transaction,
 } from 'src/logic/safe/store/models/types/gateway.d'
-import { UPDATE_TRANSACTION_DETAILS } from 'src/logic/safe/store/actions/fetchTransactionDetails'
 
-import { getLocalStartOfDate } from 'src/utils/date'
-import { sameString } from 'src/utils/strings'
-import { sortObject } from 'src/utils/objects'
 import { ChainId } from 'src/config/chain.d'
+import { getLocalStartOfDate } from 'src/utils/date'
+import { sortObject } from 'src/utils/objects'
+import { sameString } from 'src/utils/strings'
 
 export const GATEWAY_TRANSACTIONS_ID = 'gatewayTransactions'
 
@@ -204,7 +204,10 @@ export const gatewayTransactionsReducer = handleActions<GatewayTransactionsState
         }
 
         for (const [timestamp, transactions] of Object.entries(txGroup)) {
-          const txIndex = transactions.findIndex(({ id }) => sameString(id, transactionId))
+          // const txIndex = transactions.findIndex(({ id, txHash }) => sameString(id, transactionId))
+          const txIndex = transactions.findIndex(
+            ({ txHash, id }) => sameString(txHash, value?.txHash || undefined) || sameString(id, transactionId),
+          )
 
           if (txIndex !== -1) {
             txGroup[timestamp][txIndex]['txDetails'] = value

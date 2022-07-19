@@ -75,11 +75,13 @@ const StyledTextLabel = styled(Text)`
 `
 
 const StyledTextSafeName = styled(Text)`
-  flex-grow: 1;
   overflow: hidden;
   text-overflow: ellipsis;
   color: #98989b;
   text-align: start;
+`
+const StyledTextSafeNameWrapper = styled.div`
+  flex-grow: 1;
 `
 
 const StyledPrefixedEthHashInfo = styled(PrefixedEthHashInfo)`
@@ -103,11 +105,12 @@ const StyledText = styled(Text)`
   margin: 8px 0 16px 0;
 `
 
-const StyledDotChainName = styled.div`
+const StyledDotChainName = styled.span`
   width: 8px;
   height: 8px;
   background-color: ${(props) => props.color};
   border-radius: 50%;
+  margin-right: 5px;
 `
 
 const ContainerChainName = styled.div``
@@ -141,4 +144,5 @@ export {
   ContainerChainName,
   StyledIdenticonContainer,
   ContainerButton,
+  StyledTextSafeNameWrapper,
 }
