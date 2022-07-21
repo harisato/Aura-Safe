@@ -38,6 +38,6 @@ export const styles = createStyles({
     justifyContent: 'center',
     display: 'flex',
     fontSize: 16,
-    cuisor: 'pointer',
+    cursor: 'pointer',
   },
 })
