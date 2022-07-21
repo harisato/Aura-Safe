@@ -167,7 +167,7 @@ const theme = createTheme({
     },
     MuiFormHelperText: {
       root: {
-        color: secondary,
+        color: `${secondary} !important`,
         fontFamily: secondaryFontFamily,
         fontSize: '12px',
         marginTop: '0px',

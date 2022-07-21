@@ -51,7 +51,10 @@ import { WALLETS_NAME } from '../../logic/wallets/constant/wallets'
 import { loadLastUsedProvider } from '../../logic/wallets/store/middlewares/providerWatcher'
 import { MESSAGES_CODE } from '../../services/constant/message'
 import { useAnalytics, USER_EVENTS } from '../../utils/googleAnalytics'
+import { ConnectWalletModal } from 'src/components/ConnectWalletModal'
+
 import { BackIcon, EmphasisLabel, LoaderContainer, StyledBorder, StyledButtonBorder, StyledButtonLabel } from './styles'
+import useConnectWallet from 'src/logic/hooks/useConnectWallet'
 
 type ModalDataType = {
   safeAddress: string
@@ -77,6 +80,7 @@ function CreateSafePage(): ReactElement {
   const providerName = useSelector(providerNameSelector)
   const isWrongNetwork = useSelector(shouldSwitchWalletChain)
   const provider = !!providerName && !isWrongNetwork
+  const { connectWalletState, onConnectWalletShow, onConnectWalletHide } = useConnectWallet()
   const { trackEvent } = useAnalytics()
 
   const BYTES = Buffer.from('')
@@ -211,7 +215,7 @@ function CreateSafePage(): ReactElement {
               nextButtonLabel="Continue"
               disableNextButton={!provider}
             >
-              <SelectWalletAndNetworkStep />
+              <SelectWalletAndNetworkStep onConnectWalletShow={onConnectWalletShow} />
             </StepFormElement>
             <StepFormElement label={nameNewSafeStepLabel} nextButtonLabel="Continue">
               <NameNewSafeStep />
@@ -371,6 +375,7 @@ function CreateSafePage(): ReactElement {
           }
         />
       )} */}
+      <ConnectWalletModal isOpen={connectWalletState.showConnect} onClose={onConnectWalletHide}></ConnectWalletModal>
     </>
   )
 }

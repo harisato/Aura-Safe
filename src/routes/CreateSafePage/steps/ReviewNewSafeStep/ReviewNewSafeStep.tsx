@@ -3,7 +3,7 @@ import { useForm } from 'react-final-form'
 import { useSelector } from 'react-redux'
 
 import TableContainer from '@material-ui/core/TableContainer'
-
+import { makeStyles } from '@material-ui/core'
 import Block from 'src/components/layout/Block'
 import Col from 'src/components/layout/Col'
 import Hairline from 'src/components/layout/Hairline'
@@ -30,12 +30,15 @@ import {
   TitleContainer,
   OwnersAddressesContainer,
   DescriptionContainer,
+  styles,
 } from './styles'
+
 export const reviewNewSafeStepLabel = 'Review'
+const useStyles = makeStyles((theme) => styles(theme))
 
 function ReviewNewSafeStep(): ReactElement | null {
   const provider = useSelector(providerNameSelector)
-
+  const classes = useStyles()
   const { setCurrentStep } = useStepper()
 
   useEffect(() => {
@@ -69,51 +72,54 @@ function ReviewNewSafeStep(): ReactElement | null {
 
   return (
     <Row data-testid={'create-safe-review-step'}>
-      <Col xs={4} layout="column">
+      <Col xs={12}>
         <DetailsContainer>
-          <Block margin="lg">
-            <Paragraph color="primary" noMargin size="lg">
-              Details
-            </Paragraph>
-          </Block>
-          <Block margin="lg">
-            <Paragraph color="white" noMargin size="sm">
-              Name of new Safe
-            </Paragraph>
-            <SafeNameParagraph
-              color="primary"
-              noMargin
-              size="md"
-              weight="bolder"
-              data-testid="create-safe-review-safe-name"
-            >
-              {safeName}
-            </SafeNameParagraph>
-          </Block>
-          <Block margin="lg">
-            <Paragraph color="white" noMargin size="sm">
-              Any transaction requires the confirmation of:
-            </Paragraph>
-            <Paragraph
-              color="primary"
-              noMargin
-              size="md"
-              weight="bolder"
-              data-testid={'create-safe-review-threshold-label'}
-            >
-              {`${threshold} out of ${numberOfOwners} owners`}
-            </Paragraph>
-          </Block>
+          <Col xs={12}>
+            <Block margin="lg">
+              <Paragraph color="primary" noMargin size="lg">
+                Details
+              </Paragraph>
+            </Block>
+          </Col>
+          <div style={{ display: 'flex' }}>
+            <Block margin="lg">
+              <Paragraph color="white" noMargin size="sm">
+                Name of new Safe
+              </Paragraph>
+              <SafeNameParagraph
+                color="primary"
+                noMargin
+                size="md"
+                weight="bolder"
+                data-testid="create-safe-review-safe-name"
+              >
+                {safeName}
+              </SafeNameParagraph>
+            </Block>
+            <Block margin="marginLeftxl">
+              <Paragraph color="white" noMargin size="sm">
+                Any transaction requires the confirmation of:
+              </Paragraph>
+              <Paragraph
+                color="primary"
+                noMargin
+                size="md"
+                weight="bolder"
+                data-testid={'create-safe-review-threshold-label'}
+              >
+                {`${threshold} out of ${numberOfOwners} owners`}
+              </Paragraph>
+            </Block>
+          </div>
         </DetailsContainer>
       </Col>
-      <Col layout="column" xs={8}>
-        <TableContainer>
+      <Col layout="column" xs={12}>
+        <TableContainer className={classes.containerListOwner}>
           <TitleContainer>
             <Paragraph color="primary" noMargin size="lg">
               {`${numberOfOwners} Safe owners`}
             </Paragraph>
           </TitleContainer>
-          <Hairline />
           {owners.map(({ nameFieldName, addressFieldName }) => {
             const ownerName = createSafeFormValues[nameFieldName]
             const ownerAddress = createSafeFormValues[addressFieldName]
@@ -129,8 +135,15 @@ function ReviewNewSafeStep(): ReactElement | null {
                       explorerUrl={getExplorerInfo(ownerAddress)}
                     />
                   </Col>
+                  <Col
+                    align="center"
+                    xs={12}
+                    data-testid={`create-safe-owner-details-${ownerAddress}`}
+                    style={{ marginTop: 10 }}
+                  >
+                    <Hairline />
+                  </Col>
                 </OwnersAddressesContainer>
-                <Hairline />
               </React.Fragment>
             )
           })}

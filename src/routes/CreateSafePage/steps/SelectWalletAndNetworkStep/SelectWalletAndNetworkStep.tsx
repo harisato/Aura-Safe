@@ -17,11 +17,11 @@ import { getChains } from 'src/config/cache/chains'
 import { Container, SwitchNetworkContainer, StyledDialogTitle, StyledDialogContent, NetworkLabelItem } from './styles'
 export const selectWalletAndNetworkStepLabel = 'Connect wallet & select network'
 
-function SelectWalletAndNetworkStep(): ReactElement {
+function SelectWalletAndNetworkStep(props): ReactElement {
   const [isNetworkSelectorPopupOpen, setIsNetworkSelectorPopupOpen] = useState(false)
   const isWalletConnected = !!useSelector(providerNameSelector)
   const isWrongNetwork = useSelector(shouldSwitchWalletChain)
-
+  const { onConnectWalletShow } = props
   function openNetworkSelectorPopup() {
     setIsNetworkSelectorPopupOpen(true)
   }
@@ -55,7 +55,7 @@ function SelectWalletAndNetworkStep(): ReactElement {
             Switch Network
           </ButtonLink>
         ) : (
-          <ConnectButton onConnect={() => console.log} data-testid="heading-connect-btn" />
+          <ConnectButton onConnect={onConnectWalletShow} data-testid="heading-connect-btn" />
         )}
       </SwitchNetworkContainer>
 

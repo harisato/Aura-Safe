@@ -17,50 +17,61 @@ import {
   StyledButtonBorder,
   StyledBorder,
 } from './styles'
+import styled from 'styled-components'
+import plusIcon from './assets/plus.svg'
 
+const TitleFont = styled(Title)`
+  font-family: 'SFProDisplay';
+`
+const TextFont = styled(Text)`
+  font-family: 'SFProDisplay';
+`
 function Welcome(): ReactElement {
   return (
     <Page align="center">
       <Block>
         <StyledTitle>
-          <Title size="md" strong>
+          <TitleFont size="md" strong>
             Welcome to Aura Safe.
-          </Title>
-          <Title size="xs">
+          </TitleFont>
+          <TitleFont size="xs">
             Aura Safe is the most trusted platform to manage digital assets. <br /> Here is how to get started:
-          </Title>
+          </TitleFont>
         </StyledTitle>
         <CardsContainer>
           <StyledCard>
             {/* Create Safe */}
             <CardContentContainer>
-              <Title size="sm" strong withoutMargin>
+              <TitleFont size="sm" strong withoutMargin>
                 Create Safe
-              </Title>
+              </TitleFont>
               <CardDescriptionContainer>
-                <Text size="xl" color="white">
+                <TextFont size="xl" color="white">
                   Create a new Safe that is controlled by one or multiple owners.
-                </Text>
-                <Text size="xl" color="white">
+                </TextFont>
+                <TextFont size="xl" color="white">
                   You will be required to pay a network fee for creating your new Safe.
-                </Text>
+                </TextFont>
               </CardDescriptionContainer>
               <StyledButton size="lg" variant="contained" component={Link} to={OPEN_SAFE_ROUTE}>
                 {/* <Button> */}
-                <StyledTextButton size="xl">+ Create new Safe</StyledTextButton>
+                <StyledTextButton size="xl">
+                  <img src={plusIcon} />
+                  <p style={{ alignSelf: 'center', marginLeft: 5 }}> Create new Safe</p>
+                </StyledTextButton>
                 {/* </Button> */}
               </StyledButton>
             </CardContentContainer>
             <Divider orientation="vertical" flexItem />
             <CardContentContainer>
-              <Title size="sm" strong withoutMargin>
+              <TitleFont size="sm" strong withoutMargin>
                 Load Existing Safe
-              </Title>
+              </TitleFont>
               <CardDescriptionContainer>
-                <Text size="xl" color="white">
+                <TextFont size="xl" color="white">
                   Already have a Safe or want to access it from a different device? Easily load your Safe using your
                   Safe address.
-                </Text>
+                </TextFont>
               </CardDescriptionContainer>
               <StyledBorder>
                 <StyledButtonBorder iconType="safe" iconSize="sm" size="lg" component={Link} to={LOAD_SAFE_ROUTE}>

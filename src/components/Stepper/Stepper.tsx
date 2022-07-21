@@ -103,11 +103,17 @@ function StepperComponent(): ReactElement {
                 {currentComponent}
                 <Hairline />
                 <Row align="center" grow className={classes.controlStyle}>
-                  <Col center="xs" xs={12}>
+                  <Col center="md" xs={12}>
                     <Button onClick={onClickPreviousStep} size="small" className={classes.backButton} type="button">
                       {backButtonLabel}
                     </Button>
-                    <div className={classes.borderNextButton}>
+                    <div
+                      className={
+                        disableNextButton || step.props.disableNextButton
+                          ? classes.borderNextButtonDisable
+                          : classes.borderNextButton
+                      }
+                    >
                       <Button
                         onClick={onClickNextStep}
                         color="primary"

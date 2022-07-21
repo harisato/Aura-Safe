@@ -28,6 +28,7 @@ const CardContentContainer = styled.div`
 const StyledButtonLabel = styled(Text)`
   color: white;
   background-color: transparent !important;
+  font-family: 'SFProDisplay';
 `
 
 const CardDescriptionContainer = styled.div`
@@ -45,11 +46,19 @@ const StyledButton = styled(Button)`
 
 const StyledTextButton = styled(Text)`
   color: black;
+  font-family: 'SFProDisplay';
+  display: flex;
+  justify-content: center;
+  align-item: center;
 `
 
 const StyledButtonBorder = styled(Button)`
   background-color: rgba(18, 18, 18, 1) !important;
   border-radius: 50px !important;
+  svg {
+    width: 28px;
+    height: 28px;
+  }
 `
 
 const StyledBorder = styled.div`

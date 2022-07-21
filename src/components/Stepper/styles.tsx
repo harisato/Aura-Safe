@@ -15,7 +15,7 @@ const styles = (theme) =>
     backButton: {
       marginRight: sm,
       fontWeight: boldFont,
-      color: theme.palette.secondary.main,
+      color: 'white',
     },
     nextButton: {
       fontWeight: boldFont,
@@ -26,6 +26,7 @@ const styles = (theme) =>
         backgroundColor: 'transparent',
       },
     },
+
     borderNextButton: {
       borderRadius: '50px',
       border: ' 2px solid transparent',
@@ -33,6 +34,16 @@ const styles = (theme) =>
       backgroundOrigin: 'border-box',
       backgroundClip: 'content-box, border-box',
     },
+
+    borderNextButtonDisable: {
+      borderRadius: '50px',
+      border: ' 2px solid transparent',
+      backgroundImage: `${borderLinear}`,
+      backgroundOrigin: 'border-box',
+      backgroundClip: 'content-box, border-box',
+      opacity: 0.5,
+    },
+
     stepLabel: {
       cursor: ({ isStepLabelClickable }: any) => (isStepLabelClickable ? 'pointer' : 'inherit'),
     },

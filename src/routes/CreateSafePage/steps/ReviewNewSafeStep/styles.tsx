@@ -6,8 +6,9 @@ import Row from 'src/components/layout/Row'
 
 const DetailsContainer = styled(Block)`
   padding: ${lg};
-  border-right: solid 1px ${border};
+  // border-right: solid 1px ${border};
   height: 100%;
+  width: 100%;
 `
 
 const SafeNameParagraph = styled(Paragraph)`
@@ -15,7 +16,7 @@ const SafeNameParagraph = styled(Paragraph)`
   overflow: hidden;
 `
 const TitleContainer = styled(Block)`
-  padding: ${lg};
+  padding-left: ${lg};
 `
 
 const OwnersAddressesContainer = styled(Row)`
@@ -25,10 +26,23 @@ const OwnersAddressesContainer = styled(Row)`
   padding-left: ${lg};
 `
 const DescriptionContainer = styled(Row)`
-  background-color: ${bgBox};
+  background-color: rgba(29, 29, 31, 1);
   padding: ${lg};
-  text-align: center;
-  border-top: solid 1px ${border};
+  text-align: left;
+  margin: 8px;
+  border-radius: 8px;
 `
+import { createStyles } from '@material-ui/core'
+const styles = (theme) =>
+  createStyles({
+    containerListOwner: {
+      backgroundColor: 'rgba(29, 29, 31, 1)',
+      padding: '10px 0 0 0',
+      margin: 0,
+      width: '98%',
+      marginLeft: 8,
+      borderRadius: 8,
+    },
+  })
 
-export { DetailsContainer, SafeNameParagraph, TitleContainer, OwnersAddressesContainer, DescriptionContainer }
+export { DetailsContainer, SafeNameParagraph, TitleContainer, OwnersAddressesContainer, DescriptionContainer, styles }
