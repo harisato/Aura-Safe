@@ -303,10 +303,7 @@
         "high": 2000000000
       },
       "features": [
-        "stargate",
-        "no-legacy-stdTx",
-        "ibc-transfer",
-        "ibc-go"
+        "ibc-transfer", "ibc-go", "eth-address-gen", "eth-key-sign"
       ]
     },
     {
