@@ -1,4 +1,4 @@
-import { FixedDialog, Text } from '@gnosis.pm/safe-react-components'
+import { FixedDialog, Text } from '@aura/safe-aura-components'
 
 interface OwnProps {
   onCancel: () => void

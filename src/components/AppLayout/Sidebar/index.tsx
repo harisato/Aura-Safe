@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import { Divider } from '@gnosis.pm/safe-react-components'
+import { Divider } from '@aura/safe-aura-components'
 
 import List, { ListItemType } from 'src/components/List'
 import SafeHeader from './SafeHeader'

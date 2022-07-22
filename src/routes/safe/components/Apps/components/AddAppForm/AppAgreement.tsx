@@ -1,4 +1,4 @@
-import { Checkbox, Text } from '@gnosis.pm/safe-react-components'
+import { Checkbox, Text } from '@aura/safe-aura-components'
 
 import { useFormState } from 'react-final-form'
 import styled from 'styled-components'

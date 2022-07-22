@@ -1,4 +1,4 @@
-import { Accordion, AccordionDetails, AccordionSummary, ButtonLink, Text } from '@gnosis.pm/safe-react-components'
+import { Accordion, AccordionDetails, AccordionSummary, ButtonLink, Text } from '@aura/safe-aura-components'
 import { ReactElement, useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import styled from 'styled-components'

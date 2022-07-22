@@ -1,4 +1,4 @@
-import { Loader } from '@gnosis.pm/safe-react-components'
+import { Loader } from '@aura/safe-aura-components'
 import { makeStyles } from '@material-ui/core/styles'
 import { Suspense, useEffect, useState, lazy } from 'react'
 

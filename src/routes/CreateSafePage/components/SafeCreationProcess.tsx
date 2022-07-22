@@ -2,7 +2,7 @@ import { ReactElement, useState, useEffect, useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { backOff } from 'exponential-backoff'
 import { TransactionReceipt } from 'web3-core'
-import { GenericModal } from '@gnosis.pm/safe-react-components'
+import { GenericModal } from '@aura/safe-aura-components'
 import styled from 'styled-components'
 
 import { getSafeDeploymentTransaction } from 'src/logic/contracts/safeContracts'

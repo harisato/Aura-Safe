@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { makeStyles } from '@material-ui/core/styles'
-import { Identicon } from '@gnosis.pm/safe-react-components'
+import { Identicon } from '@aura/safe-aura-components'
 import Spacer from 'src/components/Spacer'
 import Block from 'src/components/layout/Block'
 import Button from 'src/components/layout/Button'

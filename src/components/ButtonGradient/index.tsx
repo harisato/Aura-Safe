@@ -1,5 +1,5 @@
-import { Button, IconType } from '@gnosis.pm/safe-react-components'
-import { ThemeButtonSize, ThemeIconSize, ThemeTextSize } from '@gnosis.pm/safe-react-components/dist/theme'
+import { Button, IconType } from '@aura/safe-aura-components'
+import { ThemeButtonSize, ThemeIconSize, ThemeTextSize } from '@aura/safe-aura-components/dist/theme'
 import { ReactNode } from 'react'
 import { borderLinear } from 'src/theme/variables'
 import styled from 'styled-components'

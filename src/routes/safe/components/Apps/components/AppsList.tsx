@@ -1,4 +1,4 @@
-import { IconText, Loader, Menu, Text, Breadcrumb, BreadcrumbElement } from '@gnosis.pm/safe-react-components'
+import { IconText, Loader, Menu, Text, Breadcrumb, BreadcrumbElement } from '@aura/safe-aura-components'
 import { useState } from 'react'
 import styled, { css } from 'styled-components'
 import { motion, AnimatePresence } from 'framer-motion'

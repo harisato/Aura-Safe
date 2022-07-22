@@ -5,7 +5,7 @@ import { Provider } from 'react-redux'
 import { ThemeProvider } from 'styled-components'
 import { Store } from 'redux'
 import { History } from 'history'
-import { theme } from '@gnosis.pm/safe-react-components'
+import { theme } from '@aura/safe-aura-components'
 
 declare type Theme = typeof theme
 

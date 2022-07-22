@@ -1,6 +1,6 @@
 import { ReactElement, useState, useCallback } from 'react'
 import { useSelector } from 'react-redux'
-import { ButtonLink } from '@gnosis.pm/safe-react-components'
+import { ButtonLink } from '@aura/safe-aura-components'
 import Dialog from '@material-ui/core/Dialog'
 import IconButton from '@material-ui/core/IconButton'
 import CloseIcon from '@material-ui/icons/Close'

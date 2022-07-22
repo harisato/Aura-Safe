@@ -1,4 +1,4 @@
-import { AccordionSummary, IconText } from '@gnosis.pm/safe-react-components'
+import { AccordionSummary, IconText } from '@aura/safe-aura-components'
 import { DataDecoded, Operation, TransactionData } from '@gnosis.pm/safe-react-gateway-sdk'
 import { ReactElement, ReactNode } from 'react'
 

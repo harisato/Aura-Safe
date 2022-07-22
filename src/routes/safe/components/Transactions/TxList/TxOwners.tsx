@@ -1,4 +1,4 @@
-import { Text, Icon } from '@gnosis.pm/safe-react-components'
+import { Text, Icon } from '@aura/safe-aura-components'
 import { ReactElement } from 'react'
 import styled from 'styled-components'
 

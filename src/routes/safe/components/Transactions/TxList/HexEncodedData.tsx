@@ -1,4 +1,4 @@
-import { Text } from '@gnosis.pm/safe-react-components'
+import { Text } from '@aura/safe-aura-components'
 import { createStyles, makeStyles } from '@material-ui/core/styles'
 import { ReactElement, useState } from 'react'
 

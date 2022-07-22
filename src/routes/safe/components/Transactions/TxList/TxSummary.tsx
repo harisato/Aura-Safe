@@ -1,4 +1,4 @@
-import { Text } from '@gnosis.pm/safe-react-components'
+import { Text } from '@aura/safe-aura-components'
 import { Operation } from '@gnosis.pm/safe-react-gateway-sdk'
 import { ReactElement } from 'react'
 

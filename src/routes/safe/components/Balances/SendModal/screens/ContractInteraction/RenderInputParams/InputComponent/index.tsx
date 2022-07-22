@@ -1,4 +1,4 @@
-import { Checkbox } from '@gnosis.pm/safe-react-components'
+import { Checkbox } from '@aura/safe-aura-components'
 import { ReactElement } from 'react'
 
 import Col from 'src/components/layout/Col'

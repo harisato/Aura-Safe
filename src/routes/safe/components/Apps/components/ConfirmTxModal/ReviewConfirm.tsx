@@ -1,5 +1,5 @@
 import { Operation } from '@gnosis.pm/safe-react-gateway-sdk'
-import { Text } from '@gnosis.pm/safe-react-components'
+import { Text } from '@aura/safe-aura-components'
 import { ReactElement, useEffect, useMemo, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import styled from 'styled-components'

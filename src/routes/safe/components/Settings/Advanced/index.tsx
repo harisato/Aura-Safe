@@ -1,4 +1,4 @@
-import { Text, theme, Title } from '@gnosis.pm/safe-react-components'
+import { Text, theme, Title } from '@aura/safe-aura-components'
 import { ReactElement, useEffect } from 'react'
 import { useSelector } from 'react-redux'
 import styled from 'styled-components'

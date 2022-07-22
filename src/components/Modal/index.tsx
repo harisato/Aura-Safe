@@ -1,4 +1,4 @@
-import { Button, Icon, Loader } from '@gnosis.pm/safe-react-components'
+import { Button, Icon, Loader } from '@aura/safe-aura-components'
 import cn from 'classnames'
 import { ReactElement } from 'react'
 

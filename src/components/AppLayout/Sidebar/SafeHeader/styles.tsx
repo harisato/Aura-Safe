@@ -1,7 +1,7 @@
 import { border, fontColor } from 'src/theme/variables'
 import styled from 'styled-components'
 import PrefixedEthHashInfo from 'src/components/PrefixedEthHashInfo'
-import { Icon, Text, Button } from '@gnosis.pm/safe-react-components'
+import { Icon, Text, Button } from '@aura/safe-aura-components'
 import { StyledTextLabelProps } from './type'
 import { borderLinear } from 'src/theme/variables'
 

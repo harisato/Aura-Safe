@@ -1,5 +1,5 @@
 import { useState, useEffect, ReactElement } from 'react'
-import { Icon } from '@gnosis.pm/safe-react-components'
+import { Icon } from '@aura/safe-aura-components'
 import TableCell from '@material-ui/core/TableCell'
 import TableContainer from '@material-ui/core/TableContainer'
 import TableRow from '@material-ui/core/TableRow'

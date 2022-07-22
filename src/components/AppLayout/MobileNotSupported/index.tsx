@@ -1,4 +1,4 @@
-import { Button, Text, Card, Icon } from '@gnosis.pm/safe-react-components'
+import { Button, Text, Card, Icon } from '@aura/safe-aura-components'
 import { alpha } from '@material-ui/core/styles/colorManipulator'
 import styled from 'styled-components'
 import { ReactElement } from 'react'

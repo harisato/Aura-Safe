@@ -1,6 +1,6 @@
 import { ReactElement, useState, useRef, useCallback, useEffect } from 'react'
 import styled from 'styled-components'
-import { Loader, Card, Title } from '@gnosis.pm/safe-react-components'
+import { Loader, Card, Title } from '@aura/safe-aura-components'
 import {
   GetBalanceParams,
   GetTxBySafeTxHashParams,

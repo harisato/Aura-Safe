@@ -1,4 +1,4 @@
-import { AccordionDetails } from '@gnosis.pm/safe-react-components'
+import { AccordionDetails } from '@aura/safe-aura-components'
 import { ReactElement, useContext, useEffect, useState } from 'react'
 
 import { LocalTransactionStatus, Transaction } from 'src/logic/safe/store/models/types/gateway.d'

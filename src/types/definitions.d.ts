@@ -1,5 +1,5 @@
 import 'styled-components'
-import { theme } from '@gnosis.pm/safe-react-components'
+import { theme } from '@aura/safe-aura-components'
 
 type Theme = typeof theme
 

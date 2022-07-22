@@ -1,4 +1,4 @@
-import { EthHashInfo } from '@gnosis.pm/safe-react-components'
+import { EthHashInfo } from '@aura/safe-aura-components'
 import styled from 'styled-components'
 
 const StyledPrefixedEthHashInfo = styled(EthHashInfo)`

@@ -1,5 +1,5 @@
 import { ReactElement } from 'react'
-import { Icon, Text, Title, ModalFooterConfirmation } from '@gnosis.pm/safe-react-components'
+import { Icon, Text, Title, ModalFooterConfirmation } from '@aura/safe-aura-components'
 import styled from 'styled-components'
 import { ConfirmTxModalProps } from '.'
 
