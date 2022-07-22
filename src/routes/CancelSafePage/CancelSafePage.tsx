@@ -73,8 +73,6 @@ function Cancel(): ReactElement {
         const safesPending = await Promise.resolve(loadFromStorage<PendingSafeListStorage>(SAFES_PENDING_STORAGE_KEY))
         const pendingSafe = safesPending?.find((e) => e.id === safeId)
 
-        console.log(pendingSafe)
-
         if (pendingSafe) {
           initialValues[FIELD_CREATE_SUGGESTED_SAFE_NAME] =
             pendingSafe[FIELD_CREATE_CUSTOM_SAFE_NAME] || pendingSafe[FIELD_CREATE_SUGGESTED_SAFE_NAME]

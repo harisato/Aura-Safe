@@ -83,8 +83,6 @@ export const addressBookName = createSelector(
 export const currentNetworkAddressBook = createSelector(
   [addressBookState, currentChainId],
   (addressBook, curChainId): AppReduxState['addressBook'] => {
-    console.log('currentNetworkAddressBook', addressBook)
-
     return addressBook.filter(({ chainId }) => chainId.toString() === curChainId)
   },
 )
