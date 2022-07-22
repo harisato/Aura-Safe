@@ -1,4 +1,4 @@
-import { Loader } from '@aura/safe-aura-components'
+import { Loader } from '@aura/safe-react-components'
 import { makeStyles } from '@material-ui/core/styles'
 import { Suspense, useEffect, useState, lazy } from 'react'
 

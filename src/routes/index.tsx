@@ -1,5 +1,5 @@
 import React from 'react'
-import { Loader } from '@aura/safe-aura-components'
+import { Loader } from '@aura/safe-react-components'
 import { useEffect } from 'react'
 import { useSelector } from 'react-redux'
 import { matchPath, Redirect, Route, Switch, useLocation } from 'react-router-dom'

@@ -1,5 +1,5 @@
 import 'styled-components'
-import { theme } from '@aura/safe-aura-components'
+import { theme } from '@aura/safe-react-components'
 
 type Theme = typeof theme
 

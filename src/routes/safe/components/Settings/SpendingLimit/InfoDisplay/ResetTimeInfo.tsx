@@ -1,4 +1,4 @@
-import { IconText, Text } from '@aura/safe-aura-components'
+import { IconText, Text } from '@aura/safe-react-components'
 import { ReactElement } from 'react'
 
 import Row from 'src/components/layout/Row'

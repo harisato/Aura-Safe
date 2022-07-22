@@ -1,5 +1,5 @@
 import { ReactElement } from 'react'
-import { Button, Title, Text } from '@aura/safe-aura-components'
+import { Button, Title, Text } from '@aura/safe-react-components'
 import Divider from '@material-ui/core/Divider'
 import Page from 'src/components/layout/Page'
 import Block from 'src/components/layout/Block'

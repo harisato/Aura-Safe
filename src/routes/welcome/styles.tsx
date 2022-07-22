@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import { Card, Text, Button } from '@aura/safe-aura-components'
+import { Card, Text, Button } from '@aura/safe-react-components'
 import { colorLinear, borderLinear } from 'src/theme/variables'
 const CardsContainer = styled.div`
   display: flex;

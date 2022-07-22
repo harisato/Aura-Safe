@@ -2,7 +2,7 @@ import { ReactElement, useEffect, useState } from 'react'
 import { format } from 'date-fns'
 import { useSelector, useDispatch } from 'react-redux'
 import { CSVDownloader, jsonToCSV } from 'react-papaparse'
-import { Button, Loader, Text } from '@aura/safe-aura-components'
+import { Button, Loader, Text } from '@aura/safe-react-components'
 import styled from 'styled-components'
 
 import { enhanceSnackbarForAction, getNotificationsFromTxType } from 'src/logic/notifications'

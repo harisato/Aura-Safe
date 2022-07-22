@@ -1,4 +1,4 @@
-import { Loader, Title } from '@aura/safe-aura-components'
+import { Loader, Title } from '@aura/safe-react-components'
 import { ReactElement } from 'react'
 
 import Img from 'src/components/layout/Img'

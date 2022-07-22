@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { Link, useHistory } from 'react-router-dom'
 import ListMui from '@material-ui/core/List'
 import Collapse from '@material-ui/core/Collapse'
-import { FixedIcon } from '@aura/safe-aura-components'
+import { FixedIcon } from '@aura/safe-react-components'
 import IconButton from '@material-ui/core/IconButton'
 
 import ExpandLess from '@material-ui/icons/ExpandLess'

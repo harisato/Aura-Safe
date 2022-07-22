@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import { Text } from '@aura/safe-aura-components'
+import { Text } from '@aura/safe-react-components'
 import { useSelector } from 'react-redux'
 
 import Paragraph from 'src/components/layout/Paragraph'

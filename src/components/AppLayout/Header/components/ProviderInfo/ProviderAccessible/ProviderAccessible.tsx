@@ -1,7 +1,7 @@
 import { makeStyles } from '@material-ui/core/styles'
 import * as React from 'react'
 import { useSelector } from 'react-redux'
-import { Text } from '@aura/safe-aura-components'
+import { Text } from '@aura/safe-react-components'
 
 import Col from 'src/components/layout/Col'
 import Paragraph from 'src/components/layout/Paragraph'

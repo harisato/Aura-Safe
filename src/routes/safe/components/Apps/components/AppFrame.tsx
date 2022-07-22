@@ -1,6 +1,6 @@
 import { ReactElement, useState, useRef, useCallback, useEffect } from 'react'
 import styled from 'styled-components'
-import { Loader, Card, Title } from '@aura/safe-aura-components'
+import { Loader, Card, Title } from '@aura/safe-react-components'
 import {
   GetBalanceParams,
   GetTxBySafeTxHashParams,

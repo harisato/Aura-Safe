@@ -1,4 +1,4 @@
-import { Icon } from '@aura/safe-aura-components'
+import { Icon } from '@aura/safe-react-components'
 import { ListItemType } from 'src/components/List'
 import Layout from '.'
 

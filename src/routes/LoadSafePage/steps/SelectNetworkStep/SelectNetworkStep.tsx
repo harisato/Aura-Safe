@@ -1,5 +1,5 @@
 import { ReactElement, useState } from 'react'
-import { ButtonLink } from '@aura/safe-aura-components'
+import { ButtonLink } from '@aura/safe-react-components'
 import Dialog from '@material-ui/core/Dialog'
 import IconButton from '@material-ui/core/IconButton'
 import CloseIcon from '@material-ui/icons/Close'

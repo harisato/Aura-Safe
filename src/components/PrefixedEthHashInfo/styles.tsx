@@ -1,4 +1,4 @@
-import { EthHashInfo } from '@aura/safe-aura-components'
+import { EthHashInfo } from '@aura/safe-react-components'
 import styled from 'styled-components'
 
 const StyledPrefixedEthHashInfo = styled(EthHashInfo)`

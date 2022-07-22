@@ -1,4 +1,4 @@
-import { Loader } from '@aura/safe-aura-components'
+import { Loader } from '@aura/safe-react-components'
 import { ReactElement, ReactNode } from 'react'
 
 import { INFINITE_SCROLL_CONTAINER, InfiniteScroll } from 'src/components/InfiniteScroll'

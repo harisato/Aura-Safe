@@ -1,4 +1,4 @@
-import { AccordionDetails } from '@aura/safe-aura-components'
+import { AccordionDetails } from '@aura/safe-react-components'
 import { ReactElement } from 'react'
 
 import { isCreationTxInfo, Transaction } from 'src/logic/safe/store/models/types/gateway.d'

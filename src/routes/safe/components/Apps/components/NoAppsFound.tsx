@@ -1,4 +1,4 @@
-import { Text, Button } from '@aura/safe-aura-components'
+import { Text, Button } from '@aura/safe-react-components'
 import styled from 'styled-components'
 
 const NoAppsFoundTextContainer = styled.div`

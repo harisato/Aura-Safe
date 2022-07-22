@@ -1,4 +1,4 @@
-import { Text, Icon } from '@aura/safe-aura-components'
+import { Text, Icon } from '@aura/safe-react-components'
 import TableContainer from '@material-ui/core/TableContainer'
 import cn from 'classnames'
 import { ReactElement, useState } from 'react'

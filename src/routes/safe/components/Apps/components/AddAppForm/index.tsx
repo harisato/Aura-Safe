@@ -1,4 +1,4 @@
-import { Icon, Link, Loader, Text, TextField } from '@aura/safe-aura-components'
+import { Icon, Link, Loader, Text, TextField } from '@aura/safe-react-components'
 import { useState, ReactElement, useCallback, useEffect } from 'react'
 import { useHistory } from 'react-router-dom'
 import styled from 'styled-components'

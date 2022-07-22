@@ -1,4 +1,4 @@
-import { Button, Switch } from '@aura/safe-aura-components'
+import { Button, Switch } from '@aura/safe-react-components'
 import IconButton from '@material-ui/core/IconButton'
 import { createStyles, makeStyles } from '@material-ui/core/styles'
 import Close from '@material-ui/icons/Close'

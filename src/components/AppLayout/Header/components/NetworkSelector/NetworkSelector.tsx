@@ -8,7 +8,7 @@ import Popper from '@material-ui/core/Popper'
 import IconButton from '@material-ui/core/IconButton'
 import ExpandLess from '@material-ui/icons/ExpandLess'
 import ExpandMore from '@material-ui/icons/ExpandMore'
-import { Divider, Icon } from '@aura/safe-aura-components'
+import { Divider, Icon } from '@aura/safe-react-components'
 
 import NetworkLabel from '../NetworkLabel/NetworkLabel'
 import Col from 'src/components/layout/Col'

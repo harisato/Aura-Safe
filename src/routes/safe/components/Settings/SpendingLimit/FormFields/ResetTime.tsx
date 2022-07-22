@@ -1,4 +1,4 @@
-import { RadioButtons, Text } from '@aura/safe-aura-components'
+import { RadioButtons, Text } from '@aura/safe-react-components'
 import { FormControlLabel, hexToRgb, Switch as SwitchMui } from '@material-ui/core'
 import { ReactElement } from 'react'
 import { useField } from 'react-final-form'

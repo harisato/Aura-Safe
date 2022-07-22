@@ -1,5 +1,5 @@
 import IconButton from '@material-ui/core/IconButton'
-import { Icon } from '@aura/safe-aura-components'
+import { Icon } from '@aura/safe-react-components'
 import { StyledParagraph, IconImg, TitleWrapper, StyledRow, StyledClose, GoBackWrapper } from './styles'
 
 type Props = {

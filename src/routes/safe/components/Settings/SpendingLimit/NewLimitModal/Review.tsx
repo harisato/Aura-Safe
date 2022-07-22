@@ -1,4 +1,4 @@
-import { Text } from '@aura/safe-aura-components'
+import { Text } from '@aura/safe-react-components'
 import { ReactElement, useEffect, useMemo, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 

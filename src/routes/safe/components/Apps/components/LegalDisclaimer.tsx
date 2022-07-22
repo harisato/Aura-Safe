@@ -1,4 +1,4 @@
-import { FixedDialog, Text } from '@aura/safe-aura-components'
+import { FixedDialog, Text } from '@aura/safe-react-components'
 
 interface OwnProps {
   onCancel: () => void

@@ -1,6 +1,6 @@
 import styled from 'styled-components'
 import FormControlLabel from '@material-ui/core/FormControlLabel/FormControlLabel'
-import { Switch } from '@aura/safe-aura-components'
+import { Switch } from '@aura/safe-react-components'
 import useCachedState from 'src/utils/storage/useCachedState'
 import { LS_USE_PROD_CGW } from 'src/utils/constants'
 

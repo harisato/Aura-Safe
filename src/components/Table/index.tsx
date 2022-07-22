@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Loader } from '@aura/safe-aura-components'
+import { Loader } from '@aura/safe-react-components'
 import Table from '@material-ui/core/Table'
 import TableBody from '@material-ui/core/TableBody'
 import TablePagination from '@material-ui/core/TablePagination'

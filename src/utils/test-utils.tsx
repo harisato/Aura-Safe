@@ -1,7 +1,7 @@
 import { ReactElement } from 'react'
 import { Map } from 'immutable'
 import { render, RenderResult } from '@testing-library/react'
-import { theme as styledTheme } from '@aura/safe-aura-components'
+import { theme as styledTheme } from '@aura/safe-react-components'
 import Providers from 'src/components/Providers'
 import { createPreloadedStore, store } from 'src/store'
 import { history } from 'src/routes/routes'

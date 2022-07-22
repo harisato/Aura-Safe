@@ -1,6 +1,6 @@
 import Sidebar from './index'
 import { ListItemType } from 'src/components/List'
-import { Icon } from '@aura/safe-aura-components'
+import { Icon } from '@aura/safe-react-components'
 
 export default {
   title: 'Layout/Sidebar',

@@ -1,4 +1,4 @@
-import { Text } from '@aura/safe-aura-components'
+import { Text } from '@aura/safe-react-components'
 import { createStyles, makeStyles } from '@material-ui/core/styles'
 import { ReactElement, useState } from 'react'
 

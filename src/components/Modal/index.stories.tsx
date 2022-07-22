@@ -1,4 +1,4 @@
-import { Text } from '@aura/safe-aura-components'
+import { Text } from '@aura/safe-react-components'
 import { ReactElement, useState } from 'react'
 
 import TextField from 'src/components/forms/TextField'

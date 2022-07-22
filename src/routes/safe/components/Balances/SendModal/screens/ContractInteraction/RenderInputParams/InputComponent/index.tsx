@@ -1,4 +1,4 @@
-import { Checkbox } from '@aura/safe-aura-components'
+import { Checkbox } from '@aura/safe-react-components'
 import { ReactElement } from 'react'
 
 import Col from 'src/components/layout/Col'
