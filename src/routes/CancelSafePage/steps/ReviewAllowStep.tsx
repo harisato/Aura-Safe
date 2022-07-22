@@ -1,7 +1,6 @@
 import TableContainer from '@material-ui/core/TableContainer'
 import { Fragment, ReactElement } from 'react'
 import { useForm } from 'react-final-form'
-import { useSelector } from 'react-redux'
 import styled from 'styled-components'
 
 import Block from 'src/components/layout/Block'
@@ -12,7 +11,6 @@ import Row from 'src/components/layout/Row'
 import NetworkLabel from 'src/components/NetworkLabel/NetworkLabel'
 import PrefixedEthHashInfo from 'src/components/PrefixedEthHashInfo'
 import { getExplorerInfo } from 'src/config'
-import { currentNetworkAddressBookAsMap } from 'src/logic/addressBook/store/selectors'
 import { border, lg, sm, xs } from 'src/theme/variables'
 import {
   CancelSafeFormValues,
@@ -26,7 +24,6 @@ export const reviewLoadStepLabel = 'Review'
 
 function ReviewAllowStep(): ReactElement {
   const loadSafeForm = useForm()
-  const addressBook = useSelector(currentNetworkAddressBookAsMap)
 
   const formValues = loadSafeForm.getState().values as CancelSafeFormValues
 
@@ -35,7 +32,7 @@ function ReviewAllowStep(): ReactElement {
   const safeName = formValues[FIELD_CREATE_SUGGESTED_SAFE_NAME] || ''
   const safeCreatedAddress = formValues[FIELD_SAFE_CREATED_ADDRESS] || ''
 
-  const safeCreatedAddressName = addressBook[safeCreatedAddress]?.name || ''
+  const safeCreatedAddressName = ownerList.find((owner) => owner.address === safeCreatedAddress)?.name || ''
 
   const ownerListWithNames = [...ownerList]
 
