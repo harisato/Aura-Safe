@@ -1,4 +1,4 @@
-import { Text } from '@gnosis.pm/safe-react-components'
+import { Text } from '@aura/safe-react-components'
 import Card from '@material-ui/core/Card'
 import BookmarkBorder from '@material-ui/icons/BookmarkBorder'
 

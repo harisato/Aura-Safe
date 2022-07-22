@@ -1,7 +1,7 @@
 import styled from 'styled-components'
 import IconButton from '@material-ui/core/IconButton'
 import { sm, boldFont, bgBox, borderLinear } from 'src/theme/variables'
-import { GenericModal, Text } from '@gnosis.pm/safe-react-components'
+import { GenericModal, Text } from '@aura/safe-react-components'
 import Button from 'src/components/layout/Button'
 
 const LoaderContainer = styled.div`

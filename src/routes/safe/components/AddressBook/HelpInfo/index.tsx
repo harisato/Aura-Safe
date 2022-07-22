@@ -1,6 +1,6 @@
 import { ReactElement } from 'react'
 import styled from 'styled-components'
-import { Text, Link, Icon } from '@gnosis.pm/safe-react-components'
+import { Text, Link, Icon } from '@aura/safe-react-components'
 
 const StyledIcon = styled(Icon)`
   svg {

@@ -1,4 +1,4 @@
-import { CopyToClipboardBtn, ExplorerButton, FixedIcon, Icon, Identicon, Text } from '@gnosis.pm/safe-react-components'
+import { CopyToClipboardBtn, ExplorerButton, FixedIcon, Icon, Identicon, Text } from '@aura/safe-react-components'
 import { useSelector } from 'react-redux'
 import ButtonHelper from 'src/components/ButtonHelper'
 import FlexSpacer from 'src/components/FlexSpacer'

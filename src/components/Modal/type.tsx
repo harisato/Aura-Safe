@@ -1,5 +1,5 @@
 import { ButtonProps as ButtonPropsMUI } from '@material-ui/core'
-import { theme } from '@gnosis.pm/safe-react-components'
+import { theme } from '@aura/safe-react-components'
 import { ReactNode } from 'react'
 
 export type Theme = typeof theme

@@ -1,4 +1,4 @@
-import { Text } from '@gnosis.pm/safe-react-components'
+import { Text } from '@aura/safe-react-components'
 import { useMemo } from 'react'
 import styled from 'styled-components'
 
