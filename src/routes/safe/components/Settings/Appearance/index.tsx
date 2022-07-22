@@ -12,7 +12,7 @@ import { useAnalytics, SETTINGS_EVENTS } from 'src/utils/googleAnalytics'
 import { Container, StyledPrefixedEthHashInfo } from './styles'
 import { makeStyles } from '@material-ui/core'
 import { styles } from './../style'
-import { Checkbox } from '@aura/safe-react-components'
+import { Checkbox } from '@gnosis.pm/safe-react-components'
 // Other settings sections use MUI createStyles .container
 // will adjust that during dark mode implementation
 

@@ -1,6 +1,6 @@
 import { ReactElement, useState } from 'react'
 import styled from 'styled-components'
-import { Text } from '@aura/safe-react-components'
+import { Text } from '@gnosis.pm/safe-react-components'
 
 import { Modal } from 'src/components/Modal'
 import { CSVReader } from 'react-papaparse'

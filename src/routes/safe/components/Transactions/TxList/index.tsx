@@ -1,5 +1,5 @@
-import { Menu, Breadcrumb, BreadcrumbElement, Tab } from '@aura/safe-react-components'
-import { Item } from '@aura/safe-react-components/dist/navigation/Tab'
+import { Menu, Breadcrumb, BreadcrumbElement, Tab } from '@gnosis.pm/safe-react-components'
+import { Item } from '@gnosis.pm/safe-react-components/dist/navigation/Tab'
 import { ReactElement, useEffect } from 'react'
 import { Redirect, Route, Switch, useHistory, useRouteMatch } from 'react-router-dom'
 

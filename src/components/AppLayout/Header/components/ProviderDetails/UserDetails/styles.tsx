@@ -1,7 +1,7 @@
 import { background, connected as connectedBg, lg, md, sm, warning, xs, bgBox, colorLinear } from 'src/theme/variables'
 import { createStyles } from '@material-ui/core'
 import styled from 'styled-components'
-import { Card } from '@aura/safe-react-components'
+import { Card } from '@gnosis.pm/safe-react-components'
 export const styles = createStyles({
   container: {
     padding: `${md} 12px`,

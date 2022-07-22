@@ -1,4 +1,4 @@
-import { Icon, Link, Text } from '@aura/safe-react-components'
+import { Icon, Link, Text } from '@gnosis.pm/safe-react-components'
 import { Fragment, ReactElement, useContext } from 'react'
 import { useSelector } from 'react-redux'
 

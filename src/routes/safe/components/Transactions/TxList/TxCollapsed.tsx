@@ -1,5 +1,5 @@
-import { Dot, IconText as IconTextSrc, Loader, Text, Tooltip } from '@aura/safe-react-components'
-import { ThemeColors } from '@aura/safe-react-components/dist/theme'
+import { Dot, IconText as IconTextSrc, Loader, Text, Tooltip } from '@gnosis.pm/safe-react-components'
+import { ThemeColors } from '@gnosis.pm/safe-react-components/dist/theme'
 import { ReactElement, useContext, useRef } from 'react'
 import styled from 'styled-components'
 import { MultiSend, Custom } from '@gnosis.pm/safe-react-gateway-sdk'
