@@ -1,4 +1,4 @@
-import { Icon } from '@gnosis.pm/safe-react-components'
+import { Icon } from '@aura/safe-react-components'
 import TableContainer from '@material-ui/core/TableContainer'
 import cn from 'classnames'
 import { useState, Fragment } from 'react'

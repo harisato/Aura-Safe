@@ -2,7 +2,7 @@ import { lg, md, sm } from 'src/theme/variables'
 import { createStyles } from '@material-ui/core'
 import styled from 'styled-components'
 
-import { Button, ButtonLink } from '@gnosis.pm/safe-react-components'
+import { Button, ButtonLink } from '@aura/safe-react-components'
 
 export const styles = createStyles({
   formContainer: {

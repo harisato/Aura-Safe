@@ -1,4 +1,4 @@
-import { Loader, Title } from '@gnosis.pm/safe-react-components'
+import { Loader, Title } from '@aura/safe-react-components'
 import { ReactElement } from 'react'
 
 import Img from 'src/components/layout/Img'

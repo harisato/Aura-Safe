@@ -1,6 +1,6 @@
 import { ReactElement, useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
-import { Loader } from '@gnosis.pm/safe-react-components'
+import { Loader } from '@aura/safe-react-components'
 import { shallowEqual, useDispatch, useSelector } from 'react-redux'
 import { TransactionDetails } from '@gnosis.pm/safe-react-gateway-sdk'
 
