@@ -3,7 +3,7 @@ import ListItem from '@material-ui/core/ListItem'
 import styled from 'styled-components'
 import makeStyles from '@material-ui/core/styles/makeStyles'
 import { Fragment, ReactElement, useEffect, useState } from 'react'
-import { Text } from '@aura/safe-react-components'
+import { Text } from '@gnosis.pm/safe-react-components'
 import { Link } from 'react-router-dom'
 import uniqBy from 'lodash/uniqBy'
 

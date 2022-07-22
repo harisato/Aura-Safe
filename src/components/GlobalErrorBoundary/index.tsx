@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import { Text, Link, Icon, FixedIcon, Title } from '@aura/safe-react-components'
+import { Text, Link, Icon, FixedIcon, Title } from '@gnosis.pm/safe-react-components'
 import { IS_PRODUCTION } from 'src/utils/constants'
 import { FallbackRender } from '@sentry/react/dist/errorboundary'
 import { ROOT_ROUTE } from 'src/routes/routes'

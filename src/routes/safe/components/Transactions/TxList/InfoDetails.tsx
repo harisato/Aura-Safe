@@ -1,4 +1,4 @@
-import { Text } from '@aura/safe-react-components'
+import { Text } from '@gnosis.pm/safe-react-components'
 import { ReactElement, ReactNode } from 'react'
 
 type InfoDetailsProps = {

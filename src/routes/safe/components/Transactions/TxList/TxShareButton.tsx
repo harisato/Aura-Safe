@@ -1,4 +1,4 @@
-import { CopyToClipboardBtn } from '@aura/safe-react-components'
+import { CopyToClipboardBtn } from '@gnosis.pm/safe-react-components'
 import { ReactElement } from 'react'
 import { generatePath } from 'react-router-dom'
 
