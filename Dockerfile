@@ -8,6 +8,7 @@ WORKDIR /app
 # COPY yarn.lock ./
 
 COPY . .
+RUN yarn cache clean
 RUN yarn install
 
 RUN yarn run build
