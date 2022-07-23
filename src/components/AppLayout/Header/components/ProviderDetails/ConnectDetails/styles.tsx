@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import { Card } from '@aura/safe-react-components'
+import { Card } from '@gnosis.pm/safe-react-components'
 import { bgBox } from 'src/theme/variables'
 
 export const styles = () => ({

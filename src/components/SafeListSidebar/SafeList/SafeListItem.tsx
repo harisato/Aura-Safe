@@ -1,4 +1,4 @@
-import { Text, Icon, Button } from '@aura/safe-react-components'
+import { Text, Icon, Button } from '@gnosis.pm/safe-react-components'
 import { useEffect, useRef, ReactElement, useState } from 'react'
 import { useHistory } from 'react-router'
 import ListItem from '@material-ui/core/ListItem/ListItem'

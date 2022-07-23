@@ -3,7 +3,7 @@ import { MemoryRouter } from 'react-router-dom'
 import { Provider } from 'react-redux'
 import { addDecorator } from '@storybook/react'
 import { ThemeProvider, createGlobalStyle } from 'styled-components'
-import { theme } from '@aura/safe-react-components'
+import { theme } from '@gnosis.pm/safe-react-components'
 
 import { aNewStore } from 'src/store'
 

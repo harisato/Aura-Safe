@@ -2,7 +2,7 @@ import { createStyles } from '@material-ui/core/styles'
 import { boldFont, border, lg, sm, colorLinear, borderLinear } from 'src/theme/variables'
 import styled from 'styled-components'
 import Button from 'src/components/layout/Button'
-import { Text } from '@aura/safe-react-components'
+import { Text } from '@gnosis.pm/safe-react-components'
 
 export const styles = createStyles({
   formContainer: {

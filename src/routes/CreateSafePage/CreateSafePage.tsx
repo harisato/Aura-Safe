@@ -1,4 +1,4 @@
-import { Loader } from '@aura/safe-react-components'
+import { Loader } from '@gnosis.pm/safe-react-components'
 import ChevronLeft from '@material-ui/icons/ChevronLeft'
 import queryString from 'query-string'
 import { ReactElement, useEffect, useState } from 'react'
