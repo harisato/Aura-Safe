@@ -1,6 +1,6 @@
 import styled from 'styled-components'
 import { Modal as ModalMUI } from '@material-ui/core'
-import { Title as TitleSRC, Button } from '@aura/safe-react-components'
+import { Title as TitleSRC, Button } from '@gnosis.pm/safe-react-components'
 import { bgBox, borderLinear } from 'src/theme/variables'
 import { BodyProps, FooterProps } from './type'
 

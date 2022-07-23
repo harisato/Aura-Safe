@@ -1,4 +1,4 @@
-import { Text } from '@aura/safe-react-components'
+import { Text } from '@gnosis.pm/safe-react-components'
 import { Button, makeStyles } from '@material-ui/core'
 import { ReactElement, useCallback } from 'react'
 import { useSelector } from 'react-redux'

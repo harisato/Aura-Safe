@@ -1,4 +1,4 @@
-import { Breadcrumb, BreadcrumbElement, Loader, Icon, Menu } from '@aura/safe-react-components'
+import { Breadcrumb, BreadcrumbElement, Loader, Icon, Menu } from '@gnosis.pm/safe-react-components'
 import { makeStyles } from '@material-ui/core/styles'
 import { useState, lazy } from 'react'
 import { useSelector } from 'react-redux'

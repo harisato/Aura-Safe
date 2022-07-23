@@ -1,6 +1,6 @@
 import Sidebar from './index'
 import { ListItemType } from 'src/components/List'
-import { Icon } from '@aura/safe-react-components'
+import { Icon } from '@gnosis.pm/safe-react-components'
 
 export default {
   title: 'Layout/Sidebar',

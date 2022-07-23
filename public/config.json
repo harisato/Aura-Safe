@@ -349,11 +349,7 @@
         "average": 0.01,
         "high": 0.025
       },
-      "features": [
-        "cosmwasm",
-        "stargate",
-        "ibc-transfer"
-      ]
+      "features": ["ibc-transfer", "ibc-go", "eth-address-gen", "eth-key-sign"]
     }
   ]
 }

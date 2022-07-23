@@ -4,7 +4,7 @@ import Input from '@material-ui/core/Input'
 import SearchIcon from '@material-ui/icons/Search'
 import ClearIcon from '@material-ui/icons/Clear'
 import styled from 'styled-components'
-import { Card } from '@aura/safe-react-components'
+import { Card } from '@gnosis.pm/safe-react-components'
 
 const Container = styled(Card)`
   width: 100%;

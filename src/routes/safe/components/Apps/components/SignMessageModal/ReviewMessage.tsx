@@ -1,5 +1,5 @@
 import { Operation } from '@gnosis.pm/safe-react-gateway-sdk'
-import { Icon, Text } from '@aura/safe-react-components'
+import { Icon, Text } from '@gnosis.pm/safe-react-components'
 import MuiTextField from '@material-ui/core/TextField'
 import { ReactElement, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
