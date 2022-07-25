@@ -23,7 +23,7 @@ import { extendedSafeTokensSelector } from 'src/routes/safe/container/selector'
 import { sameString } from 'src/utils/strings'
 
 import { toBase64 } from '@cosmjs/encoding'
-import { calculateFee, coins, MsgSendEncodeObject, SigningStargateClient } from '@cosmjs/stargate'
+import { calculateFee, coins, MsgSendEncodeObject, SignerData, SigningStargateClient } from '@cosmjs/stargate'
 import { generatePath } from 'react-router-dom'
 import ButtonLink from 'src/components/layout/ButtonLink'
 import { enhanceSnackbarForAction, NOTIFICATIONS } from 'src/logic/notifications'
@@ -42,7 +42,7 @@ import { EditableTxParameters } from 'src/routes/safe/components/Transactions/he
 import { useTransactionFees } from 'src/routes/safe/container/hooks/useTransactionFee'
 import { TxParameters } from 'src/routes/safe/container/hooks/useTransactionParameters'
 import { createSafeTransaction, getMChainsConfig } from 'src/services'
-import { DEFAULT_GAS } from 'src/services/constant/common'
+import { DEFAULT_GAS, DEFAULT_GAS_LIMIT } from 'src/services/constant/common'
 import { ICreateSafeTransaction } from 'src/types/transaction'
 import { ModalHeader } from '../ModalHeader'
 import { styles } from './style'
@@ -101,13 +101,13 @@ const ReviewSendFundsTx = ({ onClose, onPrev, tx }: ReviewTxProps): React.ReactE
     signerData,
     gasPriceFormatted: priceFormatted,
     txEstimationStatus,
-  } = useTransactionFees(chainInfo, tx, safeAddress, manualGasPrice)
+  } = useTransactionFees(chainInfo, tx, safeAddress, manualGasPrice, manualGasLimit)
 
   const [buttonStatus, setButtonStatus] = useEstimationStatus(txEstimationStatus)
 
   const isSpendingLimit = sameString(tx.txType, 'spendingLimit')
-  const [executionApproved, setExecutionApproved] = useState<boolean>(true)
-  const doExecute = isExecution && executionApproved
+  // const [executionApproved, setExecutionApproved] = useState<boolean>(true)
+  const doExecute = isExecution // && executionApproved
   const userWalletAddress = useSelector(userAccountSelector)
   const [openGas, setOpenGas] = useState<boolean>(false)
 
@@ -163,6 +163,7 @@ const ReviewSendFundsTx = ({ onClose, onPrev, tx }: ReviewTxProps): React.ReactE
         toAddress: txRecipient,
         amount: coins(amountFinal, denom),
       }
+
       const msg: MsgSendEncodeObject = {
         typeUrl: '/cosmos.bank.v1beta1.MsgSend',
         value: msgSend,
@@ -210,16 +211,12 @@ const ReviewSendFundsTx = ({ onClose, onPrev, tx }: ReviewTxProps): React.ReactE
         const bodyBytes = toBase64(signResult.bodyBytes)
         const authInfoBytes = toBase64(signResult.authInfoBytes)
 
-        const { gas, amount } = sendFee || { gas: manualGasLimit, amount: Number(manualGasPrice) || 1 }
-
         // call api to create transaction
         const data: ICreateSafeTransaction = {
           from: safeAddress,
-          to: txRecipient || '',
+          to: txRecipient,
           amount: amountFinal,
-          gasLimit: gas || '100000',
           internalChainId: getInternalChainId(),
-          fee: +amount[0].amount,
           creatorAddress: userWalletAddress,
           signature: signatures,
           bodyBytes: bodyBytes,
@@ -285,7 +282,8 @@ const ReviewSendFundsTx = ({ onClose, onPrev, tx }: ReviewTxProps): React.ReactE
   }
 
   const handleManualSafeTxGasChange = (e) => {
-    setManualSafeTxGas(e.target.value)
+    // setManualSafeTxGas(e.target.value)
+    setManualGasLimit(e.target.value)
   }
 
   return (
@@ -347,7 +345,8 @@ const ReviewSendFundsTx = ({ onClose, onPrev, tx }: ReviewTxProps): React.ReactE
                     size="md"
                     data-testid={`amount-${txToken?.symbol as string}-review-step`}
                   >
-                    {manualSafeTxGas} {txToken?.symbol}
+                    {/* {manualSafeTxGas} {txToken?.symbol} */}
+                    {gasEstimation}
                   </Paragraph>
                 </div>
                 <div style={{ alignSelf: 'center' }}>
@@ -363,7 +362,7 @@ const ReviewSendFundsTx = ({ onClose, onPrev, tx }: ReviewTxProps): React.ReactE
                   <input
                     className={classes.gasInput}
                     placeholder="Gas Amount"
-                    value={manualSafeTxGas}
+                    value={manualGasLimit}
                     onChange={handleManualSafeTxGasChange}
                   />
                 </Col>
@@ -374,7 +373,7 @@ const ReviewSendFundsTx = ({ onClose, onPrev, tx }: ReviewTxProps): React.ReactE
                 </Col>
               </Row>
             )}
-            <Row margin="xs">
+            {/* <Row margin="xs">
               <Paragraph color="white" noMargin size="xl" style={{ letterSpacing: '-0.5px' }}>
                 Total Allocation Amount
               </Paragraph>
@@ -390,7 +389,7 @@ const ReviewSendFundsTx = ({ onClose, onPrev, tx }: ReviewTxProps): React.ReactE
               >
                 {tx.amount} {txToken?.symbol}
               </Paragraph>
-            </Row>
+            </Row> */}
           </Block>
 
           {/* Disclaimer */}
