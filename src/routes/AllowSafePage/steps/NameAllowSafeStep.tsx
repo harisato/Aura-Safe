@@ -1,35 +1,34 @@
 import { ReactElement, useEffect, useState } from 'react'
-import { useSelector } from 'react-redux'
 import { useField, useForm } from 'react-final-form'
+import { useSelector } from 'react-redux'
 import styled from 'styled-components'
 
-import Block from 'src/components/layout/Block'
-import { lg, secondary } from 'src/theme/variables'
-import Col from 'src/components/layout/Col'
-import Paragraph from 'src/components/layout/Paragraph'
 import Field from 'src/components/forms/Field'
 import TextField from 'src/components/forms/TextField'
-import { providerNameSelector } from 'src/logic/wallets/store/selectors'
-import { FIELD_CREATE_CUSTOM_SAFE_NAME, FIELD_CREATE_SUGGESTED_SAFE_NAME } from '../fields/createSafeFields'
-import { useStepper } from 'src/components/Stepper/stepperContext'
+import Block from 'src/components/layout/Block'
+import Col from 'src/components/layout/Col'
+import Paragraph from 'src/components/layout/Paragraph'
 import NetworkLabel from 'src/components/NetworkLabel/NetworkLabel'
-import { FIELD_ALLOW_SAFE_ID, FIELD_SAFE_OWNER_LIST } from '../fields/allowFields'
+import { useStepper } from 'src/components/Stepper/stepperContext'
+import { providerNameSelector } from 'src/logic/wallets/store/selectors'
+import { lg, secondary } from 'src/theme/variables'
+import { AddressBookEntry, makeAddressBookEntry } from '../../../logic/addressBook/model/addressBook'
 import { currentNetworkAddressBookAsMap } from '../../../logic/addressBook/store/selectors'
 import { currentChainId } from '../../../logic/config/store/selectors'
-import { AddressBookEntry, makeAddressBookEntry } from '../../../logic/addressBook/model/addressBook'
-
 import {
-  FIELD_LOAD_IS_LOADING_SAFE_ADDRESS,
-  FIELD_LOAD_SAFE_ID,
+  FIELD_ALLOW_CUSTOM_SAFE_NAME,
+  FIELD_ALLOW_SAFE_ID,
+  FIELD_ALLOW_SUGGESTED_SAFE_NAME,
+  FIELD_SAFE_OWNER_LIST,
   FIELD_SAFE_THRESHOLD,
-} from '../../LoadSafePage/fields/loadFields'
+} from '../fields/allowFields'
 
 import { getMSafeInfo } from 'src/services'
 
 export const nameNewSafeStepLabel = 'Name'
 
 function NameAllowSafeStep(): ReactElement {
-  const [isSafeInfoLoading, setIsSafeInfoLoading] = useState<boolean>(false)
+  // const [isSafeInfoLoading, setIsSafeInfoLoading] = useState<boolean>(false)
   const [threshold, setThreshold] = useState<number>()
 
   const [ownersWithName, setOwnersWithName] = useState<AddressBookEntry[]>([])
@@ -41,10 +40,15 @@ function NameAllowSafeStep(): ReactElement {
 
   const { setCurrentStep } = useStepper()
   const allowSafeForm = useForm()
+  const formValues = allowSafeForm.getState().values
 
   const {
     input: { value: safeId },
   } = useField(FIELD_ALLOW_SAFE_ID)
+
+  const {
+    input: { value: safeOwners },
+  } = useField(FIELD_SAFE_OWNER_LIST)
 
   useEffect(() => {
     if (!provider) {
@@ -58,13 +62,13 @@ function NameAllowSafeStep(): ReactElement {
         return
       }
 
-      setIsSafeInfoLoading(true)
+      // setIsSafeInfoLoading(true)
       try {
         const { owners, threshold } = await getMSafeInfo(safeId)
 
-        setIsSafeInfoLoading(false)
-        const ownersWithName = owners.map((address) =>
-          makeAddressBookEntry(addressBook[address] || { address, name: '', chainId }),
+        // setIsSafeInfoLoading(false)
+        const ownersWithName = owners.map((address, index) =>
+          makeAddressBookEntry(addressBook[address] || { address, name: safeOwners[index].name, chainId }),
         )
 
         setOwnersWithName(ownersWithName)
@@ -73,11 +77,11 @@ function NameAllowSafeStep(): ReactElement {
         setOwnersWithName([])
         setThreshold(undefined)
       }
-      setIsSafeInfoLoading(false)
+      // setIsSafeInfoLoading(false)
     }
 
     checkSafeAddress()
-  }, [safeId, addressBook, chainId, allowSafeForm])
+  }, [safeId, addressBook, chainId, allowSafeForm, safeOwners])
 
   useEffect(() => {
     if (threshold) {
@@ -85,17 +89,15 @@ function NameAllowSafeStep(): ReactElement {
     }
   }, [threshold, allowSafeForm])
 
-  useEffect(() => {
-    allowSafeForm.change(FIELD_LOAD_IS_LOADING_SAFE_ADDRESS, isSafeInfoLoading)
-  }, [isSafeInfoLoading, allowSafeForm])
+  // useEffect(() => {
+  //   allowSafeForm.change(FIELD_LOAD_IS_LOADING_SAFE_ADDRESS, isSafeInfoLoading)
+  // }, [isSafeInfoLoading, allowSafeForm])
 
   useEffect(() => {
     if (ownersWithName) {
       allowSafeForm.change(FIELD_SAFE_OWNER_LIST, ownersWithName)
     }
   }, [ownersWithName, allowSafeForm])
-
-  const formValues = allowSafeForm.getState().values
 
   return (
     <BlockWithPadding data-testid={'create-safe-name-step'}>
@@ -106,13 +108,13 @@ function NameAllowSafeStep(): ReactElement {
           will ONLY be available on <NetworkLabel />
         </Paragraph>
       </Block>
-      <label htmlFor={FIELD_CREATE_CUSTOM_SAFE_NAME}>Name of the new Safe</label>
+      <label htmlFor={FIELD_ALLOW_CUSTOM_SAFE_NAME}>Name of the new Safe</label>
       <FieldContainer margin="lg">
         <Col xs={11}>
           <Field
             component={TextField}
-            name={FIELD_CREATE_CUSTOM_SAFE_NAME}
-            placeholder={formValues[FIELD_CREATE_SUGGESTED_SAFE_NAME]}
+            name={FIELD_ALLOW_CUSTOM_SAFE_NAME}
+            placeholder={formValues[FIELD_ALLOW_SUGGESTED_SAFE_NAME]}
             text="Safe name"
             type="text"
             testId="create-safe-name-field"
