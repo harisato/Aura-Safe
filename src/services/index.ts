@@ -40,6 +40,13 @@ type _ChainInfo = {
   denom: string
   symbol: string
   explorer: string
+  defaultGasPrice: string
+  defaultGas: GasPriceDefault[]
+}
+
+type GasPriceDefault = {
+  typeUrl: string
+  gasAmount: string
 }
 
 export type MChainInfo = ChainInfo & _ChainInfo
@@ -61,6 +68,8 @@ export function getMChainsConfig(): Promise<MChainInfo[]> {
         symbol: string
         explorer: string
         coinDecimals: string
+        gasPrice: string
+        defaultGas: GasPriceDefault[]
       }) => {
         return {
           transactionService: null,
@@ -100,6 +109,8 @@ export function getMChainsConfig(): Promise<MChainInfo[]> {
           theme: CHAIN_THEMES[e.chainId] || THEME_DF,
           ensRegistryAddress: '',
           gasPrice: [],
+          defaultGas: e.defaultGas,
+          defaultGasPrice: e.gasPrice,
           disabledWallets: [],
           features: [
             // 'CONTRACT_INTERACTION',

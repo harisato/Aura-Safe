@@ -18,9 +18,9 @@ export interface ICreateSafeTransaction {
   from: string
   to: string
   amount: string
-  gasLimit: string
+  gasLimit?: number
   internalChainId: number
-  fee: number
+  fee?: number
   creatorAddress: string
   signature: string
   bodyBytes: string

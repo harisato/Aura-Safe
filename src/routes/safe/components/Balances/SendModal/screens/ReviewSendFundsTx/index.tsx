@@ -12,7 +12,13 @@ import { Modal } from 'src/components/Modal'
 import { ButtonStatus } from 'src/components/Modal/type'
 import PrefixedEthHashInfo from 'src/components/PrefixedEthHashInfo'
 import { ReviewInfoText } from 'src/components/ReviewInfoText'
-import { getChainInfo, getExplorerInfo, getInternalChainId } from 'src/config'
+import {
+  getChainDefaultGas,
+  getChainDefaultGasPrice,
+  getChainInfo,
+  getExplorerInfo,
+  getInternalChainId,
+} from 'src/config'
 import { EstimationStatus } from 'src/logic/hooks/useEstimateTransactionGas'
 import { useEstimationStatus } from 'src/logic/hooks/useEstimationStatus'
 import { SpendingLimit } from 'src/logic/safe/store/models/safe'
@@ -23,7 +29,7 @@ import { extendedSafeTokensSelector } from 'src/routes/safe/container/selector'
 import { sameString } from 'src/utils/strings'
 
 import { toBase64 } from '@cosmjs/encoding'
-import { calculateFee, coins, MsgSendEncodeObject, SigningStargateClient } from '@cosmjs/stargate'
+import { calculateFee, coins, GasPrice, MsgSendEncodeObject, SignerData, SigningStargateClient } from '@cosmjs/stargate'
 import { generatePath } from 'react-router-dom'
 import ButtonLink from 'src/components/layout/ButtonLink'
 import { enhanceSnackbarForAction, NOTIFICATIONS } from 'src/logic/notifications'
@@ -39,10 +45,9 @@ import {
   SAFE_ROUTES,
 } from 'src/routes/routes'
 import { EditableTxParameters } from 'src/routes/safe/components/Transactions/helpers/EditableTxParameters'
-import { useTransactionFees } from 'src/routes/safe/container/hooks/useTransactionFee'
 import { TxParameters } from 'src/routes/safe/container/hooks/useTransactionParameters'
-import { createSafeTransaction, getMChainsConfig } from 'src/services'
-import { DEFAULT_GAS } from 'src/services/constant/common'
+import { createSafeTransaction, getAccountOnChain, getMChainsConfig } from 'src/services'
+import { DEFAULT_GAS_LIMIT } from 'src/services/constant/common'
 import { ICreateSafeTransaction } from 'src/types/transaction'
 import { ModalHeader } from '../ModalHeader'
 import { styles } from './style'
@@ -73,9 +78,15 @@ const ReviewSendFundsTx = ({ onClose, onPrev, tx }: ReviewTxProps): React.ReactE
   const txToken = useMemo(() => tokens.find((token) => sameAddress(token.address, tx.token)), [tokens, tx.token])
   // const txRecipient = isSendingNativeToken ? tx.recipientAddress : txToken?.address || ''
   const txRecipient = tx.recipientAddress || ''
-  const [manualSafeTxGas, setManualSafeTxGas] = useState<string | undefined>(DEFAULT_GAS)
-  const [manualGasPrice, setManualGasPrice] = useState<string | undefined>(DEFAULT_GAS)
-  const [manualGasLimit, setManualGasLimit] = useState<string | undefined>()
+
+  const chainDefaultGas = getChainDefaultGas()
+  const chainDefaultGasPrice = getChainDefaultGasPrice()
+
+  const defaultGas = chainDefaultGas.find((chain) => chain.typeUrl === '/cosmos.bank.v1beta1.MsgSend')?.gasAmount
+
+  // const [manualSafeTxGas, setManualSafeTxGas] = useState<string | undefined>(DEFAULT_GAS)
+  // const [manualGasPrice, setManualGasPrice] = useState<string | undefined>(DEFAULT_GAS)
+  const [manualGasLimit, setManualGasLimit] = useState<string | undefined>(defaultGas)
   const [isDisabled, setDisabled] = useState(false)
   const [gasPriceFormatted, setGasPriceFormatted] = useState('1')
   const chainInfo = getChainInfo()
@@ -94,20 +105,20 @@ const ReviewSendFundsTx = ({ onClose, onPrev, tx }: ReviewTxProps): React.ReactE
     isOffChainSignature: true,
   }
 
-  const {
-    sendFee,
-    gasPrice,
-    gasEstimation,
-    signerData,
-    gasPriceFormatted: priceFormatted,
-    txEstimationStatus,
-  } = useTransactionFees(chainInfo, tx, safeAddress, manualGasPrice)
+  // const {
+  //   sendFee,
+  //   gasPrice,
+  //   gasEstimation,
+  //   signerData,
+  //   gasPriceFormatted: priceFormatted,
+  //   txEstimationStatus,
+  // } = useTransactionFees(chainInfo, tx, safeAddress, manualGasPrice, manualGasLimit)
 
-  const [buttonStatus, setButtonStatus] = useEstimationStatus(txEstimationStatus)
+  const [buttonStatus, setButtonStatus] = useEstimationStatus()
 
   const isSpendingLimit = sameString(tx.txType, 'spendingLimit')
-  const [executionApproved, setExecutionApproved] = useState<boolean>(true)
-  const doExecute = isExecution && executionApproved
+  // const [executionApproved, setExecutionApproved] = useState<boolean>(true)
+  const doExecute = isExecution // && executionApproved
   const userWalletAddress = useSelector(userAccountSelector)
   const [openGas, setOpenGas] = useState<boolean>(false)
 
@@ -120,8 +131,18 @@ const ReviewSendFundsTx = ({ onClose, onPrev, tx }: ReviewTxProps): React.ReactE
 
   const signTransactionWithKeplr = async (safeAddress: string) => {
     const chainId = chainInfo.chainId
+    console.log('chainInfo', chainInfo)
+
     const listChain = await getMChainsConfig()
-    const denom = listChain.find((x) => x.chainId === chainId)?.denom || ''
+    // const chainInfo = listChain.find((x) => x.chainId === chainId)
+
+    // const denom = chainInfo?.denom || ''
+    // const denom = listChain.find((x) => x.chainId === chainId)?.denom || ''
+
+    const mChainInfo = listChain.find((x) => x.chainId === chainId)
+    const denom = mChainInfo?.denom || ''
+    console.log('mChainInfo', mChainInfo)
+
     if (window.keplr) {
       await window.keplr.enable(chainId)
       window.keplr.defaultOptions = {
@@ -136,90 +157,67 @@ const ReviewSendFundsTx = ({ onClose, onPrev, tx }: ReviewTxProps): React.ReactE
     if (window.getOfflineSignerOnlyAmino) {
       const offlineSigner = window.getOfflineSignerOnlyAmino(chainId)
       const accounts = await offlineSigner.getAccounts()
-      // const tendermintUrl = chainInfo?.rpcUri?.value
+
       const client = await SigningStargateClient.offline(offlineSigner)
+
       const amountFinal =
         chainInfo.shortName === 'evmos'
           ? Math.floor(Number(tx?.amount) * Math.pow(10, 18)).toString() || ''
           : Math.floor(Number(tx?.amount) * Math.pow(10, 6)).toString() || ''
-      // const signingInstruction = await (async () => {
-      //   // get account on chain from API
-      //   const {
-      //     ErrorCode,
-      //     Data: accountOnChainResult,
-      //     Message,
-      //   } = await getAccountOnChain(safeAddress, getInternalChainId())
-      //   // const accountOnChain = await client.getAccount(safeAddress)
 
-      //   return {
-      //     accountNumber: accountOnChainResult?.accountNumber,
-      //     sequence: accountOnChainResult?.sequence,
-      //     memo: '',
-      //   }
-      // })()
+      const signingInstruction = await (async () => {
+        // get account on chain from API
+        const { Data: accountOnChainResult } = await getAccountOnChain(safeAddress, getInternalChainId())
+        // const accountOnChain = await client.getAccount(safeAddress)
+
+        return {
+          accountNumber: accountOnChainResult?.accountNumber,
+          sequence: accountOnChainResult?.sequence,
+          memo: '',
+        }
+      })()
 
       const msgSend: any = {
         fromAddress: safeAddress,
         toAddress: txRecipient,
         amount: coins(amountFinal, denom),
       }
+
       const msg: MsgSendEncodeObject = {
         typeUrl: '/cosmos.bank.v1beta1.MsgSend',
         value: msgSend,
       }
 
-      // calculate fee
-      // const gasPrice = GasPrice.fromString(String(manualGasPrice || gasPriceFormatted).concat(denom))
-      // // const sendFee = calculateFee(Number(manualGasLimit) || Number(gasLimit), gasPrice)
-      // const sendFee = {
-      //   amount: coins(manualGasPrice || gasPriceFormatted, denom),
-      //   gas: manualGasLimit || gasLimit,
-      // }
+      const gasPrice = GasPrice.fromString(String(chainDefaultGasPrice || gasPriceFormatted).concat(denom))
 
-      // const onlineClient = await SigningCosmWasmClient.connectWithSigner('https://rpc.dev.aura.network/', offlineSigner)
-      // const gasEstimation = await onlineClient.simulate(accounts[0].address, [msg], signingInstruction.memo)
-      // const multiplier = 1.3
-      // const defaultGasPrice = '0.0002uaura'
-      // const gasPrice = GasPrice.fromString(defaultGasPrice)
-      // const gasPrice = GasPrice.fromString(String(manualGasPrice || gasPriceFormatted).concat(denom))
-      // const sendFee = calculateFee(Math.round(gasEstimation * multiplier), gasPrice)
+      const sendFee = calculateFee(Number(manualGasLimit || defaultGas || DEFAULT_GAS_LIMIT), gasPrice)
 
-      // const signerData: SignerData = {
-      //   accountNumber: signingInstruction.accountNumber || 0,
-      //   sequence: signingInstruction.sequence || 0,
-      //   chainId: chainId,
-      // }
+      const signerData: SignerData = {
+        accountNumber: signingInstruction.accountNumber || 0,
+        sequence: signingInstruction.sequence || 0,
+        chainId: chainId,
+      }
 
       try {
         // Sign On Wallet
         dispatch(enqueueSnackbar(enhanceSnackbarForAction(NOTIFICATIONS.SIGN_TX_MSG)))
 
-        if (!gasPrice || !gasEstimation) {
-          return
-        }
+        // if (!gasPrice || !gasEstimation) {
+        //   return
+        // }
 
-        const signResult = await client.sign(
-          accounts[0]?.address,
-          [msg],
-          sendFee || calculateFee(gasEstimation, gasPrice),
-          '',
-          signerData,
-        )
+        const signResult = await client.sign(accounts[0]?.address, [msg], sendFee, '', signerData)
 
         const signatures = toBase64(signResult.signatures[0])
         const bodyBytes = toBase64(signResult.bodyBytes)
         const authInfoBytes = toBase64(signResult.authInfoBytes)
 
-        const { gas, amount } = sendFee || { gas: manualGasLimit, amount: Number(manualGasPrice) || 1 }
-
         // call api to create transaction
         const data: ICreateSafeTransaction = {
           from: safeAddress,
-          to: txRecipient || '',
+          to: txRecipient,
           amount: amountFinal,
-          gasLimit: gas || '100000',
           internalChainId: getInternalChainId(),
-          fee: +amount[0].amount,
           creatorAddress: userWalletAddress,
           signature: signatures,
           bodyBytes: bodyBytes,
@@ -279,22 +277,22 @@ const ReviewSendFundsTx = ({ onClose, onPrev, tx }: ReviewTxProps): React.ReactE
   }
 
   const recalculateFee = () => {
-    setManualGasPrice(manualSafeTxGas)
-
+    // setManualGasPrice(manualSafeTxGas)
     setOpenGas(!openGas)
   }
 
   const handleManualSafeTxGasChange = (e) => {
-    setManualSafeTxGas(e.target.value)
+    // setManualSafeTxGas(e.target.value)
+    setManualGasLimit(e.target.value)
   }
 
   return (
     <EditableTxParameters
       isOffChainSignature={isOffChainSignature}
       isExecution={doExecute}
-      ethGasLimit={sendFee?.gas || '100000'}
-      ethGasPrice={priceFormatted}
-      safeTxGas={gasEstimation?.toString()}
+      ethGasLimit={defaultGas || '100000'}
+      ethGasPrice={chainDefaultGasPrice.toString()}
+      safeTxGas={defaultGas}
       closeEditModalCallback={closeEditModalCallback}
     >
       {(txParameters, _) => (
@@ -347,7 +345,8 @@ const ReviewSendFundsTx = ({ onClose, onPrev, tx }: ReviewTxProps): React.ReactE
                     size="md"
                     data-testid={`amount-${txToken?.symbol as string}-review-step`}
                   >
-                    {manualSafeTxGas} {txToken?.symbol}
+                    {/* {manualSafeTxGas} {txToken?.symbol} */}
+                    {manualGasLimit || defaultGas}
                   </Paragraph>
                 </div>
                 <div style={{ alignSelf: 'center' }}>
@@ -363,7 +362,7 @@ const ReviewSendFundsTx = ({ onClose, onPrev, tx }: ReviewTxProps): React.ReactE
                   <input
                     className={classes.gasInput}
                     placeholder="Gas Amount"
-                    value={manualSafeTxGas}
+                    value={manualGasLimit}
                     onChange={handleManualSafeTxGasChange}
                   />
                 </Col>
@@ -374,7 +373,7 @@ const ReviewSendFundsTx = ({ onClose, onPrev, tx }: ReviewTxProps): React.ReactE
                 </Col>
               </Row>
             )}
-            <Row margin="xs">
+            {/* <Row margin="xs">
               <Paragraph color="white" noMargin size="xl" style={{ letterSpacing: '-0.5px' }}>
                 Total Allocation Amount
               </Paragraph>
@@ -390,7 +389,7 @@ const ReviewSendFundsTx = ({ onClose, onPrev, tx }: ReviewTxProps): React.ReactE
               >
                 {tx.amount} {txToken?.symbol}
               </Paragraph>
-            </Row>
+            </Row> */}
           </Block>
 
           {/* Disclaimer */}
