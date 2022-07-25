@@ -32,10 +32,11 @@ function Welcome(): ReactElement {
       <Block>
         <StyledTitle>
           <TitleFont size="md" strong>
-            Welcome to Aura Safe.
+            Welcome to Pyxis Safe.
           </TitleFont>
           <TitleFont size="xs">
-            Aura Safe is the most trusted platform to manage digital assets. <br /> Here is how to get started:
+            Pyxis Safe is the go-to platform for multi-signature asset management on the Interchain.
+            <br /> Here is how to get started:
           </TitleFont>
         </StyledTitle>
         <CardsContainer>
@@ -50,7 +51,7 @@ function Welcome(): ReactElement {
                   Create a new Safe that is controlled by one or multiple owners.
                 </TextFont>
                 <TextFont size="xl" color="white">
-                  You will be required to pay a network fee for creating your new Safe.
+                  Creating a Safe is totally free of charge.
                 </TextFont>
               </CardDescriptionContainer>
               <StyledButton size="lg" variant="contained" component={Link} to={OPEN_SAFE_ROUTE}>
