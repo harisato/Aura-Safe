@@ -1,4 +1,4 @@
-import { Text, theme, Title } from '@gnosis.pm/safe-react-components'
+import { Text, theme, Title } from '@aura/safe-react-components'
 import { ReactElement, useEffect } from 'react'
 import { useSelector } from 'react-redux'
 import styled from 'styled-components'
@@ -55,8 +55,8 @@ const Advanced = (): ReactElement => {
           Safe Nonce
         </Title>
         <InfoText size="lg">
-          For security reasons, transactions made with Aura Safe need to be executed in order. The nonce shows you
-          which transaction will be executed next. You can find the nonce for a transaction in the transaction details.
+          For security reasons, transactions made with Aura Safe need to be executed in order. The nonce shows you which
+          transaction will be executed next. You can find the nonce for a transaction in the transaction details.
         </InfoText>
         <InfoText color="secondaryLight" size="xl">
           Current Nonce: <Bold data-testid={'current-nonce'}>{nonce}</Bold>

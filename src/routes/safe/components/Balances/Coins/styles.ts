@@ -1,7 +1,7 @@
 import { sm, bgBox, borderLinear } from 'src/theme/variables'
 import { createStyles } from '@material-ui/core'
 import styled from 'styled-components'
-import { Button, Text } from '@gnosis.pm/safe-react-components'
+import { Button, Text } from '@aura/safe-react-components'
 
 const styles = createStyles({
   iconSmall: {

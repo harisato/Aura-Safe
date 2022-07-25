@@ -1,4 +1,4 @@
-import { Text, Accordion, AccordionDetails, AccordionSummary, EthHashInfo } from '@gnosis.pm/safe-react-components'
+import { Text, Accordion, AccordionDetails, AccordionSummary, EthHashInfo } from '@aura/safe-react-components'
 import styled, { css } from 'styled-components'
 import { isDeeplinkedTx } from './utils'
 

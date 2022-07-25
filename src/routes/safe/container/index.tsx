@@ -1,4 +1,4 @@
-import { GenericModal, Loader } from '@gnosis.pm/safe-react-components'
+import { GenericModal, Loader } from '@aura/safe-react-components'
 import { useState, lazy, useEffect } from 'react'
 import { useSelector } from 'react-redux'
 import { Redirect, Route, Switch } from 'react-router-dom'

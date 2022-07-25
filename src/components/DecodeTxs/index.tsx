@@ -7,7 +7,7 @@ import {
   DecodedDataParameterValue,
 } from '@gnosis.pm/safe-react-gateway-sdk'
 import get from 'lodash/get'
-import { Text, CopyToClipboardBtn, IconText, FixedIcon } from '@gnosis.pm/safe-react-components'
+import { Text, CopyToClipboardBtn, IconText, FixedIcon } from '@aura/safe-react-components'
 import { hexToBytes } from 'web3-utils'
 
 import { getExplorerInfo, getNativeCurrency } from 'src/config'

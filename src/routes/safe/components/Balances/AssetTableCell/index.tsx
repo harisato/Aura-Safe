@@ -1,5 +1,5 @@
 import { ReactElement } from 'react'
-import { ExplorerButton } from '@gnosis.pm/safe-react-components'
+import { ExplorerButton } from '@aura/safe-react-components'
 import styled from 'styled-components'
 
 import Block from 'src/components/layout/Block'
