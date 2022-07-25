@@ -185,7 +185,7 @@ const theme = createTheme({
         color: primary,
         fontFamily: secondaryFontFamily,
         fontSize: mediumFontSize,
-        lineHeight: '56px',
+        lineHeight: '40px',
         order: '1',
         padding: `0 ${md}`,
         '&:$disabled': {
