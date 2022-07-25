@@ -2,7 +2,7 @@ import { createStyles, makeStyles } from '@material-ui/core/styles'
 import { borderLinear, lg, md, sm, xs } from 'src/theme/variables'
 import styled from 'styled-components'
 
-import { Button, Text } from '@gnosis.pm/safe-react-components'
+import { Button, Text } from '@aura/safe-react-components'
 
 export const useStyles = makeStyles(
   createStyles({

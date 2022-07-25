@@ -1,4 +1,4 @@
-import { Icon, Link, Loader, Text, TextField } from '@gnosis.pm/safe-react-components'
+import { Icon, Link, Loader, Text, TextField } from '@aura/safe-react-components'
 import { useState, ReactElement, useCallback, useEffect } from 'react'
 import { useHistory } from 'react-router-dom'
 import styled from 'styled-components'

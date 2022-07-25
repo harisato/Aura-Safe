@@ -1,4 +1,4 @@
-import { Text } from '@gnosis.pm/safe-react-components'
+import { Text } from '@aura/safe-react-components'
 import { makeStyles, Paper } from '@material-ui/core'
 import IconButton from '@material-ui/core/IconButton'
 import ChevronLeft from '@material-ui/icons/ChevronLeft'

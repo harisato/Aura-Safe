@@ -1,4 +1,4 @@
-import { Loader } from '@gnosis.pm/safe-react-components'
+import { Loader } from '@aura/safe-react-components'
 import { makeStyles } from '@material-ui/core/styles'
 import { Suspense, useEffect, useState, lazy } from 'react'
 
@@ -11,7 +11,6 @@ import { ReviewTxProp } from './screens/ReviewSendFundsTx'
 import { NFTToken } from 'src/logic/collectibles/sources/collectibles.d'
 import { SendCollectibleTxInfo } from './screens/SendCollectible'
 import { Erc721Transfer } from '@gnosis.pm/safe-react-gateway-sdk'
-
 
 const ChooseTxType = lazy(() => import('./screens/ChooseTxType'))
 
