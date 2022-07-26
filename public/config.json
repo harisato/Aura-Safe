@@ -26,9 +26,7 @@
       "explorer": "https://explorer.dev.aura.network/"
     },
     {
-      "features": [
-        "no-legacy-stdTx"
-      ],
+      "features": ["no-legacy-stdTx"],
       "chainName": "terra testnet",
       "chainId": "bombay-12",
       "rpc": "https://bombay.stakesystems.io:2053",
@@ -115,16 +113,10 @@
         "average": 1,
         "high": 1
       },
-      "features": [
-        "stargate",
-        "ibc-transfer",
-        "no-legacy-stdTx"
-      ]
+      "features": ["stargate", "ibc-transfer", "no-legacy-stdTx"]
     },
     {
-      "features": [
-        "no-legacy-stdTx"
-      ],
+      "features": ["no-legacy-stdTx"],
       "chainId": "osmo-test-4",
       "chainName": "osmosis testnet",
       "rpc": "https://testnet-rpc.osmosis.zone/",
@@ -207,9 +199,7 @@
         "average": 0.0025,
         "high": 0.004
       },
-      "features": [
-        "no-legacy-stdTx"
-      ],
+      "features": ["no-legacy-stdTx"],
       "walletUrlForStaking": "https://serenity.aurascan.io/validators",
       "logo": "https://i.imgur.com/zi0mTYb.png",
       "explorer": "https://serenity.aurascan.io/"
@@ -255,9 +245,7 @@
         "average": 0.0025,
         "high": 0.004
       },
-      "features": [
-        "no-legacy-stdTx"
-      ],
+      "features": ["no-legacy-stdTx"],
       "walletUrlForStaking": "https://halo.aurascan.io/validators",
       "logo": "https://i.imgur.com/zi0mTYb.png",
       "explorer": "https://halo.aurascan.io/"
@@ -265,13 +253,8 @@
     {
       "chainId": "evmos_9000-4",
       "chainName": "Evmos Testnet",
-      "rpc": "https://tendermint.bd.evmos.dev:26657",
-      "rest": "https://rest.bd.evmos.dev:1317",
-      "stakeCurrency": {
-        "coinDenom": "EVMOS",
-        "coinMinimalDenom": "atevmos",
-        "coinDecimals": 18
-      },
+      "rpc": "https://tendermint.bd.evmos.dev:26657/",
+      "rest": "https://rest.bd.evmos.dev:1317/",
       "bip44": {
         "coinType": 60
       },
@@ -285,26 +268,30 @@
       },
       "currencies": [
         {
-          "coinDenom": "EVMOS",
+          "coinDenom": "TEVMOS",
           "coinMinimalDenom": "atevmos",
           "coinDecimals": 18
         }
       ],
       "feeCurrencies": [
         {
-          "coinDenom": "EVMOS",
+          "coinDenom": "TEVMOS",
           "coinMinimalDenom": "atevmos",
           "coinDecimals": 18
         }
       ],
-      "gasPriceStep": {
-        "low": 0,
-        "average": 1000000000,
-        "high": 2000000000
+      "stakeCurrency": {
+        "coinDenom": "TEVMOS",
+        "coinMinimalDenom": "atevmos",
+        "coinDecimals": 18
       },
-      "features": [
-        "ibc-transfer", "ibc-go", "eth-address-gen", "eth-key-sign"
-      ]
+      "coinType": 60,
+      "gasPriceStep": {
+        "low": 10000000000,
+        "average": 25000000000,
+        "high": 40000000000
+      },
+      "features": ["ibc-transfer", "ibc-go", "eth-address-gen", "eth-key-sign", "no-legacy-stdTx"]
     },
     {
       "chainId": "uni-2",
