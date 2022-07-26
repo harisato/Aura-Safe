@@ -1,24 +1,23 @@
 import { MultisigExecutionInfo } from '@gnosis.pm/safe-react-gateway-sdk'
 
-import { useDispatch } from 'react-redux'
-import { useStyles } from './style'
-import Modal, { Modal as GenericModal } from 'src/components/Modal'
-import { ButtonStatus } from 'src/components/Modal/type'
 import Block from 'src/components/layout/Block'
+import Col from 'src/components/layout/Col'
 import Hairline from 'src/components/layout/Hairline'
 import Paragraph from 'src/components/layout/Paragraph'
 import Row from 'src/components/layout/Row'
-import { EMPTY_DATA } from 'src/logic/wallets/ethTransactions'
-import { Transaction } from 'src/logic/safe/store/models/types/gateway.d'
-import { EstimationStatus, useEstimateTransactionGas } from 'src/logic/hooks/useEstimateTransactionGas'
-import { EditableTxParameters } from 'src/routes/safe/components/Transactions/helpers/EditableTxParameters'
-import { TxParameters } from 'src/routes/safe/container/hooks/useTransactionParameters'
-import { ParametersStatus } from 'src/routes/safe/components/Transactions/helpers/utils'
-import { ModalHeader } from 'src/routes/safe/components/Balances/SendModal/screens/ModalHeader'
-import { extractSafeAddress } from 'src/routes/routes'
-import Col from 'src/components/layout/Col'
-import { rejectTransactionById } from 'src/services/index'
+import Modal, { Modal as GenericModal } from 'src/components/Modal'
+import { ButtonStatus } from 'src/components/Modal/type'
 import { getInternalChainId } from 'src/config'
+import { EstimationStatus, useEstimateTransactionGas } from 'src/logic/hooks/useEstimateTransactionGas'
+import { Transaction } from 'src/logic/safe/store/models/types/gateway.d'
+import { EMPTY_DATA } from 'src/logic/wallets/ethTransactions'
+import { extractSafeAddress } from 'src/routes/routes'
+import { ModalHeader } from 'src/routes/safe/components/Balances/SendModal/screens/ModalHeader'
+import { EditableTxParameters } from 'src/routes/safe/components/Transactions/helpers/EditableTxParameters'
+import { ParametersStatus } from 'src/routes/safe/components/Transactions/helpers/utils'
+import { TxParameters } from 'src/routes/safe/container/hooks/useTransactionParameters'
+import { rejectTransactionById } from 'src/services/index'
+import { useStyles } from './style'
 type Props = {
   isOpen: boolean
   onClose: () => void
@@ -26,7 +25,7 @@ type Props = {
 }
 
 export const RejectTxModal = ({ isOpen, onClose, gwTransaction }: Props): React.ReactElement => {
-  const dispatch = useDispatch()
+  // const dispatch = useDispatch()
   const safeAddress = extractSafeAddress()
   const classes = useStyles()
 

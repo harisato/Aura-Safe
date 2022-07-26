@@ -71,6 +71,7 @@ export const fetchTransactionDetailsByHash =
 
     try {
       const { Data, ErrorCode } = await getTxDetailByHash(txQuery, safeAddress)
+      console.log('Data', Data)
 
       if (ErrorCode !== MESSAGES_CODE.SUCCESSFUL.ErrorCode) {
         return
@@ -130,7 +131,7 @@ export const fetchTransactionDetailsByHash =
                 submittedAt: new Date(cf.createdAt).getTime(),
               } as MultisigConfirmation),
           ),
-          rejectors: null,
+          rejectors: Data.Rejectors.map((re) => ({ logoUri: null, name: null, value: re.ownerAddress } as AddressEx)),
           gasTokenInfo: {
             address: '',
             decimals: 6,
@@ -153,6 +154,8 @@ export const fetchTransactionDetailsByHash =
           addressInfoIndex: null,
         }
       }
+
+      console.log('detailedExecutionInfo', detailedExecutionInfo)
 
       const transactionDetails: TransactionDetails = {
         txId: Data.Id.toString(),
