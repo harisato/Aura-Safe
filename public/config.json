@@ -20,7 +20,7 @@
       "feeCurrencies": [{ "coinDenom": "TAURA", "coinMinimalDenom": "utaura", "coinDecimals": 6 }],
       "stakeCurrency": { "coinDenom": "TAURA", "coinMinimalDenom": "utaura", "coinDecimals": 6 },
       "coinType": 118,
-      "gasPriceStep": { "low": 0.0001, "average": 0.00025, "high": 0.0004 },
+      "gasPriceStep": { "low": 0.001, "average": 0.0025, "high": 0.004 },
       "walletUrlForStaking": "https://explorer.dev.aura.network/validators",
       "logo": "https://i.imgur.com/zi0mTYb.png",
       "explorer": "https://explorer.dev.aura.network/"
