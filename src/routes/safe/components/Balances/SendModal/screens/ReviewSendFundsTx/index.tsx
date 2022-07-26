@@ -16,6 +16,7 @@ import {
   getChainDefaultGas,
   getChainDefaultGasPrice,
   getChainInfo,
+  getCoinDecimal,
   getExplorerInfo,
   getInternalChainId,
 } from 'src/config'
@@ -81,21 +82,27 @@ const ReviewSendFundsTx = ({ onClose, onPrev, tx }: ReviewTxProps): React.ReactE
 
   const chainDefaultGas = getChainDefaultGas()
   const chainDefaultGasPrice = getChainDefaultGasPrice()
+  const decimal = getCoinDecimal()
 
   const defaultGas = chainDefaultGas.find((chain) => chain.typeUrl === '/cosmos.bank.v1beta1.MsgSend')?.gasAmount
+
+  const gasFee =
+    defaultGas && chainDefaultGasPrice
+      ? calculateGasFee(+defaultGas, +chainDefaultGasPrice, decimal)
+      : chainDefaultGasPrice
 
   // const [manualSafeTxGas, setManualSafeTxGas] = useState<string | undefined>(DEFAULT_GAS)
   // const [manualGasPrice, setManualGasPrice] = useState<string | undefined>(DEFAULT_GAS)
   const [manualGasLimit, setManualGasLimit] = useState<string | undefined>(defaultGas)
   const [isDisabled, setDisabled] = useState(false)
-  const [gasPriceFormatted, setGasPriceFormatted] = useState('1')
+  const [gasPriceFormatted, setGasPriceFormatted] = useState(gasFee)
   const chainInfo = getChainInfo()
 
   let lastUsedProvider = ''
 
   loadLastUsedProvider().then((result) => {
     lastUsedProvider = result || ''
-    if (result?.toLowerCase() !== 'keplr') setGasPriceFormatted('15000')
+    if (result?.toLowerCase() !== 'keplr') setGasPriceFormatted(15000)
   })
 
   const { gasCostFormatted, txEstimationExecutionStatus, isExecution, isOffChainSignature } = {
@@ -104,15 +111,6 @@ const ReviewSendFundsTx = ({ onClose, onPrev, tx }: ReviewTxProps): React.ReactE
     isExecution: false,
     isOffChainSignature: true,
   }
-
-  // const {
-  //   sendFee,
-  //   gasPrice,
-  //   gasEstimation,
-  //   signerData,
-  //   gasPriceFormatted: priceFormatted,
-  //   txEstimationStatus,
-  // } = useTransactionFees(chainInfo, tx, safeAddress, manualGasPrice, manualGasLimit)
 
   const [buttonStatus, setButtonStatus] = useEstimationStatus()
 
@@ -256,28 +254,18 @@ const ReviewSendFundsTx = ({ onClose, onPrev, tx }: ReviewTxProps): React.ReactE
     }
   }
 
-  const closeEditModalCallback = (txParameters: TxParameters) => {
-    // const oldGasPrice = gasPriceFormatted
-    // const newGasPrice = txParameters.ethGasPrice
-    // const oldSafeTxGas = gasEstimation?.toString()
-    // const newSafeTxGas = txParameters.safeTxGas
-    // if (newGasPrice && oldGasPrice !== newGasPrice) {
-    //   setManualGasPrice(txParameters.ethGasPrice)
-    // }
-    // if (txParameters.ethGasLimit && _gasLimit !== txParameters.ethGasLimit) {
-    //   setManualGasLimit(txParameters.ethGasLimit)
-    // }
-    // if (newSafeTxGas && oldSafeTxGas !== newSafeTxGas) {
-    //   setManualSafeTxGas(newSafeTxGas)
-    // }
-  }
+  const closeEditModalCallback = (txParameters: TxParameters) => {}
 
   const ShowGasFrom = () => {
     setOpenGas(!openGas)
   }
 
   const recalculateFee = () => {
-    // setManualGasPrice(manualSafeTxGas)
+    const gasFee =
+      manualGasLimit && chainDefaultGasPrice
+        ? calculateGasFee(+manualGasLimit, +chainDefaultGasPrice, decimal)
+        : chainDefaultGasPrice
+    setGasPriceFormatted(gasFee)
     setOpenGas(!openGas)
   }
 
@@ -345,8 +333,8 @@ const ReviewSendFundsTx = ({ onClose, onPrev, tx }: ReviewTxProps): React.ReactE
                     size="md"
                     data-testid={`amount-${txToken?.symbol as string}-review-step`}
                   >
-                    {/* {manualSafeTxGas} {txToken?.symbol} */}
-                    {manualGasLimit || defaultGas}
+                    {gasPriceFormatted} {txToken?.symbol}
+                    {/* {manualGasLimit || defaultGas} */}
                   </Paragraph>
                 </div>
                 <div style={{ alignSelf: 'center' }}>
@@ -422,6 +410,10 @@ const ReviewSendFundsTx = ({ onClose, onPrev, tx }: ReviewTxProps): React.ReactE
       )}
     </EditableTxParameters>
   )
+}
+
+function calculateGasFee(gas: number, gasPrice: number, decimal: number): number {
+  return (+gas * +gasPrice) / Math.pow(10, decimal)
 }
 
 export default ReviewSendFundsTx
