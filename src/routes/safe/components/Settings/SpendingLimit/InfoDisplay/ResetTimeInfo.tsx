@@ -1,4 +1,4 @@
-import { IconText, Text } from '@gnosis.pm/safe-react-components'
+import { IconText, Text } from '@aura/safe-react-components'
 import { ReactElement } from 'react'
 
 import Row from 'src/components/layout/Row'

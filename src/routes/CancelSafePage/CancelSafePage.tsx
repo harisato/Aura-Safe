@@ -1,4 +1,4 @@
-import { Text } from '@gnosis.pm/safe-react-components'
+import { Text } from '@aura/safe-react-components'
 import { makeStyles, Paper } from '@material-ui/core'
 import IconButton from '@material-ui/core/IconButton'
 import ChevronLeft from '@material-ui/icons/ChevronLeft'
@@ -78,10 +78,13 @@ function Cancel(): ReactElement {
             pendingSafe[FIELD_CREATE_CUSTOM_SAFE_NAME] || pendingSafe[FIELD_CREATE_SUGGESTED_SAFE_NAME]
         }
 
-        const ownerList: Array<OwnerFieldItem> = owners.map((address) => ({
-          address: address,
-          name: addressBook[address]?.name || '',
-        }))
+        const ownerList: Array<OwnerFieldItem> = owners.map((address, idx) => {
+          const nameField = `owner-name-${idx}`
+          return {
+            address: address,
+            name: pendingSafe ? pendingSafe[nameField] : '',
+          }
+        })
 
         initialValues[FIELD_SAFE_OWNERS_LIST] = [...ownerList]
         initialValues[FIELD_SAFE_THRESHOLD] = threshold

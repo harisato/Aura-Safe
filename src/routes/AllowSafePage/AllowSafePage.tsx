@@ -16,16 +16,19 @@ import { addressBookSafeLoad } from 'src/logic/addressBook/store/actions'
 import { currentNetworkAddressBookAsMap } from 'src/logic/addressBook/store/selectors'
 import { currentChainId } from 'src/logic/config/store/selectors'
 import { useMnemonicSafeName } from 'src/logic/hooks/useMnemonicName'
-import { getKeplrKey } from 'src/logic/keplr/keplr'
+import { getKeplrKey, WalletKey } from 'src/logic/keplr/keplr'
 import { enhanceSnackbarForAction, ERROR } from 'src/logic/notifications'
 import enqueueSnackbar from 'src/logic/notifications/store/actions/enqueueSnackbar'
 import { SafeStatus } from 'src/logic/safe/hooks/useOwnerSafes'
 import { addOrUpdateSafe } from 'src/logic/safe/store/actions/addOrUpdateSafe'
 import { buildMSafe } from 'src/logic/safe/store/actions/fetchSafe'
 import { loadStoredSafes, saveSafes } from 'src/logic/safe/utils'
+import { PendingSafeListStorage } from 'src/routes/CreateSafePage/CreateSafePage'
+import { FIELD_SAFE_OWNERS_LIST, SAFES_PENDING_STORAGE_KEY } from 'src/routes/CreateSafePage/fields/createSafeFields'
 import { allowMSafe, getMSafeInfo } from 'src/services'
 import { MESSAGES_CODE } from 'src/services/constant/message'
 import { secondary, sm } from 'src/theme/variables'
+import { loadFromStorage } from 'src/utils/storage'
 import { WALLETS_NAME } from '../../logic/wallets/constant/wallets'
 import { loadLastUsedProvider } from '../../logic/wallets/store/middlewares/providerWatcher'
 import {
@@ -75,12 +78,19 @@ function Allow(): ReactElement {
       }
 
       try {
+        const safesPending = await Promise.resolve(loadFromStorage<PendingSafeListStorage>(SAFES_PENDING_STORAGE_KEY))
+        const pendingSafe = safesPending?.find((e) => e.id === safeId)
+
         const { owners, threshold } = await getMSafeInfo(safeId)
 
-        const ownerList: Array<OwnerFieldListItem> = owners.map((address) => ({
-          address: address,
-          name: '',
-        }))
+        const ownerList: Array<OwnerFieldListItem> = owners.map((address, idx) => {
+          const pendingOwner = pendingSafe?.[FIELD_SAFE_OWNERS_LIST][idx].nameFieldName
+
+          return {
+            address: address,
+            name: pendingSafe && pendingOwner ? pendingSafe[pendingOwner] : '',
+          }
+        })
 
         initialValues[FIELD_SAFE_OWNER_LIST] = [...ownerList]
         initialValues[FIELD_SAFE_THRESHOLD] = threshold
@@ -94,7 +104,7 @@ function Allow(): ReactElement {
 
   const updateAddressBook = (newAddress: string, values: AllowSafeFormValues) => {
     const ownerList = values[FIELD_SAFE_OWNER_LIST] as AddressBookEntry[]
-
+    debugger
     const ownerEntries = ownerList
       .map((owner) => {
         const ownerFieldName = `owner-address-${owner.address}`
@@ -120,7 +130,7 @@ function Allow(): ReactElement {
 
     const lastUsedProvider = await loadLastUsedProvider()
 
-    let walletKey
+    let walletKey: WalletKey | undefined
 
     if (lastUsedProvider === WALLETS_NAME.Keplr) {
       walletKey = await getKeplrKey(chainId)

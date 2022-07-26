@@ -1,5 +1,4 @@
 import { ChainInfo, RPC_AUTHENTICATION } from '@gnosis.pm/safe-react-gateway-sdk'
-import { setWeb3ReadOnly } from 'src/logic/wallets/getWeb3'
 import { getMChainsConfig } from '../../services'
 
 // Cache is required as loading Redux store directly is an anit-pattern

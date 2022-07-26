@@ -25,6 +25,7 @@ export const useTransactionFees = (
   tx: ReviewTxProp,
   safeAddress: string,
   gasDefault: string | undefined,
+  manualGasLimit: string | undefined,
 ): TxFee => {
   const [gasEstimation, setGasEstimation] = useState<number | undefined>()
   const [gasPrice, setGasPrice] = useState<GasPrice | undefined>()
@@ -39,15 +40,17 @@ export const useTransactionFees = (
     const loadFee = async () => {
       const listChain = await getMChainsConfig()
 
-      const denom = listChain.find((x) => x.chainId === chainId)?.denom || ''
+      const chainInfo = listChain.find((x) => x.chainId === chainId)
+
+      const denom = chainInfo?.denom || ''
 
       if (window.getOfflineSignerOnlyAmino) {
-        const offlineSigner = window.getOfflineSignerOnlyAmino(chainId)
+        // const offlineSigner = window.getOfflineSignerOnlyAmino(chainId)
 
-        const amountFinal =
-          shortName === 'evmos'
-            ? Math.floor(Number(tx?.amount) * Math.pow(10, 18)).toString() || ''
-            : Math.floor(Number(tx?.amount) * Math.pow(10, 6)).toString() || ''
+        // const amountFinal =
+        //   shortName === 'evmos'
+        //     ? Math.floor(Number(tx?.amount) * Math.pow(10, 18)).toString() || ''
+        //     : Math.floor(Number(tx?.amount) * Math.pow(10, 6)).toString() || ''
 
         const signingInstruction = await (async () => {
           // get account on chain from API
@@ -61,16 +64,24 @@ export const useTransactionFees = (
           }
         })()
 
-        const msgSend: Partial<MsgSend> = {
-          fromAddress: safeAddress,
-          toAddress: tx.recipientAddress,
-          amount: coins(amountFinal, denom),
-        }
+        // const msgSend: Partial<MsgSend> = {
+        //   fromAddress: safeAddress,
+        //   toAddress: tx.recipientAddress,
+        //   amount: coins(amountFinal, denom),
+        // }
 
-        const msg: MsgSendEncodeObject = {
-          typeUrl: '/cosmos.bank.v1beta1.MsgSend',
-          value: msgSend,
-        }
+        // const msg: MsgSendEncodeObject = {
+        //   typeUrl: '/cosmos.bank.v1beta1.MsgSend',
+        //   value: msgSend,
+        // }
+
+        const defaultGas = chainInfo?.defaultGas.find((gas) => gas.typeUrl === '/cosmos.bank.v1beta1.MsgSend')
+
+        const gasEstimation = defaultGas?.gasAmount || '400000'
+
+        console.log(defaultGas)
+
+        // "/cosmos.bank.v1beta1.MsgSend"
 
         // const accounts = await offlineSigner.getAccounts()
 
@@ -78,29 +89,29 @@ export const useTransactionFees = (
 
         // const gasEstimation = await onlineClient.simulate(accounts[0].address, [msg], signingInstruction.memo)
 
-        const gasEstimation = await Promise.all([
-          offlineSigner.getAccounts(),
-          SigningCosmWasmClient.connectWithSigner(rpcUri.value, offlineSigner),
-        ])
-          .then(([accounts, onlineClient]) =>
-            onlineClient.simulate(accounts[0].address, [msg], signingInstruction.memo),
-          )
-          .then((gasEstimation) => {
-            gasEstimation && setTxEstimationStatus(EstimationStatus.SUCCESS)
+        // const gasEstimation = await Promise.all([
+        //   offlineSigner.getAccounts(),
+        //   SigningCosmWasmClient.connectWithSigner(rpcUri.value, offlineSigner),
+        // ])
+        //   .then(([accounts, onlineClient]) =>
+        //     onlineClient.simulate(accounts[0].address, [msg], signingInstruction.memo),
+        //   )
+        //   .then((gasEstimation) => {
+        //     gasEstimation && setTxEstimationStatus(EstimationStatus.SUCCESS)
 
-            return gasEstimation
-          })
-          .catch((error) => {
-            console.log({ error })
+        //     return gasEstimation
+        //   })
+        //   .catch((error) => {
+        //     console.log({ error })
 
-            setTxEstimationStatus(EstimationStatus.FAILURE)
+        //     setTxEstimationStatus(EstimationStatus.FAILURE)
 
-            return 80000
-          })
+        //     return 80000
+        //   })
 
-        const multiplier = 1.3
-        const gasPrice = GasPrice.fromString(`${gasDefault}${denom}`)
-        const sendFee = calculateFee(Math.round(gasEstimation * multiplier), gasPrice)
+        // const multiplier = 1.3
+        const gasPrice = GasPrice.fromString(`${chainInfo?.defaultGasPrice || gasDefault}${denom}`)
+        const sendFee = calculateFee(Math.round(+gasEstimation), gasPrice)
 
         const signerData: SignerData = {
           accountNumber: signingInstruction.accountNumber || 0,
@@ -110,16 +121,18 @@ export const useTransactionFees = (
 
         const _gasPrice = +sendFee.amount[0].amount / Math.pow(10, 6)
 
+        gasEstimation && setTxEstimationStatus(EstimationStatus.SUCCESS)
+
         setSignerData(signerData)
         setGasPrice(gasPrice)
         setGasPriceFormatted(_gasPrice.toString())
-        setGasEstimation(gasEstimation)
+        setGasEstimation(manualGasLimit ? +manualGasLimit : +gasEstimation)
         setSendFee(sendFee)
       }
     }
 
     loadFee()
-  }, [chainId, rpcUri, shortName, tx, safeAddress, gasDefault])
+  }, [chainId, rpcUri, shortName, tx, safeAddress, gasDefault, manualGasLimit])
 
   return {
     sendFee,

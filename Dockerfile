@@ -8,7 +8,8 @@ WORKDIR /app
 # COPY yarn.lock ./
 
 COPY . .
-RUN yarn install
+RUN yarn cache clean
+RUN yarn install --network-concurrency 1
 
 RUN yarn run build
 

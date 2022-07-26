@@ -1,22 +1,22 @@
-import { Fragment, ReactElement } from 'react'
-import { useSelector } from 'react-redux'
-import { useForm } from 'react-final-form'
 import TableContainer from '@material-ui/core/TableContainer'
+import { Fragment, ReactElement } from 'react'
+import { useForm } from 'react-final-form'
+import { useSelector } from 'react-redux'
 import styled from 'styled-components'
 
 import Block from 'src/components/layout/Block'
-import { border, lg, sm, xs } from 'src/theme/variables'
-import Row from 'src/components/layout/Row'
 import Col from 'src/components/layout/Col'
-import Paragraph from 'src/components/layout/Paragraph'
-import { getExplorerInfo } from 'src/config'
-import { userAccountSelector } from 'src/logic/wallets/store/selectors'
 import Hairline from 'src/components/layout/Hairline'
+import Paragraph from 'src/components/layout/Paragraph'
+import Row from 'src/components/layout/Row'
+import NetworkLabel from 'src/components/NetworkLabel/NetworkLabel'
 import PrefixedEthHashInfo from 'src/components/PrefixedEthHashInfo'
+import { getExplorerInfo } from 'src/config'
+import { currentNetworkAddressBookAsMap } from 'src/logic/addressBook/store/selectors'
+import { userAccountSelector } from 'src/logic/wallets/store/selectors'
+import { border, lg, sm, xs } from 'src/theme/variables'
 import { FIELD_SAFE_OWNER_LIST, FIELD_SAFE_THRESHOLD, LoadSafeFormValues } from '../fields/allowFields'
 import { getLoadSafeName } from '../fields/utils'
-import NetworkLabel from 'src/components/NetworkLabel/NetworkLabel'
-import { currentNetworkAddressBookAsMap } from 'src/logic/addressBook/store/selectors'
 
 export const reviewLoadStepLabel = 'Review'
 
@@ -26,6 +26,7 @@ const ReviewAllowStep = (): ReactElement => {
 
   const loadSafeForm = useForm()
   const formValues = loadSafeForm.getState().values as LoadSafeFormValues
+
   const safeName = getLoadSafeName(formValues, addressBook)
   // const safeAddress = formValues.
   const threshold = formValues[FIELD_SAFE_THRESHOLD]

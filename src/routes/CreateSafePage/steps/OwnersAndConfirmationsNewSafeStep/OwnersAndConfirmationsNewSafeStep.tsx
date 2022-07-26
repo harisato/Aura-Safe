@@ -2,7 +2,7 @@ import { useEffect, ReactElement, Fragment } from 'react'
 import { useSelector } from 'react-redux'
 import InputAdornment from '@material-ui/core/InputAdornment'
 import MenuItem from '@material-ui/core/MenuItem'
-import { Icon, Link, Text } from '@gnosis.pm/safe-react-components'
+import { Icon, Link, Text } from '@aura/safe-react-components'
 import { useForm } from 'react-final-form'
 import Block from 'src/components/layout/Block'
 import Paragraph from 'src/components/layout/Paragraph'
@@ -94,7 +94,7 @@ function OwnersAndConfirmationsNewSafeStep(): ReactElement {
         <Paragraph color="primary" size="lg">
           Add additional owners (e.g. wallets of your teammates) and specify how many of them have to confirm a
           transaction before it gets executed. In general, the more confirmations required, the more secure your Safe
-          is.
+          is.{' '}
           {/* <StyledLink
             href="https://help.gnosis-safe.io/en/articles/4772567-what-gnosis-safe- setup-should-i-use"
             target="_blank"
@@ -106,7 +106,7 @@ function OwnersAndConfirmationsNewSafeStep(): ReactElement {
             </Text>
             <Icon size="sm" type="externalLink" color="primary" />
           </StyledLink> */}
-          . The new Safe will ONLY be available on <NetworkLabel />
+          The new Safe will ONLY be available on <NetworkLabel />
         </Paragraph>
       </BlockWithPadding>
       <Hairline />

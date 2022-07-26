@@ -185,3 +185,18 @@ export const getContractABI = async (contractAddress: string) => {
 export const getChainInfoTheme = (): MChainInfo['theme'] => {
   return (getChainInfo() as MChainInfo).theme
 }
+
+export const getChainDefaultGas = (): MChainInfo['defaultGas'] => {
+  return (getChainInfo() as MChainInfo).defaultGas
+}
+
+export const getChainDefaultGasPrice = (): MChainInfo['defaultGasPrice'] => {
+  return (getChainInfo() as MChainInfo).defaultGasPrice
+}
+// export const getNativeCurrency = (): ChainInfo['nativeCurrency'] => {
+//   return getChainInfo().nativeCurrency
+// }
+
+export const getCoinDecimal = (): number => {
+  return getChainInfo().nativeCurrency.decimals
+}

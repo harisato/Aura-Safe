@@ -1,4 +1,4 @@
-import { CopyToClipboardBtn, ExplorerButton, FixedIcon, Icon, Identicon, Text } from '@gnosis.pm/safe-react-components'
+import { CopyToClipboardBtn, ExplorerButton, FixedIcon, Icon, Identicon, Text } from '@aura/safe-react-components'
 import { useSelector } from 'react-redux'
 import ButtonHelper from 'src/components/ButtonHelper'
 import FlexSpacer from 'src/components/FlexSpacer'
@@ -21,6 +21,7 @@ import {
   StyledTextSafeNameWrapper,
 } from './styles'
 import { Props } from './type'
+import LockIcon from './assets/Lockicon.svg'
 
 export const TOGGLE_SIDEBAR_BTN_TESTID = 'TOGGLE_SIDEBAR_BTN'
 const SafeHeader = ({
@@ -43,7 +44,7 @@ const SafeHeader = ({
       <Container>
         <IdenticonContainer>
           <FlexSpacer />
-          <FixedIcon type="notConnected" />
+          <img src={LockIcon} alt="icon-lock" />
           <ButtonHelper onClick={onToggleSafeList} data-testid={TOGGLE_SIDEBAR_BTN_TESTID}>
             <StyledIcon size="md" type="circleDropdown" />
           </ButtonHelper>
