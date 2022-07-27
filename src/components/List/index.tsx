@@ -80,9 +80,7 @@ const List = ({ items }: Props): React.ReactElement => {
 
         {
           item.subItems && (
-            <IconButton disableRipple>
-              {groupCollapseStatus[item.href] ? <ExpandLess /> : <ExpandMore />}
-            </IconButton>
+            <IconButton disableRipple>{groupCollapseStatus[item.href] ? <ExpandLess /> : <ExpandMore />}</IconButton>
           )
           // (groupCollapseStatus[item.href] ? <StyledFixedIcon type="chevronUp"/> : <StyledFixedIcon type="chevronDown" />)
         }
