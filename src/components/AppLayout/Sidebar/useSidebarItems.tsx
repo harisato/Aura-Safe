@@ -56,7 +56,7 @@ const useSidebarItems = (): ListItemType[] => {
     const assetsSubItems = [
       makeEntryItem({
         label: 'Coins',
-        iconType: 'assets',
+        iconType: 'coinAura',
         href: currentSafeRoutes.ASSETS_BALANCES,
       }),
       makeEntryItem({
@@ -109,18 +109,18 @@ const useSidebarItems = (): ListItemType[] => {
     return [
       makeEntryItem({
         label: 'Assets',
-        iconType: 'assets',
+        iconType: 'assestAura',
         href: currentSafeRoutes.ASSETS_BALANCES,
         subItems: assetsSubItems,
       }),
       makeEntryItem({
         label: 'Transactions',
-        iconType: 'transactionsInactive',
+        iconType: 'transactionsAura',
         href: currentSafeRoutes.TRANSACTIONS_HISTORY,
       }),
       makeEntryItem({
         label: 'Address Book',
-        iconType: 'addressBook',
+        iconType: 'addressbookAura',
         href: currentSafeRoutes.ADDRESS_BOOK,
       }),
       makeEntryItem({
@@ -131,7 +131,7 @@ const useSidebarItems = (): ListItemType[] => {
       }),
       makeEntryItem({
         label: 'Settings',
-        iconType: 'settings',
+        iconType: 'settingsAura',
         href: currentSafeRoutes.SETTINGS_DETAILS,
         subItems: settingsSubItems,
       }),

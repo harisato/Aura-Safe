@@ -14,9 +14,10 @@ const useStyles = makeStyles({
 type Props = {
   handleScan: (dataResult: string, closeQrModal: () => void) => void
   testId?: string
+  icon?: string
 }
 
-export const ScanQRWrapper = ({ handleScan, testId }: Props): ReactElement => {
+export const ScanQRWrapper = ({ handleScan, testId, icon }: Props): ReactElement => {
   const classes = useStyles()
   const [qrModalOpen, setQrModalOpen] = useState(false)
 
@@ -40,7 +41,7 @@ export const ScanQRWrapper = ({ handleScan, testId }: Props): ReactElement => {
         height={20}
         onClick={() => openQrModal()}
         role="button"
-        src={QRIcon}
+        src={icon}
         testId={testId || 'qr-icon'}
       />
       {qrModalOpen && <ScanQRModal isOpen={qrModalOpen} onClose={closeQrModal} onScan={onScanFinished} />}

@@ -48,13 +48,24 @@ const OwnersIconsContainer = styled(Col)`
 `
 
 const OwnerContainer = styled(Row)`
-  justify-content: center;
+  justify-content: flex-start;
 `
 
 const StyledParagraph = styled(Paragraph)`
   padding-left: 12px;
   color: white;
 `
+
+const FieldStyled = styled(Field)`
+  color: white;
+  div {
+    color: white;
+  }
+  input {
+    color: white;
+  }
+`
+
 export {
   BlockWithPadding,
   ParagraphWithMargin,
@@ -65,4 +76,5 @@ export {
   OwnersIconsContainer,
   OwnerContainer,
   StyledParagraph,
+  FieldStyled,
 }

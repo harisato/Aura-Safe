@@ -102,8 +102,8 @@ function StepperComponent(): ReactElement {
               <Paper className={classes.root} elevation={1}>
                 {currentComponent}
                 <Hairline />
-                <Row align="center" grow className={classes.controlStyle}>
-                  <Col center="md" xs={12}>
+                <Row grow className={classes.controlStyle}>
+                  <Col center="md" className={classes.FotterForm} xs={12}>
                     <Button onClick={onClickPreviousStep} size="small" className={classes.backButton} type="button">
                       {backButtonLabel}
                     </Button>
