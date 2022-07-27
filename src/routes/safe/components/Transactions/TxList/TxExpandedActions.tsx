@@ -34,6 +34,7 @@ export const TxExpandedActions = ({ transaction }: TxExpandedActionsProps): Reac
     handleOnMouseEnter,
     handleOnMouseLeave,
     isPending,
+    isRejected,
     disabledActions,
   } = useActionButtonsHandlers(transaction)
 
@@ -60,8 +61,12 @@ export const TxExpandedActions = ({ transaction }: TxExpandedActionsProps): Reac
   // https://github.com/facebook/react/issues/4492
   return (
     <>
-      {disabledActions ? (
-        <StyledLabel>You have confirmed this transaction</StyledLabel>
+      {disabledActions || isRejected ? (
+        isRejected ? (
+          <StyledLabel>You have rejected this transaction</StyledLabel>
+        ) : (
+          <StyledLabel>You have confirmed this transaction</StyledLabel>
+        )
       ) : (
         <>
           <Tooltip title={getConfirmTooltipTitle()} placement="top">

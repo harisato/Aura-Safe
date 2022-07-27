@@ -215,6 +215,8 @@ export const isAwaitingExecution = (
 
 export const makeTransactionDetail = (txDetail: any): any => {
   const confirmationList: Array<any> = []
+  const RejectedList: Array<any> = []
+
   if (txDetail?.Confirmations && txDetail?.Confirmations.length > 0) {
     txDetail?.Confirmations.forEach((confirmationItem) => {
       const item = {
@@ -225,6 +227,14 @@ export const makeTransactionDetail = (txDetail: any): any => {
         submittedAt: new Date(confirmationItem?.updatedAt).getTime(),
       }
       confirmationList.push(item)
+    })
+  }
+
+  if (txDetail?.Rejectors && txDetail?.Rejectors?.length > 0) {
+    txDetail?.Rejectors?.forEach((rejector) => {
+      const item = { logoUri: null, name: null, value: rejector.ownerAddress }
+
+      RejectedList.push(item)
     })
   }
 
@@ -253,6 +263,7 @@ export const makeTransactionDetail = (txDetail: any): any => {
       detailedExecutionInfo: {
         baseGas: txDetail?.GasWanted,
         confirmations: confirmationList,
+        rejectors: RejectedList,
         confirmationsRequired: txDetail?.ConfirmationsRequired,
         executor: null,
         gasPrice: txDetail?.GasPrice,

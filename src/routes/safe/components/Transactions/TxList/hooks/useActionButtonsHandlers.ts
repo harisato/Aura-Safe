@@ -22,6 +22,7 @@ type ActionButtonsHandlers = {
   handleOnMouseEnter: () => void
   handleOnMouseLeave: () => void
   isPending: boolean
+  isRejected: boolean
   disabledActions: boolean
 }
 
@@ -102,11 +103,21 @@ export const useActionButtonsHandlers = (transaction: Transaction): ActionButton
     return false
   }
 
+  const isRejectedUser = (currentUser: string): boolean => {
+    const rejectors = (transaction?.txDetails?.detailedExecutionInfo as MultisigExecutionDetails)?.rejectors
+    if (rejectors && rejectors?.length > 0) {
+      return !!rejectors.find((rejector) => rejector.value === currentUser)
+    }
+    return false
+  }
+
   const disabledActions =
     !currentUser ||
     isPending ||
     // (txStatus === LocalTransactionStatus.AWAITING_EXECUTION && locationContext.txLocation === 'queued.queued') ||
     (txStatus === LocalTransactionStatus.AWAITING_CONFIRMATIONS && !isPendingCurrentUserSignature(currentUser))
+
+  const isRejected = isRejectedUser(currentUser)
 
   return {
     canCancel,
@@ -115,6 +126,7 @@ export const useActionButtonsHandlers = (transaction: Transaction): ActionButton
     handleOnMouseEnter,
     handleOnMouseLeave,
     isPending,
+    isRejected,
     disabledActions,
   }
 }

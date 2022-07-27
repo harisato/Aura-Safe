@@ -129,7 +129,6 @@ const ReviewSendFundsTx = ({ onClose, onPrev, tx }: ReviewTxProps): React.ReactE
 
   const signTransactionWithKeplr = async (safeAddress: string) => {
     const chainId = chainInfo.chainId
-    console.log('chainInfo', chainInfo)
 
     const listChain = await getMChainsConfig()
     // const chainInfo = listChain.find((x) => x.chainId === chainId)
@@ -139,7 +138,6 @@ const ReviewSendFundsTx = ({ onClose, onPrev, tx }: ReviewTxProps): React.ReactE
 
     const mChainInfo = listChain.find((x) => x.chainId === chainId)
     const denom = mChainInfo?.denom || ''
-    console.log('mChainInfo', mChainInfo)
 
     if (window.keplr) {
       await window.keplr.enable(chainId)

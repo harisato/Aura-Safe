@@ -12,6 +12,7 @@ import { isCancelTxDetails } from './utils'
 import PlusIcon from '../TxList/assets/plus-icon.svg'
 import ExcuteIcon from '../TxList/assets/excute-icon.svg'
 import DoneIcon from '../TxList/assets/done-icon.svg'
+import CircleRedIcon from '../TxList/assets/circle-cross-red.svg'
 
 const StyledImg = styled(Img)`
   background-color: transparent;
@@ -75,6 +76,19 @@ export const TxOwners = ({
               avatarUrl={signer?.logoUri || undefined}
               shortenHash={4}
             />
+          </div>
+        </OwnerListItem>
+      ))}
+      {detailedExecutionInfo.rejectors?.map(({ value, name, logoUri }) => (
+        <OwnerListItem key={value}>
+          <span className="icon">
+            <img src={CircleRedIcon} alt="Aura Safe" />
+          </span>
+          <div className="legend">
+            <Text color="primary" size="xl" strong>
+              Rejected
+            </Text>
+            <AddressInfo address={value} name={name || undefined} avatarUrl={logoUri || undefined} shortenHash={4} />
           </div>
         </OwnerListItem>
       ))}

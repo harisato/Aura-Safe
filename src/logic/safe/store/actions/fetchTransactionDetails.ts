@@ -71,8 +71,6 @@ export const fetchTransactionDetailsByHash =
 
     try {
       const { Data, ErrorCode } = await getTxDetailByHash(txQuery, safeAddress)
-      console.log('Data', Data)
-
       if (ErrorCode !== MESSAGES_CODE.SUCCESSFUL.ErrorCode) {
         return
       }
@@ -154,8 +152,6 @@ export const fetchTransactionDetailsByHash =
           addressInfoIndex: null,
         }
       }
-
-      console.log('detailedExecutionInfo', detailedExecutionInfo)
 
       const transactionDetails: TransactionDetails = {
         txId: Data.Id.toString(),

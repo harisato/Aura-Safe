@@ -1,4 +1,6 @@
 import { MultisigExecutionInfo } from '@gnosis.pm/safe-react-gateway-sdk'
+import { createBrowserHistory } from 'history'
+import { useDispatch } from 'react-redux'
 
 import Block from 'src/components/layout/Block'
 import Col from 'src/components/layout/Col'
@@ -7,16 +9,20 @@ import Paragraph from 'src/components/layout/Paragraph'
 import Row from 'src/components/layout/Row'
 import Modal, { Modal as GenericModal } from 'src/components/Modal'
 import { ButtonStatus } from 'src/components/Modal/type'
-import { getInternalChainId } from 'src/config'
+import { getInternalChainId, getShortName, _getChainId } from 'src/config'
 import { EstimationStatus, useEstimateTransactionGas } from 'src/logic/hooks/useEstimateTransactionGas'
+import { enhanceSnackbarForAction, NOTIFICATIONS } from 'src/logic/notifications'
+import enqueueSnackbar from 'src/logic/notifications/store/actions/enqueueSnackbar'
+import fetchTransactions from 'src/logic/safe/store/actions/transactions/fetchTransactions'
 import { Transaction } from 'src/logic/safe/store/models/types/gateway.d'
 import { EMPTY_DATA } from 'src/logic/wallets/ethTransactions'
-import { extractSafeAddress } from 'src/routes/routes'
+import { extractSafeAddress, generateSafeRoute, SAFE_ROUTES } from 'src/routes/routes'
 import { ModalHeader } from 'src/routes/safe/components/Balances/SendModal/screens/ModalHeader'
 import { EditableTxParameters } from 'src/routes/safe/components/Transactions/helpers/EditableTxParameters'
 import { ParametersStatus } from 'src/routes/safe/components/Transactions/helpers/utils'
 import { TxParameters } from 'src/routes/safe/container/hooks/useTransactionParameters'
 import { rejectTransactionById } from 'src/services/index'
+import { PUBLIC_URL } from 'src/utils/constants'
 import { useStyles } from './style'
 type Props = {
   isOpen: boolean
@@ -24,10 +30,16 @@ type Props = {
   gwTransaction: Transaction
 }
 
+const history = createBrowserHistory({
+  basename: PUBLIC_URL,
+})
+
 export const RejectTxModal = ({ isOpen, onClose, gwTransaction }: Props): React.ReactElement => {
   // const dispatch = useDispatch()
   const safeAddress = extractSafeAddress()
   const classes = useStyles()
+
+  const dispatch = useDispatch()
 
   const {
     gasCostFormatted,
@@ -47,6 +59,8 @@ export const RejectTxModal = ({ isOpen, onClose, gwTransaction }: Props): React.
 
   const nonce = (gwTransaction.executionInfo as MultisigExecutionInfo)?.nonce ?? 0
   const internalId = getInternalChainId()
+  const chainId = _getChainId()
+
   const sendReplacementTransaction = (txParameters: TxParameters) => {
     const data = {
       transactionId: nonce,
@@ -54,7 +68,17 @@ export const RejectTxModal = ({ isOpen, onClose, gwTransaction }: Props): React.
     }
     if (data) {
       rejectTransactionById(data).then((res) => {
-        console.log('res', res)
+        const { ErrorCode } = res
+        dispatch(enqueueSnackbar(enhanceSnackbarForAction(NOTIFICATIONS.TX_REJECTED_MSG_SUCCESS)))
+
+        if (ErrorCode === 'SUCCESSFUL') {
+          dispatch(fetchTransactions(chainId, safeAddress, true))
+          setTimeout(() => {
+            window.location.reload()
+          }, 500)
+        } else {
+          dispatch(enqueueSnackbar(enhanceSnackbarForAction(NOTIFICATIONS.TX_FAILED_MSG)))
+        }
       })
     }
     onClose()

@@ -33,7 +33,6 @@ export const usePagedQueuedTransactions = (): PagedQueuedTransactions => {
     try {
       // results = await loadPagedQueuedTransactions(safeAddress)
       results = await loadPageQueuedTransactionsFromAuraApi(safeAddress)
-      console.log('results', results)
     } catch (e) {
       // No next page
       if (e.content !== Errors._608) {
