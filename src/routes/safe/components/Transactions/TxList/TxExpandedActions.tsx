@@ -61,7 +61,7 @@ export const TxExpandedActions = ({ transaction }: TxExpandedActionsProps): Reac
   // https://github.com/facebook/react/issues/4492
   return (
     <>
-      {disabledActions || isRejected ? (
+      {(disabledActions || isRejected) && !isAwaitingEx ? (
         isRejected ? (
           <StyledLabel>You have rejected this transaction</StyledLabel>
         ) : (
