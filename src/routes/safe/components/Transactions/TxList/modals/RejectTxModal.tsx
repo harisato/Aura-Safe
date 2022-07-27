@@ -53,9 +53,6 @@ export const RejectTxModal = ({ isOpen, onClose, gwTransaction }: Props): React.
     txData: EMPTY_DATA,
     txRecipient: safeAddress,
   })
-  const origin = gwTransaction.safeAppInfo
-    ? JSON.stringify({ name: gwTransaction.safeAppInfo.name, url: gwTransaction.safeAppInfo.url })
-    : ''
 
   const nonce = (gwTransaction.executionInfo as MultisigExecutionInfo)?.nonce ?? 0
   const internalId = getInternalChainId()
@@ -72,10 +69,17 @@ export const RejectTxModal = ({ isOpen, onClose, gwTransaction }: Props): React.
         dispatch(enqueueSnackbar(enhanceSnackbarForAction(NOTIFICATIONS.TX_REJECTED_MSG_SUCCESS)))
 
         if (ErrorCode === 'SUCCESSFUL') {
+          history.push(
+            generateSafeRoute(SAFE_ROUTES.TRANSACTIONS_QUEUE, {
+              shortName: getShortName(),
+              safeAddress,
+            }),
+          )
+
           dispatch(fetchTransactions(chainId, safeAddress, true))
-          setTimeout(() => {
-            window.location.reload()
-          }, 500)
+          // setTimeout(() => {
+          //   window.location.reload()
+          // }, 500)
         } else {
           dispatch(enqueueSnackbar(enhanceSnackbarForAction(NOTIFICATIONS.TX_FAILED_MSG)))
         }
@@ -112,57 +116,17 @@ export const RejectTxModal = ({ isOpen, onClose, gwTransaction }: Props): React.
               <ModalHeader onClose={onClose} title="Reject transaction" />
               <Hairline />
               <Block className={classes.container}>
-                {/* <SafeInfo />
-                <Divider withArrow /> */}
-
-                {/* <Row margin="xs">
-                  <Paragraph color="disabled" noMargin size="md" style={{ letterSpacing: '-0.5px' }}>
-                    Recipient
-                  </Paragraph>
-                </Row> */}
                 <Row align="center" margin="md" data-testid="recipient-review-step">
-                  <Col xs={12}>
-                    {/* <PrefixedEthHashInfo
-                      hash={tx.recipientAddress}
-                      name={tx.recipientName}
-                      showCopyBtn
-                      showAvatar
-                      explorerUrl={getExplorerInfo(tx.recipientAddress)}
-                    /> */}
-                  </Col>
+                  <Col xs={12}></Col>
                 </Row>
                 <Row>
                   <Paragraph>
                     This action will reject this transaction. A separate transaction will be performed to submit the
                     rejection.
                   </Paragraph>
-                  {/* <Paragraph color="medium" size="sm">
-                    Transaction nonce:
-                    <br />
-                    <Bold className={classes.nonceNumber}>{nonce}</Bold>
-                  </Paragraph> */}
                 </Row>
-                {/* Tx Parameters */}
-                {/* <TxParametersDetail
-                  txParameters={txParameters}
-                  onEdit={toggleEditMode}
-                  parametersStatus={getParametersStatus()}
-                  isTransactionCreation={isCreation}
-                  isTransactionExecution={isExecution}
-                  isOffChainSignature={isOffChainSignature}
-                /> */}
               </Block>
 
-              {/* {txEstimationExecutionStatus === EstimationStatus.LOADING ? null : (
-                <ReviewInfoText
-                  gasCostFormatted={gasCostFormatted}
-                  isCreation={isCreation}
-                  isExecution={isExecution}
-                  isOffChainSignature={isOffChainSignature}
-                  safeNonce={txParameters.safeNonce}
-                  txEstimationExecutionStatus={txEstimationExecutionStatus}
-                />
-              )} */}
               <GenericModal.Footer withoutBorder={confirmButtonStatus !== ButtonStatus.LOADING}>
                 <GenericModal.Footer.Buttons
                   cancelButtonProps={{ onClick: onClose, text: 'Close' }}
