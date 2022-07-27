@@ -31,14 +31,17 @@ import NetworkLabel from 'src/components/NetworkLabel/NetworkLabel'
 import {
   BlockWithPadding,
   ParagraphWithMargin,
-  StyledLink,
   RowHeader,
   OwnerNameField,
   CheckIconAddressAdornment,
   OwnersIconsContainer,
   OwnerContainer,
   StyledParagraph,
+  FieldStyled,
 } from './styles'
+
+import TrashIcon from '../../assets/trash-2.svg'
+import QrCodeIcon from '../../assets/uil_qrcode-scan.svg'
 
 export const ownersAndConfirmationsNewSafeStepLabel = 'Owners and Confirmations'
 
@@ -168,7 +171,7 @@ function OwnersAndConfirmationsNewSafeStep(): ReactElement {
                 </Col>
                 {!disbaleAddressInput && (
                   <OwnersIconsContainer xs={1} center="xs" middle="xs">
-                    <ScanQRWrapper handleScan={handleScan} testId={`${addressFieldName}-scan-QR`} />
+                    <ScanQRWrapper handleScan={handleScan} testId={`${addressFieldName}-scan-QR`} icon={QrCodeIcon} />
                   </OwnersIconsContainer>
                 )}
                 {showDeleteIcon && (
@@ -177,7 +180,7 @@ function OwnersAndConfirmationsNewSafeStep(): ReactElement {
                       onClick={() => onClickRemoveOwner({ addressFieldName })}
                       dataTestId={`${addressFieldName}-remove-button`}
                     >
-                      <Icon size="sm" type="delete" color="icon" tooltip="Delete Owner" />
+                      <img src={TrashIcon} alt="Trash Icon" />
                     </ButtonHelper>
                   </OwnersIconsContainer>
                 )}
@@ -185,24 +188,29 @@ function OwnersAndConfirmationsNewSafeStep(): ReactElement {
             )
           })}
         </RowHeader>
-        <OwnerContainer align="center" grow>
-          <Button color="secondary" data-testid="add-new-owner" onClick={onClickAddNewOwner}>
-            <Paragraph noMargin size="lg" color="green">
-              + Add another owner
-            </Paragraph>
-          </Button>
-        </OwnerContainer>
+
+        <div style={{ paddingLeft: '24px' }}>
+          <OwnerContainer align="center" grow>
+            <Button color="secondary" data-testid="add-new-owner" onClick={onClickAddNewOwner}>
+              <Paragraph noMargin size="lg" color="green">
+                + Add another owner
+              </Paragraph>
+            </Button>
+          </OwnerContainer>
+        </div>
+
         <BlockWithPadding>
           <Block>
             <Paragraph color="white">Any transaction requires the confirmation of:</Paragraph>
           </Block>
           <OwnerContainer align="center" grow>
             <Col xs={1}>
-              <Field
+              <FieldStyled
                 component={SelectField}
                 data-testid="threshold-selector-input"
                 name={FIELD_NEW_SAFE_THRESHOLD}
                 validate={composeValidators(required, minValue(1))}
+                color="white"
               >
                 {owners.map((_, option) => (
                   <MenuItem
@@ -214,7 +222,7 @@ function OwnersAndConfirmationsNewSafeStep(): ReactElement {
                     {option + 1}
                   </MenuItem>
                 ))}
-              </Field>
+              </FieldStyled>
             </Col>
             <Col xs={11}>
               <StyledParagraph noMargin>out of {owners.length} owner(s)</StyledParagraph>

@@ -47,6 +47,9 @@ const styles = (theme) =>
     stepLabel: {
       cursor: ({ isStepLabelClickable }: any) => (isStepLabelClickable ? 'pointer' : 'inherit'),
     },
+    FotterForm: {
+      justifyContent: 'flex-end !important',
+    },
   })
 
 export { styles }

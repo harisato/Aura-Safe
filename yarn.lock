@@ -12,9 +12,9 @@
   resolved "https://registry.yarnpkg.com/@apocentre/alias-sampling/-/alias-sampling-0.5.3.tgz#897ff181b48ad7b2bcb4ecf29400214888244f08"
   integrity sha512-7UDWIIF9hIeJqfKXkNIzkVandlwLf1FWTSdrb9iXvOP8oF544JRXQjCbiTmCv2c9n44n/FIWtehhBfNuAx2CZA==
 
-"@aura/safe-react-components@https://github.com/aura-nw/safe-react-components.git":
+"@aura/safe-react-components@https://github.com/aura-nw/safe-react-components":
   version "1.1.5"
-  resolved "https://github.com/aura-nw/safe-react-components.git#471ce5e126f5cca9636064a82fabac66b114e19c"
+  resolved "https://github.com/aura-nw/safe-react-components#a8643997be8e3db819d802074ed2824045ebf893"
   dependencies:
     react-media "^1.10.0"
     web3-utils "^1.6.0"
