@@ -14,8 +14,8 @@ import PrefixedEthHashInfo from 'src/components/PrefixedEthHashInfo'
 import { getExplorerInfo } from 'src/config'
 import { currentNetworkAddressBookAsMap } from 'src/logic/addressBook/store/selectors'
 import { userAccountSelector } from 'src/logic/wallets/store/selectors'
-import { border, lg, sm, xs } from 'src/theme/variables'
-import { FIELD_SAFE_OWNER_LIST, FIELD_SAFE_THRESHOLD, LoadSafeFormValues } from '../fields/allowFields'
+import { border, lg, sm } from 'src/theme/variables'
+import { AllowSafeFormValues, FIELD_SAFE_OWNER_LIST, FIELD_SAFE_THRESHOLD } from '../fields/allowFields'
 import { getLoadSafeName } from '../fields/utils'
 
 export const reviewLoadStepLabel = 'Review'
@@ -25,7 +25,7 @@ const ReviewAllowStep = (): ReactElement => {
   const addressBook = useSelector(currentNetworkAddressBookAsMap)
 
   const loadSafeForm = useForm()
-  const formValues = loadSafeForm.getState().values as LoadSafeFormValues
+  const formValues = loadSafeForm.getState().values as AllowSafeFormValues
 
   const safeName = getLoadSafeName(formValues, addressBook)
   // const safeAddress = formValues.
@@ -68,20 +68,6 @@ const ReviewAllowStep = (): ReactElement => {
               {safeName}
             </Paragraph>
           </Block>
-          {/* <Block margin="lg">
-            <Paragraph color="disabled" noMargin size="sm">
-              Safe address
-            </Paragraph>
-            <SafeAddressContainer>
-              <PrefixedEthHashInfo
-                hash={safeAddress}
-                shortenHash={4}
-                showAvatar
-                showCopyBtn
-                explorerUrl={getExplorerInfo(safeAddress)}
-              />
-            </SafeAddressContainer>
-          </Block> */}
           <Block margin="lg">
             <Paragraph color="disabled" noMargin size="sm">
               Connected wallet client is owner?
@@ -153,10 +139,6 @@ const OwnerItemContainer = styled(Row)`
   padding-left: ${lg};
 `
 
-const SafeAddressContainer = styled(Row)`
-  margin-top: ${xs};
-  align-items: center;
-`
 const StyledParagraph = styled(Paragraph)`
   margin-top: 4px;
 `

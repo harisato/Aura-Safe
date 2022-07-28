@@ -11,12 +11,13 @@ import Paragraph from 'src/components/layout/Paragraph'
 import NetworkLabel from 'src/components/NetworkLabel/NetworkLabel'
 import { useStepper } from 'src/components/Stepper/stepperContext'
 import { providerNameSelector } from 'src/logic/wallets/store/selectors'
-import { lg, secondary } from 'src/theme/variables'
+import { lg } from 'src/theme/variables'
 import { AddressBookEntry, makeAddressBookEntry } from '../../../logic/addressBook/model/addressBook'
 import { currentNetworkAddressBookAsMap } from '../../../logic/addressBook/store/selectors'
 import { currentChainId } from '../../../logic/config/store/selectors'
 import {
   FIELD_ALLOW_CUSTOM_SAFE_NAME,
+  FIELD_ALLOW_IS_LOADING_SAFE_ADDRESS,
   FIELD_ALLOW_SAFE_ID,
   FIELD_ALLOW_SUGGESTED_SAFE_NAME,
   FIELD_SAFE_OWNER_LIST,
@@ -25,13 +26,26 @@ import {
 
 import { getMSafeInfo } from 'src/services'
 
+const BlockWithPadding = styled(Block)`
+  padding: ${lg};
+`
+
+const FieldContainer = styled(Block)`
+  display: flex;
+  max-width: 480px;
+  margin-top: 12px;
+`
+
 export const nameNewSafeStepLabel = 'Name'
 
 function NameAllowSafeStep(): ReactElement {
-  // const [isSafeInfoLoading, setIsSafeInfoLoading] = useState<boolean>(false)
+  const allowSafeForm = useForm()
+  const formValues = allowSafeForm.getState().values
+  const ownersList = formValues[FIELD_SAFE_OWNER_LIST]
+
   const [threshold, setThreshold] = useState<number>()
 
-  const [ownersWithName, setOwnersWithName] = useState<AddressBookEntry[]>([])
+  const [ownersWithName, setOwnersWithName] = useState<AddressBookEntry[]>(ownersList)
 
   const provider = useSelector(providerNameSelector)
 
@@ -39,8 +53,6 @@ function NameAllowSafeStep(): ReactElement {
   const chainId = useSelector(currentChainId)
 
   const { setCurrentStep } = useStepper()
-  const allowSafeForm = useForm()
-  const formValues = allowSafeForm.getState().values
 
   const {
     input: { value: safeId },
@@ -62,11 +74,9 @@ function NameAllowSafeStep(): ReactElement {
         return
       }
 
-      // setIsSafeInfoLoading(true)
       try {
         const { owners, threshold } = await getMSafeInfo(safeId)
 
-        // setIsSafeInfoLoading(false)
         const ownersWithName = owners.map((address, index) =>
           makeAddressBookEntry(addressBook[address] || { address, name: safeOwners[index].name, chainId }),
         )
@@ -77,7 +87,6 @@ function NameAllowSafeStep(): ReactElement {
         setOwnersWithName([])
         setThreshold(undefined)
       }
-      // setIsSafeInfoLoading(false)
     }
 
     checkSafeAddress()
@@ -89,10 +98,6 @@ function NameAllowSafeStep(): ReactElement {
     }
   }, [threshold, allowSafeForm])
 
-  // useEffect(() => {
-  //   allowSafeForm.change(FIELD_LOAD_IS_LOADING_SAFE_ADDRESS, isSafeInfoLoading)
-  // }, [isSafeInfoLoading, allowSafeForm])
-
   useEffect(() => {
     if (ownersWithName) {
       allowSafeForm.change(FIELD_SAFE_OWNER_LIST, ownersWithName)
@@ -103,9 +108,9 @@ function NameAllowSafeStep(): ReactElement {
     <BlockWithPadding data-testid={'create-safe-name-step'}>
       <Block margin="md">
         <Paragraph color="primary" noMargin size="lg">
-          You are about to give your permission to co-create a new Safe with one or more other owners. First, let's give
-          your new Safe a name. This name is only stored locally and will never be shared with Pyxis Safe or any third
-          parties. The new Safe will ONLY be available on <NetworkLabel />
+          You are about to give your permission to co-create a new Safe with one or more other owners. First, let&#39;s
+          give your new Safe a name. This name is only stored locally and will never be shared with Pyxis Safe or any
+          third parties. The new Safe will ONLY be available on <NetworkLabel />
         </Paragraph>
       </Block>
       <label htmlFor={FIELD_ALLOW_CUSTOM_SAFE_NAME}>Name of the new Safe</label>
@@ -131,18 +136,18 @@ function NameAllowSafeStep(): ReactElement {
   )
 }
 
+export const loadSafeStepValidations = (values: {
+  [FIELD_ALLOW_IS_LOADING_SAFE_ADDRESS]: string
+}): Record<string, string> => {
+  const isLoadingSafeAddress = values[FIELD_ALLOW_IS_LOADING_SAFE_ADDRESS]
+
+  if (isLoadingSafeAddress) {
+    return {
+      [FIELD_ALLOW_SUGGESTED_SAFE_NAME]: 'Loading Safe Info...',
+    }
+  }
+
+  return {}
+}
+
 export default NameAllowSafeStep
-
-const BlockWithPadding = styled(Block)`
-  padding: ${lg};
-`
-
-const FieldContainer = styled(Block)`
-  display: flex;
-  max-width: 480px;
-  margin-top: 12px;
-`
-
-const Link = styled.a`
-  color: ${secondary};
-`

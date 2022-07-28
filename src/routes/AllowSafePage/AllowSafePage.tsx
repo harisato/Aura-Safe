@@ -24,7 +24,7 @@ import { addOrUpdateSafe } from 'src/logic/safe/store/actions/addOrUpdateSafe'
 import { buildMSafe } from 'src/logic/safe/store/actions/fetchSafe'
 import { loadStoredSafes, saveSafes } from 'src/logic/safe/utils'
 import { PendingSafeListStorage } from 'src/routes/CreateSafePage/CreateSafePage'
-import { FIELD_SAFE_OWNERS_LIST, SAFES_PENDING_STORAGE_KEY } from 'src/routes/CreateSafePage/fields/createSafeFields'
+import { SAFES_PENDING_STORAGE_KEY } from 'src/routes/CreateSafePage/fields/createSafeFields'
 import { allowMSafe, getMSafeInfo } from 'src/services'
 import { MESSAGES_CODE } from 'src/services/constant/message'
 import { secondary, sm } from 'src/theme/variables'
@@ -39,49 +39,58 @@ import {
   WELCOME_ROUTE,
 } from '../routes'
 import {
+  AllowSafeFormValues,
   FIELD_ALLOW_CUSTOM_SAFE_NAME,
   FIELD_ALLOW_IS_LOADING_SAFE_ADDRESS,
   FIELD_ALLOW_SAFE_ID,
   FIELD_ALLOW_SUGGESTED_SAFE_NAME,
+  FIELD_SAFE_OWNERS_LIST,
   FIELD_SAFE_OWNER_LIST,
   FIELD_SAFE_THRESHOLD,
-  LoadSafeFormValues as AllowSafeFormValues,
   OwnerFieldListItem,
 } from './fields/allowFields'
 import { getLoadSafeName } from './fields/utils'
 import AllowSafeOwnersStep, { loadSafeOwnersStepLabel } from './steps/AllowSafeOwnersStep'
-import NameAllowSafeStep, { nameNewSafeStepLabel } from './steps/NameAllowSafeStep'
+import NameAllowSafeStep, { loadSafeStepValidations, nameNewSafeStepLabel } from './steps/NameAllowSafeStep'
 import ReviewAllowStep, { reviewLoadStepLabel } from './steps/ReviewAllowStep'
+
+const BackIcon = styled(IconButton)`
+  color: ${secondary};
+  padding: ${sm};
+  margin-right: 5px;
+`
 
 function Allow(): ReactElement {
   const dispatch = useDispatch()
   const history = useHistory()
-  const { safeAddress, safeId } = extractPrefixedSafeAddress(undefined, ALLOW_SPECIFIC_SAFE_ROUTE)
+  const { safeId } = extractPrefixedSafeAddress(undefined, ALLOW_SPECIFIC_SAFE_ROUTE)
   const safeRandomName = useMnemonicSafeName()
+
   const [initialFormValues, setInitialFormValues] = useState<AllowSafeFormValues>()
   const addressBook = useSelector(currentNetworkAddressBookAsMap)
   const chainId = useSelector(currentChainId)
 
   useEffect(() => {
-    const checkSafeAddress = async () => {
-      if (!safeId) {
-        return
-      }
+    if (!safeId) {
+      return
+    }
 
-      const initialValues: AllowSafeFormValues = {
-        [FIELD_ALLOW_SUGGESTED_SAFE_NAME]: safeRandomName,
-        [FIELD_ALLOW_IS_LOADING_SAFE_ADDRESS]: false,
-        [FIELD_ALLOW_SAFE_ID]: safeId,
-        [FIELD_SAFE_OWNER_LIST]: [],
-        [FIELD_ALLOW_CUSTOM_SAFE_NAME]: '',
-        [FIELD_SAFE_THRESHOLD]: 0,
-      }
+    const initialValues: AllowSafeFormValues = {
+      [FIELD_ALLOW_SUGGESTED_SAFE_NAME]: safeRandomName,
+      [FIELD_ALLOW_IS_LOADING_SAFE_ADDRESS]: true,
+      [FIELD_ALLOW_SAFE_ID]: safeId,
+      [FIELD_SAFE_OWNER_LIST]: [],
+      [FIELD_ALLOW_CUSTOM_SAFE_NAME]: '',
+      [FIELD_SAFE_THRESHOLD]: 0,
+    }
 
-      try {
-        const safesPending = await Promise.resolve(loadFromStorage<PendingSafeListStorage>(SAFES_PENDING_STORAGE_KEY))
-        const pendingSafe = safesPending?.find((e) => e.id === safeId)
-
-        const { owners, threshold } = await getMSafeInfo(safeId)
+    Promise.all([
+      Promise.resolve(loadFromStorage<PendingSafeListStorage>(SAFES_PENDING_STORAGE_KEY)),
+      getMSafeInfo(safeId),
+    ])
+      .then(([pendingSafes, mSafeInfo]) => {
+        const pendingSafe = pendingSafes?.find((e) => e.id === safeId)
+        const { owners, threshold } = mSafeInfo
 
         const ownerList: Array<OwnerFieldListItem> = owners.map((address, idx) => {
           const pendingOwner = pendingSafe?.[FIELD_SAFE_OWNERS_LIST][idx].nameFieldName
@@ -94,17 +103,26 @@ function Allow(): ReactElement {
 
         initialValues[FIELD_SAFE_OWNER_LIST] = [...ownerList]
         initialValues[FIELD_SAFE_THRESHOLD] = threshold
+        initialValues[FIELD_ALLOW_IS_LOADING_SAFE_ADDRESS] = false
 
         setInitialFormValues(initialValues)
-      } catch (error) {}
-    }
-
-    checkSafeAddress()
-  }, [safeAddress, safeId, safeRandomName])
+      })
+      .catch((error) => {
+        console.log('error AllowSafeFormValues', error)
+        dispatch(
+          enqueueSnackbar(
+            enhanceSnackbarForAction({
+              message: 'Can not load Safe',
+              options: { variant: ERROR, persist: false, autoHideDuration: 5000 },
+            }),
+          ),
+        )
+      })
+  }, [safeId, safeRandomName])
 
   const updateAddressBook = (newAddress: string, values: AllowSafeFormValues) => {
     const ownerList = values[FIELD_SAFE_OWNER_LIST] as AddressBookEntry[]
-    debugger
+
     const ownerEntries = ownerList
       .map((owner) => {
         const ownerFieldName = `owner-address-${owner.address}`
@@ -195,7 +213,7 @@ function Allow(): ReactElement {
           onSubmit={onSubmitAllowSafe}
           key={safeId}
         >
-          <StepFormElement label={nameNewSafeStepLabel} nextButtonLabel="Continue">
+          <StepFormElement label={nameNewSafeStepLabel} nextButtonLabel="Continue" validate={loadSafeStepValidations}>
             <NameAllowSafeStep />
           </StepFormElement>
           <StepFormElement label={loadSafeOwnersStepLabel} nextButtonLabel="Continue">
@@ -211,9 +229,3 @@ function Allow(): ReactElement {
 }
 
 export default Allow
-
-const BackIcon = styled(IconButton)`
-  color: ${secondary};
-  padding: ${sm};
-  margin-right: 5px;
-`
