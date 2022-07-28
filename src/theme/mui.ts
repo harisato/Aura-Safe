@@ -145,7 +145,7 @@ const theme = createTheme({
       active: {
         color: 'transparent !important',
         borderRadius: '50%',
-        background: `${colorLinear}`,
+        background: '#5EE6D0',
         fontWeight: boldFont,
         '& text': {
           fill: '#121212',
