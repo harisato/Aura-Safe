@@ -58,7 +58,7 @@ const SafeHeader = ({
       {/* Network */}
       <StyledTextLabel size="lg" chainInfo={chainInfo}>
         <StyledDotChainName color={backgroundColor}></StyledDotChainName>
-        {chainInfo.chainName}
+        <span style={{ color: 'white' }}> {chainInfo.chainName}</span>
       </StyledTextLabel>
       <Container>
         {/* Identicon */}
@@ -91,7 +91,7 @@ const SafeHeader = ({
           <StyledButton size="md" disabled={!granted} onClick={onNewTransactionClick}>
             <FixedIcon type="arrowSentWhite" />
             <Text size="md" color="white">
-              Send funds
+              New transaction
             </Text>
           </StyledButton>
         </ContainerButton>
