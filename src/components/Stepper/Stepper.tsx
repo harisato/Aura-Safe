@@ -61,33 +61,16 @@ function StepperComponent(): ReactElement {
                 onClick={onClickLabel}
                 className={classes.stepLabel}
                 icon={
-                  <svg width="22" height="22" viewBox="0 0 25 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <svg width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect width="22" height="22" rx="12" fill="#5EE6D0" />
                     <path
-                      d="M0.5 12C0.5 5.37258 5.87258 0 12.5 0V0C19.1274 0 24.5 5.37258 24.5 12V12C24.5 18.6274 19.1274 24 12.5 24V24C5.87258 24 0.5 18.6274 0.5 12V12Z"
-                      fill="url(#paint0_linear_5834_14837)"
-                    />
-                    <path
-                      d="M8.5 11.9999L11.1667 14.6666L16.5 9.33325"
-                      stroke="#121212"
+                      d="M8 11.9997L10.6667 14.6663L16 9.33301"
+                      stroke="#0F0F0F"
                       strokeWidth="2"
                       strokeMiterlimit="10"
                       strokeLinecap="round"
                       strokeLinejoin="round"
                     />
-                    <defs>
-                      <linearGradient
-                        id="paint0_linear_5834_14837"
-                        x1="0.500001"
-                        y1="12"
-                        x2="22.0944"
-                        y2="19.2075"
-                        gradientUnits="userSpaceOnUse"
-                      >
-                        <stop stopColor="#5EE6D0" />
-                        <stop offset="0.515056" stopColor="#BFC6FF" />
-                        <stop offset="1" stopColor="#FFBA69" />
-                      </linearGradient>
-                    </defs>
                   </svg>
                 }
               >

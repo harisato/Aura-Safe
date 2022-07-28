@@ -74,6 +74,14 @@
   color: white;
 }
 
+.textaura {
+  color: #E6E7E8;
+}
+
+.descriptionAura {
+  color: #98989B;
+}
+
 .capitalize {
   text-transform: capitalize;
 }
@@ -108,6 +116,14 @@
 
 .sm {
   font-size: $smallFontSize;
+}
+
+.bmd {
+  font-size: $bmg;
+}
+
+.smd {
+  font-size: $smd;
 }
 
 .md {

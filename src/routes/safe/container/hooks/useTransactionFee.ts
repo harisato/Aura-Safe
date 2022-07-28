@@ -79,8 +79,6 @@ export const useTransactionFees = (
 
         const gasEstimation = defaultGas?.gasAmount || '400000'
 
-        console.log(defaultGas)
-
         // "/cosmos.bank.v1beta1.MsgSend"
 
         // const accounts = await offlineSigner.getAccounts()

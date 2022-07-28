@@ -3,12 +3,9 @@ import styled from 'styled-components'
 
 const StyledPrefixedEthHashInfo = styled(EthHashInfo)`
   p {
-    color: white;
     font-family: 'SFProDisplay';
-  }
-  span {
+    font-size: 12px;
     color: white;
-    font-family: 'SFProDisplay';
   }
 `
 

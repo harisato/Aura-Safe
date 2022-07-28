@@ -122,7 +122,6 @@ function Allow(): ReactElement {
 
   const updateAddressBook = (newAddress: string, values: AllowSafeFormValues) => {
     const ownerList = values[FIELD_SAFE_OWNER_LIST] as AddressBookEntry[]
-
     const ownerEntries = ownerList
       .map((owner) => {
         const ownerFieldName = `owner-address-${owner.address}`

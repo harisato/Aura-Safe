@@ -52,6 +52,7 @@ import { DEFAULT_GAS_LIMIT } from 'src/services/constant/common'
 import { ICreateSafeTransaction } from 'src/types/transaction'
 import { ModalHeader } from '../ModalHeader'
 import { styles } from './style'
+import fetchTransactions from 'src/logic/safe/store/actions/transactions/fetchTransactions'
 
 const useStyles = makeStyles(styles)
 
@@ -129,7 +130,6 @@ const ReviewSendFundsTx = ({ onClose, onPrev, tx }: ReviewTxProps): React.ReactE
 
   const signTransactionWithKeplr = async (safeAddress: string) => {
     const chainId = chainInfo.chainId
-    console.log('chainInfo', chainInfo)
 
     const listChain = await getMChainsConfig()
     // const chainInfo = listChain.find((x) => x.chainId === chainId)
@@ -139,7 +139,6 @@ const ReviewSendFundsTx = ({ onClose, onPrev, tx }: ReviewTxProps): React.ReactE
 
     const mChainInfo = listChain.find((x) => x.chainId === chainId)
     const denom = mChainInfo?.denom || ''
-    console.log('mChainInfo', mChainInfo)
 
     if (window.keplr) {
       await window.keplr.enable(chainId)
@@ -231,16 +230,18 @@ const ReviewSendFundsTx = ({ onClose, onPrev, tx }: ReviewTxProps): React.ReactE
   }
 
   const createTxFromApi = async (data: any) => {
-    const { ErrorCode, Data: safeData } = await createSafeTransaction(data)
+    const { ErrorCode } = await createSafeTransaction(data)
     if (ErrorCode === 'SUCCESSFUL') {
       setButtonStatus(ButtonStatus.READY)
       onClose()
 
+      const chainId = chainInfo.chainId
+      dispatch(fetchTransactions(chainId, safeAddress))
+
       // navigate to tx details
       const prefixedSafeAddress = getPrefixedSafeAddressSlug({ shortName: extractShortChainName(), safeAddress })
-      const txRoute = generatePath(SAFE_ROUTES.TRANSACTIONS_SINGULAR, {
+      const txRoute = generatePath(SAFE_ROUTES.TRANSACTIONS_QUEUE, {
         [SAFE_ADDRESS_SLUG]: prefixedSafeAddress,
-        id: safeData,
       })
       history.push(txRoute)
     } else {

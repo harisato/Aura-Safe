@@ -31,6 +31,7 @@ export const TxCollapsedActions = ({ transaction }: TxCollapsedActionsProps): Re
     handleOnMouseEnter,
     handleOnMouseLeave,
     isPending,
+    isRejected,
     disabledActions,
   } = useActionButtonsHandlers(transaction)
   const nonce = useSelector(currentSafeNonce)
@@ -39,37 +40,39 @@ export const TxCollapsedActions = ({ transaction }: TxCollapsedActionsProps): Re
 
   const getTitle = () => {
     if (isAwaitingEx) {
-      return (transaction.executionInfo as MultisigExecutionInfo)?.nonce === nonce
-        ? 'Execute'
-        : `Transaction with nonce ${nonce} needs to be executed first`
+      return (transaction.executionInfo as MultisigExecutionInfo)?.nonce === nonce ? 'Execute' : ''
     }
     return 'Confirm'
   }
 
   return (
     <>
-      <Tooltip title={getTitle()} placement="top">
-        <span>
-          <IconButton
-            size="small"
-            type="button"
-            onClick={handleConfirmButtonClick}
-            disabled={disabledActions}
-            onMouseEnter={handleOnMouseEnter}
-            onMouseLeave={handleOnMouseLeave}
-          >
-            <Icon type={isAwaitingEx ? 'rocket' : 'check'} color="primary" size="sm" />
-          </IconButton>
-        </span>
-      </Tooltip>
-      {canCancel && (
-        <Tooltip title="Reject" placement="top">
+      {((!disabledActions && !isRejected) || isAwaitingEx) && (
+        <>
+          {/* <Tooltip title={getTitle()} placement="top"> */}
           <span>
-            <IconButton size="small" type="button" onClick={handleCancelButtonClick} disabled={isPending}>
-              <Icon type="circleCross" color="error" size="sm" />
+            <IconButton
+              size="small"
+              type="button"
+              onClick={handleConfirmButtonClick}
+              disabled={disabledActions}
+              onMouseEnter={handleOnMouseEnter}
+              onMouseLeave={handleOnMouseLeave}
+            >
+              <Icon type={isAwaitingEx ? 'rocket' : 'check'} color="primary" size="sm" />
             </IconButton>
           </span>
-        </Tooltip>
+          {/* </Tooltip> */}
+          {!isAwaitingEx && canCancel && (
+            // <Tooltip title="Reject" placement="top">
+            <span>
+              <IconButton size="small" type="button" onClick={handleCancelButtonClick} disabled={isPending}>
+                <Icon type="circleCross" color="error" size="sm" />
+              </IconButton>
+            </span>
+            // </Tooltip>
+          )}
+        </>
       )}
     </>
   )

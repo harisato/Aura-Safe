@@ -11,6 +11,7 @@ const marginButtonImg = '12px'
 const md = '16px'
 const primary = '#777E91'
 const secondary = '#03a9f4'
+
 const secondaryTextOrSvg = '#B2B5B2'
 const secondaryBackground = '#f0efee'
 const sm = '8px'
@@ -26,6 +27,8 @@ const bgBox = 'rgba(18, 18, 18, 1)'
 const bgDisabledColorStep = '#666769'
 const bgInput = '#2E2E33'
 const green = '#5EE6D0'
+const smallsizeFont = '14px'
+const descriptionAura = '#98989B'
 
 module.exports = {
   borderLinear,
@@ -33,14 +36,17 @@ module.exports = {
 
   mainFontFamily: 'SFProDisplay !important',
   secondaryFontFamily: 'SFProDisplay !important',
+  descriptionAura,
 
   lightFont: 300,
   regularFont: 400,
-  mediumFont: 510,
+
+  mediumFont: 500,
   semiBoldFont: 590,
   boldFont: 700,
   extraBoldFont: 800,
 
+  smallsizeFont,
   extraSmallFontSize: '11px',
   smallFontSize: '12px',
   mediumFontSize: '14px',

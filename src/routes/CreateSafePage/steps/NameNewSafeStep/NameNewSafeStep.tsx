@@ -32,7 +32,7 @@ function NameNewSafeStep(): ReactElement {
   return (
     <BlockWithPadding data-testid={'create-safe-name-step'}>
       <Block margin="md">
-        <Paragraph color="primary" noMargin size="lg">
+        <Paragraph color="textaura" noMargin size="lg">
           You are about to create a new Safe with one or more owners. First, let&apos;s give your new wallet a name.
           This name is only stored locally and will never be shared with Pyxis Safe or any third parties. The new Safe
           will ONLY be available on <NetworkLabel />
@@ -52,7 +52,7 @@ function NameNewSafeStep(): ReactElement {
         </Col>
       </FieldContainer>
       <Block margin="lg">
-        <Paragraph color="primary" noMargin size="lg">
+        <Paragraph color="descriptionAura" noMargin size="lg">
           By continuing you consent with our terms of use and privacy policy. All assets inside the Safe are in total
           control of Safe owners and cannot be accessed by Pyxis Safe at any point.
         </Paragraph>
