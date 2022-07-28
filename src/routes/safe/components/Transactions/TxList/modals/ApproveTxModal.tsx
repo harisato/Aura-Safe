@@ -311,20 +311,19 @@ export const ApproveTxModal = ({
           const { ErrorCode, Data } = await sendSafeTransaction(data)
           if (ErrorCode === 'SUCCESSFUL') {
             dispatch(enqueueSnackbar(NOTIFICATIONS.TX_EXECUTED_MSG))
-            const TxHash = Data['TxHash']
-            if (TxHash) {
-              const prefixedSafeAddress = getPrefixedSafeAddressSlug({
-                shortName: extractShortChainName(),
-                safeAddress,
-              })
+            // const TxHash = Data['TxHash']
+            // if (TxHash) {
+            //   const prefixedSafeAddress = getPrefixedSafeAddressSlug({
+            //     shortName: extractShortChainName(),
+            //     safeAddress,
+            //   })
 
-              const txRoute = generatePath(SAFE_ROUTES.TRANSACTIONS_SINGULAR, {
-                [SAFE_ADDRESS_SLUG]: prefixedSafeAddress,
-                [TRANSACTION_ID_NUMBER]: TxHash,
-              })
+            //   const txRoute = generatePath(SAFE_ROUTES.TRANSACTIONS_QUEUE, {
+            //     [SAFE_ADDRESS_SLUG]: prefixedSafeAddress,
+            //   })
 
-              history.replace(txRoute)
-            }
+            //   history.replace(txRoute)
+            // }
           } else {
             dispatch(enqueueSnackbar(NOTIFICATIONS.TX_FAILED_MSG))
           }
