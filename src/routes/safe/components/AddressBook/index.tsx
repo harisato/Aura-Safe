@@ -88,7 +88,7 @@ const AddressBookTable = (): ReactElement => {
 
   useEffect(() => {
     if (isValidAddress(entryAddressToEditOrCreateNew)) {
-      const address = checksumAddress(entryAddressToEditOrCreateNew as string)
+      const address = entryAddressToEditOrCreateNew //checksumAddress(entryAddressToEditOrCreateNew as string)
       const oldEntryIndex = addressBook.findIndex((entry) => sameAddress(entry.address, address))
 
       if (oldEntryIndex >= 0) {

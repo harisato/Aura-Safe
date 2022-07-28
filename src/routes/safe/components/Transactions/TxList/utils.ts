@@ -380,6 +380,7 @@ const makeTransactions = (list: ITransactionListItem[]): MTransactionListItem[] 
       executionInfo: {
         confirmationsRequired: tx?.ConfirmationsRequired || 0,
         confirmationsSubmitted: tx?.Confirmations || 0,
+        rejections: tx?.Rejections || 0,
         nonce: tx?.Id,
         type: 'MULTISIG',
         missingSigners: null,

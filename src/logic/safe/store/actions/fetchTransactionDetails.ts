@@ -101,23 +101,24 @@ export const fetchTransactionDetailsByHash =
             value: '0000000000000000000000000000000000000000',
           },
           safeTxHash: safeAddress,
-          executor: !Data.Executor[0]
+          executor: !Data?.Executor[0]
             ? null
             : {
                 logoUri: null,
                 name: null,
                 value: Data.Executor[0].ownerAddress,
               },
-          signers: Data.Signers.map(
-            (signer) =>
-              ({
-                logoUri: null,
-                name: null,
-                value: signer.OwnerAddress,
-              } as AddressEx),
-          ),
+          signers:
+            Data?.Signers.map(
+              (signer) =>
+                ({
+                  logoUri: null,
+                  name: null,
+                  value: signer.OwnerAddress,
+                } as AddressEx),
+            ) || [],
           confirmationsRequired: Data.ConfirmationsRequired,
-          confirmations: Data.Confirmations.map(
+          confirmations: Data?.Confirmations.map(
             (cf) =>
               ({
                 signature: cf.signature,
@@ -129,7 +130,7 @@ export const fetchTransactionDetailsByHash =
                 submittedAt: new Date(cf.createdAt).getTime(),
               } as MultisigConfirmation),
           ),
-          rejectors: Data.Rejectors.map((re) => ({ logoUri: null, name: null, value: re.ownerAddress } as AddressEx)),
+          rejectors: Data?.Rejectors.map((re) => ({ logoUri: null, name: null, value: re.ownerAddress } as AddressEx)),
           gasTokenInfo: {
             address: '',
             decimals: 6,
