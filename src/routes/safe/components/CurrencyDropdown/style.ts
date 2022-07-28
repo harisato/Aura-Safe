@@ -10,6 +10,7 @@ export const useDropdownStyles = makeStyles({
     maxWidth: (props: any) => (props.buttonWidth ? props.buttonWidth : buttonWidth),
     padding: '0',
     boxSizing: 'border-box',
+    backgroundColor: 'black',
   },
   localFlag: {
     backgroundPosition: '50% 50%',
@@ -32,11 +33,11 @@ export const useDropdownStyles = makeStyles({
     marginLeft: '18px',
   },
   button: {
-    backgroundColor: '#e8e7e6',
+    backgroundColor: 'rgba(15, 15, 15, 1)',
     border: 'none',
     borderRadius: '3px',
     boxSizing: 'border-box',
-    color: '#5d6d74',
+    color: 'white',
     cursor: 'pointer',
     fontSize: '12px',
     fontWeight: 'normal',
@@ -62,7 +63,7 @@ export const useDropdownStyles = makeStyles({
     '&::after': {
       borderLeft: '5px solid transparent',
       borderRight: '5px solid transparent',
-      borderTop: '5px solid #5d6d74',
+      borderTop: '5px solid white',
       content: '""',
       height: '0',
       position: 'absolute',
@@ -73,7 +74,7 @@ export const useDropdownStyles = makeStyles({
   },
   openMenuButton: {
     '&::after': {
-      borderBottom: '5px solid #5d6d74',
+      borderBottom: '5px solid white',
       borderLeft: '5px solid transparent',
       borderRight: '5px solid transparent',
       borderTop: 'none',
@@ -82,19 +83,25 @@ export const useDropdownStyles = makeStyles({
   dropdownItemsScrollWrapper: {
     maxHeight: '280px',
     overflow: 'auto',
+    backgroundColor: 'rgba(15, 15, 15, 1)',
+    '&:hover': {
+      backgroundColor: 'rgba(15, 15, 15, 1)',
+    },
   },
   search: {
+    backgroundColor: 'rgba(15, 15, 15, 1)',
     position: 'relative',
     borderRadius: '0',
-    backgroundColor: '#fff',
+    // backgroundColor: '#fff',
     '&:hover': {
-      backgroundColor: '#fff',
+      backgroundColor: 'rgba(15, 15, 15, 1)',
     },
     marginRight: 0,
     width: '100%',
   },
   searchIcon: {
     alignItems: 'center',
+    color: 'white',
     display: 'flex',
     height: '100%',
     justifyContent: 'center',
@@ -110,7 +117,7 @@ export const useDropdownStyles = makeStyles({
     },
   },
   inputRoot: {
-    color: '#5d6d74',
+    color: 'white',
     fontSize: '14px',
     fontWeight: 'normal',
     lineHeight: '1.43',
@@ -118,6 +125,7 @@ export const useDropdownStyles = makeStyles({
   },
   inputInput: {
     boxSizing: 'border-box',
+    color: 'white',
     height: '44px',
     padding: '12px 12px 12px 40px',
     width: '100%',

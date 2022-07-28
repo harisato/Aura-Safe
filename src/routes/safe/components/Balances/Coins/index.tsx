@@ -98,7 +98,11 @@ const Coins = (props: Props): React.ReactElement => {
                     break
                   }
                   case BALANCE_TABLE_BALANCE_ID: {
-                    cellItem = <div data-testid={`balance-${row[BALANCE_TABLE_ASSET_ID].symbol}`}>{row[id]}</div>
+                    cellItem = (
+                      <div data-testid={`balance-${row[BALANCE_TABLE_ASSET_ID].symbol}`} style={{ color: 'white' }}>
+                        {row[id]}
+                      </div>
+                    )
                     break
                   }
                   // case BALANCE_TABLE_VALUE_ID: {
