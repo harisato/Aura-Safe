@@ -220,7 +220,7 @@ export const TxCollapsed = ({
     </StyledGroupedTransactions>
   ) : (
     <StyledTransaction className={sameString(status.text, 'Failed') ? 'failed-transaction' : ''}>
-      {txCollapsedNonce}
+      {/* {txCollapsedNonce} */}
       {txCollapsedType}
       {txCollapsedInfo}
       {txCollapsedTime}

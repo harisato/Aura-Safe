@@ -33,7 +33,6 @@ export const TxActionProvider = ({ children }: { children: ReactNode }): ReactEl
 
   const selectAction = useCallback(({ actionSelected, transactionId }: SelectedAction['selectedAction']) => {
     if (transactionId) {
-      // dispatch.current(fetchTransactionDetails({ transactionId }))
       dispatch.current(fetchTransactionDetailsByHash({ transactionId }))
     }
 

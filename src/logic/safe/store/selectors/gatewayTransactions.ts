@@ -81,6 +81,7 @@ export const getTransactionWithLocationByAttribute = createSelector(
 
       for (const txs of Object.values(storedTxs)) {
         // If we want a deep comparison, we should use a lodash get/isEqual to deep compare keys/values
+
         const foundTx = txs.find((transaction) => transaction[attributeName] === attributeValue)
 
         if (foundTx) {

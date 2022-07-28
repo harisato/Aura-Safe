@@ -2,6 +2,7 @@ import { ChainInfo } from '@gnosis.pm/safe-react-gateway-sdk'
 import axios from 'axios'
 import { WalletKey } from 'src/logic/keplr/keplr'
 import { CHAIN_THEMES, THEME_DF } from 'src/services/constant/chainThemes'
+import { getExplorerUrl } from 'src/services/data/environment'
 import {
   ICreateSafeTransaction,
   ISignSafeTransaction,
@@ -94,11 +95,9 @@ export function getMChainsConfig(): Promise<MChainInfo[]> {
             value: e.rpc,
           },
           blockExplorerUriTemplate: {
-            address: `${e.explorer.endsWith('/') ? e.explorer : e.explorer + '/'}account/{{address}}`,
-            txHash: `${e.explorer.endsWith('/') ? e.explorer : e.explorer + '/'}/transaction/{{txHash}}`,
-            api: `${
-              e.explorer.endsWith('/') ? e.explorer : e.explorer + '/'
-            }/api?module={{module}}&action={{action}}&address={{address}}&apiKey={{apiKey}}`,
+            address: getExplorerUrl(e.chainId, e.explorer, 'address'), //`${e.explorer.endsWith('/') ? e.explorer : e.explorer + '/'}account/{{address}}`,
+            txHash: getExplorerUrl(e.chainId, e.explorer, 'txHash'),
+            api: getExplorerUrl(e.chainId, e.explorer, 'api'),
           },
           nativeCurrency: {
             name: e.prefix.charAt(0).toUpperCase() + e.prefix.slice(1, e.prefix.length).toLowerCase(),

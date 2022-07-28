@@ -83,6 +83,7 @@ const TxSingularDetails = (): ReactElement => {
       try {
         // txDetails = await fetchSafeTransaction(safeTxHash)
         const res = await fetchSafeTransactionById(txId, safeAddress)
+
         const { ErrorCode, Data } = res
         if (ErrorCode !== MESSAGES_CODE.SUCCESSFUL.ErrorCode) {
           const txsRoute = generateSafeRoute(SAFE_ROUTES.TRANSACTIONS, extractPrefixedSafeAddress())
@@ -97,6 +98,7 @@ const TxSingularDetails = (): ReactElement => {
 
       if (isCurrent) {
         const tempTxDetail = { ...txDetails, txId: txDetails?.Id?.toString() }
+
         setFetchedTx(tempTxDetail)
       }
     }
@@ -106,7 +108,7 @@ const TxSingularDetails = (): ReactElement => {
     return () => {
       isCurrent = false
     }
-  }, [safeTxHash, txId, historyTxs, setFetchedTx, setLiveTx])
+  }, [safeTxHash, txId, historyTxs, setFetchedTx, setLiveTx, safeAddress])
 
   // Add the tx to the store
   useEffect(() => {
@@ -115,6 +117,7 @@ const TxSingularDetails = (): ReactElement => {
     // Format the tx details into a History or Queue-like tx item
     // const listItemTx = makeTxFromDetails(fetchedTx)
     const listItemTx = makeTransactionDetail(fetchedTx)
+
     const payload: HistoryPayload | QueuedPayload = {
       chainId,
       safeAddress: extractSafeAddress(),

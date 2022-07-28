@@ -60,7 +60,8 @@ enum NOTIFICATION_IDS {
   ADDRESS_BOOK_EXPORT_ENTRIES_ERROR,
   SAFE_NEW_VERSION_AVAILABLE,
   SAFE_CREATION_DUPLICATED,
-  SOMETHING_WENT_WRONG
+  SOMETHING_WENT_WRONG,
+  TX_REJECTED_MSG_SUCCESS,
 }
 
 export const NOTIFICATIONS: Record<NotificationId, Notification> = {
@@ -90,6 +91,10 @@ export const NOTIFICATIONS: Record<NotificationId, Notification> = {
   TX_REJECTED_MSG: {
     message: 'Transaction rejected',
     options: { variant: ERROR, persist: false, autoHideDuration: shortDuration },
+  },
+  TX_REJECTED_MSG_SUCCESS: {
+    message: 'Transaction successfully rejected',
+    options: { variant: SUCCESS, persist: false, autoHideDuration: shortDuration },
   },
   TX_EXECUTED_MSG: {
     message: 'Transaction successfully executed',
@@ -258,5 +263,5 @@ export const NOTIFICATIONS: Record<NotificationId, Notification> = {
   SAFE_CREATION_DUPLICATED: {
     message: 'Duplicate safe information!',
     options: { variant: ERROR, persist: false, preventDuplicate: true, autoHideDuration: shortDuration },
-  }
+  },
 }
