@@ -20,7 +20,7 @@ const AssetTableCell = ({ asset }: { asset: BalanceData['asset'] }): ReactElemen
   return (
     <Block justify="left">
       <Img alt={asset.name} height={26} onError={setImageToPlaceholder} src={asset.logoUri} />
-      <StyledParagraph noMargin size="lg">
+      <StyledParagraph noMargin size="lg" color="white">
         {asset.name}
       </StyledParagraph>
       {!isNativeCurrency && <ExplorerButton explorerUrl={getExplorerInfo(asset.address)} />}

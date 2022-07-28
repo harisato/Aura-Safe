@@ -22,7 +22,6 @@ export const loadSafeOwnersStepLabel = 'Owners'
 function AllowSafeOwnersStep(): ReactElement {
   const loadSafeForm = useForm()
   const ownersWithName = loadSafeForm.getState().values[FIELD_SAFE_OWNER_LIST]
-
   return (
     <>
       <TitleContainer>
