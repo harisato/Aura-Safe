@@ -292,51 +292,6 @@
         "high": 40000000000
       },
       "features": ["ibc-transfer", "ibc-go", "eth-address-gen", "eth-key-sign", "no-legacy-stdTx"]
-    },
-    {
-      "chainId": "uni-2",
-      "chainName": "Juno testnet",
-      "rpc": "",
-      "rest": "",
-      "stakeCurrency": {
-        "coinDenom": "JUNO",
-        "coinMinimalDenom": "ujunox",
-        "coinDecimals": 6
-      },
-      "bip44": {
-        "coinType": 118
-      },
-      "bech32Config": {
-        "bech32PrefixAccAddr": "juno",
-        "bech32PrefixAccPub": "junopub",
-        "bech32PrefixValAddr": "junovaloper",
-        "bech32PrefixValPub": "junovaloperpub",
-        "bech32PrefixConsAddr": "junovalcons",
-        "bech32PrefixConsPub": "junovalconspub"
-      },
-      "currencies": [
-        {
-          "coinDenom": "JUNO",
-          "coinMinimalDenom": "ujunox",
-          "coinDecimals": 6,
-          "coinGeckoId": "juno-network"
-        }
-      ],
-      "feeCurrencies": [
-        {
-          "coinDenom": "JUNO",
-          "coinMinimalDenom": "ujuno",
-          "coinDecimals": 6,
-          "coinGeckoId": "juno-network"
-        }
-      ],
-      "coinType": 118,
-      "gasPriceStep": {
-        "low": 0.0025,
-        "average": 0.01,
-        "high": 0.025
-      },
-      "features": ["ibc-transfer", "ibc-go", "eth-address-gen", "eth-key-sign"]
     }
   ]
 }
