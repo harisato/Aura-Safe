@@ -34,12 +34,12 @@ function SelectWalletAndNetworkStep(props): ReactElement {
   return (
     <Container data-testid={'select-network-step'}>
       {isWalletConnected ? (
-        <Paragraph color="white" noMargin size="lg">
+        <Paragraph color="textaura" noMargin size="lg">
           Select network on which to create your Safe. The app is currently pointing to{' '}
           <NetworkLabel onClick={openNetworkSelectorPopup} />
         </Paragraph>
       ) : (
-        <Paragraph color="white" noMargin size="lg">
+        <Paragraph color="textaura" noMargin size="lg">
           In order to select the network to create your Safe, you need to connect a wallet
         </Paragraph>
       )}
@@ -48,11 +48,11 @@ function SelectWalletAndNetworkStep(props): ReactElement {
         {isWalletConnected ? (
           <ButtonLink
             type="button"
-            onClick={openNetworkSelectorPopup}
             color="primary"
+            onClick={openNetworkSelectorPopup}
             data-testid={'switch-network-link'}
           >
-            Switch Network
+            <span style={{ color: '#008C73 !important', fontWeight: 500 }}>Switch Network</span>
           </ButtonLink>
         ) : (
           <ConnectButton onConnect={onConnectWalletShow} data-testid="heading-connect-btn" />

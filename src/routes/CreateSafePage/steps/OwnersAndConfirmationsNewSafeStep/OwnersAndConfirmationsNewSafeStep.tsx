@@ -91,10 +91,10 @@ function OwnersAndConfirmationsNewSafeStep(): ReactElement {
   return (
     <>
       <BlockWithPadding data-testid={'create-safe-owners-confirmation-step'}>
-        <ParagraphWithMargin color="primary" noMargin size="lg">
+        <ParagraphWithMargin color="textaura" noMargin size="lg">
           Your Safe will have one or more owners. We have prefilled the first owner with your connected wallet details.
         </ParagraphWithMargin>
-        <Paragraph color="primary" size="lg">
+        <Paragraph color="textaura" size="lg">
           Add additional owners (e.g. wallets of your teammates) and specify how many of them have to confirm a
           transaction before it gets executed. In general, the more confirmations required, the more secure your Safe
           is.{' '}
@@ -112,12 +112,12 @@ function OwnersAndConfirmationsNewSafeStep(): ReactElement {
           The new Safe will ONLY be available on <NetworkLabel />
         </Paragraph>
       </BlockWithPadding>
-      <Hairline />
+      {/* <Hairline /> */}
       <RowHeader>
         <Col xs={3}>NAME</Col>
         <Col xs={7}>ADDRESS</Col>
       </RowHeader>
-      <Hairline />
+      {/* <Hairline /> */}
       <Block margin="md" padding="md">
         <RowHeader>
           {owners.map(({ nameFieldName, addressFieldName }, index) => {
@@ -192,7 +192,7 @@ function OwnersAndConfirmationsNewSafeStep(): ReactElement {
         <div style={{ paddingLeft: '24px' }}>
           <OwnerContainer align="center" grow>
             <Button color="secondary" data-testid="add-new-owner" onClick={onClickAddNewOwner}>
-              <Paragraph noMargin size="lg" color="green">
+              <Paragraph noMargin size="smd" weight="bolder" color="green">
                 + Add another owner
               </Paragraph>
             </Button>

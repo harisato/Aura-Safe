@@ -19,6 +19,7 @@ import {
 } from './styles'
 import styled from 'styled-components'
 import plusIcon from './assets/plus.svg'
+import walletIcon from './assets/wallet.svg'
 
 const TitleFont = styled(Title)`
   font-family: 'SFProDisplay';
@@ -75,7 +76,8 @@ function Welcome(): ReactElement {
                 </TextFont>
               </CardDescriptionContainer>
               <StyledBorder>
-                <StyledButtonBorder iconType="safe" iconSize="sm" size="lg" component={Link} to={LOAD_SAFE_ROUTE}>
+                <StyledButtonBorder iconSize="sm" size="lg" component={Link} to={LOAD_SAFE_ROUTE}>
+                  <img src={walletIcon} />
                   <StyledButtonLabel size="xl">Add existing Safe</StyledButtonLabel>
                 </StyledButtonBorder>
               </StyledBorder>

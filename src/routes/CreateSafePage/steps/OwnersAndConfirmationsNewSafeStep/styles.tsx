@@ -1,4 +1,4 @@
-import { disabled, extraSmallFontSize, lg, sm, xs } from 'src/theme/variables'
+import { disabled, extraSmallFontSize, lg, sm, xs, mediumFont, descriptionAura } from 'src/theme/variables'
 import Block from 'src/components/layout/Block'
 import CheckCircle from '@material-ui/icons/CheckCircle'
 import Paragraph from 'src/components/layout/Paragraph'
@@ -29,7 +29,8 @@ const StyledLink = styled(Link)`
 const RowHeader = styled(Row)`
   padding: ${sm} ${lg};
   font-size: ${extraSmallFontSize};
-  color: ${disabled};
+  color: ${descriptionAura};
+  font-weight: ${mediumFont};
 `
 
 const OwnerNameField = styled(Field)`
