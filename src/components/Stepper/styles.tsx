@@ -1,4 +1,4 @@
-import { boldFont, lg, sm, bgBox, borderLinear } from 'src/theme/variables'
+import { mediumFont, lg, sm, bgBox, borderLinear, smallsizeFont } from 'src/theme/variables'
 import { createStyles } from '@material-ui/core'
 const styles = (theme) =>
   createStyles({
@@ -14,11 +14,13 @@ const styles = (theme) =>
     },
     backButton: {
       marginRight: sm,
-      fontWeight: boldFont,
+      fontSize: smallsizeFont,
+      fontWeight: mediumFont,
       color: 'white',
     },
     nextButton: {
-      fontWeight: boldFont,
+      fontSize: smallsizeFont,
+      fontWeight: mediumFont,
       boxShadow: 'none',
       backgroundColor: 'transparent',
 

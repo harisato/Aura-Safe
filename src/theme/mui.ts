@@ -30,6 +30,8 @@ import {
   borderLinear,
   bgDisabledColorStep,
   colorLinear,
+  smallsizeFont,
+  descriptionAura,
 } from './variables'
 
 const palette = {
@@ -60,8 +62,8 @@ const theme = createTheme({
     MuiButton: {
       label: {
         lineHeight: '1',
-        fontSize: largeFontSize,
-        fontWeight: regularFont,
+        fontSize: smallsizeFont,
+        fontWeight: mediumFont,
       },
       root: {
         fontFamily: secondaryFontFamily,
@@ -197,7 +199,8 @@ const theme = createTheme({
         },
       },
       input: {
-        color: primary,
+        color: descriptionAura,
+        // height: 52,
         display: 'flex',
         height: 'auto',
         letterSpacing: '0.5px',
@@ -287,6 +290,7 @@ const theme = createTheme({
       label: {
         textAlign: 'left',
         color: 'white !important',
+        fontWeight: '400 !important',
       },
     },
     MuiSvgIcon: {

@@ -32,6 +32,7 @@ import {
   DescriptionContainer,
   styles,
 } from './styles'
+import InformationIcon from '../../assets/information.svg'
 
 export const reviewNewSafeStepLabel = 'Review'
 const useStyles = makeStyles((theme) => styles(theme))
@@ -76,35 +77,35 @@ function ReviewNewSafeStep(): ReactElement | null {
         <DetailsContainer>
           <Col xs={12}>
             <Block margin="lg">
-              <Paragraph color="primary" noMargin size="lg">
+              <Paragraph color="primary" weight="bolder" noMargin size="bmd">
                 Details
               </Paragraph>
             </Block>
           </Col>
           <div style={{ display: 'flex' }}>
             <Block margin="lg">
-              <Paragraph color="white" noMargin size="sm">
+              <Paragraph color="descriptionAura" noMargin size="smd">
                 Name of new Safe
               </Paragraph>
               <SafeNameParagraph
-                color="primary"
+                color="textaura"
                 noMargin
-                size="md"
-                weight="bolder"
+                size="lg"
+                weight="regular"
                 data-testid="create-safe-review-safe-name"
               >
                 {safeName}
               </SafeNameParagraph>
             </Block>
             <Block margin="marginLeftxl">
-              <Paragraph color="white" noMargin size="sm">
+              <Paragraph color="descriptionAura" noMargin size="smd">
                 Any transaction requires the confirmation of:
               </Paragraph>
               <Paragraph
-                color="primary"
+                color="textaura"
                 noMargin
-                size="md"
-                weight="bolder"
+                size="lg"
+                weight="regular"
                 data-testid={'create-safe-review-threshold-label'}
               >
                 {`${threshold} out of ${numberOfOwners} owners`}
@@ -116,7 +117,7 @@ function ReviewNewSafeStep(): ReactElement | null {
       <Col layout="column" xs={12}>
         <TableContainer className={classes.containerListOwner}>
           <TitleContainer>
-            <Paragraph color="primary" noMargin size="lg">
+            <Paragraph color="primary" noMargin weight="bolder" size="lg">
               {`${numberOfOwners} Safe owners`}
             </Paragraph>
           </TitleContainer>
@@ -135,14 +136,16 @@ function ReviewNewSafeStep(): ReactElement | null {
                       explorerUrl={getExplorerInfo(ownerAddress)}
                     />
                   </Col>
-                  <Col
-                    align="center"
-                    xs={12}
-                    data-testid={`create-safe-owner-details-${ownerAddress}`}
-                    style={{ marginTop: 10 }}
-                  >
-                    <Hairline />
-                  </Col>
+                  {owners.length > 1 && (
+                    <Col
+                      align="center"
+                      xs={12}
+                      data-testid={`create-safe-owner-details-${ownerAddress}`}
+                      style={{ marginTop: 10 }}
+                    >
+                      <Hairline />
+                    </Col>
+                  )}
                 </OwnersAddressesContainer>
               </React.Fragment>
             )
@@ -150,9 +153,10 @@ function ReviewNewSafeStep(): ReactElement | null {
         </TableContainer>
       </Col>
       <DescriptionContainer align="center">
-        <Paragraph color="primary" noMargin size="lg">
-          You&apos;re about to create a new Safe on <NetworkLabel /> Other listed owners will see that you are about to
-          create a Safe with them and will all have to give permission in order for the Safe to be created and used.
+        <Paragraph color="textaura" noMargin size="smd">
+          <img src={InformationIcon} /> You&apos;re about to create a new Safe on <NetworkLabel /> Other listed owners
+          will see that you are about to create a Safe with them and will all have to give permission in order for the
+          Safe to be created and used.
         </Paragraph>
       </DescriptionContainer>
     </Row>

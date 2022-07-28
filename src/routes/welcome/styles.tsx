@@ -29,6 +29,7 @@ const StyledButtonLabel = styled(Text)`
   color: white;
   background-color: transparent !important;
   font-family: 'SFProDisplay';
+  margin-left: 10px;
 `
 
 const CardDescriptionContainer = styled.div`
