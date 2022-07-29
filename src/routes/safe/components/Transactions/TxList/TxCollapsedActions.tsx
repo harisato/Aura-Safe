@@ -1,14 +1,11 @@
-import { Icon, Tooltip } from '@aura/safe-react-components'
-import { MultisigExecutionInfo } from '@gnosis.pm/safe-react-gateway-sdk'
+import { Icon } from '@aura/safe-react-components'
 import { default as MuiIconButton } from '@material-ui/core/IconButton'
 import { ReactElement } from 'react'
-import { useSelector } from 'react-redux'
 import styled from 'styled-components'
 
-import { currentSafeNonce } from 'src/logic/safe/store/selectors'
+import useLocalTxStatus from 'src/logic/hooks/useLocalTxStatus'
 import { Transaction } from 'src/logic/safe/store/models/types/gateway.d'
 import { useActionButtonsHandlers } from './hooks/useActionButtonsHandlers'
-import useLocalTxStatus from 'src/logic/hooks/useLocalTxStatus'
 import { isAwaitingExecution } from './utils'
 
 const IconButton = styled(MuiIconButton)`
@@ -33,16 +30,21 @@ export const TxCollapsedActions = ({ transaction }: TxCollapsedActionsProps): Re
     isPending,
     isRejected,
     disabledActions,
+    isOwner,
   } = useActionButtonsHandlers(transaction)
-  const nonce = useSelector(currentSafeNonce)
+  // const nonce = useSelector(currentSafeNonce)
   const txStatus = useLocalTxStatus(transaction)
   const isAwaitingEx = isAwaitingExecution(txStatus)
 
-  const getTitle = () => {
-    if (isAwaitingEx) {
-      return (transaction.executionInfo as MultisigExecutionInfo)?.nonce === nonce ? 'Execute' : ''
-    }
-    return 'Confirm'
+  // const getTitle = () => {
+  //   if (isAwaitingEx) {
+  //     return (transaction.executionInfo as MultisigExecutionInfo)?.nonce === nonce ? 'Execute' : ''
+  //   }
+  //   return 'Confirm'
+  // }
+
+  if (!isOwner) {
+    return <></>
   }
 
   return (
