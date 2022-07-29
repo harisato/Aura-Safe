@@ -14,7 +14,6 @@ const lt1000tFormatter = new Intl.NumberFormat([], { maximumFractionDigits: 3, n
 
 export const formatAmount = (number: string): string => {
   let numberFloat: number | string = parseFloat(number)
-
   if (numberFloat === 0) {
     numberFloat = '0'
   } else if (numberFloat < 0.001) {
@@ -40,7 +39,7 @@ export const formatAmount = (number: string): string => {
   return numberFloat
 }
 
-const options = { style: 'currency', currency: 'USD', minimumFractionDigits: 2, maximumFractionDigits: 8 }
+const options = { style: 'currency', currency: 'USD', minimumFractionDigits: 6, maximumFractionDigits: 8 }
 const usNumberFormatter = new Intl.NumberFormat('en-US', options)
 
 export const formatAmountInUsFormat = (amount: string): string => {

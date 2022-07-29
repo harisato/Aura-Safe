@@ -308,13 +308,10 @@ const SendFunds = ({
                     <Paragraph color="disabled" noMargin size="md" style={{ letterSpacing: '-0.5px' }}>
                       Amount
                     </Paragraph>
-                    <ButtonLink onClick={setMaxAllowedAmount} weight="bold" testId="send-max-btn">
-                      Send max
-                    </ButtonLink>
                   </Col>
                 </Row>
                 <Row margin="md">
-                  <Col>
+                  <Col xs={10}>
                     <Field
                       component={TextField}
                       inputAdornment={{
@@ -330,6 +327,11 @@ const SendFunds = ({
                       type="text"
                       testId="amount-input"
                     />
+                  </Col>
+                  <Col xs={2}>
+                    <ButtonLink onClick={setMaxAllowedAmount} weight="bold" testId="send-max-btn">
+                      Send max
+                    </ButtonLink>
                   </Col>
                 </Row>
               </Block>

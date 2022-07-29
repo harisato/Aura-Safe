@@ -4,6 +4,7 @@ import { ReactElement, useState } from 'react'
 import QRIcon from 'src/assets/icons/qrcode.svg'
 import { ScanQRModal } from 'src/components/ScanQRModal'
 import Img from 'src/components/layout/Img'
+import QrCodeIcon from 'src/routes/CreateSafePage/assets/uil_qrcode-scan.svg'
 
 const useStyles = makeStyles({
   qrCodeBtn: {
@@ -41,7 +42,7 @@ export const ScanQRWrapper = ({ handleScan, testId, icon }: Props): ReactElement
         height={20}
         onClick={() => openQrModal()}
         role="button"
-        src={icon}
+        src={QrCodeIcon}
         testId={testId || 'qr-icon'}
       />
       {qrModalOpen && <ScanQRModal isOpen={qrModalOpen} onClose={closeQrModal} onScan={onScanFinished} />}

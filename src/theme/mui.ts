@@ -200,7 +200,6 @@ const theme = createTheme({
       },
       input: {
         color: descriptionAura,
-        // height: 52,
         display: 'flex',
         height: 'auto',
         letterSpacing: '0.5px',
