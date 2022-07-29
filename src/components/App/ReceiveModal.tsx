@@ -1,23 +1,19 @@
-import { Button, Switch } from '@aura/safe-react-components'
+import { Button } from '@aura/safe-react-components'
 import IconButton from '@material-ui/core/IconButton'
 import { createStyles, makeStyles } from '@material-ui/core/styles'
 import Close from '@material-ui/icons/Close'
 import QRCode from 'qrcode.react'
-import { ReactElement, useState } from 'react'
-import FormControlLabel from '@material-ui/core/FormControlLabel/FormControlLabel'
-import { useSelector } from 'react-redux'
+import { ReactElement } from 'react'
 
+import { ChainInfo } from '@gnosis.pm/safe-react-gateway-sdk'
 import Block from 'src/components/layout/Block'
 import Col from 'src/components/layout/Col'
 import Hairline from 'src/components/layout/Hairline'
 import Paragraph from 'src/components/layout/Paragraph'
 import Row from 'src/components/layout/Row'
-import PrefixedEthHashInfo from '../PrefixedEthHashInfo'
-import { border, fontColor, lg, md, screenSm, secondaryText } from 'src/theme/variables'
 import { getChainInfo, getExplorerInfo } from 'src/config'
-import { ChainInfo } from '@gnosis.pm/safe-react-gateway-sdk'
-import { copyShortNameSelector } from 'src/logic/appearance/selectors'
-import { getPrefixedSafeAddressSlug } from 'src/routes/routes'
+import { fontColor, lg, md, screenSm, secondaryText } from 'src/theme/variables'
+import PrefixedEthHashInfo from '../PrefixedEthHashInfo'
 
 const useStyles = (chainInfo: ChainInfo) =>
   makeStyles(
@@ -85,10 +81,7 @@ const ReceiveModal = ({ onClose, safeAddress, safeName }: Props): ReactElement =
   const chainInfo = getChainInfo()
   const classes = useStyles(chainInfo)
 
-  const copyShortName = useSelector(copyShortNameSelector)
-  // const [shouldEncodePrefix, setShouldEncodePrefix] = useState<boolean>(copyShortName)
-
-  const qrCodeString = safeAddress;
+  const qrCodeString = safeAddress
 
   return (
     <>
@@ -115,14 +108,6 @@ const ReceiveModal = ({ onClose, safeAddress, safeName }: Props): ReactElement =
         <Block className={classes.qrContainer}>
           <QRCode size={135} value={qrCodeString} />
         </Block>
-        {/* <FormControlLabel
-          control={<Switch checked={shouldEncodePrefix} onChange={setShouldEncodePrefix} />}
-          label={
-            <>
-              QR code with chain prefix (<b>{chainInfo.shortName}:</b>)
-            </>
-          }
-        /> */}
         <Block className={classes.addressContainer} justify="center">
           <PrefixedEthHashInfo hash={safeAddress} showAvatar showCopyBtn explorerUrl={getExplorerInfo(safeAddress)} />
         </Block>

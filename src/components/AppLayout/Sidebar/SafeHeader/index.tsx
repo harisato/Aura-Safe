@@ -1,10 +1,9 @@
 import { CopyToClipboardBtn, ExplorerButton, FixedIcon, Icon, Identicon, Text } from '@aura/safe-react-components'
-import { useSelector } from 'react-redux'
 import ButtonHelper from 'src/components/ButtonHelper'
 import FlexSpacer from 'src/components/FlexSpacer'
 import { getChainInfo, getExplorerInfo } from 'src/config'
-import { copyShortNameSelector } from 'src/logic/appearance/selectors'
 import { THEME_DF } from 'src/services/constant/chainThemes'
+import LockIcon from './assets/Lockicon.svg'
 import {
   Container,
   ContainerButton,
@@ -21,7 +20,6 @@ import {
   StyledTextSafeNameWrapper,
 } from './styles'
 import { Props } from './type'
-import LockIcon from './assets/Lockicon.svg'
 
 export const TOGGLE_SIDEBAR_BTN_TESTID = 'TOGGLE_SIDEBAR_BTN'
 const SafeHeader = ({
@@ -33,8 +31,6 @@ const SafeHeader = ({
   onReceiveClick,
   onNewTransactionClick,
 }: Props): React.ReactElement => {
-  const copyChainPrefix = useSelector(copyShortNameSelector)
-  const chainInfoShortName = getChainInfo().shortName
   const chainInfo = getChainInfo()
 
   const { backgroundColor } = chainInfo?.theme || THEME_DF
@@ -83,7 +79,7 @@ const SafeHeader = ({
             <ButtonHelper onClick={onReceiveClick}>
               <Icon size="sm" type="qrCode" tooltip="Show QR" />
             </ButtonHelper>
-            <CopyToClipboardBtn textToCopy={copyChainPrefix ? `${chainInfoShortName}:${address}` : `${address}`} />
+            <CopyToClipboardBtn textToCopy={address} />
             {address && <ExplorerButton explorerUrl={getExplorerInfo(address)} />}
           </IconContainer>
 

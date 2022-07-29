@@ -1,27 +1,27 @@
-import { Breadcrumb, BreadcrumbElement, Loader, Icon, Menu } from '@aura/safe-react-components'
+import { Breadcrumb, BreadcrumbElement, Icon, Loader, Menu } from '@aura/safe-react-components'
 import { makeStyles } from '@material-ui/core/styles'
-import { useState, lazy } from 'react'
+import { lazy, useState } from 'react'
 import { useSelector } from 'react-redux'
-import { Route, Switch, useRouteMatch } from 'react-router-dom'
+import { useRouteMatch } from 'react-router-dom'
 
-import { LoadingContainer } from 'src/components/LoaderContainer'
-import { styles } from './style'
 import Block from 'src/components/layout/Block'
 import ButtonLink from 'src/components/layout/ButtonLink'
 import Col from 'src/components/layout/Col'
 import Span from 'src/components/layout/Span'
-import { currentSafeWithNames } from 'src/logic/safe/store/selectors'
-import { grantedSelector } from 'src/routes/safe/container/selector'
-import { generatePrefixedAddressRoutes, SAFE_ROUTES, SAFE_SUBSECTION_ROUTE } from 'src/routes/routes'
+import { LoadingContainer } from 'src/components/LoaderContainer'
 import { getShortName } from 'src/config'
+import { currentSafeWithNames } from 'src/logic/safe/store/selectors'
+import { generatePrefixedAddressRoutes, SAFE_SUBSECTION_ROUTE } from 'src/routes/routes'
+import { grantedSelector } from 'src/routes/safe/container/selector'
+import { styles } from './style'
 
-const Advanced = lazy(() => import('./Advanced'))
-const SpendingLimitSettings = lazy(() => import('./SpendingLimit'))
+// const Advanced = lazy(() => import('./Advanced'))
+// const SpendingLimitSettings = lazy(() => import('./SpendingLimit'))
 const ManageOwners = lazy(() => import('./ManageOwners'))
 const RemoveSafeModal = lazy(() => import('./RemoveSafeModal'))
 const SafeDetails = lazy(() => import('./SafeDetails'))
 const ThresholdSettings = lazy(() => import('./ThresholdSettings'))
-const Appearance = lazy(() => import('./Appearance'))
+// const Appearance = lazy(() => import('./Appearance'))
 
 export const OWNERS_SETTINGS_TAB_TEST_ID = 'owner-settings-tab'
 
