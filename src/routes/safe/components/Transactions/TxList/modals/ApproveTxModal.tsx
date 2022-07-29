@@ -26,7 +26,7 @@ import { ReviewInfoText } from 'src/components/ReviewInfoText'
 import { getChainInfo, getInternalChainId, getShortName } from 'src/config'
 import { EstimationStatus, useEstimateTransactionGas } from 'src/logic/hooks/useEstimateTransactionGas'
 import { useEstimationStatus } from 'src/logic/hooks/useEstimationStatus'
-import { enhanceSnackbarForAction, NOTIFICATIONS } from 'src/logic/notifications'
+import { enhanceSnackbarForAction, ERROR, NOTIFICATIONS } from 'src/logic/notifications'
 import enqueueSnackbar from 'src/logic/notifications/store/actions/enqueueSnackbar'
 import fetchTransactions from 'src/logic/safe/store/actions/transactions/fetchTransactions'
 import { makeConfirmation } from 'src/logic/safe/store/models/confirmation'
@@ -308,26 +308,28 @@ export const ApproveTxModal = ({
             internalChainId: getInternalChainId(),
             owner: userWalletAddress,
           }
-          const { ErrorCode, Data } = await sendSafeTransaction(data)
-          if (ErrorCode === 'SUCCESSFUL') {
-            dispatch(enqueueSnackbar(NOTIFICATIONS.TX_EXECUTED_MSG))
-            // const TxHash = Data['TxHash']
-            // if (TxHash) {
-            //   const prefixedSafeAddress = getPrefixedSafeAddressSlug({
-            //     shortName: extractShortChainName(),
-            //     safeAddress,
-            //   })
 
-            //   const txRoute = generatePath(SAFE_ROUTES.TRANSACTIONS_QUEUE, {
-            //     [SAFE_ADDRESS_SLUG]: prefixedSafeAddress,
-            //   })
+          sendSafeTransaction(data)
+            .then((e) => {
+              const { ErrorCode } = e
 
-            //   history.replace(txRoute)
-            // }
-          } else {
-            dispatch(enqueueSnackbar(NOTIFICATIONS.TX_FAILED_MSG))
-          }
-          dispatch(fetchTransactions(chainId, safeAddress))
+              if (ErrorCode === 'SUCCESSFUL') {
+                dispatch(enqueueSnackbar(NOTIFICATIONS.TX_EXECUTED_MSG))
+              } else {
+                dispatch(enqueueSnackbar(NOTIFICATIONS.TX_FAILED_MSG))
+              }
+              dispatch(fetchTransactions(chainId, safeAddress))
+            })
+            .catch((err) => {
+              dispatch(
+                enqueueSnackbar(
+                  enhanceSnackbarForAction({
+                    message: err.message,
+                    options: { variant: ERROR, persist: false, preventDuplicate: true, autoHideDuration: 5000 },
+                  }),
+                ),
+              )
+            })
         } else {
           // case when Confirm Click
           const lastUsedProvider = await loadLastUsedProvider()
