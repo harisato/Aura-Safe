@@ -13,6 +13,7 @@ import {
 import { userAccountSelector } from 'src/logic/wallets/store/selectors'
 import { TransactionActionStateContext } from 'src/routes/safe/components/Transactions/TxList/TxActionProvider'
 import { TxHoverContext } from 'src/routes/safe/components/Transactions/TxList/TxHoverProvider'
+import { grantedSelector } from 'src/routes/safe/container/selector'
 import { useTransactionActions } from './useTransactionActions'
 
 type ActionButtonsHandlers = {
@@ -23,11 +24,13 @@ type ActionButtonsHandlers = {
   handleOnMouseLeave: () => void
   isPending: boolean
   isRejected: boolean
+  isOwner: boolean
   disabledActions: boolean
 }
 
 export const useActionButtonsHandlers = (transaction: Transaction): ActionButtonsHandlers => {
   const currentUser = useSelector(userAccountSelector)
+  const isOwner = useSelector(grantedSelector)
   const actionContext = useRef(useContext(TransactionActionStateContext))
   const hoverContext = useRef(useContext(TxHoverContext))
   // const locationContext = useContext(TxLocationContext)
@@ -79,10 +82,6 @@ export const useActionButtonsHandlers = (transaction: Transaction): ActionButton
     hoverContext.current.setActiveHover()
   }, [])
 
-  // const signaturePending = addressInList(
-  //   (transaction.executionInfo as MultisigExecutionInfo)?.missingSigners ?? undefined,
-  // )
-
   const isPendingCurrentUserSignature = (currentUser: string): boolean => {
     if ((transaction?.txDetails?.detailedExecutionInfo as MultisigExecutionDetails)?.confirmations?.length > 0) {
       const signedCurrentUser = (
@@ -128,5 +127,6 @@ export const useActionButtonsHandlers = (transaction: Transaction): ActionButton
     isPending,
     isRejected,
     disabledActions,
+    isOwner,
   }
 }

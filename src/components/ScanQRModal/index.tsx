@@ -43,13 +43,14 @@ export const ScanQRModal = ({ isOpen, onClose, onScan }: Props): React.ReactElem
   const onFileScannedResolve = (error: Error | null, successData: string | null) => {
     if (error) {
       console.error('QR code error', error)
+      // if (error.name === 'NotAllowedError' || tErr.name === 'PermissionDismissedError') {
+      //   // setFileUploadModalOpen(false)
+      //   setCameraBlocked(true)
+      // } else {
+      //   setError('The QR could not be read')
+      // }
+      setError('The QR could not be read')
 
-      if (error.name === 'NotAllowedError' || error.name === 'PermissionDismissedError') {
-        setCameraBlocked(true)
-        setFileUploadModalOpen(false)
-      } else {
-        setError('The QR could not be read')
-      }
       return
     }
 

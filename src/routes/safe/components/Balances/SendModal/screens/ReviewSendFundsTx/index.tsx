@@ -33,7 +33,7 @@ import { toBase64 } from '@cosmjs/encoding'
 import { calculateFee, coins, GasPrice, MsgSendEncodeObject, SignerData, SigningStargateClient } from '@cosmjs/stargate'
 import { generatePath } from 'react-router-dom'
 import ButtonLink from 'src/components/layout/ButtonLink'
-import { enhanceSnackbarForAction, NOTIFICATIONS } from 'src/logic/notifications'
+import { enhanceSnackbarForAction, ERROR, NOTIFICATIONS, WARNING } from 'src/logic/notifications'
 import enqueueSnackbar from 'src/logic/notifications/store/actions/enqueueSnackbar'
 import { loadLastUsedProvider } from 'src/logic/wallets/store/middlewares/providerWatcher'
 import { userAccountSelector } from 'src/logic/wallets/store/selectors'
@@ -230,29 +230,42 @@ const ReviewSendFundsTx = ({ onClose, onPrev, tx }: ReviewTxProps): React.ReactE
   }
 
   const createTxFromApi = async (data: any) => {
-    const { ErrorCode } = await createSafeTransaction(data)
-    if (ErrorCode === 'SUCCESSFUL') {
-      setButtonStatus(ButtonStatus.READY)
-      onClose()
+    createSafeTransaction(data)
+      .then((e) => {
+        const { ErrorCode } = e
+        if (ErrorCode === 'SUCCESSFUL') {
+          setButtonStatus(ButtonStatus.READY)
 
-      const chainId = chainInfo.chainId
-      dispatch(fetchTransactions(chainId, safeAddress))
+          const chainId = chainInfo.chainId
+          dispatch(fetchTransactions(chainId, safeAddress))
 
-      // navigate to tx details
-      const prefixedSafeAddress = getPrefixedSafeAddressSlug({ shortName: extractShortChainName(), safeAddress })
-      const txRoute = generatePath(SAFE_ROUTES.TRANSACTIONS_QUEUE, {
-        [SAFE_ADDRESS_SLUG]: prefixedSafeAddress,
+          // navigate to tx details
+          const prefixedSafeAddress = getPrefixedSafeAddressSlug({ shortName: extractShortChainName(), safeAddress })
+          const txRoute = generatePath(SAFE_ROUTES.TRANSACTIONS_QUEUE, {
+            [SAFE_ADDRESS_SLUG]: prefixedSafeAddress,
+          })
+          history.push(txRoute)
+        } else {
+          if (ErrorCode === 'E028') {
+            dispatch(enqueueSnackbar(enhanceSnackbarForAction(NOTIFICATIONS.CREATE_SAFE_PENDING_EXECUTE_MSG)))
+          } else {
+            dispatch(enqueueSnackbar(enhanceSnackbarForAction(NOTIFICATIONS.TX_FAILED_MSG)))
+          }
+        }
+
+        onClose()
       })
-      history.push(txRoute)
-    } else {
-      if (ErrorCode === 'E028') {
-        dispatch(enqueueSnackbar(enhanceSnackbarForAction(NOTIFICATIONS.CREATE_SAFE_PENDING_EXECUTE_MSG)))
-      } else {
-        dispatch(enqueueSnackbar(enhanceSnackbarForAction(NOTIFICATIONS.TX_FAILED_MSG)))
-      }
-
-      onClose()
-    }
+      .catch((err) => {
+        onClose()
+        dispatch(
+          enqueueSnackbar(
+            enhanceSnackbarForAction({
+              message: err.message,
+              options: { variant: ERROR, persist: false, preventDuplicate: true, autoHideDuration: 5000 },
+            }),
+          ),
+        )
+      })
   }
 
   const closeEditModalCallback = (txParameters: TxParameters) => {}

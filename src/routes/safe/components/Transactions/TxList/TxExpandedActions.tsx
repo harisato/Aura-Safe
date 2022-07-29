@@ -36,6 +36,7 @@ export const TxExpandedActions = ({ transaction }: TxExpandedActionsProps): Reac
     isPending,
     isRejected,
     disabledActions,
+    isOwner,
   } = useActionButtonsHandlers(transaction)
 
   // const nonce = useSelector(currentSafeNonce)
@@ -55,6 +56,10 @@ export const TxExpandedActions = ({ transaction }: TxExpandedActionsProps): Reac
       return 'Execute'
     }
     return 'Confirm'
+  }
+
+  if (!isOwner) {
+    return <></>
   }
 
   // There is a problem in chrome that produces onMouseLeave event not being triggered properly.

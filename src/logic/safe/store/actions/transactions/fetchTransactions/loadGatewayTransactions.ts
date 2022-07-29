@@ -226,7 +226,7 @@ export const loadQueuedTransactionsFromAuraApi = async (
     })
     const { results, next, previous } = makeQueueTransactionsFromService(list)
 
-    let ret: QueuedGatewayResponse['results'] | null = results
+    const ret: QueuedGatewayResponse['results'] | null = results
     if (!queuedPointers[chainId]) {
       queuedPointers[chainId] = {}
     }
@@ -239,16 +239,17 @@ export const loadQueuedTransactionsFromAuraApi = async (
       queuedTransactions[chainId] = {}
     }
 
-    if (queuedTransactions[chainId][safeAddress]) {
-      const queuedPointerValue = queuedTransactions[chainId][safeAddress]?.txs || []
-      if (isEqual(results, queuedPointerValue)) {
-        ret = null
-      } else {
-        queuedTransactions[chainId][safeAddress] = { txs: results }
-      }
-    } else {
-      queuedTransactions[chainId][safeAddress] = { txs: results }
-    }
+    // if (queuedTransactions[chainId][safeAddress]) {
+    //   const queuedPointerValue = queuedTransactions[chainId][safeAddress]?.txs || []
+    //   if (isEqual(results, queuedPointerValue)) {
+    //     ret = null
+    //   } else {
+    //     queuedTransactions[chainId][safeAddress] = { txs: results }
+    //   queuedTransactions[chainId][safeAddress] = { txs: results }
+    //   // }
+    // } else {
+    queuedTransactions[chainId][safeAddress] = { txs: results }
+    // }
 
     return ret
   } catch (e) {

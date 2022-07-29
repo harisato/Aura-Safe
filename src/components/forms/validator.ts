@@ -88,7 +88,7 @@ export const mustBeValidAddressHash = memoize((address: string): ValidatorReturn
   const errorMessage = 'Must be a valid address'
 
   const regex = new RegExp('[a-z]{1,}[0-9A-Za-z]{39,}')
-  return regex.test(address) ? undefined : errorMessage
+  return regex.test(address) && isValidAddress(address) ? undefined : errorMessage
 })
 
 const mustHaveValidPrefix = (prefix: string): ValidatorReturnType => {
@@ -154,6 +154,7 @@ export const minMaxDecimalsLength =
   }
 
 export const ADDRESS_REPEATED_ERROR = 'Address already introduced'
+export const ADDRESS_INVALID_ERROR = 'Invalid Address'
 export const OWNER_ADDRESS_IS_SAFE_ADDRESS_ERROR = 'Cannot use Safe itself as owner.'
 export const THRESHOLD_ERROR = 'You cannot set more confirmations than owners'
 

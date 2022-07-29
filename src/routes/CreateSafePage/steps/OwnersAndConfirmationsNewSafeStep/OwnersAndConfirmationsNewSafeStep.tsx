@@ -1,22 +1,14 @@
-import { useEffect, ReactElement, Fragment } from 'react'
-import { useSelector } from 'react-redux'
 import InputAdornment from '@material-ui/core/InputAdornment'
 import MenuItem from '@material-ui/core/MenuItem'
-import { Icon, Link, Text } from '@aura/safe-react-components'
+import { Fragment, ReactElement, useEffect } from 'react'
 import { useForm } from 'react-final-form'
-import Block from 'src/components/layout/Block'
-import Paragraph from 'src/components/layout/Paragraph'
-import AddressInput from 'src/components/forms/AddressInput'
-import Button from 'src/components/layout/Button'
-import Field from 'src/components/forms/Field'
+import { useSelector } from 'react-redux'
 import ButtonHelper from 'src/components/ButtonHelper'
+import AddressInput from 'src/components/forms/AddressInput'
 import SelectField from 'src/components/forms/SelectField'
-import { useStepper } from 'src/components/Stepper/stepperContext'
-import { providerNameSelector, userAccountSelector } from 'src/logic/wallets/store/selectors'
-import Hairline from 'src/components/layout/Hairline'
-import Col from 'src/components/layout/Col'
 import TextField from 'src/components/forms/TextField'
 import {
+  ADDRESS_INVALID_ERROR,
   ADDRESS_REPEATED_ERROR,
   composeValidators,
   minMaxLength,
@@ -24,22 +16,29 @@ import {
   required,
   THRESHOLD_ERROR,
 } from 'src/components/forms/validator'
-import { FIELD_MAX_OWNER_NUMBER, FIELD_NEW_SAFE_THRESHOLD, FIELD_SAFE_OWNERS_LIST } from '../../fields/createSafeFields'
-import { ScanQRWrapper } from 'src/components/ScanQRModal/ScanQRWrapper'
-import { currentNetworkAddressBookAsMap } from 'src/logic/addressBook/store/selectors'
+import Block from 'src/components/layout/Block'
+import Button from 'src/components/layout/Button'
+import Col from 'src/components/layout/Col'
+import Paragraph from 'src/components/layout/Paragraph'
 import NetworkLabel from 'src/components/NetworkLabel/NetworkLabel'
+import { ScanQRWrapper } from 'src/components/ScanQRModal/ScanQRWrapper'
+import { useStepper } from 'src/components/Stepper/stepperContext'
+import { currentNetworkAddressBookAsMap } from 'src/logic/addressBook/store/selectors'
+import { providerNameSelector, userAccountSelector } from 'src/logic/wallets/store/selectors'
+import { FIELD_MAX_OWNER_NUMBER, FIELD_NEW_SAFE_THRESHOLD, FIELD_SAFE_OWNERS_LIST } from '../../fields/createSafeFields'
 import {
   BlockWithPadding,
+  CheckIconAddressAdornment,
+  FieldStyled,
+  OwnerContainer,
+  OwnerNameField,
+  OwnersIconsContainer,
   ParagraphWithMargin,
   RowHeader,
-  OwnerNameField,
-  CheckIconAddressAdornment,
-  OwnersIconsContainer,
-  OwnerContainer,
   StyledParagraph,
-  FieldStyled,
 } from './styles'
 
+import { isValidAddress } from 'src/utils/isValidAddress'
 import TrashIcon from '../../assets/trash-2.svg'
 import QrCodeIcon from '../../assets/uil_qrcode-scan.svg'
 
@@ -251,7 +250,12 @@ export const ownersAndConfirmationsNewSafeStepValidations = (values: {
     const address = values[addressFieldName]
     const previousOwners = addresses.slice(0, index)
     const isRepeated = previousOwners.includes(address)
-    if (isRepeated) {
+
+    const isValid = isValidAddress(address)
+
+    if (!isValid) {
+      errors[addressFieldName] = ADDRESS_INVALID_ERROR
+    } else if (isRepeated) {
       errors[addressFieldName] = ADDRESS_REPEATED_ERROR
     }
   })
