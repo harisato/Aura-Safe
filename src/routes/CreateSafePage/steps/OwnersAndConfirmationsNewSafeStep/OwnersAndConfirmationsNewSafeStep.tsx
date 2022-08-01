@@ -200,7 +200,7 @@ function OwnersAndConfirmationsNewSafeStep(): ReactElement {
 
         <BlockWithPadding>
           <Block>
-            <Paragraph color="white">Any transaction requires the confirmation of:</Paragraph>
+            <Paragraph color="textaura">Any transaction requires the confirmation of:</Paragraph>
           </Block>
           <OwnerContainer align="center" grow>
             <Col xs={1}>

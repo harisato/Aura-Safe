@@ -22,6 +22,7 @@ type ReviewInfoTextProps = Parameters<typeof TransactionFees>[0] & CustomReviewI
 const ReviewInfoTextWrapper = styled.div`
   background-color: rgba(18, 18, 18, 1);
   padding: ${sm} ${lg};
+  margin-top: -30px;
 `
 
 export const ReviewInfoText = ({

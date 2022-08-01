@@ -29,7 +29,6 @@ class GnoTableHead extends React.PureComponent<any> {
 
   render(): React.ReactElement {
     const { columns, order, orderBy } = this.props
-
     return (
       <TableHead>
         <TableRow>
@@ -41,7 +40,9 @@ class GnoTableHead extends React.PureComponent<any> {
               sortDirection={orderBy === column.id ? order : false}
             >
               {column.static ? (
-                <div style={column.style}>{column.label}</div>
+                <div style={(column.style, { color: '#98989B', textTransform: 'none', fontWeight: 590 })}>
+                  {column.label}
+                </div>
               ) : (
                 <TableSortLabel
                   active={orderBy === column.id}

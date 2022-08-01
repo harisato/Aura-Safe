@@ -38,7 +38,9 @@ function NameNewSafeStep(): ReactElement {
           will ONLY be available on <NetworkLabel />
         </Paragraph>
       </Block>
-      <label htmlFor={FIELD_CREATE_CUSTOM_SAFE_NAME}>Name of the new Safe</label>
+      <label htmlFor={FIELD_CREATE_CUSTOM_SAFE_NAME} style={{ color: '#E6E7E8' }}>
+        Name of the new Safe
+      </label>
       <FieldContainer margin="lg">
         <Col xs={11}>
           <Field

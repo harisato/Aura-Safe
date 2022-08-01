@@ -49,7 +49,7 @@ export const generateColumns = (): List<TableColumn> => {
     label: 'Name',
     custom: false,
     static: true,
-    width: 250,
+    width: 300,
   }
 
   const balanceColumn: TableColumn = {

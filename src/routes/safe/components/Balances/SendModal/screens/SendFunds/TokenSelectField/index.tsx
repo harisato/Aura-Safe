@@ -31,14 +31,14 @@ const SelectedToken = ({ tokenAddress, tokens }: SelectTokenProps): ReactElement
           <ListItemIcon>
             <Img
               className={classes.tokenImage}
-              alt={token.name}
+              alt={token.name.toUpperCase()}
               onError={setImageToPlaceholder}
               src={token.logoUri || ''}
             />
           </ListItemIcon>
           <ListItemText
             className={classes.tokenData}
-            primary={token.name}
+            primary={token.name.toUpperCase()}
             secondary={`${formatAmount(token.balance?.tokenBalance.toString() ?? '0')} ${token.symbol}`}
           />
         </>
@@ -77,13 +77,13 @@ const TokenSelectField = ({ initialValue, isValid = true, tokens }: TokenSelectF
           <ListItemIcon>
             <Img
               className={tokenClasses.tokenImage}
-              alt={token.name}
+              alt={token.name.toUpperCase()}
               onError={setImageToPlaceholder}
               src={token.logoUri || ''}
             />
           </ListItemIcon>
           <ListItemText
-            primary={token.name}
+            primary={token.name.toUpperCase()}
             secondary={`${formatAmount(token.balance?.tokenBalance.toString() ?? '0')} ${token.symbol}`}
             data-testid={`select-token-${token.name}`}
           />

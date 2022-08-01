@@ -277,7 +277,7 @@ const SendFunds = ({
                   </div>
                 ) : (
                   <Row margin="md">
-                    <Col xs={11}>
+                    <Col xs={10}>
                       <AddressBookInput
                         fieldMutator={mutators.setRecipient}
                         pristine={pristine}
@@ -292,7 +292,7 @@ const SendFunds = ({
                   </Row>
                 )}
                 <Row margin="sm">
-                  <Col>
+                  <Col xs={10}>
                     <TokenSelectField
                       initialValue={selectedToken?.address}
                       isValid={!!selectedToken?.address}

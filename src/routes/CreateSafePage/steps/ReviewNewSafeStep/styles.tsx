@@ -31,6 +31,8 @@ const DescriptionContainer = styled(Row)`
   text-align: left;
   margin: 8px;
   border-radius: 8px;
+  display: flex;
+  width: auto;
 `
 import { createStyles } from '@material-ui/core'
 const styles = (theme) =>

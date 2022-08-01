@@ -164,14 +164,13 @@
     ]
   },
   "dependencies": {
+    "@aura/safe-react-components": "https://github.com/aura-nw/safe-react-components.git",
     "@cosmjs/cosmwasm-stargate": "^0.28.11",
     "@cosmjs/stargate": "^0.27.1",
     "@gnosis.pm/safe-apps-sdk": "6.1.0",
     "@gnosis.pm/safe-apps-sdk-v1": "npm:@gnosis.pm/safe-apps-sdk@0.4.2",
     "@gnosis.pm/safe-core-sdk": "^1.1.1",
     "@gnosis.pm/safe-deployments": "^1.5.0",
-    "@gnosis.pm/safe-react-components": "^0.9.0",
-    "@aura/safe-react-components": "https://github.com/aura-nw/safe-react-components",
     "@gnosis.pm/safe-react-gateway-sdk": "2.7.5",
     "@ledgerhq/hw-transport-node-hid-singleton": "6.20.0",
     "@material-ui/core": "^4.12.3",

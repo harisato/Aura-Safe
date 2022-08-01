@@ -276,7 +276,7 @@ function CreateSafePage(): ReactElement {
             </div>
           )}
         </Modal.Body>
-        <Modal.Footer justifyContent="center">
+        <Modal.Footer justifyContent="right">
           {
             <StyledBorder>
               <StyledButtonBorder iconType="safe" iconSize="sm" size="lg" onClick={onClickModalButton}>

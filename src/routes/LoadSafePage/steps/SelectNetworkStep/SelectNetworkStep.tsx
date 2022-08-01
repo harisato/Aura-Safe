@@ -10,7 +10,14 @@ import { setChainId } from 'src/logic/config/utils'
 import Paragraph from 'src/components/layout/Paragraph'
 import NetworkLabel from 'src/components/NetworkLabel/NetworkLabel'
 import { getChains } from 'src/config/cache/chains'
-import { Container, StyledDialogContent, StyledDialogTitle, NetworkLabelItem, SwitchNetworkContainer } from './styles'
+import {
+  Container,
+  StyledDialogContent,
+  StyledDialogTitle,
+  NetworkLabelItem,
+  SwitchNetworkContainer,
+  StyledLink,
+} from './styles'
 
 export const selectNetworkStepLabel = 'Select network'
 
@@ -32,9 +39,9 @@ function SelectNetworkStep(): ReactElement {
         Select network on which the Safe was created: <NetworkLabel onClick={openNetworkSelectorPopup} />
       </Paragraph>
       <SwitchNetworkContainer>
-        <ButtonLink type="button" onClick={openNetworkSelectorPopup} color="primary">
+        <StyledLink color="linkAura" type="button" onClick={openNetworkSelectorPopup}>
           Switch Network
-        </ButtonLink>
+        </StyledLink>
       </SwitchNetworkContainer>
       <Dialog
         onClose={() => setIsNetworkSelectorPopupOpen(false)}

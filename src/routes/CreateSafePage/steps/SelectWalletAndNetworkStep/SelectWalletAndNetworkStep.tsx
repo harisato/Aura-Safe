@@ -48,11 +48,11 @@ function SelectWalletAndNetworkStep(props): ReactElement {
         {isWalletConnected ? (
           <ButtonLink
             type="button"
-            color="primary"
+            color="linkAura"
             onClick={openNetworkSelectorPopup}
             data-testid={'switch-network-link'}
           >
-            <span style={{ color: '#008C73 !important', fontWeight: 500 }}>Switch Network</span>
+            <span style={{ color: '#5EE6D0 !important', fontWeight: 500 }}>Switch Network</span>
           </ButtonLink>
         ) : (
           <ConnectButton onConnect={onConnectWalletShow} data-testid="heading-connect-btn" />

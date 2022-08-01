@@ -121,7 +121,7 @@ function ReviewNewSafeStep(): ReactElement | null {
               {`${numberOfOwners} Safe owners`}
             </Paragraph>
           </TitleContainer>
-          {owners.map(({ nameFieldName, addressFieldName }) => {
+          {owners.map(({ nameFieldName, addressFieldName }, index) => {
             const ownerName = createSafeFormValues[nameFieldName]
             const ownerAddress = createSafeFormValues[addressFieldName]
             return (
@@ -136,7 +136,7 @@ function ReviewNewSafeStep(): ReactElement | null {
                       explorerUrl={getExplorerInfo(ownerAddress)}
                     />
                   </Col>
-                  {owners.length > 1 && (
+                  {owners.length - 1 !== index && (
                     <Col
                       align="center"
                       xs={12}
@@ -153,11 +153,14 @@ function ReviewNewSafeStep(): ReactElement | null {
         </TableContainer>
       </Col>
       <DescriptionContainer align="center">
-        <Paragraph color="textaura" noMargin size="smd">
-          <img src={InformationIcon} /> You&apos;re about to create a new Safe on <NetworkLabel /> Other listed owners
-          will see that you are about to create a Safe with them and will all have to give permission in order for the
-          Safe to be created and used.
-        </Paragraph>
+        <div style={{ display: 'flex', alignItems: 'center' }}>
+          <img src={InformationIcon} style={{ marginRight: 5 }} />
+          <Paragraph color="textaura" noMargin size="smd">
+            You&apos;re about to create a new Safe on <NetworkLabel />. Other listed owners will see that you are about
+            to create a Safe with them and will all have to give permission in order for the Safe to be created and
+            used.
+          </Paragraph>
+        </div>
       </DescriptionContainer>
     </Row>
   )
