@@ -14,6 +14,8 @@ import * as _ from 'lodash'
 import { WALLETS_NAME } from '../wallets/constant/wallets'
 import { auth } from 'src/services/index'
 import { getGatewayUrl } from 'src/services/data/environment'
+import { JWT_TOKEN_KEY, NAME_KEPLR } from 'src/services/constant/common'
+import local from 'src/utils/storage/local'
 
 export type WalletKey = {
   myAddress: string
@@ -62,32 +64,45 @@ export async function getKeplrKey(chainId: string): Promise<WalletKey | undefine
   }
 }
 
-export const HandleConnectWallet = (keplr, chainInfo, key, chainId, internalChainId, providerInfo) => {
-  const arrayTemp: any = JSON.parse(window.localStorage.getItem('TOKEN') || '[]') || []
+export const handleConnectWallet = (keplr, chainInfo, key, chainId, internalChainId, providerInfo) => {
+  const arrayTemp: any = JSON.parse(local.getItem(JWT_TOKEN_KEY) || '[]')
+
   if (window.keplr && !_.find(arrayTemp, ['name', chainInfo.chainId])) {
     const timeStamp = new Date().getTime()
     keplr
       ?.signArbitrary(chainId, key.bech32Address, `${timeStamp}`)
-      .then((e) => {
-        const data = {
-          pubkey: e.pub_key.value,
-          data: `${timeStamp}`,
-          signature: e.signature,
-          internalChainId: internalChainId,
-        }
-        auth(data).then(async (e) => {
-          const chain = {
+      .then(
+        (account) =>
+          auth({
+            pubkey: account.pub_key.value,
+            data: `${timeStamp}`,
+            signature: account.signature,
+            internalChainId: internalChainId,
+          }),
+        // .then(async (e) => {
+        //   const chain = {
+        //     name: chainInfo.chainId,
+        //     token: e.Data.AccessToken,
+        //   }
+        //   if (chain) {
+        //     arrayTemp.push(chain)
+        //     window.localStorage.setItem('TOKEN', JSON.stringify(arrayTemp))
+        //   }
+        // })
+      )
+      .then((response) => {
+        if (response?.Data) {
+          arrayTemp.push({
             name: chainInfo.chainId,
-            token: e.Data.AccessToken,
-          }
-          if (chain) {
-            arrayTemp.push(chain)
-            window.localStorage.setItem('TOKEN', JSON.stringify(arrayTemp))
-          }
-        })
+            token: response.Data.AccessToken,
+          })
+          local.setItem(JWT_TOKEN_KEY, arrayTemp)
+        }
       })
-      .catch((error) => {
-        console.log('error authen')
+      .catch(() => {
+        store.dispatch(removeProvider({ keepStorageKey: true }))
+        // store.dispatch(fetchProvider(providerInfo))
+        // throw new Error('Authentication Fail')
       })
   }
 
@@ -111,8 +126,8 @@ export async function connectKeplr(): Promise<KeplrErrors> {
   try {
     await keplr
       .enable(chainId)
-      .then((e) => keplr.getKey(chainId))
-      .then(async (key: any) => {
+      .then(() => keplr.getKey(chainId))
+      .then((key: any) => {
         let providerInfo: ProviderProps
         if (!key) {
           providerInfo = {
@@ -125,6 +140,7 @@ export async function connectKeplr(): Promise<KeplrErrors> {
             smartContractWallet: false,
             internalChainId,
           }
+          store.dispatch(fetchProvider(providerInfo))
         } else {
           providerInfo = {
             account: key.bech32Address,
@@ -136,17 +152,18 @@ export async function connectKeplr(): Promise<KeplrErrors> {
             smartContractWallet: false,
             internalChainId,
           }
-          const nameKeplr = window.localStorage.getItem('NAME_KEPLR')
+          const nameKeplr = local.getItem(NAME_KEPLR)
+
           if (key.name) {
             if (nameKeplr !== key.name) {
-              window.localStorage.removeItem('TOKEN')
-              window.localStorage.setItem('NAME_KEPLR', key.name)
-              HandleConnectWallet(keplr, chainInfo, key, chainId, internalChainId, providerInfo)
+              local.removeItem(JWT_TOKEN_KEY)
+              local.setItem(NAME_KEPLR, key.name)
+              handleConnectWallet(keplr, chainInfo, key, chainId, internalChainId, providerInfo)
             }
             if (nameKeplr === key.name) {
-              HandleConnectWallet(keplr, chainInfo, key, chainId, internalChainId, providerInfo)
+              handleConnectWallet(keplr, chainInfo, key, chainId, internalChainId, providerInfo)
             }
-            window.localStorage.setItem('NAME_KEPLR', key.name || '')
+            local.setItem(NAME_KEPLR, key.name || '')
           }
         }
       })
@@ -172,63 +189,6 @@ export async function connectKeplr(): Promise<KeplrErrors> {
       )
     }
   }
-
-  // await keplr
-  //   ?.enable(chainId)
-  //   .then((e) => {
-  //     return keplr.getKey(chainId)
-  //   })
-  //   .then((key) => {
-  //     let providerInfo: ProviderProps;
-
-  //     if (!key) {
-  //       providerInfo = {
-  //         account: '',
-  //         available: false,
-  //         hardwareWallet: false,
-  //         loaded: false,
-  //         name: '',
-  //         network: '',
-  //         smartContractWallet: false,
-  //         internalChainId
-  //       }
-  //     } else {
-  //       providerInfo = {
-  //         account: key.bech32Address,
-  //         available: true,
-  //         hardwareWallet: false,
-  //         loaded: true,
-  //         name: 'Keplr',
-  //         network: chainInfo.chainId,
-  //         smartContractWallet: false,
-  //         internalChainId
-  //       }
-
-  //       store.dispatch(fetchProvider(providerInfo))
-  //       saveToStorage(LAST_USED_PROVIDER_KEY, providerInfo.name)
-  //     }
-
-  //   })
-  //   .catch((err: Error) => {
-  //     store.dispatch(fetchProvider({
-  //       account: '',
-  //       available: false,
-  //       hardwareWallet: false,
-  //       loaded: false,
-  //       name: '',
-  //       network: '',
-  //       smartContractWallet: false,
-  //       internalChainId
-  //     }))
-
-  //     const message = err.message.toUpperCase()
-
-  //     if (message.includes(KeplrErrors.NoChainInfo)) {
-  //       error = KeplrErrors.NoChainInfo
-  //     } else if (message.includes(KeplrErrors.RequestRejected)) {
-  //       error = KeplrErrors.RequestRejected
-  //     } else { error = KeplrErrors.Failed }
-  //   })
 
   return error
 }
@@ -257,10 +217,10 @@ const handleProviderNotification = (provider: ProviderProps, dispatch: Dispatch<
 }
 
 export async function suggestChain(chainId = 'aura-testnet'): Promise<any> {
-  getGatewayUrl().then((res: any) => {
+  return getGatewayUrl().then((res: any) => {
     const chainInfo = _.find(res.chainInfo, ['chainId', chainId])
     if (chainInfo) {
-      window['keplr']?.experimentalSuggestChain(chainInfo)
+      return window['keplr']?.experimentalSuggestChain(chainInfo)
     } else {
       const result = confirm(`Please add the ${chainId} chain to your Wallet!`)
 
@@ -269,6 +229,8 @@ export async function suggestChain(chainId = 'aura-testnet'): Promise<any> {
           'https://github.com/aura-nw/Aura-Safe/blob/dev/CONNECT_KEPLR.md#i-connect-keplr-wallet-to-aura-testnet',
         )
       }
+
+      return null
     }
   })
 }

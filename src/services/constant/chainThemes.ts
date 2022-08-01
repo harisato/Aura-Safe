@@ -31,7 +31,7 @@ const CHAIN_THEMES: { [chainId: string]: any } = {
     textColor: '#ffffff',
     backgroundColor: '#6311FA',
   },
-  ['uni-2']: {
+  ['uni-3']: {
     textColor: '#ffffff',
     backgroundColor: '#EF827D',
   },
