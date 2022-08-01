@@ -42,7 +42,6 @@ export const extendedSafeTokensSelector = createSelector(
       )
       return List([])
     }
-
     safeBalances.forEach((safeBalance) => {
       const tokenAddress = safeBalance.tokenAddress
 

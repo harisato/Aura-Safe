@@ -16,9 +16,8 @@ export type Validator = GenericValidatorType | AsyncValidator
 
 export const required = (value?: string): ValidatorReturnType => {
   const required = 'Required'
-
   if (!value) {
-    return required
+    return ' '
   }
 
   if (typeof value === 'string' && !value.trim().length) {

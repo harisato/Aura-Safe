@@ -2,6 +2,7 @@ import styled from 'styled-components'
 import Block from 'src/components/layout/Block'
 import DialogContent from '@material-ui/core/DialogContent'
 import DialogTitle from '@material-ui/core/DialogTitle'
+import { ButtonLink } from '@aura/safe-react-components'
 import { lg } from 'src/theme/variables'
 
 const Container = styled(Block)`
@@ -33,4 +34,8 @@ const NetworkLabelItem = styled.div`
   }
 `
 
-export { Container, StyledDialogContent, StyledDialogTitle, NetworkLabelItem, SwitchNetworkContainer }
+const StyledLink = styled(ButtonLink)`
+  color: #5ee6d0 !important;
+`
+
+export { Container, StyledDialogContent, StyledDialogTitle, NetworkLabelItem, SwitchNetworkContainer, StyledLink }

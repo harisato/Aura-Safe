@@ -84,7 +84,7 @@ export const fetchSafeTokens =
         address: safeAddress,
         balances,
         ethBalance: '0',
-        totalFiatBalance: new BigNumber(tokenCurrenciesBalances.fiatTotal).toFixed(2),
+        totalFiatBalance: new BigNumber(tokenCurrenciesBalances.fiatTotal).toFixed(6),
       }),
     )
     dispatch(addTokens(tokens))
@@ -131,7 +131,7 @@ export const fetchMSafeTokens =
           address: safeInfo.address,
           balances,
           ethBalance,
-          totalFiatBalance: new BigNumber(tokenCurrenciesBalances.fiatTotal).toFixed(2),
+          totalFiatBalance: new BigNumber(tokenCurrenciesBalances.fiatTotal).toFixed(6),
         }),
       )
       dispatch(addTokens(tokens))

@@ -277,7 +277,7 @@ const SendFunds = ({
                   </div>
                 ) : (
                   <Row margin="md">
-                    <Col xs={11}>
+                    <Col xs={10}>
                       <AddressBookInput
                         fieldMutator={mutators.setRecipient}
                         pristine={pristine}
@@ -292,7 +292,7 @@ const SendFunds = ({
                   </Row>
                 )}
                 <Row margin="sm">
-                  <Col>
+                  <Col xs={10}>
                     <TokenSelectField
                       initialValue={selectedToken?.address}
                       isValid={!!selectedToken?.address}
@@ -308,13 +308,10 @@ const SendFunds = ({
                     <Paragraph color="disabled" noMargin size="md" style={{ letterSpacing: '-0.5px' }}>
                       Amount
                     </Paragraph>
-                    <ButtonLink onClick={setMaxAllowedAmount} weight="bold" testId="send-max-btn">
-                      Send max
-                    </ButtonLink>
                   </Col>
                 </Row>
                 <Row margin="md">
-                  <Col>
+                  <Col xs={10}>
                     <Field
                       component={TextField}
                       inputAdornment={{
@@ -330,6 +327,11 @@ const SendFunds = ({
                       type="text"
                       testId="amount-input"
                     />
+                  </Col>
+                  <Col xs={2}>
+                    <ButtonLink onClick={setMaxAllowedAmount} weight="bold" testId="send-max-btn">
+                      Send max
+                    </ButtonLink>
                   </Col>
                 </Row>
               </Block>

@@ -3,7 +3,10 @@
 // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/NumberFormat
 
 // Locale is an empty array because we want it to use user's locale
-const lt1kFormatter = new Intl.NumberFormat([], { maximumFractionDigits: 5 })
+
+const options = { style: 'currency', currency: 'USD', minimumFractionDigits: 6, maximumFractionDigits: 8 }
+
+const lt1kFormatter = new Intl.NumberFormat([], options)
 const lt10kFormatter = new Intl.NumberFormat([], { maximumFractionDigits: 4 })
 const lt100kFormatter = new Intl.NumberFormat([], { maximumFractionDigits: 3 })
 const lt1mFormatter = new Intl.NumberFormat([], { maximumFractionDigits: 2 })
@@ -14,7 +17,6 @@ const lt1000tFormatter = new Intl.NumberFormat([], { maximumFractionDigits: 3, n
 
 export const formatAmount = (number: string): string => {
   let numberFloat: number | string = parseFloat(number)
-
   if (numberFloat === 0) {
     numberFloat = '0'
   } else if (numberFloat < 0.001) {
@@ -40,7 +42,6 @@ export const formatAmount = (number: string): string => {
   return numberFloat
 }
 
-const options = { style: 'currency', currency: 'USD', minimumFractionDigits: 2, maximumFractionDigits: 8 }
 const usNumberFormatter = new Intl.NumberFormat('en-US', options)
 
 export const formatAmountInUsFormat = (amount: string): string => {

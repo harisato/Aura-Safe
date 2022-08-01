@@ -60,7 +60,7 @@ const Balances = (): ReactElement => {
         <Col start="sm" sm={6} xs={12}>
           <Breadcrumb>
             <BreadcrumbElement iconType="assets" text="ASSETS" color="white" />
-            <BreadcrumbElement text={balancesSection} color="placeHolder" />
+            <BreadcrumbElement text={balancesSection} color="disableAura" />
           </Breadcrumb>
         </Col>
 

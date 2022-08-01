@@ -6,7 +6,7 @@ import { Text } from '@aura/safe-react-components'
 import styled from 'styled-components'
 
 const StyledText = styled.span`
-  color: #5ee6d0 !important;
+  color: #98989b !important;
 `
 
 type TransactionFailTextProps = {
@@ -40,7 +40,7 @@ export const TransactionFees = ({
   return (
     <>
       {gasCostFormatted != null && (
-        <Paragraph size="lg" align="center">
+        <Paragraph size="smd" align="left" color="disabled">
           You&apos;re about to {transactionAction} a transaction and will have to confirm it with your currently
           connected wallet.{' '}
           {!isOffChainSignature && (

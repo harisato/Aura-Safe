@@ -37,7 +37,10 @@ const SafeInfo = (): React.ReactElement => {
       {ethBalance && (
         <StyledBlock>
           <Paragraph noMargin>
-            Balance: <Bold data-testid="current-eth-balance">{`${ethBalance} ${nativeCurrency.symbol}`}</Bold>
+            Balance:{' '}
+            <Bold data-testid="current-eth-balance">{`${parseFloat(ethBalance).toFixed(6)} ${
+              nativeCurrency.symbol
+            }`}</Bold>
           </Paragraph>
         </StyledBlock>
       )}

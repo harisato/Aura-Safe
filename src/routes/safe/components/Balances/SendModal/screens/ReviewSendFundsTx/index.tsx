@@ -328,7 +328,7 @@ const ReviewSendFundsTx = ({ onClose, onPrev, tx }: ReviewTxProps): React.ReactE
             </Row>
 
             <Row margin="xs">
-              <Paragraph color="white" noMargin size="xl" style={{ letterSpacing: '-0.5px' }}>
+              <Paragraph color="white" noMargin size="md" weight="regular" style={{ letterSpacing: '-0.5px' }}>
                 Transaction fee
               </Paragraph>
             </Row>
@@ -352,7 +352,7 @@ const ReviewSendFundsTx = ({ onClose, onPrev, tx }: ReviewTxProps): React.ReactE
                   </Paragraph>
                 </div>
                 <div style={{ alignSelf: 'center' }}>
-                  <ButtonLink onClick={ShowGasFrom} weight="bold" testId="send-max-btn">
+                  <ButtonLink onClick={ShowGasFrom} weight="regular" testId="send-max-btn">
                     Edit gas
                   </ButtonLink>
                 </div>
@@ -361,12 +361,10 @@ const ReviewSendFundsTx = ({ onClose, onPrev, tx }: ReviewTxProps): React.ReactE
             {openGas && (
               <Row margin="md" xs={12}>
                 <Col xs={9}>
-                  <input
-                    className={classes.gasInput}
-                    placeholder="Gas Amount"
-                    value={manualGasLimit}
-                    onChange={handleManualSafeTxGasChange}
-                  />
+                  <div className={classes.gasInput}>
+                    <div className={classes.titleGasInput}>Gas Amount</div>
+                    <input value={manualGasLimit} onChange={handleManualSafeTxGasChange} className={classes.inputGas} />
+                  </div>
                 </Col>
                 <Col center="xs" middle="xs" xs={3}>
                   <div className={classes.gasButton} onClick={recalculateFee}>
@@ -375,8 +373,8 @@ const ReviewSendFundsTx = ({ onClose, onPrev, tx }: ReviewTxProps): React.ReactE
                 </Col>
               </Row>
             )}
-            {/* <Row margin="xs">
-              <Paragraph color="white" noMargin size="xl" style={{ letterSpacing: '-0.5px' }}>
+            <Row margin="xs">
+              <Paragraph color="white" noMargin size="md" weight="regular" style={{ letterSpacing: '-0.5px' }}>
                 Total Allocation Amount
               </Paragraph>
             </Row>
@@ -391,7 +389,7 @@ const ReviewSendFundsTx = ({ onClose, onPrev, tx }: ReviewTxProps): React.ReactE
               >
                 {tx.amount} {txToken?.symbol}
               </Paragraph>
-            </Row> */}
+            </Row>
           </Block>
 
           {/* Disclaimer */}

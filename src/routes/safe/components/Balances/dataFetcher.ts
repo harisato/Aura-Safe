@@ -8,9 +8,9 @@ export const BALANCE_TABLE_VALUE_ID = 'value'
 
 const getTokenPriceInCurrency = (balance: string, currencySelected?: string): string => {
   if (!currencySelected) {
-    return Number('').toFixed(2)
+    return Number('').toFixed(6)
   }
-  return `${formatAmountInUsFormat(Number(balance).toFixed(2))} ${currencySelected}`
+  return `${formatAmountInUsFormat(Number(balance).toFixed(6))} ${currencySelected}`
 }
 
 export interface BalanceData {
@@ -24,6 +24,7 @@ export interface BalanceData {
 export const getBalanceData = (safeTokens: List<Token>, currencySelected?: string): List<BalanceData> => {
   return safeTokens.map((token) => {
     const { tokenBalance, fiatBalance } = token.balance
+
     return {
       [BALANCE_TABLE_ASSET_ID]: {
         name: token.name,
@@ -32,9 +33,9 @@ export const getBalanceData = (safeTokens: List<Token>, currencySelected?: strin
         symbol: token.symbol,
       },
       assetOrder: token.name,
-      [BALANCE_TABLE_BALANCE_ID]: `${formatAmountInUsFormat(tokenBalance?.toString() || '0')} ${token.symbol}`,
+      [BALANCE_TABLE_BALANCE_ID]: `${formatAmountInUsFormat(tokenBalance?.toString() || '0.000000')} ${token.symbol}`,
       balanceOrder: Number(tokenBalance),
-      [BALANCE_TABLE_VALUE_ID]: getTokenPriceInCurrency(fiatBalance || '0', currencySelected),
+      [BALANCE_TABLE_VALUE_ID]: getTokenPriceInCurrency(fiatBalance || '0.000000', currencySelected),
       valueOrder: Number(tokenBalance),
     }
   })
@@ -45,10 +46,10 @@ export const generateColumns = (): List<TableColumn> => {
     id: BALANCE_TABLE_ASSET_ID,
     order: true,
     disablePadding: false,
-    label: 'Asset',
+    label: 'Name',
     custom: false,
     static: true,
-    width: 250,
+    width: 300,
   }
 
   const balanceColumn: TableColumn = {

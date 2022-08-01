@@ -40,7 +40,6 @@ import {
 
 import { isValidAddress } from 'src/utils/isValidAddress'
 import TrashIcon from '../../assets/trash-2.svg'
-import QrCodeIcon from '../../assets/uil_qrcode-scan.svg'
 
 export const ownersAndConfirmationsNewSafeStepLabel = 'Owners and Confirmations'
 
@@ -170,7 +169,7 @@ function OwnersAndConfirmationsNewSafeStep(): ReactElement {
                 </Col>
                 {!disbaleAddressInput && (
                   <OwnersIconsContainer xs={1} center="xs" middle="xs">
-                    <ScanQRWrapper handleScan={handleScan} testId={`${addressFieldName}-scan-QR`} icon={QrCodeIcon} />
+                    <ScanQRWrapper handleScan={handleScan} testId={`${addressFieldName}-scan-QR`} />
                   </OwnersIconsContainer>
                 )}
                 {showDeleteIcon && (
@@ -200,7 +199,7 @@ function OwnersAndConfirmationsNewSafeStep(): ReactElement {
 
         <BlockWithPadding>
           <Block>
-            <Paragraph color="white">Any transaction requires the confirmation of:</Paragraph>
+            <Paragraph color="textaura">Any transaction requires the confirmation of:</Paragraph>
           </Block>
           <OwnerContainer align="center" grow>
             <Col xs={1}>
