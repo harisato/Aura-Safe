@@ -1,16 +1,24 @@
+import { bech32 } from 'bech32'
 import { getShortName } from 'src/config'
 
-export const isValidAddress = (address?: string): boolean => {
+export const isValidAddress = (address?: string, prefix?: string): boolean => {
   const shortName = getShortName()
 
-  if (shortName && address) {
-    return address.startsWith(shortName) && address.length > 40
+  if (!address) {
+    return false
   }
 
-  return false
-  // if (address) {
-  //   // `isAddress` do not require the string to start with `0x`
-  //   // `isHexStrict` ensures the address to start with `0x` aside from being a valid hex string
-  //   return isHexStrict(address) && isAddress(address)
-  // }
+  try {
+    validate(address, prefix ? prefix : shortName)
+    return true
+  } catch {
+    return false
+  }
+}
+
+const validate = (bech32Address: string, prefix?: string) => {
+  const { prefix: decodedPrefix } = bech32.decode(bech32Address)
+  if (prefix && prefix !== decodedPrefix) {
+    throw new Error(`Unexpected prefix (expected: ${prefix}, actual: ${decodedPrefix})`)
+  }
 }

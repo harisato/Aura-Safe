@@ -83,11 +83,10 @@ export const mustBeAddressHash = memoize((address: string): ValidatorReturnType 
   return isValidAddress(address) ? undefined : errorMessage
 })
 
-export const mustBeValidAddressHash = memoize((address: string): ValidatorReturnType => {
+export const mustBeValidBech32Address = memoize((address: string, prefix?: string): ValidatorReturnType => {
   const errorMessage = 'Must be a valid address'
 
-  const regex = new RegExp('[a-z]{1,}[0-9A-Za-z]{39,}')
-  return regex.test(address) && isValidAddress(address) ? undefined : errorMessage
+  return isValidAddress(address, prefix) ? undefined : errorMessage
 })
 
 const mustHaveValidPrefix = (prefix: string): ValidatorReturnType => {
@@ -118,7 +117,7 @@ export const mustBeValidAddress = (fullAddress: string): ValidatorReturnType => 
   const errorMessage = 'Must be a valid address'
   const { address } = parsePrefixedAddress(fullAddress)
 
-  const result = mustBeValidAddressHash(address)
+  const result = mustBeValidBech32Address(address)
   if (result !== undefined) {
     return errorMessage
   }
