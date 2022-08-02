@@ -68,7 +68,7 @@ const wallets = (): Wallet[] => {
     // { walletName: WALLETS.WALLET_LINK, rpcUrl, desktop: false },
     // { walletName: WALLETS.OPERA, desktop: false },
     // { walletName: WALLETS.OPERA_TOUCH, desktop: false },
-    { walletName: WALLETS.KEPLR, desktop: true, preferred: true },
+    // { walletName: WALLETS.KEPLR, desktop: true, preferred: true },
   ]
 }
 

@@ -15,28 +15,37 @@ type Props = {
 }
 
 export const ConnectWalletModal = ({ isOpen, onClose }: Props): React.ReactElement => {
-  const internalChainId = getInternalChainId()
+  // const internalChainId = getInternalChainId()
 
   const keplrWallet = async () => {
     const chainId = _getChainId()
-    await connectKeplr()
-      .then(async (status) => {
-        if (status === KeplrErrors.NoChainInfo) {
-          console.log(1)
-          await suggestChain(chainId)
-          return true
-        }
+
+    suggestChain(chainId)
+      .then(() => connectKeplr())
+      .then(() => {
         onClose()
-        return null
-      })
-      .then((e) => {
-        if (e) {
-          connectKeplr()
-        }
       })
       .catch(() => {
         store.dispatch(enqueueSnackbar(enhanceSnackbarForAction(NOTIFICATIONS.CONNECT_WALLET_ERROR_MSG)))
       })
+
+    // await connectKeplr()
+    //   .then(async (status) => {
+    //     if (status === KeplrErrors.NoChainInfo) {
+    //       await suggestChain(chainId)
+    //       return true
+    //     }
+    //     onClose()
+    //     return null
+    //   })
+    //   .then((e) => {
+    //     if (e) {
+    //       connectKeplr()
+    //     }
+    //   })
+    //   .catch(() => {
+    //     store.dispatch(enqueueSnackbar(enhanceSnackbarForAction(NOTIFICATIONS.CONNECT_WALLET_ERROR_MSG)))
+    //   })
   }
 
   return (

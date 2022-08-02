@@ -39,7 +39,7 @@ import { Modal } from 'src/components/Modal'
 import NetworkLabel from 'src/components/NetworkLabel/NetworkLabel'
 import { getInternalChainId, getShortName, _getChainId } from 'src/config'
 import { createMSafe, ISafeCreate } from 'src/services'
-import { parseToAdress } from 'src/utils/parseByteAdress'
+import { parseToAddress } from 'src/utils/parseByteAdress'
 import { loadFromStorage, saveToStorage } from 'src/utils/storage'
 import { makeAddressBookEntry } from '../../logic/addressBook/model/addressBook'
 import { addressBookSafeLoad } from '../../logic/addressBook/store/actions'
@@ -348,7 +348,7 @@ async function makeSafeCreate(creatorAddress: string, newSafeFormValues: CreateS
   const chainId = _getChainId()
   const internalChainId = getInternalChainId()
   const pubkey = await window.keplr?.getKey(chainId)
-  const creatorPubkey = parseToAdress(pubkey?.pubKey as Uint8Array)
+  const creatorPubkey = parseToAddress(pubkey?.pubKey as Uint8Array)
   return {
     internalChainId,
     creatorAddress,

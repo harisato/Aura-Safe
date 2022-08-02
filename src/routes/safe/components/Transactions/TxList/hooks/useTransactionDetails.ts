@@ -22,8 +22,6 @@ export const useTransactionDetails = (transactionId: string, txHash?: string): L
   )
 
   useEffect(() => {
-    console.log({ txDetails: data?.txDetails, transactionId, txHash })
-
     if (data?.txDetails) {
       setTxDetails({ loading: false, data: data?.txDetails })
     } else {

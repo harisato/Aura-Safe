@@ -26,7 +26,7 @@ const useStyles = makeStyles(styles)
 type NetworkSelectorProps = ReturnValue
 
 const NetworkSelector = ({ open, toggle, clickAway }: NetworkSelectorProps): ReactElement => {
-  const theme = getChainInfoTheme()
+  // const theme = getChainInfoTheme()
 
   const networkRef = useRef(null)
   const history = useHistory()
