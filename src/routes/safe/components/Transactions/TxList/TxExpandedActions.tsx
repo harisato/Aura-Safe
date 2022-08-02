@@ -74,20 +74,20 @@ export const TxExpandedActions = ({ transaction }: TxExpandedActionsProps): Reac
         )
       ) : (
         <>
-          <Tooltip title={getConfirmTooltipTitle()} placement="top">
-            <span>
-              <StyledButtonConfirm
-                size="md"
-                disabled={disabledActions}
-                onClick={onExecuteOrConfirm}
-                onMouseEnter={handleOnMouseEnter}
-                onMouseLeave={handleOnMouseLeave}
-                className="primary"
-              >
-                {isAwaitingEx ? 'Execute' : 'Confirm'}
-              </StyledButtonConfirm>
-            </span>
-          </Tooltip>
+          {/* <Tooltip title={getConfirmTooltipTitle()} placement="top"> */}
+          <span>
+            <StyledButtonConfirm
+              size="md"
+              disabled={disabledActions}
+              onClick={onExecuteOrConfirm}
+              onMouseEnter={handleOnMouseEnter}
+              onMouseLeave={handleOnMouseLeave}
+              className="primary"
+            >
+              {isAwaitingEx ? 'Execute' : 'Confirm'}
+            </StyledButtonConfirm>
+          </span>
+          {/* </Tooltip> */}
           {!isAwaitingEx && canCancel && (
             <StyledButtonReject size="md" onClick={handleCancelButtonClick} className="error" disabled={isPending}>
               Reject
