@@ -1,21 +1,23 @@
-import { store } from 'src/store'
-import { Keplr } from '@keplr-wallet/types'
-import { getChainInfo, getInternalChainId, _getChainId } from '../../config'
-import { makeProvider, ProviderProps } from '../wallets/store/model/provider'
-import { Dispatch } from 'redux'
-import { addProvider, removeProvider } from '../wallets/store/actions'
-import enqueueSnackbar from '../notifications/store/actions/enqueueSnackbar'
-import { enhanceSnackbarForAction, NOTIFICATIONS } from '../notifications'
-import { trackAnalyticsEvent, WALLET_EVENTS } from '../../utils/googleAnalytics'
-import { saveToStorage } from 'src/utils/storage'
-import { LAST_USED_PROVIDER_KEY } from '../wallets/store/middlewares/providerWatcher'
-import { parseToAdress } from 'src/utils/parseByteAdress'
+import { ChainInfo } from '@gnosis.pm/safe-react-gateway-sdk'
+import { Keplr, Key } from '@keplr-wallet/types'
 import * as _ from 'lodash'
-import { WALLETS_NAME } from '../wallets/constant/wallets'
-import { auth } from 'src/services/index'
-import { getGatewayUrl } from 'src/services/data/environment'
+import { Dispatch } from 'redux'
+
 import { JWT_TOKEN_KEY, NAME_KEPLR } from 'src/services/constant/common'
+import { getGatewayUrl } from 'src/services/data/environment'
+import { auth } from 'src/services/index'
+import { store } from 'src/store'
+import { parseToAddress } from 'src/utils/parseByteAdress'
+import { saveToStorage } from 'src/utils/storage'
 import local from 'src/utils/storage/local'
+import { getChainInfo, getInternalChainId, _getChainId } from '../../config'
+import { trackAnalyticsEvent, WALLET_EVENTS } from '../../utils/googleAnalytics'
+import { enhanceSnackbarForAction, NOTIFICATIONS } from '../notifications'
+import enqueueSnackbar from '../notifications/store/actions/enqueueSnackbar'
+import { WALLETS_NAME } from '../wallets/constant/wallets'
+import { addProvider, removeProvider } from '../wallets/store/actions'
+import { LAST_USED_PROVIDER_KEY } from '../wallets/store/middlewares/providerWatcher'
+import { makeProvider, ProviderProps } from '../wallets/store/model/provider'
 
 export type WalletKey = {
   myAddress: string
@@ -60,49 +62,43 @@ export async function getKeplrKey(chainId: string): Promise<WalletKey | undefine
   const key = await keplr.getKey(chainId)
   return {
     myAddress: String(key.bech32Address),
-    myPubkey: parseToAdress(key.pubKey),
+    myPubkey: parseToAddress(key.pubKey),
   }
 }
 
-export const handleConnectWallet = (keplr, chainInfo, key, chainId, internalChainId, providerInfo) => {
-  const arrayTemp: any = JSON.parse(local.getItem(JWT_TOKEN_KEY) || '[]')
+export const handleConnectWallet = (
+  keplr: Keplr,
+  chainInfo: ChainInfo,
+  key: Key,
+  chainId: string,
+  internalChainId: number,
+  providerInfo: ProviderProps,
+): void => {
+  const token: any = local.getItem(JWT_TOKEN_KEY) || []
 
-  if (window.keplr && !_.find(arrayTemp, ['name', chainInfo.chainId])) {
+  if (window.keplr && !_.find(token, ['name', chainInfo.chainId])) {
     const timeStamp = new Date().getTime()
     keplr
       ?.signArbitrary(chainId, key.bech32Address, `${timeStamp}`)
-      .then(
-        (account) =>
-          auth({
-            pubkey: account.pub_key.value,
-            data: `${timeStamp}`,
-            signature: account.signature,
-            internalChainId: internalChainId,
-          }),
-        // .then(async (e) => {
-        //   const chain = {
-        //     name: chainInfo.chainId,
-        //     token: e.Data.AccessToken,
-        //   }
-        //   if (chain) {
-        //     arrayTemp.push(chain)
-        //     window.localStorage.setItem('TOKEN', JSON.stringify(arrayTemp))
-        //   }
-        // })
+      .then((account) =>
+        auth({
+          pubkey: account.pub_key.value,
+          data: `${timeStamp}`,
+          signature: account.signature,
+          internalChainId: internalChainId,
+        }),
       )
       .then((response) => {
         if (response?.Data) {
-          arrayTemp.push({
+          token.push({
             name: chainInfo.chainId,
             token: response.Data.AccessToken,
           })
-          local.setItem(JWT_TOKEN_KEY, arrayTemp)
+          local.setItem(JWT_TOKEN_KEY, token)
         }
       })
       .catch(() => {
         store.dispatch(removeProvider({ keepStorageKey: true }))
-        // store.dispatch(fetchProvider(providerInfo))
-        // throw new Error('Authentication Fail')
       })
   }
 
@@ -130,17 +126,7 @@ export async function connectKeplr(): Promise<KeplrErrors> {
       .then((key: any) => {
         let providerInfo: ProviderProps
         if (!key) {
-          providerInfo = {
-            account: '',
-            available: false,
-            hardwareWallet: false,
-            loaded: false,
-            name: '',
-            network: '',
-            smartContractWallet: false,
-            internalChainId,
-          }
-          store.dispatch(fetchProvider(providerInfo))
+          store.dispatch(fetchProvider(_getDefaultProvider(internalChainId)))
         } else {
           providerInfo = {
             account: key.bech32Address,
@@ -175,22 +161,24 @@ export async function connectKeplr(): Promise<KeplrErrors> {
       error = KeplrErrors.NoChainInfo
     } else {
       error = KeplrErrors.Failed
-      store.dispatch(
-        fetchProvider({
-          account: '',
-          available: false,
-          hardwareWallet: false,
-          loaded: false,
-          name: '',
-          network: '',
-          smartContractWallet: false,
-          internalChainId,
-        }),
-      )
+      store.dispatch(fetchProvider(_getDefaultProvider(internalChainId)))
     }
   }
 
   return error
+}
+
+function _getDefaultProvider(internalChainId: number): ProviderProps {
+  return {
+    account: '',
+    available: false,
+    hardwareWallet: false,
+    loaded: false,
+    name: '',
+    network: '',
+    smartContractWallet: false,
+    internalChainId,
+  }
 }
 
 const processProviderResponse = (dispatch: Dispatch, provider: ProviderProps): void => {
