@@ -43,24 +43,24 @@ function NameAllowSafeStep(): ReactElement {
   const formValues = allowSafeForm.getState().values
   const ownersList = formValues[FIELD_SAFE_OWNER_LIST]
 
-  const [threshold, setThreshold] = useState<number>()
+  // const [threshold, setThreshold] = useState<number>()
 
-  const [ownersWithName, setOwnersWithName] = useState<AddressBookEntry[]>(ownersList)
+  // const [ownersWithName, setOwnersWithName] = useState<AddressBookEntry[]>(ownersList)
 
   const provider = useSelector(providerNameSelector)
 
-  const addressBook = useSelector(currentNetworkAddressBookAsMap)
-  const chainId = useSelector(currentChainId)
+  // const addressBook = useSelector(currentNetworkAddressBookAsMap)
+  // const chainId = useSelector(currentChainId)
 
   const { setCurrentStep } = useStepper()
 
-  const {
-    input: { value: safeId },
-  } = useField(FIELD_ALLOW_SAFE_ID)
+  // const {
+  //   input: { value: safeId },
+  // } = useField(FIELD_ALLOW_SAFE_ID)
 
-  const {
-    input: { value: safeOwners },
-  } = useField(FIELD_SAFE_OWNER_LIST)
+  // const {
+  //   input: { value: safeOwners },
+  // } = useField(FIELD_SAFE_OWNER_LIST)
 
   useEffect(() => {
     if (!provider) {
@@ -68,41 +68,41 @@ function NameAllowSafeStep(): ReactElement {
     }
   }, [provider, setCurrentStep])
 
+  // useEffect(() => {
+  //   const checkSafeAddress = async () => {
+  //     if (!safeId) {
+  //       return
+  //     }
+
+  //     try {
+  //       const { owners, threshold } = await getMSafeInfo(safeId)
+
+  //       const ownersWithName = owners.map((address, index) =>
+  //         makeAddressBookEntry(addressBook[address] || { address, name: safeOwners[index].name, chainId }),
+  //       )
+
+  //       setOwnersWithName(ownersWithName)
+  //       setThreshold(threshold)
+  //     } catch (error) {
+  //       setOwnersWithName([])
+  //       setThreshold(undefined)
+  //     }
+  //   }
+
+  //   checkSafeAddress()
+  // }, [safeId, chainId])
+
+  // useEffect(() => {
+  //   if (threshold) {
+  //     allowSafeForm.change(FIELD_SAFE_THRESHOLD, threshold)
+  //   }
+  // }, [threshold, allowSafeForm])
+
   useEffect(() => {
-    const checkSafeAddress = async () => {
-      if (!safeId) {
-        return
-      }
-
-      try {
-        const { owners, threshold } = await getMSafeInfo(safeId)
-
-        const ownersWithName = owners.map((address, index) =>
-          makeAddressBookEntry(addressBook[address] || { address, name: safeOwners[index].name, chainId }),
-        )
-
-        setOwnersWithName(ownersWithName)
-        setThreshold(threshold)
-      } catch (error) {
-        setOwnersWithName([])
-        setThreshold(undefined)
-      }
+    if (ownersList) {
+      allowSafeForm.change(FIELD_SAFE_OWNER_LIST, ownersList)
     }
-
-    checkSafeAddress()
-  }, [safeId, addressBook, chainId, allowSafeForm, safeOwners])
-
-  useEffect(() => {
-    if (threshold) {
-      allowSafeForm.change(FIELD_SAFE_THRESHOLD, threshold)
-    }
-  }, [threshold, allowSafeForm])
-
-  useEffect(() => {
-    if (ownersWithName) {
-      allowSafeForm.change(FIELD_SAFE_OWNER_LIST, ownersWithName)
-    }
-  }, [ownersWithName, allowSafeForm])
+  }, [ownersList, allowSafeForm])
 
   return (
     <BlockWithPadding data-testid={'create-safe-name-step'}>

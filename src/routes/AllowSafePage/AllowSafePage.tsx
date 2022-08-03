@@ -24,11 +24,11 @@ import { addOrUpdateSafe } from 'src/logic/safe/store/actions/addOrUpdateSafe'
 import { buildMSafe } from 'src/logic/safe/store/actions/fetchSafe'
 import { loadStoredSafes, saveSafes } from 'src/logic/safe/utils'
 import { PendingSafeListStorage } from 'src/routes/CreateSafePage/CreateSafePage'
-import { SAFES_PENDING_STORAGE_KEY } from 'src/routes/CreateSafePage/fields/createSafeFields'
+import { CreateSafeFormValues, SAFES_PENDING_STORAGE_KEY } from 'src/routes/CreateSafePage/fields/createSafeFields'
 import { allowMSafe, getMSafeInfo } from 'src/services'
 import { MESSAGES_CODE } from 'src/services/constant/message'
 import { secondary, sm } from 'src/theme/variables'
-import { loadFromStorage } from 'src/utils/storage'
+import { loadFromStorage, saveToStorage } from 'src/utils/storage'
 import { WALLETS_NAME } from '../../logic/wallets/constant/wallets'
 import { loadLastUsedProvider } from '../../logic/wallets/store/middlewares/providerWatcher'
 import {
@@ -85,7 +85,7 @@ function Allow(): ReactElement {
     }
 
     Promise.all([
-      Promise.resolve(loadFromStorage<PendingSafeListStorage>(SAFES_PENDING_STORAGE_KEY)),
+      Promise.resolve(loadFromStorage<PendingSafeListStorage>(SAFES_PENDING_STORAGE_KEY, '__')),
       getMSafeInfo(safeId),
     ])
       .then(([pendingSafes, mSafeInfo]) => {
@@ -93,11 +93,14 @@ function Allow(): ReactElement {
         const { owners, threshold } = mSafeInfo
 
         const ownerList: Array<OwnerFieldListItem> = owners.map((address, idx) => {
-          const pendingOwner = pendingSafe?.[FIELD_SAFE_OWNERS_LIST][idx].nameFieldName
+          const pendingOwnerList = pendingSafe?.[FIELD_SAFE_OWNERS_LIST] || []
+          const pendingOwner = pendingOwnerList[idx] // ?.nameFieldName
+
+          const name = pendingSafe && pendingOwner ? pendingSafe[pendingOwner.nameFieldName] : ''
 
           return {
             address: address,
-            name: pendingSafe && pendingOwner ? pendingSafe[pendingOwner] : '',
+            name, // : pendingSafe && pendingOwner ? pendingSafe[pendingOwner] : '',
           }
         })
 
@@ -118,7 +121,7 @@ function Allow(): ReactElement {
           ),
         )
       })
-  }, [safeId, safeRandomName])
+  }, [safeId, dispatch, safeRandomName])
 
   const updateAddressBook = (newAddress: string, values: AllowSafeFormValues) => {
     const ownerList = values[FIELD_SAFE_OWNER_LIST] as AddressBookEntry[]
@@ -144,6 +147,8 @@ function Allow(): ReactElement {
 
   const onSubmitAllowSafe = async (values: AllowSafeFormValues): Promise<void> => {
     const id = values[FIELD_ALLOW_SAFE_ID]
+
+    const safeName = values[FIELD_ALLOW_CUSTOM_SAFE_NAME] || values[FIELD_ALLOW_SUGGESTED_SAFE_NAME]
 
     const lastUsedProvider = await loadLastUsedProvider()
 
@@ -181,6 +186,32 @@ function Allow(): ReactElement {
           }),
         )
       } else {
+        const safesPending = loadFromStorage<PendingSafeListStorage>(SAFES_PENDING_STORAGE_KEY, '__')
+
+        if (safesPending) {
+          saveToStorage(
+            SAFES_PENDING_STORAGE_KEY,
+            [
+              ...safesPending,
+              {
+                id,
+                suggestedSafeName: safeName,
+              },
+            ],
+            '__',
+          )
+        } else {
+          saveToStorage(
+            SAFES_PENDING_STORAGE_KEY,
+            [
+              {
+                id,
+                suggestedSafeName: safeName,
+              },
+            ],
+            '__',
+          )
+        }
         history.push(WELCOME_ROUTE)
       }
     } else {

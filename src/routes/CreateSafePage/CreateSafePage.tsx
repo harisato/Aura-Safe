@@ -1,5 +1,4 @@
 import { Loader } from '@aura/safe-react-components'
-import ChevronLeft from '@material-ui/icons/ChevronLeft'
 import queryString from 'query-string'
 import { ReactElement, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
@@ -54,8 +53,8 @@ import { MESSAGES_CODE } from '../../services/constant/message'
 import { useAnalytics, USER_EVENTS } from '../../utils/googleAnalytics'
 
 import useConnectWallet from 'src/logic/hooks/useConnectWallet'
-import { BackIcon, EmphasisLabel, LoaderContainer, StyledBorder, StyledButtonBorder, StyledButtonLabel } from './styles'
 import ArrowBack from './assets/arrow-left.svg'
+import { BackIcon, EmphasisLabel, LoaderContainer, StyledBorder, StyledButtonBorder, StyledButtonLabel } from './styles'
 
 type ModalDataType = {
   safeAddress: string
@@ -130,23 +129,33 @@ function CreateSafePage(): ReactElement {
       } else {
         setPendingSafe(true)
 
-        const safesPending = await Promise.resolve(loadFromStorage<PendingSafeListStorage>(SAFES_PENDING_STORAGE_KEY))
+        const safesPending = await Promise.resolve(
+          loadFromStorage<PendingSafeListStorage>(SAFES_PENDING_STORAGE_KEY, '__'),
+        )
 
         if (safesPending) {
-          saveToStorage(SAFES_PENDING_STORAGE_KEY, [
-            ...safesPending,
-            {
-              ...newSafeFormValues,
-              id,
-            },
-          ])
+          saveToStorage(
+            SAFES_PENDING_STORAGE_KEY,
+            [
+              ...safesPending,
+              {
+                ...newSafeFormValues,
+                id,
+              },
+            ],
+            '__',
+          )
         } else {
-          saveToStorage(SAFES_PENDING_STORAGE_KEY, [
-            {
-              ...newSafeFormValues,
-              id,
-            },
-          ])
+          saveToStorage(
+            SAFES_PENDING_STORAGE_KEY,
+            [
+              {
+                ...newSafeFormValues,
+                id,
+              },
+            ],
+            '__',
+          )
         }
       }
       setShowModal(true)

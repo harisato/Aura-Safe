@@ -125,7 +125,9 @@ const SafeListItem = ({
 
   useEffect(() => {
     const saveCallback = async () => {
-      const safesPending = await Promise.resolve(loadFromStorage<PendingSafeListStorage>(SAFES_PENDING_STORAGE_KEY))
+      const safesPending = await Promise.resolve(
+        loadFromStorage<PendingSafeListStorage>(SAFES_PENDING_STORAGE_KEY, '__'),
+      )
       const pendingSafe = safesPending?.find((e) => e.id === safeId)
 
       if (pendingSafe) {
@@ -186,9 +188,9 @@ const SafeListItem = ({
   const nameText = (status: SafeStatus, safeName: string): string => {
     switch (status) {
       case SafeStatus.NeedConfirm:
-      case SafeStatus.Confirmed:
         return 'Created by:'
       case SafeStatus.Pending:
+      case SafeStatus.Confirmed:
         return pendingSafeName
       default:
         return safeName || ''

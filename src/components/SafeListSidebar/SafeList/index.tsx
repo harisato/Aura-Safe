@@ -95,7 +95,9 @@ export const SafeList = ({ onSafeClick }: Props): ReactElement => {
         const pendingSafesOnNetwork = ownedSafes[chainId]?.filter(isPendingSafes) || []
 
         const getSafePending = async () => {
-          const safesPending = await Promise.resolve(loadFromStorage<PendingSafeListStorage>(SAFES_PENDING_STORAGE_KEY))
+          const safesPending = await Promise.resolve(
+            loadFromStorage<PendingSafeListStorage>(SAFES_PENDING_STORAGE_KEY, '__'),
+          )
           let safePendingIndex = -1
           safesPending?.forEach((safePending, index) => {
             const safeFound = ownedSafes[chainId]?.find((ownedSafe) => ownedSafe.id === safePending.id)
@@ -115,13 +117,12 @@ export const SafeList = ({ onSafeClick }: Props): ReactElement => {
               }
               buildSafe()
             } else if (safeFound && safeFound.status === SafeStatus.Deleted) {
-
             }
           })
 
           if (safePendingIndex >= 0 && safesPending) {
             safesPending?.splice(safePendingIndex, 1)
-            saveToStorage(SAFES_PENDING_STORAGE_KEY, [...safesPending])
+            saveToStorage(SAFES_PENDING_STORAGE_KEY, [...safesPending], '__')
           }
         }
 
