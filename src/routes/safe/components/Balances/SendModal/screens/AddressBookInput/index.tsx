@@ -3,11 +3,7 @@ import Autocomplete, { AutocompleteProps } from '@material-ui/lab/Autocomplete'
 import { Dispatch, ReactElement, SetStateAction, useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 
-import {
-  mustBeEthereumAddress,
-  mustBeEthereumContractAddress,
-  mustBeValidAddress,
-} from 'src/components/forms/validator'
+import { mustBeEthereumContractAddress, mustBeValidAddress } from 'src/components/forms/validator'
 import { AddressBookEntry } from 'src/logic/addressBook/model/addressBook'
 import { currentNetworkAddressBook } from 'src/logic/addressBook/store/selectors'
 import { filterContractAddressBookEntries, filterAddressEntries } from 'src/logic/addressBook/utils'

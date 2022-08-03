@@ -20,7 +20,7 @@
       "feeCurrencies": [{ "coinDenom": "TAURA", "coinMinimalDenom": "utaura", "coinDecimals": 6 }],
       "stakeCurrency": { "coinDenom": "TAURA", "coinMinimalDenom": "utaura", "coinDecimals": 6 },
       "coinType": 118,
-      "gasPriceStep": { "low": 0.0001, "average": 0.00025, "high": 0.0004 },
+      "gasPriceStep": { "low": 0.001, "average": 0.0025, "high": 0.004 },
       "walletUrlForStaking": "https://explorer.dev.aura.network/validators",
       "logo": "https://i.imgur.com/zi0mTYb.png",
       "explorer": "https://explorer.dev.aura.network/"
@@ -294,15 +294,10 @@
       "features": ["ibc-transfer", "ibc-go", "eth-address-gen", "eth-key-sign", "no-legacy-stdTx"]
     },
     {
-      "chainId": "uni-2",
-      "chainName": "Juno testnet",
-      "rpc": "",
-      "rest": "",
-      "stakeCurrency": {
-        "coinDenom": "JUNO",
-        "coinMinimalDenom": "ujunox",
-        "coinDecimals": 6
-      },
+      "chainId": "uni-3",
+      "chainName": "Uni",
+      "rpc": "https://rpc.uni.juno.deuslabs.fi",
+      "rest": "https://lcd.uni.juno.deuslabs.fi",
       "bip44": {
         "coinType": 118
       },
@@ -316,27 +311,30 @@
       },
       "currencies": [
         {
-          "coinDenom": "JUNO",
+          "coinDenom": "JUNOX",
           "coinMinimalDenom": "ujunox",
-          "coinDecimals": 6,
-          "coinGeckoId": "juno-network"
+          "coinDecimals": 6
         }
       ],
       "feeCurrencies": [
         {
-          "coinDenom": "JUNO",
-          "coinMinimalDenom": "ujuno",
-          "coinDecimals": 6,
-          "coinGeckoId": "juno-network"
+          "coinDenom": "JUNOX",
+          "coinMinimalDenom": "ujunox",
+          "coinDecimals": 6
         }
       ],
+      "stakeCurrency": {
+        "coinDenom": "JUNOX",
+        "coinMinimalDenom": "ujunox",
+        "coinDecimals": 6
+      },
       "coinType": 118,
       "gasPriceStep": {
-        "low": 0.0025,
-        "average": 0.01,
-        "high": 0.025
+        "low": 0.0125,
+        "average": 0.025,
+        "high": 0.05
       },
-      "features": ["ibc-transfer", "ibc-go", "eth-address-gen", "eth-key-sign"]
+      "features": ["ibc-transfer", "cosmwasm", "ibc-go"]
     }
   ]
 }

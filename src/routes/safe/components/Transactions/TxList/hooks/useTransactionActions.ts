@@ -57,14 +57,11 @@ export const useTransactionActions = (transaction: Transaction): TransactionActi
 
       const currentUserSigned = !missingSigners?.some((missingSigner) => sameAddress(missingSigner.value, currentUser))
       const oneToGo = confirmationsSubmitted === confirmationsRequired - 1
-      const canConfirm =
-        ['queued.txs'].includes(txLocation) && !currentUserSigned && isUserAnOwner && !isWrongChain
+      const canConfirm = ['queued.txs'].includes(txLocation) && !currentUserSigned && isUserAnOwner && !isWrongChain
       const thresholdReached =
         confirmationsRequired > 0 &&
         confirmationsRequired <=
           (transaction?.txDetails?.detailedExecutionInfo as MultisigExecutionDetails)?.confirmations?.length
-
-
 
       setState({
         canConfirm,

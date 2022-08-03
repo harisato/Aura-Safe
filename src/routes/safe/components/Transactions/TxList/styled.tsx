@@ -142,12 +142,12 @@ export const GroupedTransactionsCard = styled(StyledTransactions)`
   // }
 `
 const gridColumns = {
-  nonce: '0.5fr',
+  // nonce: '0.5fr',
   type: '3fr',
   info: '3fr',
   time: '2.5fr',
   votes: '1.5fr',
-  actions: '1fr',
+  actions: '1.5fr',
   status: '2.5fr',
 }
 

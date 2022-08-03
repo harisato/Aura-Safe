@@ -184,6 +184,7 @@
     "abi-decoder": "^2.4.0",
     "axios": "0.21.4",
     "base64-js": "^1.5.1",
+    "bech32": "^2.0.0",
     "bignumber.js": "9.0.1",
     "bnc-onboard": "~1.35.3",
     "classnames": "^2.2.6",

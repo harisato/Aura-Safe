@@ -1,21 +1,20 @@
-import { MultisigExecutionDetails, MultisigExecutionInfo } from '@gnosis.pm/safe-react-gateway-sdk'
+import { MultisigExecutionDetails } from '@gnosis.pm/safe-react-gateway-sdk'
 import { MouseEvent as ReactMouseEvent, useCallback, useContext, useRef } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
+import useLocalTxStatus from 'src/logic/hooks/useLocalTxStatus'
+import { NOTIFICATIONS } from 'src/logic/notifications'
+import enqueueSnackbar from 'src/logic/notifications/store/actions/enqueueSnackbar'
 import {
   isMultiSigExecutionDetails,
   LocalTransactionStatus,
   Transaction,
 } from 'src/logic/safe/store/models/types/gateway.d'
 import { userAccountSelector } from 'src/logic/wallets/store/selectors'
-import { addressInList } from 'src/routes/safe/components/Transactions/TxList/utils'
-import { useTransactionActions } from './useTransactionActions'
 import { TransactionActionStateContext } from 'src/routes/safe/components/Transactions/TxList/TxActionProvider'
 import { TxHoverContext } from 'src/routes/safe/components/Transactions/TxList/TxHoverProvider'
-import { TxLocationContext } from 'src/routes/safe/components/Transactions/TxList/TxLocationProvider'
-import enqueueSnackbar from 'src/logic/notifications/store/actions/enqueueSnackbar'
-import { NOTIFICATIONS } from 'src/logic/notifications'
-import useLocalTxStatus from 'src/logic/hooks/useLocalTxStatus'
+import { grantedSelector } from 'src/routes/safe/container/selector'
+import { useTransactionActions } from './useTransactionActions'
 
 type ActionButtonsHandlers = {
   canCancel: boolean
@@ -24,14 +23,17 @@ type ActionButtonsHandlers = {
   handleOnMouseEnter: () => void
   handleOnMouseLeave: () => void
   isPending: boolean
+  isRejected: boolean
+  isOwner: boolean
   disabledActions: boolean
 }
 
 export const useActionButtonsHandlers = (transaction: Transaction): ActionButtonsHandlers => {
   const currentUser = useSelector(userAccountSelector)
+  const isOwner = useSelector(grantedSelector)
   const actionContext = useRef(useContext(TransactionActionStateContext))
   const hoverContext = useRef(useContext(TxHoverContext))
-  const locationContext = useContext(TxLocationContext)
+  // const locationContext = useContext(TxLocationContext)
   const dispatch = useDispatch()
   const { canCancel, canConfirmThenExecute, canExecute } = useTransactionActions(transaction) // check this
   const txStatus = useLocalTxStatus(transaction)
@@ -80,15 +82,13 @@ export const useActionButtonsHandlers = (transaction: Transaction): ActionButton
     hoverContext.current.setActiveHover()
   }, [])
 
-  // const signaturePending = addressInList(
-  //   (transaction.executionInfo as MultisigExecutionInfo)?.missingSigners ?? undefined,
-  // )
-
   const isPendingCurrentUserSignature = (currentUser: string): boolean => {
     if ((transaction?.txDetails?.detailedExecutionInfo as MultisigExecutionDetails)?.confirmations?.length > 0) {
-      const signedCurrentUser = (transaction?.txDetails?.detailedExecutionInfo as MultisigExecutionDetails)?.confirmations.find(x => x.signer?.value === currentUser)
+      const signedCurrentUser = (
+        transaction?.txDetails?.detailedExecutionInfo as MultisigExecutionDetails
+      )?.confirmations.find((x) => x.signer?.value === currentUser)
       if (signedCurrentUser) {
-        return false;
+        return false
       }
     }
 
@@ -102,11 +102,21 @@ export const useActionButtonsHandlers = (transaction: Transaction): ActionButton
     return false
   }
 
+  const isRejectedUser = (currentUser: string): boolean => {
+    const rejectors = (transaction?.txDetails?.detailedExecutionInfo as MultisigExecutionDetails)?.rejectors
+    if (rejectors && rejectors?.length > 0) {
+      return !!rejectors.find((rejector) => rejector.value === currentUser)
+    }
+    return false
+  }
+
   const disabledActions =
     !currentUser ||
     isPending ||
     // (txStatus === LocalTransactionStatus.AWAITING_EXECUTION && locationContext.txLocation === 'queued.queued') ||
     (txStatus === LocalTransactionStatus.AWAITING_CONFIRMATIONS && !isPendingCurrentUserSignature(currentUser))
+
+  const isRejected = isRejectedUser(currentUser)
 
   return {
     canCancel,
@@ -115,6 +125,8 @@ export const useActionButtonsHandlers = (transaction: Transaction): ActionButton
     handleOnMouseEnter,
     handleOnMouseLeave,
     isPending,
+    isRejected,
     disabledActions,
+    isOwner,
   }
 }

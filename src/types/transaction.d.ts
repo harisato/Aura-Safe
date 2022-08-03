@@ -49,6 +49,7 @@ export interface ITransactionListItem {
   Direction: string
   ConfirmationsRequired: number
   Confirmations: number
+  Rejections: number
 }
 
 export interface ISignature {
