@@ -10,6 +10,7 @@ import { AddressBookEntry } from 'src/logic/addressBook/model/addressBook'
 import HelpInfo from 'src/routes/safe/components/AddressBook/HelpInfo'
 import { validateCsvData, validateFile } from 'src/routes/safe/components/AddressBook/utils'
 import { ChainId } from 'src/config/chain.d'
+import { bgBox } from 'src/theme/variables'
 
 const ImportContainer = styled.div`
   flex-direction: column;
@@ -21,7 +22,7 @@ const ImportContainer = styled.div`
 `
 
 const InfoContainer = styled.div`
-  background-color: ${({ theme }) => theme.colors.background};
+  background-color: ${bgBox};
   flex-direction: column;
   justify-content: center;
   padding: 24px;
@@ -149,7 +150,7 @@ const ImportEntriesModal = ({ importEntryModalHandler, isOpen, onClose }: Import
               },
             }}
           >
-            <Text size="xl">
+            <Text color="white" size="xl">
               Drop your CSV file here <br />
               or click to upload.
             </Text>
@@ -162,7 +163,7 @@ const ImportEntriesModal = ({ importEntryModalHandler, isOpen, onClose }: Import
             </Text>
           )}
           {!csvLoaded && importError === '' && (
-            <Text color="text" as="p" size="xl">
+            <Text color="white" as="p" size="xl">
               Only CSV files exported from Aura Safe are allowed. <br />
               <HelpInfo />
             </Text>

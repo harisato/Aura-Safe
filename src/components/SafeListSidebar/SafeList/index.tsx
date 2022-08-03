@@ -115,7 +115,6 @@ export const SafeList = ({ onSafeClick }: Props): ReactElement => {
               }
               buildSafe()
             } else if (safeFound && safeFound.status === SafeStatus.Deleted) {
-
             }
           })
 

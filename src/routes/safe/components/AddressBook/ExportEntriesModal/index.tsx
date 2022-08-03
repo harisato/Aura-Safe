@@ -11,7 +11,7 @@ import { TX_NOTIFICATION_TYPES } from 'src/logic/safe/transactions'
 
 import { addressBookState } from 'src/logic/addressBook/store/selectors'
 
-import { lg, md, background } from 'src/theme/variables'
+import { lg, md, bgBox } from 'src/theme/variables'
 
 import { Modal } from 'src/components/Modal'
 import Img from 'src/components/layout/Img'
@@ -33,7 +33,7 @@ const ImageContainer = styled(Row)`
 `
 
 const InfoContainer = styled(Row)`
-  background-color: ${background};
+  background-color: ${bgBox};
   flex-direction: column;
   justify-content: center;
   padding: ${lg};
@@ -106,9 +106,9 @@ export const ExportEntriesModal = ({ isOpen, onClose }: ExportEntriesModalProps)
         <InfoContainer>
           <Text color="primary" as="p" size="xl">
             {!error ? (
-              <Text size="xl" as="span">
+              <Text size="xl" color="white" as="span">
                 You&apos;re about to export a CSV file with{' '}
-                <Text size="xl" strong as="span">
+                <Text size="xl" color="white" strong as="span">
                   {addressBook.length} address book entries. <br />
                   <HelpInfo />
                 </Text>

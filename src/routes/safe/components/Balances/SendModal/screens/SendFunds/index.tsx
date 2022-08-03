@@ -291,7 +291,7 @@ const SendFunds = ({
                     </Col>
                   </Row>
                 )}
-                <Row margin="sm">
+                <Row margin="md">
                   <Col xs={10}>
                     <TokenSelectField
                       initialValue={selectedToken?.address}
@@ -303,13 +303,13 @@ const SendFunds = ({
                 {tokenSpendingLimit && selectedToken && (
                   <SpendingLimitRow selectedToken={selectedToken} tokenSpendingLimit={tokenSpendingLimit} />
                 )}
-                <Row margin="xs">
+                {/* <Row margin="xs">
                   <Col between="lg">
                     <Paragraph color="disabled" noMargin size="md" style={{ letterSpacing: '-0.5px' }}>
                       Amount
                     </Paragraph>
                   </Col>
-                </Row>
+                </Row> */}
                 <Row margin="md">
                   <Col xs={10}>
                     <Field
@@ -329,7 +329,7 @@ const SendFunds = ({
                     />
                   </Col>
                   <Col xs={2}>
-                    <ButtonLink onClick={setMaxAllowedAmount} weight="bold" testId="send-max-btn">
+                    <ButtonLink onClick={setMaxAllowedAmount} weight="bold" color="green" testId="send-max-btn">
                       Send max
                     </ButtonLink>
                   </Col>

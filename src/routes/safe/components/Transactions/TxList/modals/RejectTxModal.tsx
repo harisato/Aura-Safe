@@ -121,8 +121,8 @@ export const RejectTxModal = ({ isOpen, onClose, gwTransaction }: Props): React.
                 </Row>
                 <Row>
                   <Paragraph>
-                    This action will reject this transaction. A separate transaction will be performed to submit the
-                    rejection.
+                    You’re about to reject a transaction. This action cannot be undone. Please make sure before
+                    proceeding.
                   </Paragraph>
                 </Row>
               </Block>

@@ -41,16 +41,15 @@ export const TransactionFees = ({
     <>
       {gasCostFormatted != null && (
         <Paragraph size="smd" align="left" color="disabled">
-          You&apos;re about to {transactionAction} a transaction and will have to confirm it with your currently
-          connected wallet.{' '}
+          You&apos;re about to execute a transaction and will have to confirm it with your currently connected wallet.{' '}
           {!isOffChainSignature && (
             <>
               Make sure you have
-              <StyledText>
+              {/* <StyledText>
                 {' '}
                 {gasCostFormatted} {nativeCurrency.symbol}{' '}
-              </StyledText>
-              in this wallet to fund the associated transaction fee.
+              </StyledText> */}
+              enough funds in this safe to fund the associated transaction amount and fee.
             </>
           )}
         </Paragraph>

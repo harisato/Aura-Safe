@@ -7,6 +7,7 @@ export const useTextFieldLabelStyle = makeStyles(
       borderRadius: 4,
       fontSize: '15px',
       width: '500px',
+      color: '#03a9f4 !important',
     },
   }),
 )
@@ -14,6 +15,7 @@ export const useTextFieldLabelStyle = makeStyles(
 export const useTextFieldInputStyle = makeStyles(
   createStyles({
     root: {
+      color: '#98989B',
       fontSize: '14px',
       width: '100%',
     },

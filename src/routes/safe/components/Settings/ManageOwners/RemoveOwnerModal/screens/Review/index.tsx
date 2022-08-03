@@ -161,7 +161,7 @@ export const ReviewRemoveOwnerModal = ({
                     <Paragraph color="disabled" noMargin size="sm">
                       Any transaction requires the confirmation of:
                     </Paragraph>
-                    <Paragraph className={classes.name} color="primary" noMargin size="lg" weight="bolder">
+                    <Paragraph className={classes.name} color="disabled" noMargin size="lg" weight="bolder">
                       {`${threshold} out of ${numOptions} owner(s)`}
                     </Paragraph>
                   </Block>
@@ -170,7 +170,7 @@ export const ReviewRemoveOwnerModal = ({
               {/* Owners */}
               <Col className={classes.owners} layout="column" xs={8}>
                 <Row className={classes.ownersTitle}>
-                  <Paragraph color="primary" noMargin size="lg">
+                  <Paragraph color="disabled" noMargin size="lg">
                     {`${numOptions} Safe owner(s)`}
                   </Paragraph>
                 </Row>

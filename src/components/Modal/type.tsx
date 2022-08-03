@@ -63,7 +63,7 @@ export interface ModalProps {
 export interface FooterProps {
   children: ReactNode
   withoutBorder?: boolean
-  justifyContent?:  'center' | 'flex-end' | 'flex-start'
+  justifyContent?: 'center' | 'flex-end' | 'flex-start'
 }
 
 export interface HeaderProps {
