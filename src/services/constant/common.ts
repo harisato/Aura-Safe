@@ -6,4 +6,3 @@ export const DEFAULT_GAS = '0.00025'
 export const DEFAULT_GAS_LIMIT = 400000
 
 export const JWT_TOKEN_KEY = 'TOKEN'
-export const NAME_KEPLR = 'NAME_KEPLR'

@@ -3,19 +3,19 @@ import { Keplr, Key } from '@keplr-wallet/types'
 import * as _ from 'lodash'
 import { Dispatch } from 'redux'
 
-import { JWT_TOKEN_KEY, NAME_KEPLR } from 'src/services/constant/common'
+import { JWT_TOKEN_KEY } from 'src/services/constant/common'
 import { getGatewayUrl } from 'src/services/data/environment'
 import { auth } from 'src/services/index'
 import { store } from 'src/store'
 import { parseToAddress } from 'src/utils/parseByteAdress'
 import { saveToStorage } from 'src/utils/storage'
-import local from 'src/utils/storage/local'
+import session from 'src/utils/storage/session'
 import { getChainInfo, getInternalChainId, _getChainId } from '../../config'
 import { trackAnalyticsEvent, WALLET_EVENTS } from '../../utils/googleAnalytics'
 import { enhanceSnackbarForAction, NOTIFICATIONS } from '../notifications'
 import enqueueSnackbar from '../notifications/store/actions/enqueueSnackbar'
 import { WALLETS_NAME } from '../wallets/constant/wallets'
-import { addProvider, removeProvider } from '../wallets/store/actions'
+import { addProvider } from '../wallets/store/actions'
 import { LAST_USED_PROVIDER_KEY } from '../wallets/store/middlewares/providerWatcher'
 import { makeProvider, ProviderProps } from '../wallets/store/model/provider'
 
@@ -73,42 +73,42 @@ export const handleConnectWallet = (
   chainId: string,
   internalChainId: number,
   providerInfo: ProviderProps,
-): void => {
-  const token: any = local.getItem(JWT_TOKEN_KEY) || []
+): any => {
+  const timeStamp = new Date().getTime()
+  return keplr
+    .signArbitrary(chainId, key.bech32Address, `${timeStamp}`)
+    .then((account) =>
+      auth({
+        pubkey: account.pub_key.value,
+        data: `${timeStamp}`,
+        signature: account.signature,
+        internalChainId: internalChainId,
+      }),
+    )
+    .then((response) => {
+      if (response?.Data) {
+        const token: any = session.getItem(JWT_TOKEN_KEY) || []
 
-  if (window.keplr && !_.find(token, ['name', chainInfo.chainId])) {
-    const timeStamp = new Date().getTime()
-    keplr
-      ?.signArbitrary(chainId, key.bech32Address, `${timeStamp}`)
-      .then((account) =>
-        auth({
-          pubkey: account.pub_key.value,
-          data: `${timeStamp}`,
-          signature: account.signature,
-          internalChainId: internalChainId,
-        }),
-      )
-      .then((response) => {
-        if (response?.Data) {
-          token.push({
-            name: chainInfo.chainId,
-            token: response.Data.AccessToken,
-          })
-          local.setItem(JWT_TOKEN_KEY, token)
-        }
-      })
-      .catch(() => {
-        store.dispatch(removeProvider({ keepStorageKey: true }))
-      })
-  }
+        token.push({
+          address: key.bech32Address,
+          name: chainInfo.chainId,
+          token: response.Data.AccessToken,
+        })
 
-  store.dispatch(removeProvider({ keepStorageKey: true }))
-  store.dispatch(fetchProvider(providerInfo))
-  saveToStorage(LAST_USED_PROVIDER_KEY, providerInfo.name)
+        store.dispatch(fetchProvider(providerInfo))
+
+        saveToStorage(LAST_USED_PROVIDER_KEY, providerInfo.name)
+
+        session.setItem(JWT_TOKEN_KEY, token)
+      }
+    })
+    .catch((e) => {
+      throw new Error(e)
+    })
 }
 
 export async function connectKeplr(): Promise<KeplrErrors> {
-  const chainInfo = await getChainInfo()
+  const chainInfo = getChainInfo()
   const internalChainId = getInternalChainId()
   const chainId = _getChainId()
   const keplr = await getKeplr()
@@ -117,7 +117,6 @@ export async function connectKeplr(): Promise<KeplrErrors> {
     alert('Please install keplr extension')
     return KeplrErrors.NotInstall
   }
-
   let error = KeplrErrors.Success
   try {
     await keplr
@@ -138,18 +137,23 @@ export async function connectKeplr(): Promise<KeplrErrors> {
             smartContractWallet: false,
             internalChainId,
           }
-          const nameKeplr = local.getItem(NAME_KEPLR)
 
-          if (key.name) {
-            if (nameKeplr !== key.name) {
-              local.removeItem(JWT_TOKEN_KEY)
-              local.setItem(NAME_KEPLR, key.name)
-              handleConnectWallet(keplr, chainInfo, key, chainId, internalChainId, providerInfo)
-            }
-            if (nameKeplr === key.name) {
-              handleConnectWallet(keplr, chainInfo, key, chainId, internalChainId, providerInfo)
-            }
-            local.setItem(NAME_KEPLR, key.name || '')
+          const tokenList = session.getItem<
+            {
+              name: string
+              address: string
+              token: string
+            }[]
+          >(JWT_TOKEN_KEY)
+
+          const current = tokenList?.find((e) => e.address === key.bech32Address && e.name === chainId)
+
+          if (current) {
+            store.dispatch(fetchProvider(providerInfo))
+
+            saveToStorage(LAST_USED_PROVIDER_KEY, providerInfo.name)
+          } else {
+            return handleConnectWallet(keplr, chainInfo, key, chainId, internalChainId, providerInfo)
           }
         }
       })
