@@ -15,6 +15,7 @@ const styles = () =>
       paddingTop: lg,
       paddingBottom: '12px',
       lineHeight: 0,
+      heigt: '52px',
     },
   })
 

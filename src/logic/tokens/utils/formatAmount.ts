@@ -6,6 +6,13 @@
 
 const options = { style: 'currency', currency: 'USD', minimumFractionDigits: 6, maximumFractionDigits: 8 }
 
+const usNumberFormatter = new Intl.NumberFormat('en-US', options)
+
+export const formatAmountInUsFormat = (amount: string): string => {
+  const numberFloat: number = parseFloat(amount)
+  return usNumberFormatter.format(numberFloat).replace('$', '')
+}
+
 const lt1kFormatter = new Intl.NumberFormat([], options)
 const lt10kFormatter = new Intl.NumberFormat([], { maximumFractionDigits: 4 })
 const lt100kFormatter = new Intl.NumberFormat([], { maximumFractionDigits: 3 })
@@ -22,7 +29,7 @@ export const formatAmount = (number: string): string => {
   } else if (numberFloat < 0.001) {
     numberFloat = '< 0.001'
   } else if (numberFloat < 1000) {
-    numberFloat = lt1kFormatter.format(numberFloat)
+    numberFloat = lt1kFormatter.format(numberFloat).replace('$', '')
   } else if (numberFloat < 10000) {
     numberFloat = lt10kFormatter.format(numberFloat)
   } else if (numberFloat < 100000) {
@@ -40,11 +47,4 @@ export const formatAmount = (number: string): string => {
   }
 
   return numberFloat
-}
-
-const usNumberFormatter = new Intl.NumberFormat('en-US', options)
-
-export const formatAmountInUsFormat = (amount: string): string => {
-  const numberFloat: number = parseFloat(amount)
-  return usNumberFormatter.format(numberFloat).replace('$', '')
 }

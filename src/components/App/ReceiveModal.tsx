@@ -41,7 +41,7 @@ const useStyles = (chainInfo: ChainInfo) =>
       },
       networkInfo: {
         backgroundColor: 'rgba(38, 38, 41, 1)',
-        color: `${chainInfo?.theme?.textColor ?? fontColor}`,
+        color: 'white',
         padding: md,
         marginBottom: 0,
       },
@@ -88,7 +88,7 @@ const ReceiveModal = ({ onClose, safeAddress, safeName }: Props): ReactElement =
   const copyShortName = useSelector(copyShortNameSelector)
   // const [shouldEncodePrefix, setShouldEncodePrefix] = useState<boolean>(copyShortName)
 
-  const qrCodeString = safeAddress;
+  const qrCodeString = safeAddress
 
   return (
     <>

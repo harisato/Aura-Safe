@@ -338,7 +338,7 @@ const ReviewSendFundsTx = ({ onClose, onPrev, tx }: ReviewTxProps): React.ReactE
                   </Paragraph>
                 </div>
                 <div style={{ alignSelf: 'center' }}>
-                  <ButtonLink onClick={ShowGasFrom} weight="regular" testId="send-max-btn">
+                  <ButtonLink onClick={ShowGasFrom} weight="regular" color="green" testId="send-max-btn">
                     Edit gas
                   </ButtonLink>
                 </div>
@@ -359,7 +359,7 @@ const ReviewSendFundsTx = ({ onClose, onPrev, tx }: ReviewTxProps): React.ReactE
                 </Col>
               </Row>
             )}
-            <Row margin="xs">
+            {/* <Row margin="xs">
               <Paragraph color="white" noMargin size="md" weight="regular" style={{ letterSpacing: '-0.5px' }}>
                 Total Allocation Amount
               </Paragraph>
@@ -375,7 +375,7 @@ const ReviewSendFundsTx = ({ onClose, onPrev, tx }: ReviewTxProps): React.ReactE
               >
                 {tx.amount} {txToken?.symbol}
               </Paragraph>
-            </Row>
+            </Row> */}
           </Block>
 
           {/* Disclaimer */}

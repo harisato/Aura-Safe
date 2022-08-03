@@ -70,6 +70,7 @@ const StyledText = styled(Text)`
   align-items: center;
   padding: 0 16px;
   color: white;
+  margin-top: 13px;
 `
 
 const StyledPrefixedEthHashInfo = styled(PrefixedEthHashInfo)`

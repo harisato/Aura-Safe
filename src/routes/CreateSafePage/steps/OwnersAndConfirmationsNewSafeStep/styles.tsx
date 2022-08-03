@@ -54,7 +54,7 @@ const OwnerContainer = styled(Row)`
 
 const StyledParagraph = styled(Paragraph)`
   padding-left: 12px;
-  color: white;
+  color: #e6e7e8;
 `
 
 const FieldStyled = styled(Field)`
