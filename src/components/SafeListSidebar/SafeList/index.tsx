@@ -99,7 +99,7 @@ export const SafeList = ({ onSafeClick }: Props): ReactElement => {
 
         const getSafePending = async () => {
           const safesPending = await Promise.resolve(
-            loadFromStorage<PendingSafeListStorage>(SAFES_PENDING_STORAGE_KEY, userAccount),
+            loadFromStorage<PendingSafeListStorage>(SAFES_PENDING_STORAGE_KEY, `${userAccount}_`),
           )
           let safePendingIndex = -1
           safesPending?.forEach((safePending, index) => {

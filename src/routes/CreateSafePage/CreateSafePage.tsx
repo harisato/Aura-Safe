@@ -40,7 +40,7 @@ import { getInternalChainId, getShortName, _getChainId } from 'src/config'
 import { createMSafe, ISafeCreate } from 'src/services'
 import { parseToAddress } from 'src/utils/parseByteAdress'
 import { loadFromStorage, saveToStorage } from 'src/utils/storage'
-import { makeAddressBookEntry } from '../../logic/addressBook/model/addressBook'
+import { AddressBookEntry, makeAddressBookEntry } from '../../logic/addressBook/model/addressBook'
 import { addressBookSafeLoad } from '../../logic/addressBook/store/actions'
 import { enhanceSnackbarForAction, ERROR, NOTIFICATIONS } from '../../logic/notifications'
 import enqueueSnackbar from '../../logic/notifications/store/actions/enqueueSnackbar'
@@ -387,13 +387,21 @@ export const updateAddressBook = async (
   const defaultSafeValue = formValues[FIELD_CREATE_SUGGESTED_SAFE_NAME]
   const name = formValues[FIELD_CREATE_CUSTOM_SAFE_NAME] || defaultSafeValue
 
-  const ownersAddressBookEntry = formValues[FIELD_SAFE_OWNERS_LIST].map(({ nameFieldName, addressFieldName }) =>
-    makeAddressBookEntry({
-      address: formValues[addressFieldName],
-      name: formValues[nameFieldName],
-      chainId,
-    }),
-  )
+  const ownerList = formValues[FIELD_SAFE_OWNERS_LIST]
+
+  let ownersAddressBookEntry: AddressBookEntry[] = []
+
+  if (ownerList) {
+    const entries = formValues[FIELD_SAFE_OWNERS_LIST].map(({ nameFieldName, addressFieldName }) =>
+      makeAddressBookEntry({
+        address: formValues[addressFieldName],
+        name: formValues[nameFieldName],
+        chainId,
+      }),
+    )
+
+    ownersAddressBookEntry = [...entries]
+  }
 
   if (newAddress) {
     ownersAddressBookEntry.push({
