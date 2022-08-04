@@ -24,7 +24,7 @@ import { addOrUpdateSafe } from 'src/logic/safe/store/actions/addOrUpdateSafe'
 import { buildMSafe } from 'src/logic/safe/store/actions/fetchSafe'
 import { loadStoredSafes, saveSafes } from 'src/logic/safe/utils'
 import { PendingSafeListStorage } from 'src/routes/CreateSafePage/CreateSafePage'
-import { CreateSafeFormValues, SAFES_PENDING_STORAGE_KEY } from 'src/routes/CreateSafePage/fields/createSafeFields'
+import { SAFES_PENDING_STORAGE_KEY } from 'src/routes/CreateSafePage/fields/createSafeFields'
 import { allowMSafe, getMSafeInfo } from 'src/services'
 import { MESSAGES_CODE } from 'src/services/constant/message'
 import { secondary, sm } from 'src/theme/variables'
@@ -53,6 +53,8 @@ import { getLoadSafeName } from './fields/utils'
 import AllowSafeOwnersStep, { loadSafeOwnersStepLabel } from './steps/AllowSafeOwnersStep'
 import NameAllowSafeStep, { loadSafeStepValidations, nameNewSafeStepLabel } from './steps/NameAllowSafeStep'
 import ReviewAllowStep, { reviewLoadStepLabel } from './steps/ReviewAllowStep'
+import _ from 'lodash'
+import { userAccountSelector } from 'src/logic/wallets/store/selectors'
 
 const BackIcon = styled(IconButton)`
   color: ${secondary};
@@ -70,6 +72,8 @@ function Allow(): ReactElement {
   const addressBook = useSelector(currentNetworkAddressBookAsMap)
   const chainId = useSelector(currentChainId)
 
+  const userAccount = useSelector(userAccountSelector)
+
   useEffect(() => {
     if (!safeId) {
       return
@@ -85,7 +89,7 @@ function Allow(): ReactElement {
     }
 
     Promise.all([
-      Promise.resolve(loadFromStorage<PendingSafeListStorage>(SAFES_PENDING_STORAGE_KEY, '__')),
+      Promise.resolve(loadFromStorage<PendingSafeListStorage>(SAFES_PENDING_STORAGE_KEY, `${userAccount}_`)),
       getMSafeInfo(safeId),
     ])
       .then(([pendingSafes, mSafeInfo]) => {
@@ -121,7 +125,7 @@ function Allow(): ReactElement {
           ),
         )
       })
-  }, [safeId, dispatch, safeRandomName])
+  }, [safeId, dispatch, safeRandomName, userAccount])
 
   const updateAddressBook = (newAddress: string, values: AllowSafeFormValues) => {
     const ownerList = values[FIELD_SAFE_OWNER_LIST] as AddressBookEntry[]
@@ -186,32 +190,26 @@ function Allow(): ReactElement {
           }),
         )
       } else {
-        const safesPending = loadFromStorage<PendingSafeListStorage>(SAFES_PENDING_STORAGE_KEY, '__')
+        const safesPending = loadFromStorage<PendingSafeListStorage>(SAFES_PENDING_STORAGE_KEY, `${userAccount}_`) || []
 
-        if (safesPending) {
-          saveToStorage(
-            SAFES_PENDING_STORAGE_KEY,
-            [
-              ...safesPending,
-              {
-                id,
-                suggestedSafeName: safeName,
-              },
-            ],
-            '__',
-          )
+        const safe = _.find(safesPending, ['id', id])
+
+        if (safe) {
+          _.assign(safe, {
+            suggestedSafeName: safeName,
+          })
         } else {
-          saveToStorage(
-            SAFES_PENDING_STORAGE_KEY,
-            [
-              {
-                id,
-                suggestedSafeName: safeName,
-              },
-            ],
-            '__',
-          )
+          _.assign(safesPending, [
+            ...safesPending,
+            {
+              id,
+              suggestedSafeName: safeName,
+            },
+          ])
         }
+
+        saveToStorage(SAFES_PENDING_STORAGE_KEY, safesPending, `${userAccount}_`)
+
         history.push(WELCOME_ROUTE)
       }
     } else {

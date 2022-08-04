@@ -80,6 +80,11 @@ function CreateSafePage(): ReactElement {
 
   const providerName = useSelector(providerNameSelector)
   const isWrongNetwork = useSelector(shouldSwitchWalletChain)
+  const userWalletAddress = useSelector(userAccountSelector)
+  const addressBook = useSelector(currentNetworkAddressBookAsMap)
+  const location = useLocation()
+  const safeRandomName = useMnemonicSafeName()
+
   const provider = !!providerName && !isWrongNetwork
   const { connectWalletState, onConnectWalletShow, onConnectWalletHide } = useConnectWallet()
   const { trackEvent } = useAnalytics()
@@ -93,11 +98,6 @@ function CreateSafePage(): ReactElement {
     }
     checkIfSafeIsPendingToBeCreated()
   }, [provider])
-
-  const userWalletAddress = useSelector(userAccountSelector)
-  const addressBook = useSelector(currentNetworkAddressBookAsMap)
-  const location = useLocation()
-  const safeRandomName = useMnemonicSafeName()
 
   const showSafeCreationProcess = async (newSafeFormValues: CreateSafeFormValues): Promise<void> => {
     // saveToStorage(SAFE_PENDING_CREATION_STORAGE_KEY, { ...newSafeFormValues })
@@ -130,7 +130,7 @@ function CreateSafePage(): ReactElement {
         setPendingSafe(true)
 
         const safesPending = await Promise.resolve(
-          loadFromStorage<PendingSafeListStorage>(SAFES_PENDING_STORAGE_KEY, '__'),
+          loadFromStorage<PendingSafeListStorage>(SAFES_PENDING_STORAGE_KEY, `${userWalletAddress}_`),
         )
 
         if (safesPending) {
@@ -143,7 +143,7 @@ function CreateSafePage(): ReactElement {
                 id,
               },
             ],
-            '__',
+            `${userWalletAddress}_`,
           )
         } else {
           saveToStorage(
@@ -154,7 +154,7 @@ function CreateSafePage(): ReactElement {
                 id,
               },
             ],
-            '__',
+            `${userWalletAddress}_`,
           )
         }
       }

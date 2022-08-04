@@ -71,7 +71,7 @@ function Cancel(): ReactElement {
         const { owners, threshold, createdAddress } = await getMSafeInfo(safeId)
 
         const safesPending = await Promise.resolve(
-          loadFromStorage<PendingSafeListStorage>(SAFES_PENDING_STORAGE_KEY, '__'),
+          loadFromStorage<PendingSafeListStorage>(SAFES_PENDING_STORAGE_KEY, `${myAddress}_`),
         )
         const pendingSafe = safesPending?.find((e) => e.id === safeId)
 
