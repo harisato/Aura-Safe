@@ -26,7 +26,7 @@ function AllowSafeOwnersStep(): ReactElement {
     <>
       <TitleContainer>
         <Paragraph color="primary" noMargin size="lg" data-testid="load-safe-owners-step">
-          This Safe on <NetworkLabel /> has {ownersWithName.length} owners. Optional: Provide a name for each owner.
+          This Safe on <NetworkLabel /> has {ownersWithName?.length} owners. Optional: Provide a name for each owner.
         </Paragraph>
       </TitleContainer>
       <Hairline />

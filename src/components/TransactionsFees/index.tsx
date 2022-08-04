@@ -20,22 +20,22 @@ type TransactionFailTextProps = {
 export const TransactionFees = ({
   gasCostFormatted,
   isExecution,
-  isCreation,
+  // isCreation,
   isOffChainSignature,
   txEstimationExecutionStatus,
 }: TransactionFailTextProps): React.ReactElement | null => {
-  const nativeCurrency = getNativeCurrency()
-  let transactionAction
+  // const nativeCurrency = getNativeCurrency()
+  // let transactionAction
   if (txEstimationExecutionStatus === EstimationStatus.LOADING) {
     return null
   }
-  if (isCreation) {
-    transactionAction = 'create'
-  } else if (isExecution) {
-    transactionAction = 'execute'
-  } else {
-    transactionAction = 'approve'
-  }
+  // if (isCreation) {
+  //   transactionAction = 'create'
+  // } else if (isExecution) {
+  //   transactionAction = 'execute'
+  // } else {
+  //   transactionAction = 'approve'
+  // }
 
   return (
     <>
@@ -44,12 +44,11 @@ export const TransactionFees = ({
           You&apos;re about to execute a transaction and will have to confirm it with your currently connected wallet.{' '}
           {!isOffChainSignature && (
             <>
-              Make sure you have
+              Make sure you have enough funds in this safe to fund the associated transaction amount and fee.
               {/* <StyledText>
                 {' '}
                 {gasCostFormatted} {nativeCurrency.symbol}{' '}
               </StyledText> */}
-              enough funds in this safe to fund the associated transaction amount and fee.
             </>
           )}
         </Paragraph>
