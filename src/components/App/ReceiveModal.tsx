@@ -1,4 +1,4 @@
-import { Button } from '@aura/safe-react-components'
+import { Button, Text } from '@aura/safe-react-components'
 import IconButton from '@material-ui/core/IconButton'
 import { createStyles, makeStyles } from '@material-ui/core/styles'
 import Close from '@material-ui/icons/Close'
@@ -50,7 +50,8 @@ const useStyles = (chainInfo: ChainInfo) =>
       },
       buttonRow: {
         height: '84px',
-        justifyContent: 'center',
+        justifyContent: 'flex-end',
+        marginRight: 50,
         '& > button': {
           fontFamily: 'SFProDisplay',
           fontSize: md,
@@ -118,7 +119,9 @@ const ReceiveModal = ({ onClose, safeAddress, safeName }: Props): ReactElement =
       <Hairline />
       <Row align="center" className={classes.buttonRow}>
         <Button size="md" color="primary" onClick={onClose} variant="contained">
-          Done
+          <Text size="lg" color="white">
+            Done
+          </Text>
         </Button>
       </Row>
     </>

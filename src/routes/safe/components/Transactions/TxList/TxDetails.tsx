@@ -139,6 +139,7 @@ export const TxDetails = ({ transaction }: TxDetailsProps): ReactElement => {
           'not-executed': !data?.executedAt,
           'will-be-replaced': willBeReplaced,
         })}
+        style={{ borderTop: '1px solid #484852' }}
       >
         <TxDataGroup txDetails={data} />
       </div>
@@ -151,7 +152,10 @@ export const TxDetails = ({ transaction }: TxDetailsProps): ReactElement => {
         <TxOwners txDetails={data} isPending={isPending} />
       </div>
       {!isPending && !data.executedAt && txLocation !== 'history' && !!currentUser && (
-        <div className={cn('tx-details-actions', { 'will-be-replaced': willBeReplaced })}>
+        <div
+          className={cn('tx-details-actions', { 'will-be-replaced': willBeReplaced })}
+          style={{ borderTop: '1px solid #484852' }}
+        >
           <TxExpandedActions transaction={transaction} />
         </div>
       )}

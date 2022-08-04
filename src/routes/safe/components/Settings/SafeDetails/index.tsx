@@ -100,7 +100,7 @@ const SafeDetails = (): ReactElement => {
                 <Block>
                   <StyledBorder>
                     <StyledButtonBorder testId={SAFE_NAME_SUBMIT_BTN_TEST_ID} type="submit">
-                      <StyledButtonLabel size="xl"> Save </StyledButtonLabel>
+                      <StyledButtonLabel size="lg"> Save </StyledButtonLabel>
                     </StyledButtonBorder>
                   </StyledBorder>
                 </Block>

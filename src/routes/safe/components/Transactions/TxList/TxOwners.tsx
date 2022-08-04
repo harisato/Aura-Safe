@@ -67,14 +67,14 @@ export const TxOwners = ({
             <img src={DoneIcon} alt="Aura Safe" />
           </span>
           <div className="legend">
-            <Text color="primary" size="xl" strong>
+            <Text color="primary" size="lg" strong>
               Confirmed
             </Text>
             <AddressInfo
               address={signer.value}
               name={signer?.name || undefined}
               avatarUrl={signer?.logoUri || undefined}
-              shortenHash={4}
+              // shortenHash={4}
             />
           </div>
         </OwnerListItem>
@@ -85,7 +85,7 @@ export const TxOwners = ({
             <img src={CircleRedIcon} alt="Aura Safe" />
           </span>
           <div className="legend">
-            <Text color="primary" size="xl" strong>
+            <Text color="primary" size="lg" strong>
               Rejected
             </Text>
             <AddressInfo address={value} name={name || undefined} avatarUrl={logoUri || undefined} shortenHash={4} />
@@ -98,11 +98,11 @@ export const TxOwners = ({
             {detailedExecutionInfo.executor ? (
               <img src={DoneIcon} alt="Aura Safe" />
             ) : (
-              <StyledImg alt="" src={TransactionListActive} />
+              <StyledImg alt="" src={ExcuteIcon} />
             )}
           </span>
           <div className="legend">
-            <Text color="primary" size="xl" strong>
+            <Text color="primary" size="lg" strong>
               {detailedExecutionInfo.executor ? 'Executed' : isPending ? 'Executing' : 'Execute'}
             </Text>
             {detailedExecutionInfo.executor && (
@@ -110,7 +110,7 @@ export const TxOwners = ({
                 address={detailedExecutionInfo.executor.value}
                 name={detailedExecutionInfo.executor?.name || undefined}
                 avatarUrl={detailedExecutionInfo.executor?.logoUri || undefined}
-                shortenHash={4}
+                // shortenHash={4}
               />
             )}
           </div>
@@ -118,7 +118,7 @@ export const TxOwners = ({
       ) : (
         <OwnerListItem>
           <span className="icon">
-            <StyledImg alt="" src={TransactionListInactive} />
+            <StyledImg alt="" src={ExcuteIcon} />
           </span>
           <div className="legend">
             <Text color="icon" size="xl" strong>

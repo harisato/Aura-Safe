@@ -41,7 +41,7 @@ export const DeleteEntryModal = ({
                 from the address book.
               </Text>
             </Modal.Body>
-            <Modal.Footer>
+            <Modal.Footer justifyContent="flex-end">
               <Modal.Footer.Buttons
                 cancelButtonProps={{ onClick: onClose }}
                 confirmButtonProps={{ color: 'error', testId: DELETE_ENTRY_BTN_ID, text: 'Delete' }}

@@ -52,7 +52,7 @@ const StyledButton = styled(Button)`
   border-radius: 50px !important;
   padding: 0 !important;
   background-color: transparent !important;
-  min-width: 112px !important;
+  min-width: 130px !important;
   svg {
     margin-right: 5px;
   }

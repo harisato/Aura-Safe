@@ -86,7 +86,7 @@ const SafeHeader = ({
           {/* <StyledText size="xl">balance</StyledText> */}
           <StyledButton size="md" disabled={!granted} onClick={onNewTransactionClick}>
             <FixedIcon type="arrowSentWhite" />
-            <Text size="md" color="white">
+            <Text size="lg" color="white">
               New transaction
             </Text>
           </StyledButton>

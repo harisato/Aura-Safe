@@ -14,7 +14,7 @@
 
 "@aura/safe-react-components@https://github.com/aura-nw/safe-react-components.git":
   version "1.1.5"
-  resolved "https://github.com/aura-nw/safe-react-components.git#15970e35d36d31d9672f84b16e83392db3f764e1"
+  resolved "https://github.com/aura-nw/safe-react-components.git#744cb020c4544918c76e4defa97e01d34b6d82cb"
   dependencies:
     react-media "^1.10.0"
     web3-utils "^1.6.0"

@@ -15,6 +15,7 @@ import {
   generatePrefixedAddressRoutes,
 } from 'src/routes/routes'
 import { hasFeature } from 'src/logic/safe/utils/safeVersion'
+import path from 'path'
 
 const useSidebarItems = (): ListItemType[] => {
   const featuresEnabled = useSelector(currentSafeFeaturesEnabled)
@@ -116,7 +117,10 @@ const useSidebarItems = (): ListItemType[] => {
       makeEntryItem({
         label: 'Transactions',
         iconType: 'transactionsAura',
-        href: currentSafeRoutes.TRANSACTIONS_HISTORY,
+        href:
+          window.location.pathname === currentSafeRoutes.TRANSACTIONS_HISTORY
+            ? currentSafeRoutes.TRANSACTIONS_HISTORY
+            : currentSafeRoutes.TRANSACTIONS_QUEUE,
       }),
       makeEntryItem({
         label: 'Address Book',

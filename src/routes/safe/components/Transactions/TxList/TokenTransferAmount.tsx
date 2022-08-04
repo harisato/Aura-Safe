@@ -38,7 +38,7 @@ export const TokenTransferAmount = ({ assetInfo }: TokenTransferAmountProps): Re
         }}
         src={assetInfo.logoUri}
       />
-      <Amount size="xl" color="white">{`${assetInfo.directionSign}${assetInfo.amountWithSymbol}`}</Amount>
+      <Amount size="lg" color="white">{`${assetInfo.directionSign}${assetInfo.amountWithSymbol}`}</Amount>
     </AmountWrapper>
   )
 }

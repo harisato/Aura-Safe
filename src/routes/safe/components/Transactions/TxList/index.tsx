@@ -27,7 +27,9 @@ const GatewayTransactions = (): ReactElement => {
     trackEvent(SAFE_EVENTS.TRANSACTIONS)
   }, [trackEvent])
 
-  const onTabChange = (path: string) => history.replace(generateSafeRoute(path, extractPrefixedSafeAddress()))
+  const onTabChange = (path: string) => {
+    history.replace(generateSafeRoute(path, extractPrefixedSafeAddress()))
+  }
 
   return (
     <Wrapper>
@@ -35,7 +37,11 @@ const GatewayTransactions = (): ReactElement => {
         <Col start="sm" xs={12}>
           <Breadcrumb>
             <BreadcrumbElement iconType="transactionsInactive" text="TRANSACTIONS" color="white" />
-            {isDeeplinkedTx() && <BreadcrumbElement text="DETAILS" color="placeHolder" />}
+            {path.search('queue') > 0 ? (
+              <BreadcrumbElement text="QUEUE" color="disableAura" />
+            ) : (
+              <BreadcrumbElement text="HISTORY" color="disableAura" />
+            )}
           </Breadcrumb>
         </Col>
       </Menu>

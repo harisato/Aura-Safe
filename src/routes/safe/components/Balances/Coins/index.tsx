@@ -140,14 +140,14 @@ const Coins = (props: Props): React.ReactElement => {
                   {granted && (
                     <StyledButton onClick={() => showSendFunds(row.asset.address)} data-testid="balance-send-btn">
                       <FixedIcon type="arrowSentWhite" />
-                      <Text size="md" color="white">
+                      <Text size="lg" color="white">
                         Send
                       </Text>
                     </StyledButton>
                   )}
                   <StyledButton onClick={showReceiveFunds}>
                     <FixedIcon type="arrowReceivedWhite" />
-                    <Text size="md" color="white">
+                    <Text size="lg" color="white">
                       Receive
                     </Text>
                   </StyledButton>

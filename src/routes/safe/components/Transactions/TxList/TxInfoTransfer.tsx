@@ -8,6 +8,7 @@ type Details = {
   title: string
   address: string
   name: string | undefined // AddressEx returns null if unknown
+  quanlity: string
 }
 
 export const TxInfoTransfer = ({ txInfo }: { txInfo: Transfer }): ReactElement | null => {
@@ -18,13 +19,15 @@ export const TxInfoTransfer = ({ txInfo }: { txInfo: Transfer }): ReactElement |
     if (assetInfo && assetInfo.type === 'Transfer') {
       if (txInfo?.direction?.toUpperCase() === 'INCOMING') {
         setDetails({
-          title: `Received ${assetInfo.amountWithSymbol} from:`,
+          title: 'Received',
+          quanlity: assetInfo.amountWithSymbol,
           address: txInfo.sender.value,
           name: txInfo.sender.name || undefined,
         })
       } else {
         setDetails({
-          title: `Send ${assetInfo.amountWithSymbol} to:`,
+          title: 'Send',
+          quanlity: assetInfo.amountWithSymbol,
           address: txInfo.recipient.value,
           name: txInfo.recipient.name || undefined,
         })
