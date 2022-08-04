@@ -1,5 +1,5 @@
-import { ReactElement, useEffect, useState } from 'react'
-import { useField, useForm } from 'react-final-form'
+import { ReactElement, useEffect } from 'react'
+import { useForm } from 'react-final-form'
 import { useSelector } from 'react-redux'
 import styled from 'styled-components'
 
@@ -12,19 +12,14 @@ import NetworkLabel from 'src/components/NetworkLabel/NetworkLabel'
 import { useStepper } from 'src/components/Stepper/stepperContext'
 import { providerNameSelector } from 'src/logic/wallets/store/selectors'
 import { lg } from 'src/theme/variables'
-import { AddressBookEntry, makeAddressBookEntry } from '../../../logic/addressBook/model/addressBook'
-import { currentNetworkAddressBookAsMap } from '../../../logic/addressBook/store/selectors'
-import { currentChainId } from '../../../logic/config/store/selectors'
 import {
   FIELD_ALLOW_CUSTOM_SAFE_NAME,
   FIELD_ALLOW_IS_LOADING_SAFE_ADDRESS,
-  FIELD_ALLOW_SAFE_ID,
   FIELD_ALLOW_SUGGESTED_SAFE_NAME,
   FIELD_SAFE_OWNER_LIST,
-  FIELD_SAFE_THRESHOLD,
 } from '../fields/allowFields'
 
-import { getMSafeInfo } from 'src/services'
+import { minMaxLength } from 'src/components/forms/validator'
 
 const BlockWithPadding = styled(Block)`
   padding: ${lg};
@@ -123,6 +118,7 @@ function NameAllowSafeStep(): ReactElement {
             text="Safe name"
             type="text"
             testId="create-safe-name-field"
+            validate={minMaxLength(0, 50)}
           />
         </Col>
       </FieldContainer>

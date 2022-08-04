@@ -10,7 +10,8 @@ import { providerNameSelector } from 'src/logic/wallets/store/selectors'
 import { FIELD_CREATE_CUSTOM_SAFE_NAME, FIELD_CREATE_SUGGESTED_SAFE_NAME } from '../../fields/createSafeFields'
 import { useStepper } from 'src/components/Stepper/stepperContext'
 import NetworkLabel from 'src/components/NetworkLabel/NetworkLabel'
-import { BlockWithPadding, FieldContainer, Link } from './styles'
+import { BlockWithPadding, FieldContainer } from './styles'
+import { minMaxLength } from 'src/components/forms/validator'
 
 export const nameNewSafeStepLabel = 'Name'
 
@@ -50,6 +51,7 @@ function NameNewSafeStep(): ReactElement {
             text="Safe name"
             type="text"
             testId="create-safe-name-field"
+            validate={minMaxLength(0, 50)}
           />
         </Col>
       </FieldContainer>
