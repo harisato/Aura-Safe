@@ -102,8 +102,10 @@ export const fetchMSafeTokens =
         const listChain = await getMChainsConfig()
         const decimal: any = listChain.find((x: any) => x.internalChainId === safeInfo?.internalChainId)
         safeInfo.balance.forEach((balance) => {
+          console.log('balance', balance)
+
           tokenCurrenciesBalances.items.push({
-            balance: balance.amount,
+            balance: `${+balance.amount > 0 ? balance.amount : 0}`,
             fiatBalance: '0',
             fiatConversion: '0',
             tokenInfo: {

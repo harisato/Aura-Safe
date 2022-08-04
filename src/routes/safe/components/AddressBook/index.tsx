@@ -271,7 +271,6 @@ const AddressBookTable = (): ReactElement => {
                         </ButtonHelper>
                         {granted ? (
                           <ButtonGradient
-                            disabled
                             size="md"
                             onClick={() => {
                               setSelectedEntry({ entry: row })
