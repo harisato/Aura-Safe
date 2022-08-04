@@ -52,7 +52,7 @@ const TxInfo = ({ info, name }: { info: AssetInfo; name?: string }) => {
       case 'ENABLE_MODULE':
       case 'DISABLE_MODULE':
         return (
-          <TextFont size="xl" as="span">
+          <TextFont size="lg" as="span">
             {name || UNKNOWN_MODULE}
           </TextFont>
         )
@@ -62,14 +62,14 @@ const TxInfo = ({ info, name }: { info: AssetInfo; name?: string }) => {
   if (isCustomTxInfo(info)) {
     if (isMultiSendTxInfo(info)) {
       return (
-        <TextFont size="xl" as="span">
+        <TextFont size="lg" as="span">
           {info.actionCount} {`action${(info as MultiSend).actionCount > 1 ? 's' : ''}`}
         </TextFont>
       )
     }
 
     return (
-      <TextFont size="xl" as="span">
+      <TextFont size="lg" as="span">
         {(info as Custom).methodName}
       </TextFont>
     )
@@ -160,7 +160,7 @@ export const TxCollapsed = ({
     <div className={'tx-time' + willBeReplaced}>
       <Tooltip title={formatDateTime(time)} arrow backgroundColor="white" size="lg">
         <TooltipContent ref={timestamp}>
-          <TextFont color="white" size="xl">
+          <TextFont color="white" size="lg">
             {txLocation === 'history' ? formatTime(time) : formatTimeInWords(time)}
           </TextFont>
         </TooltipContent>
@@ -176,7 +176,7 @@ export const TxCollapsed = ({
           iconType="owners"
           iconSize="sm"
           text={`${votes.votes}`}
-          textSize="md"
+          textSize="lg"
         />
       )}
     </div>

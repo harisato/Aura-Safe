@@ -27,34 +27,34 @@ export const TxSummary = ({ txDetails }: Props): ReactElement => {
 
   return (
     <>
-      {isMultiSigExecutionDetails(txDetails.detailedExecutionInfo) && (
+      {/* {isMultiSigExecutionDetails(txDetails.detailedExecutionInfo) && (
         <div className="tx-share">
           <TxShareButton safeTxHash={txDetails.txId} />
         </div>
-      )}
+      )} */}
       <div className="tx-hash">
         <StyledText>Transaction hash: </StyledText>
         {txHash ? (
           <InlineEthHashInfo
             textSize="lg"
-            textColor="white"
+            textColor="textAura"
             hash={txHash}
-            shortenHash={8}
+            // shortenHash={8}
             showCopyBtn
             explorerUrl={explorerUrl}
           />
         ) : (
-          <Text size="lg" as="span" color="white">
+          <Text size="lg" as="span" color="textAura">
             {NOT_AVAILABLE}
           </Text>
         )}
       </div>
-      {!!safeTxHash && (
+      {/* {!!safeTxHash && (
         <div className="tx-hash">
           <StyledText>SafeTxHash: </StyledText>
           <InlineEthHashInfo textColor="white" textSize="lg" hash={safeTxHash} shortenHash={8} showCopyBtn />
         </div>
-      )}
+      )} */}
       {/* {nonce !== undefined && (
         <div className="tx-nonce">
           <Text size="xl" strong as="span">
@@ -68,14 +68,14 @@ export const TxSummary = ({ txDetails }: Props): ReactElement => {
       {created && (
         <div className="tx-created">
           <StyledText>Created: </StyledText>
-          <Text size="lg" color="white" as="span">
+          <Text size="lg" color="textAura" as="span">
             {formatDateTime(created)}
           </Text>
         </div>
       )}
       <div className="tx-executed">
         <StyledText>Executed: </StyledText>
-        <Text size="lg" color="white" as="span">
+        <Text size="lg" color="textAura" as="span">
           {executedAt ? formatDateTime(executedAt) : NOT_AVAILABLE}
         </Text>
       </div>

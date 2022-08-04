@@ -112,7 +112,7 @@ export const GroupedTransactionsCard = styled(StyledTransactions)`
   box-shadow: none;
 
   &:not(:last-child) {
-    border-bottom: 2px solid ${({ theme }) => theme.colors.separator};
+    border-bottom: none;
   }
 
   .MuiAccordion-root,
@@ -252,7 +252,7 @@ export const StyledGroupedTransactions = styled(StyledTransaction)`
 export const GroupedTransactions = styled(StyledTransaction)`
   // add a bottom division line for all elements but the last
   &:not(:last-of-type) {
-    border-bottom: 2px solid ${({ theme }) => theme.colors.separator};
+    border-bottom: none};
   }
 
   // builds the tree-view layout
@@ -271,8 +271,8 @@ export const GroupedTransactions = styled(StyledTransaction)`
       width: 100%;
 
       &::before {
-        border-bottom: 2px solid ${({ theme }) => theme.colors.separator};
-        border-left: 2px solid ${({ theme }) => theme.colors.separator};
+        border-bottom: none;
+        border-left: none;
         content: '';
         height: 22px;
         position: absolute;
@@ -287,8 +287,8 @@ export const GroupedTransactions = styled(StyledTransaction)`
     // given that divs are already being used for the transaction row, and both (p and div) are siblings
     &:not(:last-of-type) {
       &::before {
-        border-bottom: 2px solid ${({ theme }) => theme.colors.separator};
-        border-left: 2px solid ${({ theme }) => theme.colors.separator};
+        border-bottom: none;
+        border-left: none;
         content: '';
         height: 100%;
         margin-top: 14px;
@@ -314,11 +314,11 @@ export const GroupedTransactions = styled(StyledTransaction)`
       width: calc(100% - 32px);
       background-color: rgba(62, 63, 64, 1) !important;
       &:not(:last-of-type) {
-        border-bottom: 2px solid ${({ theme }) => theme.colors.separator};
+        border-bottom: none;
       }
 
       &:not(:first-of-type) {
-        border-top: 2px solid ${({ theme }) => theme.colors.separator};
+        border-top: none;
         // if two consecutive accordions are expanded, borders will get duplicated
         // this rule is to overlap them
         margin-top: -2px;
@@ -360,7 +360,6 @@ export const TxDetailsContainer = styled.div<{ ownerRows?: number }>`
   grid-template-columns: 1fr 1fr;
   grid-auto-rows: minmax(min-content, max-content);
   grid-template-rows: [tx-summary] minmax(min-content, max-content) [tx-details] minmax(min-content, 1fr);
-  row-gap: 2px;
   width: 100%;
 
   & > div {
@@ -405,24 +404,13 @@ export const TxDetailsContainer = styled.div<{ ownerRows?: number }>`
       color: ${({ theme }) => theme.colors.white};
       margin: 0 8px;
 
-      // &:hover {
-      //   color: ${({ theme }) => theme.colors.white};
-      // }
+    
 
       &.error {
         background-color: ${({ theme }) => theme.colors.error};
 
-        // &:hover {
-        //   background-color: ${({ theme }) => theme.colors.errorHover};
-        // }
-      }
-
       &.primary {
         background-color: ${({ theme }) => theme.colors.primary};
-
-        // &:hover {
-        //   background-color: ${({ theme }) => theme.colors.secondary};
-        // }
       }
     }
   }
@@ -466,7 +454,7 @@ export const OwnerListItem = styled.li`
   position: relative;
 
   &::before {
-    border-left: 2px ${({ theme }) => theme.colors.icon} solid;
+    border-left: 2px #666769 solid;
     border-radius: 1px;
     content: '';
     height: calc(100% - 16px);
@@ -483,7 +471,7 @@ export const OwnerListItem = styled.li`
 
 export const InlineEthHashInfo = styled(EthHashInfo)`
   display: inline-flex;
-  color: white;
+  color: #e6e7e8 !important;
   span {
     font-weight: normal;
   }

@@ -117,7 +117,7 @@ export const CreateEditEntryModal = ({
                     ) : null}
                   </Row>
                 </Block>
-                <Modal.Footer>
+                <Modal.Footer justifyContent="flex-end">
                   <Modal.Footer.Buttons
                     cancelButtonProps={{ onClick: onClose }}
                     confirmButtonProps={{

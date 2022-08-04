@@ -406,7 +406,10 @@ const ReviewSendFundsTx = ({ onClose, onPrev, tx }: ReviewTxProps): React.ReactE
           )}
 
           {/* Footer */}
-          <Modal.Footer withoutBorder={!isSpendingLimit && buttonStatus !== ButtonStatus.LOADING}>
+          <Modal.Footer
+            withoutBorder={!isSpendingLimit && buttonStatus !== ButtonStatus.LOADING}
+            justifyContent="flex-end"
+          >
             <Modal.Footer.Buttons
               cancelButtonProps={{ onClick: onPrev, text: 'Back' }}
               confirmButtonProps={{
