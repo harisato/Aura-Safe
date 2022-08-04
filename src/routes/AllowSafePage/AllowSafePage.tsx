@@ -136,17 +136,22 @@ function Allow(): ReactElement {
         return {
           ...owner,
           name: ownerNameValue,
+          chainId,
         }
       })
       .filter((owner) => !!owner.name)
 
-    const safeEntry = makeAddressBookEntry({
-      address: newAddress,
-      name: getLoadSafeName(values, addressBook),
-      chainId,
-    })
+    if (newAddress) {
+      ownerEntries.push(
+        makeAddressBookEntry({
+          address: newAddress,
+          name: getLoadSafeName(values, addressBook),
+          chainId,
+        }),
+      )
+    }
 
-    dispatch(addressBookSafeLoad([...ownerEntries, safeEntry]))
+    dispatch(addressBookSafeLoad([...ownerEntries]))
   }
 
   const onSubmitAllowSafe = async (values: AllowSafeFormValues): Promise<void> => {
@@ -169,8 +174,10 @@ function Allow(): ReactElement {
     const { ErrorCode, Message, Data: safeData } = await allowMSafe(id, walletKey)
 
     if (ErrorCode === MESSAGES_CODE.SUCCESSFUL.ErrorCode) {
+      const { safeAddress, id } = safeData
+      updateAddressBook(safeAddress, values)
+
       if (safeData.status === SafeStatus.Created) {
-        const { safeAddress, id } = safeData
         const safeProps = await buildMSafe(safeAddress, id)
 
         const storedSafes = loadStoredSafes() || {}
@@ -178,7 +185,6 @@ function Allow(): ReactElement {
         storedSafes[safeAddress] = safeProps
 
         saveSafes(storedSafes)
-        updateAddressBook(safeAddress, values)
 
         dispatch(addOrUpdateSafe(safeProps))
 
