@@ -52,6 +52,7 @@ import { loadLastUsedProvider } from '../../logic/wallets/store/middlewares/prov
 import { MESSAGES_CODE } from '../../services/constant/message'
 import { useAnalytics, USER_EVENTS } from '../../utils/googleAnalytics'
 
+import { Dispatch } from 'redux'
 import useConnectWallet from 'src/logic/hooks/useConnectWallet'
 import ArrowBack from './assets/arrow-left.svg'
 import { BackIcon, EmphasisLabel, LoaderContainer, StyledBorder, StyledButtonBorder, StyledButtonLabel } from './styles'
@@ -100,26 +101,34 @@ function CreateSafePage(): ReactElement {
   }, [provider])
 
   const showSafeCreationProcess = async (newSafeFormValues: CreateSafeFormValues): Promise<void> => {
-    // saveToStorage(SAFE_PENDING_CREATION_STORAGE_KEY, { ...newSafeFormValues })
-    const lastUsedProvider = await loadLastUsedProvider()
-    let payload: ISafeCreate
+    const result = await loadLastUsedProvider()
+      .then((lastUsedProvider) => {
+        if (lastUsedProvider === WALLETS_NAME.Keplr) {
+          return makeSafeCreate(userWalletAddress, newSafeFormValues)
+        }
+        return null
+      })
+      .then((payload) => {
+        if (payload) {
+          return createMSafe(payload)
+        }
 
-    if (lastUsedProvider === WALLETS_NAME.Keplr) {
-      payload = await makeSafeCreate(userWalletAddress, newSafeFormValues)
-    } else {
-      return
-    }
+        return null
+      })
 
-    const { ErrorCode, Data: safeData, Message } = await createMSafe(payload)
+    if (!result) return
+
+    const { ErrorCode, Data: safeData, Message } = result //await createMSafe(payload)
 
     if (ErrorCode === MESSAGES_CODE.SUCCESSFUL.ErrorCode) {
       trackEvent(USER_EVENTS.CREATE_SAFE)
       const { safeAddress, id, status } = safeData
 
+      updateAddressBook(safeAddress, newSafeFormValues, dispatch)
+
       if (status === SafeStatus.Created) {
         const safeProps = await buildMSafe(safeAddress, id)
 
-        updateAddressBook(safeAddress, newSafeFormValues, dispatch)
         dispatch(addOrUpdateSafe(safeProps))
 
         setModalData({
@@ -129,9 +138,10 @@ function CreateSafePage(): ReactElement {
       } else {
         setPendingSafe(true)
 
-        const safesPending = await Promise.resolve(
-          loadFromStorage<PendingSafeListStorage>(SAFES_PENDING_STORAGE_KEY, `${userWalletAddress}_`),
-        )
+        const safesPending =
+          (await Promise.resolve(
+            loadFromStorage<PendingSafeListStorage>(SAFES_PENDING_STORAGE_KEY, `${userWalletAddress}_`),
+          )) || []
 
         if (safesPending) {
           saveToStorage(
@@ -173,7 +183,6 @@ function CreateSafePage(): ReactElement {
         )
       }
     }
-    // setSafePendingToBeCreated(newSafeFormValues)
   }
 
   const [initialFormValues, setInitialFormValues] = useState<CreateSafeFormValues>()
@@ -369,34 +378,29 @@ async function makeSafeCreate(creatorAddress: string, newSafeFormValues: CreateS
   } as ISafeCreate
 }
 
-// async function makeSafeCreateWithTerra(
-//   creatorAddress: string,
-//   newSafeFormValues: CreateSafeFormValues,
-//   creatorPubkey,
-// ): Promise<ISafeCreate> {
-//   const internalChainId = getInternalChainId()
-//   return {
-//     internalChainId,
-//     creatorAddress,
-//     creatorPubkey,
-//     otherOwnersAddress: newSafeFormValues[FIELD_SAFE_OWNERS_LIST].map(
-//       ({ addressFieldName }) => newSafeFormValues[addressFieldName],
-//     ).filter((e) => e !== creatorAddress),
-//     threshold: newSafeFormValues[FIELD_NEW_SAFE_THRESHOLD],
-//   } as ISafeCreate
-// }
-
-export const updateAddressBook = async (newAddress: string, formValues: CreateSafeFormValues, dispatch) => {
+export const updateAddressBook = async (
+  newAddress: string,
+  formValues: CreateSafeFormValues,
+  dispatch: Dispatch,
+): Promise<void> => {
   const chainId = _getChainId()
   const defaultSafeValue = formValues[FIELD_CREATE_SUGGESTED_SAFE_NAME]
   const name = formValues[FIELD_CREATE_CUSTOM_SAFE_NAME] || defaultSafeValue
 
   const ownersAddressBookEntry = formValues[FIELD_SAFE_OWNERS_LIST].map(({ nameFieldName, addressFieldName }) =>
     makeAddressBookEntry({
-      address: newAddress || formValues[addressFieldName],
-      name: name || formValues[nameFieldName],
+      address: formValues[addressFieldName],
+      name: formValues[nameFieldName],
       chainId,
     }),
   )
-  await dispatch(addressBookSafeLoad([...ownersAddressBookEntry]))
+
+  if (newAddress) {
+    ownersAddressBookEntry.push({
+      address: newAddress,
+      name: name,
+      chainId,
+    })
+  }
+  dispatch(addressBookSafeLoad([...ownersAddressBookEntry]))
 }
