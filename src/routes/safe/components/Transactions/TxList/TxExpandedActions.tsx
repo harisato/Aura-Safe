@@ -23,7 +23,7 @@ const StyledButtonReject = styled(Button)`
 `
 
 const StyledLabel = styled.span`
-  color: rgba(94, 230, 157, 1);
+  color: #5ee6d0;
 `
 
 export const TxExpandedActions = ({ transaction }: TxExpandedActionsProps): ReactElement => {

@@ -36,7 +36,7 @@ const GatewayTransactions = (): ReactElement => {
       <Menu>
         <Col start="sm" xs={12}>
           <Breadcrumb>
-            <BreadcrumbElement iconType="transactionsInactive" text="TRANSACTIONS" color="white" />
+            <BreadcrumbElement iconType="transactionsAura" text="TRANSACTIONS" color="white" />
             {path.search('queue') > 0 ? (
               <BreadcrumbElement text="QUEUE" color="disableAura" />
             ) : (

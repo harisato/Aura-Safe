@@ -84,13 +84,14 @@ const CircularProgressPainter = styled.div<{ color: ThemeColors }>`
 const SmallDot = styled(Dot)`
   height: 8px;
   width: 8px;
-  background-color: ${({ theme, color }) => theme.colors[color]} !important;
+  background-color: #e65e5e !important;
 `
 
 const IconText = styled(IconTextSrc)`
   p {
     font-weight: bold;
     font-family: SFProDisplay;
+    color: #98989b;
   }
 `
 
@@ -203,7 +204,7 @@ export const TxCollapsed = ({
         )
       )}
       <TextFont size="md" color={status.color} className="col" strong>
-        {status.text}
+        <span style={{ color: 'linear-gradient(180deg, #E95454 2.78%, #C83D3D 100%)' }}>{status.text}</span>
       </TextFont>
     </div>
   )

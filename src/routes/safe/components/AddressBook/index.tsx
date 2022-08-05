@@ -278,7 +278,7 @@ const AddressBookTable = (): ReactElement => {
                             }}
                           >
                             <FixedIcon type="arrowSentWhite" />
-                            <Text size="md" color="white">
+                            <Text size="lg" color="white">
                               Send
                             </Text>
                           </ButtonGradient>
