@@ -1,5 +1,6 @@
 {
   "api-gateway": "https://safe.dev.aura.network/api",
+  "chain_id":"aura-testnet",
   "chain_info": [
     {
       "features": ["no-legacy-stdTx"],
