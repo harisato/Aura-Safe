@@ -82,7 +82,7 @@ const Coins = (props: Props): React.ReactElement => {
         columns={columns}
         className={classes.table}
         data={filteredData}
-        defaultRowsPerPage={100}
+        defaultRowsPerPage={5}
         label="Balances"
         size={filteredData.size}
       >
