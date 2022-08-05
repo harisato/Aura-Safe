@@ -200,3 +200,7 @@ export const getChainDefaultGasPrice = (): MChainInfo['defaultGasPrice'] => {
 export const getCoinDecimal = (): number => {
   return getChainInfo().nativeCurrency.decimals
 }
+
+export const getCoinSymbol = (): string => {
+  return getChainInfo().nativeCurrency.symbol
+}
