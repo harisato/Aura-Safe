@@ -1,16 +1,22 @@
-import { ReactElement, useState, useEffect } from 'react'
-import { useSelector } from 'react-redux'
-import { useField, useForm } from 'react-final-form'
 import InputAdornment from '@material-ui/core/InputAdornment'
+import { ReactElement, useEffect, useState } from 'react'
+import { useField, useForm } from 'react-final-form'
+import { useSelector } from 'react-redux'
+import AddressInput from 'src/components/forms/AddressInput'
+import Field from 'src/components/forms/Field'
+import TextField from 'src/components/forms/TextField'
+import { minMaxLength, mustBeValidAddress } from 'src/components/forms/validator'
 import Block from 'src/components/layout/Block'
 import Col from 'src/components/layout/Col'
 import Paragraph from 'src/components/layout/Paragraph'
-import Field from 'src/components/forms/Field'
-import TextField from 'src/components/forms/TextField'
-import AddressInput from 'src/components/forms/AddressInput'
+import NetworkLabel from 'src/components/NetworkLabel/NetworkLabel'
 import { ScanQRWrapper } from 'src/components/ScanQRModal/ScanQRWrapper'
+import { getInternalChainId } from 'src/config'
 import { AddressBookEntry, makeAddressBookEntry } from 'src/logic/addressBook/model/addressBook'
 import { currentNetworkAddressBookAsMap } from 'src/logic/addressBook/store/selectors'
+import { currentChainId } from 'src/logic/config/store/selectors'
+import { getMSafeInfoWithAdress } from 'src/services'
+import QRIcon from '../../../CreateSafePage/assets/uil_qrcode-scan.svg'
 import {
   FIELD_LOAD_CUSTOM_SAFE_NAME,
   FIELD_LOAD_IS_LOADING_SAFE_ADDRESS,
@@ -20,14 +26,8 @@ import {
   FIELD_SAFE_THRESHOLD,
   LoadSafeFormValues,
 } from '../../fields/loadFields'
-import NetworkLabel from 'src/components/NetworkLabel/NetworkLabel'
 import { getLoadSafeName } from '../../fields/utils'
-import { currentChainId } from 'src/logic/config/store/selectors'
-import { getMSafeInfoWithAdress } from 'src/services'
-import { getInternalChainId } from 'src/config'
-import { mustBeValidAddress } from 'src/components/forms/validator'
-import { Container, FieldContainer, CheckIconAddressAdornment, StyledLink } from './styles'
-import QRIcon from '../../../CreateSafePage/assets/uil_qrcode-scan.svg'
+import { CheckIconAddressAdornment, Container, FieldContainer } from './styles'
 export const loadSafeAddressStepLabel = 'Name and address'
 
 function LoadSafeAddressStep(): ReactElement {
@@ -128,17 +128,6 @@ function LoadSafeAddressStep(): ReactElement {
           Your connected wallet does not have to be the owner of this Safe. In this case, the interface will provide you
           a read-only view.
         </Paragraph>
-
-        {/* <Paragraph color="primary" size="lg">
-          Don&apos;t have the address of the Safe you created?{' '}
-          <StyledLink
-            href="https://help.gnosis-safe.io/en/articles/4971293-i-don-t-remember-my-safe-address-where-can-i-find-it"
-            rel="noopener noreferrer"
-            target="_blank"
-          >
-            This article explains how to find it.
-          </StyledLink>
-        </Paragraph> */}
       </Block>
       <FieldContainer>
         <Col xs={11}>
@@ -149,6 +138,7 @@ function LoadSafeAddressStep(): ReactElement {
             text="Safe name"
             type="text"
             testId="load-safe-name-field"
+            validate={minMaxLength(0, 50)}
           />
         </Col>
       </FieldContainer>

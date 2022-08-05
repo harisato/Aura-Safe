@@ -23,6 +23,7 @@ import { SAFES_PENDING_STORAGE_KEY } from 'src/routes/CreateSafePage/fields/crea
 import { loadStoredSafes, saveSafes } from 'src/logic/safe/utils'
 import { buildMSafe } from 'src/logic/safe/store/actions/fetchSafe'
 import { addOrUpdateSafe } from 'src/logic/safe/store/actions/addOrUpdateSafe'
+import { userAccountSelector } from 'src/logic/wallets/store/selectors'
 
 const MAX_EXPANDED_SAFES = 3
 
@@ -87,6 +88,8 @@ export const SafeList = ({ onSafeClick }: Props): ReactElement => {
   const localSafes = useLocalSafes()
   const curChainId = useSelector(currentChainId)
 
+  const userAccount = useSelector(userAccountSelector)
+
   return (
     <StyledList>
       {getChains().map(({ chainId, theme, chainName }) => {
@@ -95,7 +98,9 @@ export const SafeList = ({ onSafeClick }: Props): ReactElement => {
         const pendingSafesOnNetwork = ownedSafes[chainId]?.filter(isPendingSafes) || []
 
         const getSafePending = async () => {
-          const safesPending = await Promise.resolve(loadFromStorage<PendingSafeListStorage>(SAFES_PENDING_STORAGE_KEY))
+          const safesPending = await Promise.resolve(
+            loadFromStorage<PendingSafeListStorage>(SAFES_PENDING_STORAGE_KEY, `${userAccount}_`),
+          )
           let safePendingIndex = -1
           safesPending?.forEach((safePending, index) => {
             const safeFound = ownedSafes[chainId]?.find((ownedSafe) => ownedSafe.id === safePending.id)
@@ -120,7 +125,7 @@ export const SafeList = ({ onSafeClick }: Props): ReactElement => {
 
           if (safePendingIndex >= 0 && safesPending) {
             safesPending?.splice(safePendingIndex, 1)
-            saveToStorage(SAFES_PENDING_STORAGE_KEY, [...safesPending])
+            saveToStorage(SAFES_PENDING_STORAGE_KEY, [...safesPending], `${userAccount}_`)
           }
         }
 
