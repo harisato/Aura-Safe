@@ -80,7 +80,7 @@ export const NOTIFICATIONS: Record<NotificationId, Notification> = {
     options: { variant: ERROR, persist: false, autoHideDuration: longDuration },
   },
   CREATE_SAFE_PENDING_EXECUTE_MSG: {
-    message: 'Safe has pending transaction!',
+    message: 'Please execute/reject your transaction before creating a new one!',
     options: { variant: ERROR, persist: false, autoHideDuration: longDuration },
   },
   // Regular/Custom Transactions
