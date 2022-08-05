@@ -21,6 +21,7 @@ import HelpInfo from 'src/routes/safe/components/AddressBook/HelpInfo'
 import SuccessSvg from './assets/success.svg'
 import ErrorSvg from './assets/error.svg'
 import LoadingSvg from './assets/wait.svg'
+import { borderLinear } from 'src/theme/variables'
 
 type ExportEntriesModalProps = {
   isOpen: boolean
@@ -36,7 +37,7 @@ const InfoContainer = styled(Row)`
   background-color: ${bgBox};
   flex-direction: column;
   justify-content: center;
-  padding: ${lg};
+  padding: ${md} ${lg};
   text-align: center;
 `
 
@@ -45,6 +46,24 @@ const BodyImage = styled.div`
 `
 const StyledLoader = styled(Loader)`
   margin-right: 5px;
+`
+
+const StyledButtonDownn = styled(Button)`
+  border: 2px solid transparent;
+  background-image: ${borderLinear};
+  background-origin: border-box;
+  background-clip: content-box, border-box;
+  border-radius: 50px !important;
+  padding: 0 !important;
+  background-color: transparent !important;
+`
+
+const StyledButtonClose = styled(Button)`
+  background-color: transparent !important;
+  /* border: 1px solid rgba(230, 94, 94, 1); */
+  border: none;
+  border-radius: 50px !important;
+  color: white !important;
 `
 
 export const ExportEntriesModal = ({ isOpen, onClose }: ExportEntriesModalProps): ReactElement => {
@@ -124,20 +143,20 @@ export const ExportEntriesModal = ({ isOpen, onClose }: ExportEntriesModalProps)
       </Modal.Body>
 
       <Modal.Footer withoutBorder>
-        <Button size="md" variant="outlined" onClick={onClose}>
+        <StyledButtonClose size="md" variant="outlined" onClick={onClose}>
           Cancel
-        </Button>
+        </StyledButtonClose>
 
         {error ? (
-          <Button color="primary" size="md" disabled={loading} onClick={() => setDoRetry(true)}>
+          <StyledButtonDownn color="primary" size="md" disabled={loading} onClick={() => setDoRetry(true)}>
             Retry
-          </Button>
+          </StyledButtonDownn>
         ) : (
           <CSVDownloader data={csvData} bom={true} filename={`gnosis-safe-address-book-${date}`} type="link">
-            <Button color="primary" size="md" disabled={loading} onClick={handleClose}>
+            <StyledButtonDownn color="primary" size="md" disabled={loading} onClick={handleClose}>
               {loading && <StyledLoader color="secondaryLight" size="xs" />}
               Download
-            </Button>
+            </StyledButtonDownn>
           </CSVDownloader>
         )}
       </Modal.Footer>

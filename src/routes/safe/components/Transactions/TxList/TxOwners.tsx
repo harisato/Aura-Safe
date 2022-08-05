@@ -12,7 +12,8 @@ import { isCancelTxDetails } from './utils'
 import PlusIcon from '../TxList/assets/plus-icon.svg'
 import ExcuteIcon from '../TxList/assets/excute-icon.svg'
 import DoneIcon from '../TxList/assets/done-icon.svg'
-import CircleRedIcon from '../TxList/assets/circle-cross-red.svg'
+import CircleRedIcon from '../TxList/assets/rejected.svg'
+import ExecuteIcon from '../TxList/assets/execute.svg'
 
 const StyledImg = styled(Img)`
   background-color: transparent;
@@ -40,7 +41,7 @@ export const TxOwners = ({
         <Icon size="sm" type="circleCross" color="error" />
       </span>
       <div className="legend">
-        <Text color="error" size="xl" strong>
+        <Text color="error" size="lg" strong>
           On-chain rejection created
         </Text>
       </div>
@@ -51,7 +52,7 @@ export const TxOwners = ({
         <img src={PlusIcon} alt="Aura Safe" />
       </span>
       <div className="legend">
-        <Text color="primary" size="xl" strong>
+        <Text color="linkAura" size="lg" strong>
           Created
         </Text>
       </div>
@@ -67,7 +68,7 @@ export const TxOwners = ({
             <img src={DoneIcon} alt="Aura Safe" />
           </span>
           <div className="legend">
-            <Text color="primary" size="lg" strong>
+            <Text color="linkAura" size="lg" strong>
               Confirmed
             </Text>
             <AddressInfo
@@ -85,10 +86,10 @@ export const TxOwners = ({
             <img src={CircleRedIcon} alt="Aura Safe" />
           </span>
           <div className="legend">
-            <Text color="primary" size="lg" strong>
+            <Text color="linkAura" size="lg" strong>
               Rejected
             </Text>
-            <AddressInfo address={value} name={name || undefined} avatarUrl={logoUri || undefined} shortenHash={4} />
+            <AddressInfo address={value} name={name || undefined} avatarUrl={logoUri || undefined} />
           </div>
         </OwnerListItem>
       ))}
@@ -118,10 +119,10 @@ export const TxOwners = ({
       ) : (
         <OwnerListItem>
           <span className="icon">
-            <StyledImg alt="" src={ExcuteIcon} />
+            <StyledImg alt="" src={ExecuteIcon} />
           </span>
           <div className="legend">
-            <Text color="icon" size="xl" strong>
+            <Text color="disableAura" size="lg" strong>
               Execute ({confirmationsNeeded} more {confirmationsNeeded === 1 ? 'confirmation' : 'confirmations'} needed)
             </Text>
           </div>

@@ -22,13 +22,13 @@ export const useTransactionStatus = (transaction: Transaction): TransactionStatu
   useEffect(() => {
     switch (txStatus) {
       case LocalTransactionStatus.SUCCESS:
-        setStatus({ color: 'primary', text: 'Success' })
+        setStatus({ color: 'successAura', text: 'Success' })
         break
       case LocalTransactionStatus.FAILED:
-        setStatus({ color: 'error', text: 'Failed' })
+        setStatus({ color: 'successAura', text: 'Failed' })
         break
       case LocalTransactionStatus.CANCELLED:
-        setStatus({ color: 'error', text: 'Cancelled' })
+        setStatus({ color: 'failAura', text: 'Cancelled' })
         break
       case LocalTransactionStatus.WILL_BE_REPLACED:
         setStatus({ color: 'placeHolder', text: 'Transaction will be replaced' })

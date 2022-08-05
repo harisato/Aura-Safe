@@ -75,7 +75,7 @@ const getModalTitleAndDescription = (
     modalInfo.title = 'Execute transaction'
     modalInfo.description = ''
   } else {
-    modalInfo.title = 'Approve Transaction'
+    modalInfo.title = 'Confirm Transaction'
     modalInfo.description = ''
   }
 
