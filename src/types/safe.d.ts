@@ -22,6 +22,8 @@ export interface IMSafeInfo {
     denom: string
     amount: string
   }[]
+  txQueuedTag: string
+  txHistoryTag: string
 }
 
 export interface IMSafeResponse {

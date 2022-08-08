@@ -12,7 +12,7 @@ export const useSafeScheduledUpdates = (safeAddress?: string, safeId?: number): 
   useEffect(() => {
     const timer = setTimeout(() => {
       if (safeAddress && safeId) {
-        dispatch(fetchMSafe(safeAddress, safeId, true))
+        dispatch(fetchMSafe(safeAddress, safeId))
         // dispatch(fetchSafe(safeAddress))
         // dispatch(fetchSafeTokens(safeAddress))
       }
@@ -22,5 +22,5 @@ export const useSafeScheduledUpdates = (safeAddress?: string, safeId?: number): 
     return () => {
       clearTimeout(timer)
     }
-  }, [dispatch, safeAddress, chainId, pollCount, setPollCount])
+  }, [dispatch, safeAddress, chainId, pollCount, setPollCount, safeId])
 }

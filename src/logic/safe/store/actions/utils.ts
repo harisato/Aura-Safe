@@ -1,19 +1,17 @@
 import { GnosisSafe } from 'src/types/contracts/gnosis_safe.d'
 
-import { LATEST_SAFE_VERSION } from 'src/utils/constants'
-import { SafeRecordProps } from 'src/logic/safe/store/models/safe'
-import { getSpendingLimits } from 'src/logic/safe/utils/spendingLimits'
-import { buildModulesLinkedList } from 'src/logic/safe/utils/modules'
-import { enabledFeatures, safeNeedsUpdate } from 'src/logic/safe/utils/safeVersion'
-import { checksumAddress } from 'src/utils/checksumAddress'
-import { ChainId } from 'src/config/chain.d'
 import { SafeInfo } from '@gnosis.pm/safe-react-gateway-sdk'
+import { ChainId } from 'src/config/chain.d'
+import { SafeRecordProps } from 'src/logic/safe/store/models/safe'
 import {
-  Transaction,
   isMultisigExecutionInfo,
   LocalTransactionStatus,
+  Transaction,
 } from 'src/logic/safe/store/models/types/gateway.d'
-import { IMSafeInfo } from 'src/types/safe'
+import { buildModulesLinkedList } from 'src/logic/safe/utils/modules'
+import { enabledFeatures, safeNeedsUpdate } from 'src/logic/safe/utils/safeVersion'
+import { getSpendingLimits } from 'src/logic/safe/utils/spendingLimits'
+import { LATEST_SAFE_VERSION } from 'src/utils/constants'
 
 export const shouldExecuteTransaction = async (
   safeInstance: GnosisSafe,
@@ -101,7 +99,7 @@ export const buildSafeOwners = (
     // ToDo: review if checksums addresses is necessary,
     //  as they must be provided already in the checksum form from the services
     // return remoteSafeOwners.map(({ value }) => checksumAddress(value))
-    return remoteSafeOwners.map(({ value }) => (value))
+    return remoteSafeOwners.map(({ value }) => value)
   }
 
   // nothing to do without remote owners, so we return the stored list

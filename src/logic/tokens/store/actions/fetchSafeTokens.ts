@@ -14,6 +14,7 @@ import { sameAddress, ZERO_ADDRESS } from 'src/logic/wallets/ethAddresses'
 import { getMChainsConfig } from 'src/services/index'
 import { AppReduxState } from 'src/store'
 import { IMSafeInfo } from 'src/types/safe'
+import { getChains } from 'src/config/cache/chains'
 
 export type BalanceRecord = {
   tokenAddress?: string
@@ -99,13 +100,12 @@ export const fetchMSafeTokens =
       }
 
       if (safeInfo?.balance) {
-        const listChain = await getMChainsConfig()
+        // const listChain = await getMChainsConfig()
+        const listChain = getChains()
         const decimal: any = listChain.find((x: any) => x.internalChainId === safeInfo?.internalChainId)
         safeInfo.balance.forEach((balance) => {
-          console.log('balance', balance)
-
           tokenCurrenciesBalances.items.push({
-            balance: `${+balance.amount > 0 ? balance.amount : 0}`,
+            balance: `${+balance?.amount > 0 ? balance?.amount : 0}`,
             fiatBalance: '0',
             fiatConversion: '0',
             tokenInfo: {

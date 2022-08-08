@@ -151,13 +151,23 @@ export const fetchMSafe =
 
     // If the network has changed while the safe was being loaded,
     // ignore the result
-    if (remoteSafeInfo?.chainId !== chainId) {
+    if (remoteSafeInfo?.chainId !== chainId && remoteSafeInfo?.address?.value !== safeAddress) {
       return
     }
 
     // remote (client-gateway)
     if (remoteSafeInfo) {
       safeInfo = await extractRemoteSafeInfo(remoteSafeInfo)
+
+      // If these polling timestamps have changed, fetch again
+      const { txQueuedTag, txHistoryTag } = currentSafeWithNames(state)
+
+      const shouldUpdateTxHistory = txHistoryTag !== safeInfo.txHistoryTag
+      const shouldUpdateTxQueued = txQueuedTag !== safeInfo.txQueuedTag
+
+      if (shouldUpdateTxHistory || shouldUpdateTxQueued) {
+        dispatchPromises.push(dispatch(fetchTransactions(chainId, safeAddress, shouldUpdateTxQueued)))
+      }
 
       if (mSafeInfo) {
         dispatchPromises.push(dispatch(fetchMSafeTokens(mSafeInfo)))
@@ -182,7 +192,7 @@ async function _getSafeInfo(safeAddress: string, safeId: number): Promise<[IMSaf
       mSafeInfo,
       {
         address: {
-          value: safeAddress,
+          value: mSafeInfo.address,
           logoUri: null,
           name: null,
         },
@@ -218,8 +228,8 @@ async function _getSafeInfo(safeAddress: string, safeId: number): Promise<[IMSaf
         },
         version: '',
         collectiblesTag: '',
-        txQueuedTag: '',
-        txHistoryTag: '',
+        txQueuedTag: mSafeInfo.txQueuedTag,
+        txHistoryTag: mSafeInfo.txHistoryTag,
       },
     ]
   })
