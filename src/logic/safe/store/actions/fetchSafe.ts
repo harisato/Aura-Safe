@@ -9,7 +9,7 @@ import { SafeInfo } from '@gnosis.pm/safe-react-gateway-sdk'
 import { checksumAddress } from 'src/utils/checksumAddress'
 import { buildSafeOwners, extractRemoteSafeInfo } from './utils'
 import { Errors, logError } from 'src/logic/exceptions/CodedException'
-import { store } from 'src/store'
+import { AppReduxState, store } from 'src/store'
 import { currentSafeWithNames } from '../selectors'
 import fetchTransactions from './transactions/fetchTransactions'
 import { fetchCollectibles } from 'src/logic/collectibles/store/actions/fetchCollectibles'
@@ -117,7 +117,7 @@ export const buildMSafe = async (safeAddress: string, safeId: number): Promise<S
 
   const local = getLocalSafe(safeAddress)
 
-  const safeInfoDta: SafeInfo = await _getSafeInfo(safeAddress, safeId)
+  const [, safeInfoDta] = await _getSafeInfo(safeAddress, safeId)
 
   // remote (client-gateway)
   const remoteSafeInfo = safeInfoDta ? await extractRemoteSafeInfo(safeInfoDta) : {}
@@ -133,13 +133,15 @@ export const buildMSafe = async (safeAddress: string, safeId: number): Promise<S
 export const fetchMSafe =
   (safeAddress: string, safeId: number, isInitialLoad = false) =>
   async (dispatch: Dispatch<any>): Promise<Action<Partial<SafeRecordProps>> | void> => {
+    const dispatchPromises: ((dispatch: Dispatch, getState: () => AppReduxState) => Promise<void> | void)[] = []
     const address = safeAddress
 
     let safeInfo: Partial<SafeRecordProps> = {}
     let remoteSafeInfo: SafeInfo | null = null
+    let mSafeInfo: IMSafeInfo | null = null
 
     try {
-      remoteSafeInfo = await _getSafeInfo(safeAddress, safeId, dispatch)
+      ;[mSafeInfo, remoteSafeInfo] = await _getSafeInfo(safeAddress, safeId)
     } catch (err) {
       console.error(err)
     }
@@ -157,58 +159,68 @@ export const fetchMSafe =
     if (remoteSafeInfo) {
       safeInfo = await extractRemoteSafeInfo(remoteSafeInfo)
 
+      if (mSafeInfo) {
+        dispatchPromises.push(dispatch(fetchMSafeTokens(mSafeInfo)))
+      }
+
       if (isInitialLoad) {
-        dispatch(fetchTransactions(chainId, safeAddress))
+        dispatchPromises.push(dispatch(fetchTransactions(chainId, safeAddress)))
       }
     }
 
     const owners = buildSafeOwners(remoteSafeInfo?.owners)
 
+    await Promise.all(dispatchPromises)
+
     return dispatch(updateSafe({ address, ...safeInfo, owners, safeId: safeId }))
   }
 
-async function _getSafeInfo(safeAddress: string, safeId: number, dispatch?: Dispatch<any>): Promise<SafeInfo> {
-  const info: IMSafeInfo = await getMSafeInfo(safeId)
-  if (dispatch) await dispatch(fetchMSafeTokens(info))
-  return {
-    address: {
-      value: safeAddress,
-      logoUri: null,
-      name: null,
-    },
-    chainId: _getChainId(),
-    nonce: 0,
-    threshold: info.threshold,
-    owners: info.owners?.map((owners) => ({
-      value: owners,
-      logoUri: null,
-      name: null,
-    })),
-    implementation: {
-      value: '',
-      logoUri: null,
-      name: null,
-    },
-    modules: [
+async function _getSafeInfo(safeAddress: string, safeId: number): Promise<[IMSafeInfo, SafeInfo]> {
+  // if (dispatch) await dispatch(fetchMSafeTokens(info))
+  return getMSafeInfo(safeId).then((mSafeInfo) => {
+    return [
+      mSafeInfo,
       {
-        value: '',
-        logoUri: null,
-        name: null,
+        address: {
+          value: safeAddress,
+          logoUri: null,
+          name: null,
+        },
+        chainId: _getChainId(),
+        nonce: 0,
+        threshold: mSafeInfo.threshold,
+        owners: mSafeInfo.owners?.map((owners) => ({
+          value: owners,
+          logoUri: null,
+          name: null,
+        })),
+        implementation: {
+          value: '',
+          logoUri: null,
+          name: null,
+        },
+        modules: [
+          {
+            value: '',
+            logoUri: null,
+            name: null,
+          },
+        ],
+        guard: {
+          value: '',
+          logoUri: null,
+          name: null,
+        },
+        fallbackHandler: {
+          value: '',
+          logoUri: null,
+          name: null,
+        },
+        version: '',
+        collectiblesTag: '',
+        txQueuedTag: '',
+        txHistoryTag: '',
       },
-    ],
-    guard: {
-      value: '',
-      logoUri: null,
-      name: null,
-    },
-    fallbackHandler: {
-      value: '',
-      logoUri: null,
-      name: null,
-    },
-    version: '',
-    collectiblesTag: '',
-    txQueuedTag: '',
-    txHistoryTag: '',
-  }
+    ]
+  })
 }
