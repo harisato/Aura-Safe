@@ -81,7 +81,7 @@ const ManageOwners = ({ granted, owners }: Props): ReactElement => {
         </Heading>
         <Paragraph className={classes.annotation}>
           Add, remove and replace owners or rename existing owners. Owner names are only stored locally and never shared
-          with Aura or any third parties.
+          with Pyxis Safe or any third parties.
         </Paragraph>
         <TableContainer>
           <Table
@@ -97,7 +97,11 @@ const ManageOwners = ({ granted, owners }: Props): ReactElement => {
             {(sortedData) =>
               sortedData.map((row, index) => (
                 <TableRow
-                  className={cn(classes.hide, index >= 3 && index === sortedData.size - 1 && classes.noBorderBottom, classes.tr)}
+                  className={cn(
+                    classes.hide,
+                    index >= 3 && index === sortedData.size - 1 && classes.noBorderBottom,
+                    classes.tr,
+                  )}
                   data-testid={OWNERS_ROW_TEST_ID}
                   key={index}
                 >

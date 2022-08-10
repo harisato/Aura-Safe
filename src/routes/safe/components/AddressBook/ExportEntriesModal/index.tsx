@@ -129,9 +129,8 @@ export const ExportEntriesModal = ({ isOpen, onClose }: ExportEntriesModalProps)
                 You&apos;re about to export a CSV file with{' '}
                 <Text size="xl" color="white" strong as="span">
                   {addressBook.length} address book entries. <br />
-                  <HelpInfo />
+                  {/* <HelpInfo /> */}
                 </Text>
-                .
               </Text>
             ) : (
               <Text size="xl" as="span">

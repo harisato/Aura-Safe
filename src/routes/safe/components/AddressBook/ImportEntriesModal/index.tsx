@@ -164,8 +164,8 @@ const ImportEntriesModal = ({ importEntryModalHandler, isOpen, onClose }: Import
           )}
           {!csvLoaded && importError === '' && (
             <Text color="white" as="p" size="xl">
-              Only CSV files exported from Aura Safe are allowed. <br />
-              <HelpInfo />
+              Only CSV files exported from Pyxis Safe are allowed. <br />
+              {/* <HelpInfo /> */}
             </Text>
           )}
           {csvLoaded && importError === '' && (
