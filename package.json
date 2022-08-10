@@ -1,19 +1,19 @@
 {
-  "name": "safe-react",
-  "version": "3.17.0",
-  "description": "Allowing crypto users manage funds in a safer way",
-  "website": "https://github.com/gnosis/safe-react#readme",
+  "name": "pyxis-safe",
+  "version": "0.2.0",
+  "description": "The multi-signature safe of the Interchain",
+  "website": "https://github.com/aura-nw/aura-safe#aura-safe",
   "bugs": {
-    "url": "https://github.com/gnosis/safe-react/issues"
+    "url": "https://github.com/aura-nw/Aura-Safe/issues"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/gnosis/safe-react.git"
+    "url": "https://github.com/aura-nw/Aura-Safe.git"
   },
   "license": "MIT",
   "author": {
-    "name": "Gnosis Team",
-    "email": "safe@gnosis.io"
+    "name": "Aura Network",
+    "email": "admin@aura.network"
   },
   "homepage": "http://localhost:80",
   "main": "public/electron.js",

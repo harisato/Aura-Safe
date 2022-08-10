@@ -71,6 +71,7 @@ export function getMChainsConfig(): Promise<MChainInfo[]> {
         coinDecimals: string
         gasPrice: string
         defaultGas: GasPriceDefault[]
+        tokenImg: string
       }) => {
         return {
           transactionService: null,
@@ -103,7 +104,7 @@ export function getMChainsConfig(): Promise<MChainInfo[]> {
             name: e.prefix.charAt(0).toUpperCase() + e.prefix.slice(1, e.prefix.length).toLowerCase(),
             symbol: e.symbol,
             decimals: e.coinDecimals,
-            logoUri: `img/token/${e.chainId}.svg`,
+            logoUri: e.tokenImg,
           },
           theme: CHAIN_THEMES[e.chainId] || THEME_DF,
           ensRegistryAddress: '',

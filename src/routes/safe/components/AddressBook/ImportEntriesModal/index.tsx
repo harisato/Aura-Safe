@@ -170,8 +170,13 @@ const ImportEntriesModal = ({ importEntryModalHandler, isOpen, onClose }: Import
           )}
           {csvLoaded && importError === '' && (
             <>
-              <Text size="xl" as="span">{`You're about to import`}</Text>
-              <Text size="xl" strong as="span">{` ${entryList.length} entries to your address book`}</Text>
+              <Text size="xl" as="span" color={'white'}>{`You're about to import`}</Text>
+              <Text
+                size="xl"
+                strong
+                as="span"
+                color={'white'}
+              >{` ${entryList.length} entries to your address book`}</Text>
             </>
           )}
         </InfoContainer>
