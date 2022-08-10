@@ -1,5 +1,6 @@
 {
   "api-gateway": "https://safe.dev.aura.network/api",
+  "chain_id": "aura-testnet",
   "chain_info": [
     {
       "features": ["no-legacy-stdTx"],
@@ -7,7 +8,9 @@
       "chainName": "aura testnet",
       "rpc": "https://rpc.dev.aura.network",
       "rest": "https://lcd.dev.aura.network",
-      "bip44": { "coinType": 118 },
+      "bip44": {
+        "coinType": 118
+      },
       "bech32Config": {
         "bech32PrefixAccAddr": "aura",
         "bech32PrefixAccPub": "aurapub",
@@ -16,239 +19,34 @@
         "bech32PrefixConsAddr": "auravalcons",
         "bech32PrefixConsPub": "auravalconspub"
       },
-      "currencies": [{ "coinDenom": "TAURA", "coinMinimalDenom": "utaura", "coinDecimals": 6 }],
-      "feeCurrencies": [{ "coinDenom": "TAURA", "coinMinimalDenom": "utaura", "coinDecimals": 6 }],
-      "stakeCurrency": { "coinDenom": "TAURA", "coinMinimalDenom": "utaura", "coinDecimals": 6 },
+      "currencies": [
+        {
+          "coinDenom": "TAURA",
+          "coinMinimalDenom": "utaura",
+          "coinDecimals": 6
+        }
+      ],
+      "feeCurrencies": [
+        {
+          "coinDenom": "TAURA",
+          "coinMinimalDenom": "utaura",
+          "coinDecimals": 6
+        }
+      ],
+      "stakeCurrency": {
+        "coinDenom": "TAURA",
+        "coinMinimalDenom": "utaura",
+        "coinDecimals": 6
+      },
       "coinType": 118,
-      "gasPriceStep": { "low": 0.001, "average": 0.0025, "high": 0.004 },
+      "gasPriceStep": {
+        "low": 0.001,
+        "average": 0.0025,
+        "high": 0.004
+      },
       "walletUrlForStaking": "https://explorer.dev.aura.network/validators",
       "logo": "https://i.imgur.com/zi0mTYb.png",
       "explorer": "https://explorer.dev.aura.network/"
-    },
-    {
-      "features": ["no-legacy-stdTx"],
-      "chainName": "terra testnet",
-      "chainId": "bombay-12",
-      "rpc": "https://bombay.stakesystems.io:2053",
-      "rest": "https://bombay.stakesystems.io",
-      "bip44": {
-        "coinType": 118
-      },
-      "bech32Config": {
-        "bech32PrefixAccAddr": "terra",
-        "bech32PrefixAccPub": "terrapub",
-        "bech32PrefixValAddr": "terravaloper",
-        "bech32PrefixValPub": "terravaloperpub",
-        "bech32PrefixConsAddr": "terravalcons",
-        "bech32PrefixConsPub": "terravalconspub"
-      },
-      "currencies": [
-        {
-          "coinDenom": "LUNA",
-          "coinMinimalDenom": "uluna",
-          "coinDecimals": 6
-        }
-      ],
-      "feeCurrencies": [
-        {
-          "coinDenom": "LUNA",
-          "coinMinimalDenom": "uluna",
-          "coinDecimals": 6
-        }
-      ],
-      "stakeCurrency": {
-        "coinDenom": "LUNA",
-        "coinMinimalDenom": "uluna",
-        "coinDecimals": 6
-      },
-      "coinType": 118,
-      "gasPriceStep": {
-        "low": 1,
-        "average": 2.5,
-        "high": 4
-      },
-      "walletUrlForStaking": "https://luna.network"
-    },
-    {
-      "chainId": "vega-testnet",
-      "chainName": "vega",
-      "rpc": "http://198.50.215.1:46657",
-      "rest": "http://198.50.215.1:4317",
-      "bip44": {
-        "coinType": 118
-      },
-      "bech32Config": {
-        "bech32PrefixAccAddr": "cosmos",
-        "bech32PrefixAccPub": "cosmospub",
-        "bech32PrefixValAddr": "cosmosvaloper",
-        "bech32PrefixValPub": "cosmosvaloperpub",
-        "bech32PrefixConsAddr": "cosmosvalcons",
-        "bech32PrefixConsPub": "cosmosvalconspub"
-      },
-      "currencies": [
-        {
-          "coinDenom": "ATOM",
-          "coinMinimalDenom": "uatom",
-          "coinDecimals": 6,
-          "coinGeckoId": "cosmos"
-        }
-      ],
-      "feeCurrencies": [
-        {
-          "coinDenom": "ATOM",
-          "coinMinimalDenom": "uatom",
-          "coinDecimals": 6,
-          "coinGeckoId": "cosmos"
-        }
-      ],
-      "stakeCurrency": {
-        "coinDenom": "ATOM",
-        "coinMinimalDenom": "uatom",
-        "coinDecimals": 6,
-        "coinGeckoId": "cosmos"
-      },
-      "coinType": 118,
-      "gasPriceStep": {
-        "low": 1,
-        "average": 1,
-        "high": 1
-      },
-      "features": ["stargate", "ibc-transfer", "no-legacy-stdTx"]
-    },
-    {
-      "features": ["no-legacy-stdTx"],
-      "chainId": "osmo-test-4",
-      "chainName": "osmosis testnet",
-      "rpc": "https://testnet-rpc.osmosis.zone/",
-      "rest": "https://osmosistest-lcd.quickapi.com",
-      "bip44": {
-        "coinType": 118
-      },
-      "bech32Config": {
-        "bech32PrefixAccAddr": "osmo",
-        "bech32PrefixAccPub": "osmopub",
-        "bech32PrefixValAddr": "osmovaloper",
-        "bech32PrefixValPub": "osmovaloperpub",
-        "bech32PrefixConsAddr": "osmovalcons",
-        "bech32PrefixConsPub": "osmovalconspub"
-      },
-      "currencies": [
-        {
-          "coinDenom": "OSMO",
-          "coinMinimalDenom": "uosmo",
-          "coinDecimals": 6
-        }
-      ],
-      "feeCurrencies": [
-        {
-          "coinDenom": "OSMO",
-          "coinMinimalDenom": "uosmo",
-          "coinDecimals": 6
-        }
-      ],
-      "stakeCurrency": {
-        "coinDenom": "OSMO",
-        "coinMinimalDenom": "uosmo",
-        "coinDecimals": 6
-      },
-      "coinType": 118,
-      "gasPriceStep": {
-        "low": 1,
-        "average": 2.5,
-        "high": 4
-      }
-    },
-    {
-      "chainId": "serenity-testnet-001",
-      "chainName": "Aura Serenity TestNet",
-      "rpc": "https://rpc.serenity.aura.network",
-      "rest": "https://lcd.serenity.aura.network",
-      "bip44": {
-        "coinType": 118
-      },
-      "bech32Config": {
-        "bech32PrefixAccAddr": "aura",
-        "bech32PrefixAccPub": "aurapub",
-        "bech32PrefixValAddr": "auravaloper",
-        "bech32PrefixValPub": "auravaloperpub",
-        "bech32PrefixConsAddr": "auravalcons",
-        "bech32PrefixConsPub": "auravalconspub"
-      },
-      "currencies": [
-        {
-          "coinDenom": "AURA",
-          "coinMinimalDenom": "uaura",
-          "coinDecimals": 6
-        }
-      ],
-      "feeCurrencies": [
-        {
-          "coinDenom": "AURA",
-          "coinMinimalDenom": "uaura",
-          "coinDecimals": 6
-        }
-      ],
-      "stakeCurrency": {
-        "coinDenom": "AURA",
-        "coinMinimalDenom": "uaura",
-        "coinDecimals": 6
-      },
-      "coinType": 118,
-      "gasPriceStep": {
-        "low": 0.001,
-        "average": 0.0025,
-        "high": 0.004
-      },
-      "features": ["no-legacy-stdTx"],
-      "walletUrlForStaking": "https://serenity.aurascan.io/validators",
-      "logo": "https://i.imgur.com/zi0mTYb.png",
-      "explorer": "https://serenity.aurascan.io/"
-    },
-    {
-      "chainId": "halo-testnet-001",
-      "chainName": "Aura Halo TestNet",
-      "rpc": "https://rpc.halo.aura.network",
-      "rest": "https://lcd.halo.aura.network",
-      "bip44": {
-        "coinType": 118
-      },
-      "bech32Config": {
-        "bech32PrefixAccAddr": "aura",
-        "bech32PrefixAccPub": "aurapub",
-        "bech32PrefixValAddr": "auravaloper",
-        "bech32PrefixValPub": "auravaloperpub",
-        "bech32PrefixConsAddr": "auravalcons",
-        "bech32PrefixConsPub": "auravalconspub"
-      },
-      "currencies": [
-        {
-          "coinDenom": "AURA",
-          "coinMinimalDenom": "uaura",
-          "coinDecimals": 6
-        }
-      ],
-      "feeCurrencies": [
-        {
-          "coinDenom": "AURA",
-          "coinMinimalDenom": "uaura",
-          "coinDecimals": 6
-        }
-      ],
-      "stakeCurrency": {
-        "coinDenom": "AURA",
-        "coinMinimalDenom": "uaura",
-        "coinDecimals": 6
-      },
-      "coinType": 118,
-      "gasPriceStep": {
-        "low": 0.001,
-        "average": 0.0025,
-        "high": 0.004
-      },
-      "features": ["no-legacy-stdTx"],
-      "walletUrlForStaking": "https://halo.aurascan.io/validators",
-      "logo": "https://i.imgur.com/zi0mTYb.png",
-      "explorer": "https://halo.aurascan.io/"
     },
     {
       "chainId": "evmos_9000-4",
@@ -294,47 +92,70 @@
       "features": ["ibc-transfer", "ibc-go", "eth-address-gen", "eth-key-sign", "no-legacy-stdTx"]
     },
     {
-      "chainId": "uni-3",
-      "chainName": "Uni",
-      "rpc": "https://rpc.uni.juno.deuslabs.fi",
-      "rest": "https://lcd.uni.juno.deuslabs.fi",
+      "chainId": "theta-testnet-001",
+      "chainName": "theta-testnet-001",
+      "rpc": "https://rpc.theta.aura.network/",
+      "rest": "https://lcd.theta.aura.network/",
       "bip44": {
         "coinType": 118
       },
       "bech32Config": {
-        "bech32PrefixAccAddr": "juno",
-        "bech32PrefixAccPub": "junopub",
-        "bech32PrefixValAddr": "junovaloper",
-        "bech32PrefixValPub": "junovaloperpub",
-        "bech32PrefixConsAddr": "junovalcons",
-        "bech32PrefixConsPub": "junovalconspub"
+        "bech32PrefixAccAddr": "cosmos",
+        "bech32PrefixAccPub": "cosmospub",
+        "bech32PrefixValAddr": "cosmosvaloper",
+        "bech32PrefixValPub": "cosmosvaloperpub",
+        "bech32PrefixConsAddr": "cosmosvalcons",
+        "bech32PrefixConsPub": "cosmosvalconspub"
       },
       "currencies": [
         {
-          "coinDenom": "JUNOX",
-          "coinMinimalDenom": "ujunox",
-          "coinDecimals": 6
+          "coinDenom": "ATOM",
+          "coinMinimalDenom": "uatom",
+          "coinDecimals": 6,
+          "coinGeckoId": "cosmos"
+        },
+        {
+          "coinDenom": "THETA",
+          "coinMinimalDenom": "theta",
+          "coinDecimals": 0
+        },
+        {
+          "coinDenom": "LAMBDA",
+          "coinMinimalDenom": "lambda",
+          "coinDecimals": 0
+        },
+        {
+          "coinDenom": "RHO",
+          "coinMinimalDenom": "rho",
+          "coinDecimals": 0
+        },
+        {
+          "coinDenom": "EPSILON",
+          "coinMinimalDenom": "epsilon",
+          "coinDecimals": 0
         }
       ],
       "feeCurrencies": [
         {
-          "coinDenom": "JUNOX",
-          "coinMinimalDenom": "ujunox",
-          "coinDecimals": 6
+          "coinDenom": "ATOM",
+          "coinMinimalDenom": "uatom",
+          "coinDecimals": 6,
+          "coinGeckoId": "cosmos"
         }
       ],
       "stakeCurrency": {
-        "coinDenom": "JUNOX",
-        "coinMinimalDenom": "ujunox",
-        "coinDecimals": 6
+        "coinDenom": "ATOM",
+        "coinMinimalDenom": "uatom",
+        "coinDecimals": 6,
+        "coinGeckoId": "cosmos"
       },
       "coinType": 118,
       "gasPriceStep": {
-        "low": 0.0125,
-        "average": 0.025,
-        "high": 0.05
+        "low": 1,
+        "average": 1,
+        "high": 1
       },
-      "features": ["ibc-transfer", "cosmwasm", "ibc-go"]
+      "features": ["stargate", "ibc-transfer", "no-legacy-stdTx"]
     }
   ]
 }

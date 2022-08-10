@@ -59,7 +59,7 @@ function Welcome(): ReactElement {
                 {/* <Button> */}
                 <StyledTextButton size="xl">
                   <img src={plusIcon} />
-                  <p style={{ alignSelf: 'center', marginLeft: 5 }}> Create new Safe</p>
+                  <span style={{ alignSelf: 'center', marginLeft: 5 }}> Create new Safe</span>
                 </StyledTextButton>
                 {/* </Button> */}
               </StyledButton>

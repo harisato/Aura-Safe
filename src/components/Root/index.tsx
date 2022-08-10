@@ -18,11 +18,13 @@ import StoreMigrator from 'src/components/StoreMigrator'
 import LegacyRouteRedirection from './LegacyRouteRedirection'
 import { logError, Errors, CodedException } from 'src/logic/exceptions/CodedException'
 import { loadChains } from 'src/config/cache/chains'
-import { isValidChainId, _getChainId } from 'src/config'
+import { isValidChainId, LOCAL_CONFIG_KEY, _getChainId, _setChainId } from 'src/config'
 import { DEFAULT_CHAIN_ID } from 'src/utils/constants'
 import { setChainId } from 'src/logic/config/utils'
 import { getGatewayUrl } from 'src/services/data/environment'
 import { setBaseUrl } from 'src/services'
+import local from 'src/utils/storage/local'
+import { ConfigState } from 'src/logic/config/store/reducer/reducer'
 
 // Preloader is rendered outside of '#root' and acts as a loading spinner
 // for the app and then chains loading
@@ -39,9 +41,21 @@ const RootConsumer = (): React.ReactElement | null => {
     const initGateway = async () => {
       try {
         const gateway = await getGatewayUrl()
-        if (gateway && gateway?.apiGateway) {
-          setBaseUrl(gateway.apiGateway)
-          setGatewayUrl(gateway.apiGateway)
+        if (!gateway) {
+          setIsError(true)
+          return
+        }
+        const { chainId, apiGateway } = gateway
+
+        const localItem = local.getItem<ConfigState>(LOCAL_CONFIG_KEY)
+
+        if (chainId) {
+          _setChainId(localItem?.chainId || chainId)
+        }
+
+        if (apiGateway) {
+          setBaseUrl(apiGateway)
+          setGatewayUrl(apiGateway)
         } else {
           setIsError(true)
         }

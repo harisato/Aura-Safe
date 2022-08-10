@@ -77,7 +77,7 @@ class GnoTable extends React.Component<any, any> {
 
   handleChangeRowsPerPage = (e) => {
     const rowsPerPage = Number(e.target.value)
-    this.setState({ rowsPerPage })
+    this.setState({ rowsPerPage, page: 0 })
   }
 
   render() {

@@ -1,4 +1,7 @@
 import { ChainInfo, RPC_AUTHENTICATION } from '@gnosis.pm/safe-react-gateway-sdk'
+import _ from 'lodash'
+import { _setChainId } from 'src/config'
+import { DEFAULT_CHAIN_ID } from 'src/utils/constants'
 import { getMChainsConfig } from '../../services'
 
 // Cache is required as loading Redux store directly is an anit-pattern
@@ -41,5 +44,5 @@ export const emptyChainInfo: ChainInfo = {
   ensRegistryAddress: '',
   gasPrice: [],
   disabledWallets: [],
-  features: []
+  features: [],
 }

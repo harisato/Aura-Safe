@@ -1,19 +1,20 @@
 import BigNumber from 'bignumber.js'
 import { Dispatch } from 'redux'
 
+import { SafeBalanceResponse } from '@gnosis.pm/safe-react-gateway-sdk'
+import { currentCurrencySelector } from 'src/logic/currencyValues/store/selectors'
+import { Errors, logError } from 'src/logic/exceptions/CodedException'
 import { fetchTokenCurrenciesBalances, TokenBalance } from 'src/logic/safe/api/fetchTokenCurrenciesBalances'
+import { updateSafe } from 'src/logic/safe/store/actions/updateSafe'
+import { currentSafe } from 'src/logic/safe/store/selectors'
 import { addTokens } from 'src/logic/tokens/store/actions/addTokens'
 import { makeToken, Token } from 'src/logic/tokens/store/model/token'
-import { updateSafe } from 'src/logic/safe/store/actions/updateSafe'
-import { AppReduxState } from 'src/store'
 import { humanReadableValue } from 'src/logic/tokens/utils/humanReadableValue'
-import { currentSafe } from 'src/logic/safe/store/selectors'
-import { currentCurrencySelector } from 'src/logic/currencyValues/store/selectors'
-import { ZERO_ADDRESS, sameAddress } from 'src/logic/wallets/ethAddresses'
-import { Errors, logError } from 'src/logic/exceptions/CodedException'
-import { SafeBalanceResponse } from '@gnosis.pm/safe-react-gateway-sdk'
-import { IMSafeInfo } from 'src/types/safe'
+import { sameAddress, ZERO_ADDRESS } from 'src/logic/wallets/ethAddresses'
 import { getMChainsConfig } from 'src/services/index'
+import { AppReduxState } from 'src/store'
+import { IMSafeInfo } from 'src/types/safe'
+import { getChains } from 'src/config/cache/chains'
 
 export type BalanceRecord = {
   tokenAddress?: string
@@ -98,14 +99,13 @@ export const fetchMSafeTokens =
         items: [],
       }
 
-      if (safeInfo.balance) {
-        const listChain = await getMChainsConfig()
+      if (safeInfo?.balance) {
+        // const listChain = await getMChainsConfig()
+        const listChain = getChains()
         const decimal: any = listChain.find((x: any) => x.internalChainId === safeInfo?.internalChainId)
         safeInfo.balance.forEach((balance) => {
-          console.log('balance', balance)
-
           tokenCurrenciesBalances.items.push({
-            balance: `${+balance.amount > 0 ? balance.amount : 0}`,
+            balance: `${+balance?.amount > 0 ? balance?.amount : 0}`,
             fiatBalance: '0',
             fiatConversion: '0',
             tokenInfo: {
@@ -113,7 +113,7 @@ export const fetchMSafeTokens =
               decimals: decimal.nativeCurrency.decimals,
               logoUri: '',
               name: 'Aura',
-              symbol: 'Aura',
+              symbol: decimal.nativeCurrency.coinDenom,
             },
           })
         })
