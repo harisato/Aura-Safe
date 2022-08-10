@@ -53,6 +53,7 @@ import { ICreateSafeTransaction } from 'src/types/transaction'
 import { ModalHeader } from '../ModalHeader'
 import { styles } from './style'
 import fetchTransactions from 'src/logic/safe/store/actions/transactions/fetchTransactions'
+import { MESSAGES_CODE } from 'src/services/constant/message'
 
 const useStyles = makeStyles(styles)
 
@@ -233,7 +234,7 @@ const ReviewSendFundsTx = ({ onClose, onPrev, tx }: ReviewTxProps): React.ReactE
     createSafeTransaction(data)
       .then((e) => {
         const { ErrorCode } = e
-        if (ErrorCode === 'SUCCESSFUL') {
+        if (ErrorCode === MESSAGES_CODE.SUCCESSFUL.ErrorCode) {
           setButtonStatus(ButtonStatus.READY)
 
           const chainId = chainInfo.chainId
@@ -246,11 +247,19 @@ const ReviewSendFundsTx = ({ onClose, onPrev, tx }: ReviewTxProps): React.ReactE
           })
           history.push(txRoute)
         } else {
-          if (ErrorCode === 'E028') {
-            dispatch(enqueueSnackbar(enhanceSnackbarForAction(NOTIFICATIONS.CREATE_SAFE_PENDING_EXECUTE_MSG)))
-          } else {
-            dispatch(enqueueSnackbar(enhanceSnackbarForAction(NOTIFICATIONS.TX_FAILED_MSG)))
+          switch (ErrorCode) {
+            case MESSAGES_CODE.E029.ErrorCode:
+              dispatch(enqueueSnackbar(enhanceSnackbarForAction(NOTIFICATIONS.CREATE_SAFE_PENDING_EXECUTE_MSG)))
+              break
+            default:
+              dispatch(enqueueSnackbar(enhanceSnackbarForAction(NOTIFICATIONS.TX_FAILED_MSG)))
+              break
           }
+          // if (ErrorCode === 'E028') {
+          //   dispatch(enqueueSnackbar(enhanceSnackbarForAction(NOTIFICATIONS.CREATE_SAFE_PENDING_EXECUTE_MSG)))
+          // } else {
+          //   dispatch(enqueueSnackbar(enhanceSnackbarForAction(NOTIFICATIONS.TX_FAILED_MSG)))
+          // }
         }
 
         onClose()
