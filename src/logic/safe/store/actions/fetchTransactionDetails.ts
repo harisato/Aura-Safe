@@ -1,15 +1,5 @@
 import { createAction } from 'redux-actions'
 
-import { Dispatch } from 'src/logic/safe/store/actions/types'
-import { Transaction } from 'src/logic/safe/store/models/types/gateway.d'
-import { TransactionDetailsPayload } from 'src/logic/safe/store/reducer/gatewayTransactions'
-import { getTransactionByAttribute } from 'src/logic/safe/store/selectors/gatewayTransactions'
-import { AppReduxState } from 'src/store'
-import { fetchSafeTransaction } from 'src/logic/safe/transactions/api/fetchSafeTransaction'
-import { currentChainId } from 'src/logic/config/store/selectors'
-import { extractSafeAddress } from 'src/routes/routes'
-import { getTxDetailByHash } from 'src/services'
-import { MESSAGES_CODE } from 'src/services/constant/message'
 import {
   AddressEx,
   DetailedExecutionInfo,
@@ -22,6 +12,17 @@ import {
   TransactionStatus,
   TransferDirection,
 } from '@gnosis.pm/safe-react-gateway-sdk'
+import { getCoinDecimal, getCoinSymbol } from 'src/config'
+import { currentChainId } from 'src/logic/config/store/selectors'
+import { Dispatch } from 'src/logic/safe/store/actions/types'
+import { Transaction } from 'src/logic/safe/store/models/types/gateway.d'
+import { TransactionDetailsPayload } from 'src/logic/safe/store/reducer/gatewayTransactions'
+import { getTransactionByAttribute } from 'src/logic/safe/store/selectors/gatewayTransactions'
+import { fetchSafeTransaction } from 'src/logic/safe/transactions/api/fetchSafeTransaction'
+import { extractSafeAddress } from 'src/routes/routes'
+import { getTxDetailByHash } from 'src/services'
+import { MESSAGES_CODE } from 'src/services/constant/message'
+import { AppReduxState } from 'src/store'
 
 export const UPDATE_TRANSACTION_DETAILS = 'UPDATE_TRANSACTION_DETAILS'
 const updateTransactionDetails = createAction<TransactionDetailsPayload>(UPDATE_TRANSACTION_DETAILS)
@@ -80,6 +81,9 @@ export const fetchTransactionDetailsByHash =
       let detailedExecutionInfo: (DetailedExecutionInfo & DetailedExecutionInfoExtended) | null = null
       let txData: TransactionData | null = null
 
+      const coinDecimal = getCoinDecimal()
+      const symbol = getCoinSymbol()
+
       if (direction == TransferDirection.OUTGOING) {
         safeAppInfo = {
           name: '',
@@ -133,10 +137,10 @@ export const fetchTransactionDetailsByHash =
           rejectors: Data?.Rejectors.map((re) => ({ logoUri: null, name: null, value: re.ownerAddress } as AddressEx)),
           gasTokenInfo: {
             address: '',
-            decimals: 6,
+            decimals: coinDecimal,
             logoUri: 'https://safe-transaction-assets.staging.gnosisdev.com/chains/4/currency_logo.png',
             name: 'Aura',
-            symbol: 'Aura',
+            symbol,
           },
         }
 

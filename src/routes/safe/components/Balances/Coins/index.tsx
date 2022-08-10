@@ -1,32 +1,27 @@
-import { useEffect, useMemo } from 'react'
-import { useSelector } from 'react-redux'
-import { List } from 'immutable'
+import { FixedIcon, Text } from '@aura/safe-react-components'
+import { makeStyles } from '@material-ui/core/styles'
 import TableCell from '@material-ui/core/TableCell'
-import Tooltip from '@material-ui/core/Tooltip'
 import TableContainer from '@material-ui/core/TableContainer'
 import TableRow from '@material-ui/core/TableRow'
-import { Skeleton } from '@material-ui/lab'
-import InfoIcon from 'src/assets/icons/info_red.svg'
-import { FixedIcon, Text, Button } from '@aura/safe-react-components'
-import Img from 'src/components/layout/Img'
+import { List } from 'immutable'
+import { useEffect, useMemo } from 'react'
+import { useSelector } from 'react-redux'
+import Row from 'src/components/layout/Row'
 import Table from 'src/components/Table'
 import { cellWidth } from 'src/components/Table/TableHead'
-import Row from 'src/components/layout/Row'
+import { currentCurrencySelector } from 'src/logic/currencyValues/store/selectors'
 import { BALANCE_ROW_TEST_ID } from 'src/routes/safe/components/Balances'
 import AssetTableCell from 'src/routes/safe/components/Balances/AssetTableCell'
 import {
+  BalanceData,
   BALANCE_TABLE_ASSET_ID,
   BALANCE_TABLE_BALANCE_ID,
-  BALANCE_TABLE_VALUE_ID,
   generateColumns,
   getBalanceData,
-  BalanceData,
 } from 'src/routes/safe/components/Balances/dataFetcher'
 import { extendedSafeTokensSelector, grantedSelector } from 'src/routes/safe/container/selector'
-import { useAnalytics, SAFE_EVENTS } from 'src/utils/googleAnalytics'
-import { makeStyles } from '@material-ui/core/styles'
-import { styles, StyledButton } from './styles'
-import { currentCurrencySelector } from 'src/logic/currencyValues/store/selectors'
+import { SAFE_EVENTS, useAnalytics } from 'src/utils/googleAnalytics'
+import { StyledButton, styles } from './styles'
 
 const useStyles = makeStyles(styles)
 
@@ -35,27 +30,27 @@ type Props = {
   showSendFunds: (tokenAddress: string) => void
 }
 
-type CurrencyTooltipProps = {
-  valueWithCurrency: string
-  balanceWithSymbol: string
-}
+// type CurrencyTooltipProps = {
+//   valueWithCurrency: string
+//   balanceWithSymbol: string
+// }
 
-const CurrencyTooltip = (props: CurrencyTooltipProps): React.ReactElement | null => {
-  const { balanceWithSymbol, valueWithCurrency } = props
-  const classes = useStyles()
-  const balance = balanceWithSymbol.replace(/[^\d.-]/g, '')
-  const value = valueWithCurrency.replace(/[^\d.-]/g, '')
-  if (!Number(value) && Number(balance)) {
-    return (
-      <Tooltip placement="top" title="Value may be zero due to missing token price information">
-        <span>
-          <Img className={classes.tooltipInfo} alt="Info Tooltip" height={16} src={InfoIcon} />
-        </span>
-      </Tooltip>
-    )
-  }
-  return null
-}
+// const CurrencyTooltip = (props: CurrencyTooltipProps): React.ReactElement | null => {
+//   const { balanceWithSymbol, valueWithCurrency } = props
+//   const classes = useStyles()
+//   const balance = balanceWithSymbol.replace(/[^\d.-]/g, '')
+//   const value = valueWithCurrency.replace(/[^\d.-]/g, '')
+//   if (!Number(value) && Number(balance)) {
+//     return (
+//       <Tooltip placement="top" title="Value may be zero due to missing token price information">
+//         <span>
+//           <Img className={classes.tooltipInfo} alt="Info Tooltip" height={16} src={InfoIcon} />
+//         </span>
+//       </Tooltip>
+//     )
+//   }
+//   return null
+// }
 
 const Coins = (props: Props): React.ReactElement => {
   const { showReceiveFunds, showSendFunds } = props
@@ -65,11 +60,11 @@ const Coins = (props: Props): React.ReactElement => {
   const selectedCurrency = useSelector(currentCurrencySelector)
   const safeTokens = useSelector(extendedSafeTokensSelector)
   const granted = useSelector(grantedSelector)
-  const { trackEvent } = useAnalytics()
+  // const { trackEvent } = useAnalytics()
 
-  useEffect(() => {
-    trackEvent(SAFE_EVENTS.COINS)
-  }, [trackEvent])
+  // useEffect(() => {
+  //   trackEvent(SAFE_EVENTS.COINS)
+  // }, [trackEvent])
 
   const filteredData: List<BalanceData> = useMemo(
     () => getBalanceData(safeTokens, selectedCurrency),
