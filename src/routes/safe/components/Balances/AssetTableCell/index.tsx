@@ -19,7 +19,13 @@ const AssetTableCell = ({ asset }: { asset: BalanceData['asset'] }): ReactElemen
   const isNativeCurrency = asset.address === getNativeCurrencyAddress()
   return (
     <Block justify="left">
-      <Img alt={asset.name} height={26} onError={setImageToPlaceholder} src={asset.logoUri} />
+      <Img
+        alt={asset.name}
+        style={{ borderRadius: '50%' }}
+        height={26}
+        onError={setImageToPlaceholder}
+        src={asset.logoUri}
+      />
       <StyledParagraph noMargin size="lg" color="white">
         {asset.name.toUpperCase()}
       </StyledParagraph>

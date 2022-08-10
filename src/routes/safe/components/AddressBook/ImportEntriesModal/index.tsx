@@ -164,18 +164,18 @@ const ImportEntriesModal = ({ importEntryModalHandler, isOpen, onClose }: Import
           )}
           {!csvLoaded && importError === '' && (
             <Text color="white" as="p" size="xl">
-              Only CSV files exported from Aura Safe are allowed. <br />
-              <HelpInfo />
+              Only CSV files exported from Pyxis Safe are allowed. <br />
+              {/* <HelpInfo /> */}
             </Text>
           )}
           {csvLoaded && importError === '' && (
             <>
-              <Text size="xl" as="span" color={'white'}>{`You're about to import`}</Text>
+              <Text size="xl" as="span" color="white">{`You're about to import`}</Text>
               <Text
                 size="xl"
                 strong
                 as="span"
-                color={'white'}
+                color="white"
               >{` ${entryList.length} entries to your address book`}</Text>
             </>
           )}

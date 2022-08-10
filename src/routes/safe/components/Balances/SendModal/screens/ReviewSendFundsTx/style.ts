@@ -25,7 +25,7 @@ export const styles = createStyles({
     backgroundClip: 'content-box, border-box',
     textAlign: 'center',
     display: 'flex',
-    fontSize: 12,
+    fontSize: 14,
     cursor: 'pointer',
     alignItems: 'center',
     justifyContent: 'center',

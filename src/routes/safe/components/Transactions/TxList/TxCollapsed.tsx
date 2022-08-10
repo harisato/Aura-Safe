@@ -89,9 +89,8 @@ const SmallDot = styled(Dot)`
 
 const IconText = styled(IconTextSrc)`
   p {
-    font-weight: bold;
+    font-weight: 600;
     font-family: SFProDisplay;
-    color: #98989b;
   }
 `
 
@@ -173,7 +172,7 @@ export const TxCollapsed = ({
     <div className={'tx-votes' + willBeReplaced}>
       {votes && (
         <IconText
-          color={votes.required > votes.submitted ? 'secondaryLight' : 'primary'}
+          color={votes.required > votes.submitted ? 'disableAura' : 'successAura'}
           iconType="owners"
           iconSize="sm"
           text={`${votes.votes}`}
