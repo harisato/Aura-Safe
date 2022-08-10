@@ -119,11 +119,13 @@ export const RejectTxModal = ({ isOpen, onClose, gwTransaction }: Props): React.
                 <Row align="center" margin="md" data-testid="recipient-review-step">
                   <Col xs={12}></Col>
                 </Row>
-                <Row>
-                  <Paragraph>
-                    You’re about to reject a transaction. This action cannot be undone. Please make sure before
-                    proceeding.
-                  </Paragraph>
+                <Row align="center" margin="smd">
+                  <Col xs={12}>
+                    <Paragraph>
+                      You’re about to reject a transaction. This action cannot be undone. Please make sure before
+                      proceeding.
+                    </Paragraph>
+                  </Col>
                 </Row>
               </Block>
 

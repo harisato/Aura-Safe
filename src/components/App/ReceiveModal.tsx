@@ -119,7 +119,7 @@ const ReceiveModal = ({ onClose, safeAddress, safeName }: Props): ReactElement =
       <Hairline />
       <Row align="center" className={classes.buttonRow}>
         <Button size="md" color="primary" onClick={onClose} variant="contained">
-          <span style={{ fontSize: 14, fontWeight: 600 }}>Done</span>
+          <span style={{ fontSize: 14, fontWeight: 500 }}>Done</span>
         </Button>
       </Row>
     </>

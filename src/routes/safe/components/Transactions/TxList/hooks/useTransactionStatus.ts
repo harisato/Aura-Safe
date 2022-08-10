@@ -25,10 +25,10 @@ export const useTransactionStatus = (transaction: Transaction): TransactionStatu
         setStatus({ color: 'successAura', text: 'Success' })
         break
       case LocalTransactionStatus.FAILED:
-        setStatus({ color: 'successAura', text: 'Failed' })
+        setStatus({ color: 'failAura', text: 'Failed' })
         break
       case LocalTransactionStatus.CANCELLED:
-        setStatus({ color: 'failAura', text: 'Cancelled' })
+        setStatus({ color: 'failAura', text: 'Rejected' })
         break
       case LocalTransactionStatus.WILL_BE_REPLACED:
         setStatus({ color: 'placeHolder', text: 'Transaction will be replaced' })

@@ -39,21 +39,22 @@ export const TransactionFees = ({
 
   return (
     <>
-      {gasCostFormatted != null && (
-        <Paragraph size="smd" align="left" color="disabled">
-          You&apos;re about to confirm a transaction and will have to sign it using your currently connected wallet
-          {/* with your currently connected wallet. */}
-          {!isOffChainSignature && (
-            <>
-              {/* Make sure you have enough funds in this safe to fund the associated transaction amount and fee. */}
-              {/* <StyledText>
-                {' '}
-                {gasCostFormatted} {nativeCurrency.symbol}{' '}
-              </StyledText> */}
-            </>
-          )}
-        </Paragraph>
-      )}
+      {gasCostFormatted != null &&
+        (isExecution ? (
+          <Paragraph color="white">
+            You&apos;re about to execute a transaction and will have to confirm it with your currently connected wallet.
+            {!isOffChainSignature && (
+              <>
+                Make sure you have enough funds in this safe to fund the associated transaction amount and fee.
+                <StyledText> {/* {gasCostFormatted} {nativeCurrency.symbol}{' '} */}</StyledText>
+              </>
+            )}
+          </Paragraph>
+        ) : (
+          <Paragraph color="white">
+            You&apos;re about to confirm a transaction and will have to sign it using your currently connected wallet.
+          </Paragraph>
+        ))}
       <TransactionFailText txEstimationExecutionStatus={txEstimationExecutionStatus} isExecution={isExecution} />
     </>
   )
