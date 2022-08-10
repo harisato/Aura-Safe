@@ -16,8 +16,10 @@ import { fetchCollectibles } from 'src/logic/collectibles/store/actions/fetchCol
 import { currentChainId } from 'src/logic/config/store/selectors'
 import { getMSafeInfo } from 'src/services'
 import { IMSafeInfo } from 'src/types/safe'
-import { _getChainId } from 'src/config'
+import { getCoinDecimal, _getChainId } from 'src/config'
 import { fetchMSafeTokens } from 'src/logic/tokens/store/actions/fetchSafeTokens'
+import _ from 'lodash'
+import BigNumber from 'bignumber.js'
 
 /**
  * Builds a Safe Record that will be added to the app's store
@@ -158,15 +160,27 @@ export const fetchMSafe =
     // remote (client-gateway)
     if (remoteSafeInfo) {
       safeInfo = await extractRemoteSafeInfo(remoteSafeInfo)
-
+      const coinDecimal = getCoinDecimal()
       // If these polling timestamps have changed, fetch again
-      const { txQueuedTag, txHistoryTag } = currentSafeWithNames(state)
+      const { txQueuedTag, txHistoryTag, balances } = currentSafeWithNames(state)
+      const remoteBalances = _.first(mSafeInfo?.balance)
+      const safeBalance = new BigNumber(remoteBalances?.amount || 0)
+        .dividedBy(Math.pow(10, coinDecimal))
+        .toFixed(coinDecimal)
+
+      let isRefreshTx = false
+
+      if (_.first(balances)?.tokenBalance) {
+        isRefreshTx = Number(_.first(balances)?.tokenBalance) < Number(safeBalance)
+      }
 
       const shouldUpdateTxHistory = txHistoryTag !== safeInfo.txHistoryTag
       const shouldUpdateTxQueued = txQueuedTag !== safeInfo.txQueuedTag
 
-      if (shouldUpdateTxHistory || shouldUpdateTxQueued) {
-        dispatchPromises.push(dispatch(fetchTransactions(chainId, safeAddress, shouldUpdateTxQueued)))
+      if (shouldUpdateTxHistory || isRefreshTx) {
+        dispatchPromises.push(dispatch(fetchTransactions(chainId, safeAddress)))
+      } else if (shouldUpdateTxQueued) {
+        dispatchPromises.push(dispatch(fetchTransactions(chainId, safeAddress, true)))
       }
 
       if (mSafeInfo) {
