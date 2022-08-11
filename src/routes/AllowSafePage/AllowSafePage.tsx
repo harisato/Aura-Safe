@@ -53,7 +53,7 @@ import { getLoadSafeName } from './fields/utils'
 import AllowSafeOwnersStep, { loadSafeOwnersStepLabel } from './steps/AllowSafeOwnersStep'
 import NameAllowSafeStep, { loadSafeStepValidations, nameNewSafeStepLabel } from './steps/NameAllowSafeStep'
 import ReviewAllowStep, { reviewLoadStepLabel } from './steps/ReviewAllowStep'
-import _ from 'lodash'
+import _, { toNumber } from 'lodash'
 import { userAccountSelector } from 'src/logic/wallets/store/selectors'
 import { Modal } from 'src/components/Modal'
 import Paragraph from 'src/components/layout/Paragraph'
@@ -304,7 +304,14 @@ function Allow(): ReactElement {
             <Paragraph>
               You will only be able to use this Safe on <NetworkLabel />
             </Paragraph>
-            <Paragraph>All owners has accepted to create this Safe. This Safe is now ready to use.</Paragraph>
+            <>
+              {initialFormValues &&
+              initialFormValues?.[FIELD_SAFE_THRESHOLD] < initialFormValues?.[FIELD_SAFE_OWNER_LIST].length ? (
+                <Paragraph>All other owner must give their permission in order for the Safe to be created.</Paragraph>
+              ) : (
+                <Paragraph>All owners has accepted to create this Safe. This Safe is now ready to use.</Paragraph>
+              )}
+            </>
           </div>
         </Modal.Body>
         <Modal.Footer justifyContent="flex-end">
