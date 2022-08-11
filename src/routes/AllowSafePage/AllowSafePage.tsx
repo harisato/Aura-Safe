@@ -55,6 +55,13 @@ import NameAllowSafeStep, { loadSafeStepValidations, nameNewSafeStepLabel } from
 import ReviewAllowStep, { reviewLoadStepLabel } from './steps/ReviewAllowStep'
 import _ from 'lodash'
 import { userAccountSelector } from 'src/logic/wallets/store/selectors'
+import { Modal } from 'src/components/Modal'
+import Paragraph from 'src/components/layout/Paragraph'
+import NetworkLabel from 'src/components/NetworkLabel/NetworkLabel'
+import { borderLinear } from 'src/theme/variables'
+
+import { Text } from '@aura/safe-react-components'
+import Button from 'src/components/layout/Button'
 
 const BackIcon = styled(IconButton)`
   color: ${secondary};
@@ -62,12 +69,31 @@ const BackIcon = styled(IconButton)`
   margin-right: 5px;
 `
 
+const StyledBorder = styled.div`
+  border-radius: 50px !important;
+  border: 2px solid transparent;
+  background-image: ${borderLinear};
+  background-origin: border-box;
+  background-clip: content-box, border-box;
+`
+
+const StyledButtonBorder = styled(Button)`
+  background-color: rgba(18, 18, 18, 1) !important;
+  border-radius: 50px !important;
+`
+
+const StyledButtonLabel = styled(Text)`
+  color: white;
+  background-color: transparent !important;
+`
+
 function Allow(): ReactElement {
   const dispatch = useDispatch()
   const history = useHistory()
   const { safeId } = extractPrefixedSafeAddress(undefined, ALLOW_SPECIFIC_SAFE_ROUTE)
   const safeRandomName = useMnemonicSafeName()
-
+  const [showCreatedModal, setShowModal] = useState(false)
+  const [dataAllowSafe, setDataAllowSafe] = useState(null)
   const [initialFormValues, setInitialFormValues] = useState<AllowSafeFormValues>()
   const addressBook = useSelector(currentNetworkAddressBookAsMap)
   const chainId = useSelector(currentChainId)
@@ -156,38 +182,25 @@ function Allow(): ReactElement {
 
   const onSubmitAllowSafe = async (values: AllowSafeFormValues): Promise<void> => {
     const id = values[FIELD_ALLOW_SAFE_ID]
-
     const safeName = values[FIELD_ALLOW_CUSTOM_SAFE_NAME] || values[FIELD_ALLOW_SUGGESTED_SAFE_NAME]
-
     const lastUsedProvider = await loadLastUsedProvider()
-
     let walletKey: WalletKey | undefined
-
     if (lastUsedProvider === WALLETS_NAME.Keplr) {
       walletKey = await getKeplrKey(chainId)
     }
-
     if (!id || !walletKey) {
       return
     }
-
     const { ErrorCode, Message, Data: safeData } = await allowMSafe(id, walletKey)
-
     if (ErrorCode === MESSAGES_CODE.SUCCESSFUL.ErrorCode) {
       const { safeAddress, id } = safeData
       updateAddressBook(safeAddress, values)
-
       if (safeData.status === SafeStatus.Created) {
         const safeProps = await buildMSafe(safeAddress, id)
-
         const storedSafes = loadStoredSafes() || {}
-
         storedSafes[safeAddress] = safeProps
-
         saveSafes(storedSafes)
-
         dispatch(addOrUpdateSafe(safeProps))
-
         history.push(
           generateSafeRoute(SAFE_ROUTES.ASSETS_BALANCES, {
             shortName: getShortName(),
@@ -197,9 +210,7 @@ function Allow(): ReactElement {
         )
       } else {
         const safesPending = loadFromStorage<PendingSafeListStorage>(SAFES_PENDING_STORAGE_KEY, `${userAccount}_`) || []
-
         const safe = _.find(safesPending, ['id', id])
-
         if (safe) {
           _.assign(safe, {
             suggestedSafeName: safeName,
@@ -213,9 +224,7 @@ function Allow(): ReactElement {
             },
           ])
         }
-
         saveToStorage(SAFES_PENDING_STORAGE_KEY, safesPending, `${userAccount}_`)
-
         history.push(WELCOME_ROUTE)
       }
     } else {
@@ -229,36 +238,86 @@ function Allow(): ReactElement {
       )
     }
   }
+  const onClickModalButton = () => {
+    if (dataAllowSafe) {
+      onSubmitAllowSafe(dataAllowSafe)
+    }
+  }
 
   return (
-    <Page>
-      <Block>
-        <Row align="center">
-          <BackIcon disableRipple onClick={history.goBack}>
-            <ChevronLeft />
-          </BackIcon>
-          <Heading tag="h2">Allow New Safe</Heading>
-        </Row>
+    <>
+      <Page>
+        <Block>
+          <Row align="center">
+            <BackIcon disableRipple onClick={history.goBack}>
+              <ChevronLeft />
+            </BackIcon>
+            <Heading tag="h2">Allow New Safe</Heading>
+          </Row>
 
-        {/* key={safeAddress} ensures that it goes to step 1 when the address changes */}
-        <StepperForm
-          initialValues={initialFormValues}
-          testId="load-safe-form"
-          onSubmit={onSubmitAllowSafe}
-          key={safeId}
+          {/* key={safeAddress} ensures that it goes to step 1 when the address changes */}
+          <StepperForm
+            initialValues={initialFormValues}
+            testId="load-safe-form"
+            onSubmit={(value) => {
+              setDataAllowSafe(value)
+              setShowModal(true)
+            }}
+            key={safeId}
+          >
+            <StepFormElement label={nameNewSafeStepLabel} nextButtonLabel="Continue" validate={loadSafeStepValidations}>
+              <NameAllowSafeStep />
+            </StepFormElement>
+            <StepFormElement label={loadSafeOwnersStepLabel} nextButtonLabel="Continue">
+              <AllowSafeOwnersStep />
+            </StepFormElement>
+            <StepFormElement label={reviewLoadStepLabel} nextButtonLabel="Allow">
+              <ReviewAllowStep />
+            </StepFormElement>
+          </StepperForm>
+        </Block>
+      </Page>
+
+      <Modal
+        description=""
+        handleClose={() => {
+          setShowModal(false)
+          setDataAllowSafe(null)
+        }}
+        open={showCreatedModal}
+        title={'Allow a new Safe'}
+      >
+        <Modal.Header
+          onClose={() => {
+            setShowModal(false)
+            setDataAllowSafe(null)
+          }}
         >
-          <StepFormElement label={nameNewSafeStepLabel} nextButtonLabel="Continue" validate={loadSafeStepValidations}>
-            <NameAllowSafeStep />
-          </StepFormElement>
-          <StepFormElement label={loadSafeOwnersStepLabel} nextButtonLabel="Continue">
-            <AllowSafeOwnersStep />
-          </StepFormElement>
-          <StepFormElement label={reviewLoadStepLabel} nextButtonLabel="Allow">
-            <ReviewAllowStep />
-          </StepFormElement>
-        </StepperForm>
-      </Block>
-    </Page>
+          <Modal.Header.Title withoutMargin>{'Allow a new Safe'}</Modal.Header.Title>
+        </Modal.Header>
+
+        <Modal.Body>
+          <div data-testid="safe-created-popup">
+            <Paragraph>
+              You have given your permission to create a Safe with other owners on <NetworkLabel />
+            </Paragraph>
+            <Paragraph>
+              You will only be able to use this Safe on <NetworkLabel />
+            </Paragraph>
+            <Paragraph>All other owner must give their permission in order for the Safe to be created. </Paragraph>
+          </div>
+        </Modal.Body>
+        <Modal.Footer justifyContent="flex-end">
+          {
+            <StyledBorder>
+              <StyledButtonBorder iconType="safe" iconSize="sm" size="lg" onClick={onClickModalButton}>
+                <StyledButtonLabel size="xl">Continue</StyledButtonLabel>
+              </StyledButtonBorder>
+            </StyledBorder>
+          }
+        </Modal.Footer>
+      </Modal>
+    </>
   )
 }
 
