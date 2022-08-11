@@ -258,10 +258,10 @@ function CreateSafePage(): ReactElement {
         description=""
         handleClose={onClickModalButton}
         open={showCreatedModal}
-        title={pendingSafe ? 'Confirmation' : 'Safe Created!'}
+        title={pendingSafe ? 'Create a new Safe' : 'Safe Created!'}
       >
         <Modal.Header onClose={onClickModalButton}>
-          <Modal.Header.Title withoutMargin>{pendingSafe ? 'Confirmation' : 'Safe Created!'}</Modal.Header.Title>
+          <Modal.Header.Title withoutMargin>{pendingSafe ? 'Create a new Safe' : 'Safe Created!'}</Modal.Header.Title>
         </Modal.Header>
 
         <Modal.Body>

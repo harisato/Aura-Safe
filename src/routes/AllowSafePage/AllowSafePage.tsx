@@ -304,7 +304,7 @@ function Allow(): ReactElement {
             <Paragraph>
               You will only be able to use this Safe on <NetworkLabel />
             </Paragraph>
-            <Paragraph>All other owner must give their permission in order for the Safe to be created. </Paragraph>
+            <Paragraph>All owners has accepted to create this Safe. This Safe is now ready to use.</Paragraph>
           </div>
         </Modal.Body>
         <Modal.Footer justifyContent="flex-end">
