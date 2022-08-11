@@ -44,6 +44,8 @@ function getExplorerUrlTxHash(chainId: string, baseUrl: string): string {
   switch (chainId) {
     case 'evmos_9000-4':
       return `${baseUrl.endsWith('/') ? baseUrl : baseUrl + '/'}txs/{{txHash}}`
+    case 'theta-testnet-001':
+      return `${baseUrl.endsWith('/') ? baseUrl : baseUrl + '/'}transactions/{{txHash}}`
     default:
       return `${baseUrl.endsWith('/') ? baseUrl : baseUrl + '/'}transaction/{{txHash}}`
   }

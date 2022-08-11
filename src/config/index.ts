@@ -135,8 +135,8 @@ export const getHashedExplorerUrl = (hash: string): string => {
 // Matches return type of ExplorerInfo from SRC
 export const getExplorerInfo = (hash: string): (() => { url: string; alt: string }) => {
   const url = getHashedExplorerUrl(hash)
-
   const { hostname } = new URL(url)
+
   const alt = `View on ${hostname}` // Not returned by CGW
   return () => ({ url, alt })
 }
