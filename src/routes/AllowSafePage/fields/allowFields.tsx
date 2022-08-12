@@ -12,10 +12,10 @@ export type OwnerFieldListItem = {
 }
 
 export type AllowSafeFormValues = {
-  [FIELD_ALLOW_CUSTOM_SAFE_NAME]?: string
+  [FIELD_ALLOW_CUSTOM_SAFE_NAME]: string
   [FIELD_ALLOW_SUGGESTED_SAFE_NAME]: string
-  [FIELD_ALLOW_SAFE_ID]?: number
+  [FIELD_ALLOW_SAFE_ID]: number
   [FIELD_ALLOW_IS_LOADING_SAFE_ADDRESS]: boolean
   [FIELD_SAFE_OWNER_LIST]: Array<OwnerFieldListItem>
-  [FIELD_SAFE_THRESHOLD]?: number
+  [FIELD_SAFE_THRESHOLD]: number
 }

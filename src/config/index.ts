@@ -135,8 +135,8 @@ export const getHashedExplorerUrl = (hash: string): string => {
 // Matches return type of ExplorerInfo from SRC
 export const getExplorerInfo = (hash: string): (() => { url: string; alt: string }) => {
   const url = getHashedExplorerUrl(hash)
-
   const { hostname } = new URL(url)
+
   const alt = `View on ${hostname}` // Not returned by CGW
   return () => ({ url, alt })
 }
@@ -199,4 +199,8 @@ export const getChainDefaultGasPrice = (): MChainInfo['defaultGasPrice'] => {
 
 export const getCoinDecimal = (): number => {
   return getChainInfo().nativeCurrency.decimals
+}
+
+export const getCoinSymbol = (): string => {
+  return getChainInfo().nativeCurrency.symbol
 }

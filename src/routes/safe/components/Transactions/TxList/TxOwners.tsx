@@ -69,7 +69,7 @@ export const TxOwners = ({
           </span>
           <div className="legend">
             <Text color="linkAura" size="lg" strong>
-              Confirmed
+              <span style={{ fontWeight: 700 }}>Confirmed</span>
             </Text>
             <AddressInfo
               address={signer.value}
@@ -87,7 +87,7 @@ export const TxOwners = ({
           </span>
           <div className="legend">
             <Text color="linkAura" size="lg" strong>
-              Rejected
+              <span style={{ fontWeight: 700 }}>Rejected</span>
             </Text>
             <AddressInfo address={value} name={name || undefined} avatarUrl={logoUri || undefined} />
           </div>
@@ -103,7 +103,7 @@ export const TxOwners = ({
             )}
           </span>
           <div className="legend">
-            <Text color="primary" size="lg" strong>
+            <Text color="linkAura" size="lg" strong>
               {detailedExecutionInfo.executor ? 'Executed' : isPending ? 'Executing' : 'Execute'}
             </Text>
             {detailedExecutionInfo.executor && (
@@ -123,7 +123,10 @@ export const TxOwners = ({
           </span>
           <div className="legend">
             <Text color="disableAura" size="lg" strong>
-              Execute ({confirmationsNeeded} more {confirmationsNeeded === 1 ? 'confirmation' : 'confirmations'} needed)
+              <span style={{ fontWeight: 700 }}>
+                Execute ({confirmationsNeeded} more {confirmationsNeeded === 1 ? 'confirmation' : 'confirmations'}{' '}
+                needed)
+              </span>
             </Text>
           </div>
         </OwnerListItem>

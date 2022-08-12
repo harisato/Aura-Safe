@@ -254,18 +254,13 @@ function CreateSafePage(): ReactElement {
         </Block>
       </Page>
 
-      <Modal
-        description=""
-        handleClose={onClickModalButton}
-        open={showCreatedModal}
-        title={pendingSafe ? 'Confirmation' : 'Safe Created!'}
-      >
+      <Modal description="" handleClose={onClickModalButton} open={showCreatedModal} title={'Create a new Safe'}>
         <Modal.Header onClose={onClickModalButton}>
-          <Modal.Header.Title withoutMargin>{pendingSafe ? 'Confirmation' : 'Safe Created!'}</Modal.Header.Title>
+          <Modal.Header.Title withoutMargin>{'Create a new Safe'}</Modal.Header.Title>
         </Modal.Header>
 
         <Modal.Body>
-          {!pendingSafe ? (
+          {/* {!pendingSafe ? (
             <div data-testid="safe-created-popup">
               <Paragraph>
                 You just created a new Safe on <NetworkLabel />
@@ -278,21 +273,21 @@ function CreateSafePage(): ReactElement {
                 <EmphasisLabel>you will not be able to access them</EmphasisLabel>
               </Paragraph>
             </div>
-          ) : (
-            <div data-testid="safe-created-popup">
-              <Paragraph>
-                You are about to create a new Safe on <NetworkLabel />
-              </Paragraph>
-              <Paragraph>
-                You will only be able to use this Safe on <NetworkLabel />
-              </Paragraph>
-              <Paragraph>All other owners must give their permission in order for the Safe to be created.</Paragraph>
-              <Paragraph>
-                Before that, you can also cancel the Safe creation request by clicking the{' '}
-                <EmphasisLabel> {`"Cancel"`}</EmphasisLabel> button next to your awaiting safe in the Safe list.
-              </Paragraph>
-            </div>
-          )}
+          ) : ( */}
+          <div data-testid="safe-created-popup">
+            <Paragraph>
+              You are about to create a new Safe on <NetworkLabel />
+            </Paragraph>
+            <Paragraph>
+              You will only be able to use this Safe on <NetworkLabel />
+            </Paragraph>
+            <Paragraph>All other owners must give their permission in order for the Safe to be created.</Paragraph>
+            <Paragraph>
+              Before that, you can also cancel the Safe creation request by clicking the{' '}
+              <EmphasisLabel> {`"Cancel"`}</EmphasisLabel> button next to your awaiting safe in the Safe list.
+            </Paragraph>
+          </div>
+          {/* )} */}
         </Modal.Body>
         <Modal.Footer justifyContent="flex-end">
           {

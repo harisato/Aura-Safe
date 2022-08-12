@@ -19,7 +19,7 @@ const ModalStyled = styled(ModalMUI)`
   .paper {
     position: relative;
     top: 68px;
-    width: 500px;
+    width: 600px;
     border-radius: 8px;
     background-color: ${bgBox};
     display: flex;
