@@ -36,7 +36,7 @@ export const useTransactionStatus = (transaction: Transaction): TransactionStatu
       case LocalTransactionStatus.AWAITING_CONFIRMATIONS:
         const signaturePending = addressInList((executionInfo as MultisigExecutionInfo)?.missingSigners ?? undefined)
         const text = signaturePending(currentUser) ? 'Needs your confirmation' : 'Needs confirmations'
-        setStatus({ color: 'rinkeby', text })
+        setStatus({ color: 'confirmationAura', text })
         break
       case LocalTransactionStatus.AWAITING_EXECUTION:
       case LocalTransactionStatus.PENDING_FAILED:
