@@ -404,14 +404,16 @@ const ReviewSendFundsTx = ({ onClose, onPrev, tx }: ReviewTxProps): React.ReactE
           {/* Disclaimer */}
           {/* FIXME Estimation should be fixed to be used with spending limits */}
           {!isSpendingLimit && txEstimationExecutionStatus !== EstimationStatus.LOADING && (
-            <ReviewInfoText
-              gasCostFormatted={gasCostFormatted}
-              isCreation={true}
-              isExecution={true}
-              isOffChainSignature={true}
-              safeNonce={txParameters.safeNonce}
-              txEstimationExecutionStatus={txEstimationExecutionStatus}
-            />
+            <div className={classes.paddingY}>
+              <ReviewInfoText
+                gasCostFormatted={gasCostFormatted}
+                isCreation={true}
+                isExecution={true}
+                isOffChainSignature={true}
+                safeNonce={txParameters.safeNonce}
+                txEstimationExecutionStatus={txEstimationExecutionStatus}
+              />
+            </div>
           )}
 
           {/* Footer */}

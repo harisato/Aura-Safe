@@ -57,4 +57,8 @@ export const styles = createStyles({
     color: '#5EE6D0',
     marginLeft: 13,
   },
+  paddingY: {
+    paddingLeft: 24,
+    paddingRight: 24,
+  },
 })

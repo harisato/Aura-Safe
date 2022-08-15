@@ -4,6 +4,7 @@ import { createStyles, makeStyles } from '@material-ui/core/styles'
 import Close from '@material-ui/icons/Close'
 import QRCode from 'qrcode.react'
 import { ReactElement } from 'react'
+import styled from 'styled-components'
 
 import { ChainInfo } from '@gnosis.pm/safe-react-gateway-sdk'
 import Block from 'src/components/layout/Block'
@@ -14,7 +15,7 @@ import Row from 'src/components/layout/Row'
 import { getChainInfo, getExplorerInfo } from 'src/config'
 import { fontColor, lg, md, screenSm, secondaryText } from 'src/theme/variables'
 import PrefixedEthHashInfo from '../PrefixedEthHashInfo'
-
+import { borderLinear } from 'src/theme/variables'
 const useStyles = (chainInfo: ChainInfo) =>
   makeStyles(
     createStyles({
@@ -52,13 +53,13 @@ const useStyles = (chainInfo: ChainInfo) =>
         height: '84px',
         justifyContent: 'flex-end',
         marginRight: 50,
-        '& > button': {
-          fontFamily: 'SFProDisplay',
-          fontSize: md,
-          boxShadow: 'none',
-          backgroundColor: 'transparent !important',
-          border: '1px solid rgba(94, 230, 157, 1)',
-        },
+        // '& > button': {
+        //   fontFamily: 'SFProDisplay',
+        //   fontSize: md,
+        //   boxShadow: 'none',
+        //   backgroundColor: 'transparent !important',
+        //   border: '1px solid rgba(94, 230, 157, 1)',
+        // },
       },
       addressContainer: {
         flexDirection: 'column',
@@ -71,6 +72,22 @@ const useStyles = (chainInfo: ChainInfo) =>
       },
     }),
   )()
+
+const StyledButton = styled.div`
+  display: flex;
+  border-radius: 50px;
+  justify-content: center;
+  align-items: center;
+  width: 100px;
+  height: 30px;
+  background-color: transparent;
+  border: 2px solid transparent;
+  background-image: ${borderLinear};
+  background-origin: border-box;
+  background-clip: content-box, border-box;
+  cursor: pointer;
+  margin-left: 10px;
+`
 
 type Props = {
   onClose: () => void
@@ -118,9 +135,9 @@ const ReceiveModal = ({ onClose, safeAddress, safeName }: Props): ReactElement =
       </Col>
       <Hairline />
       <Row align="center" className={classes.buttonRow}>
-        <Button size="md" color="primary" onClick={onClose} variant="contained">
+        <StyledButton onClick={onClose}>
           <span style={{ fontSize: 14, fontWeight: 500 }}>Done</span>
-        </Button>
+        </StyledButton>
       </Row>
     </>
   )
