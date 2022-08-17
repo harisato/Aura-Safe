@@ -17,6 +17,7 @@ import {
   getChainDefaultGasPrice,
   getChainInfo,
   getCoinDecimal,
+  getCoinMinimalDenom,
   getExplorerInfo,
   getInternalChainId,
 } from 'src/config'
@@ -33,8 +34,10 @@ import { toBase64 } from '@cosmjs/encoding'
 import { calculateFee, coins, GasPrice, MsgSendEncodeObject, SignerData, SigningStargateClient } from '@cosmjs/stargate'
 import { generatePath } from 'react-router-dom'
 import ButtonLink from 'src/components/layout/ButtonLink'
-import { enhanceSnackbarForAction, ERROR, NOTIFICATIONS, WARNING } from 'src/logic/notifications'
+import { enhanceSnackbarForAction, ERROR, NOTIFICATIONS } from 'src/logic/notifications'
 import enqueueSnackbar from 'src/logic/notifications/store/actions/enqueueSnackbar'
+import fetchTransactions from 'src/logic/safe/store/actions/transactions/fetchTransactions'
+import { currentSafeOwners } from 'src/logic/safe/store/selectors'
 import { loadLastUsedProvider } from 'src/logic/wallets/store/middlewares/providerWatcher'
 import { userAccountSelector } from 'src/logic/wallets/store/selectors'
 import {
@@ -49,11 +52,10 @@ import { EditableTxParameters } from 'src/routes/safe/components/Transactions/he
 import { TxParameters } from 'src/routes/safe/container/hooks/useTransactionParameters'
 import { createSafeTransaction, getAccountOnChain, getMChainsConfig } from 'src/services'
 import { DEFAULT_GAS_LIMIT } from 'src/services/constant/common'
+import { MESSAGES_CODE } from 'src/services/constant/message'
 import { ICreateSafeTransaction } from 'src/types/transaction'
 import { ModalHeader } from '../ModalHeader'
 import { styles } from './style'
-import fetchTransactions from 'src/logic/safe/store/actions/transactions/fetchTransactions'
-import { MESSAGES_CODE } from 'src/services/constant/message'
 
 const useStyles = makeStyles(styles)
 
@@ -77,27 +79,31 @@ const ReviewSendFundsTx = ({ onClose, onPrev, tx }: ReviewTxProps): React.ReactE
   const classes = useStyles()
   const dispatch = useDispatch()
   const safeAddress = extractSafeAddress()
+
   const tokens: any = useSelector(extendedSafeTokensSelector)
+  const owners = useSelector(currentSafeOwners)
+  const userWalletAddress = useSelector(userAccountSelector)
+
   const txToken = useMemo(() => tokens.find((token) => sameAddress(token.address, tx.token)), [tokens, tx.token])
   // const txRecipient = isSendingNativeToken ? tx.recipientAddress : txToken?.address || ''
   const txRecipient = tx.recipientAddress || ''
 
   const chainDefaultGas = getChainDefaultGas()
+  const denom = getCoinMinimalDenom()
+
   const chainDefaultGasPrice = getChainDefaultGasPrice()
   const decimal = getCoinDecimal()
+  const msgSendGas = chainDefaultGas.find((chain) => chain.typeUrl === '/cosmos.bank.v1beta1.MsgSend')
 
-  const defaultGas = chainDefaultGas.find((chain) => chain.typeUrl === '/cosmos.bank.v1beta1.MsgSend')?.gasAmount
+  const { multiplier, gasAmount } = msgSendGas || { multiplier: 0, gasAmount: 0 }
 
-  const gasFee =
-    defaultGas && chainDefaultGasPrice
-      ? calculateGasFee(+defaultGas, +chainDefaultGasPrice, decimal)
-      : chainDefaultGasPrice
+  const defaultGas = (Number(gasAmount) * (1 + Number(multiplier) * (owners.length - 1))).toFixed(0)
 
-  // const [manualSafeTxGas, setManualSafeTxGas] = useState<string | undefined>(DEFAULT_GAS)
-  // const [manualGasPrice, setManualGasPrice] = useState<string | undefined>(DEFAULT_GAS)
+  const gasFee = getGasFee(defaultGas, chainDefaultGasPrice, decimal)
+
   const [manualGasLimit, setManualGasLimit] = useState<string | undefined>(defaultGas)
   const [isDisabled, setDisabled] = useState(false)
-  const [gasPriceFormatted, setGasPriceFormatted] = useState(gasFee)
+  const [gasPriceFormatted, setGasPriceFormatted] = useState<string | number>(gasFee)
   const chainInfo = getChainInfo()
 
   let lastUsedProvider = ''
@@ -119,7 +125,6 @@ const ReviewSendFundsTx = ({ onClose, onPrev, tx }: ReviewTxProps): React.ReactE
   const isSpendingLimit = sameString(tx.txType, 'spendingLimit')
   // const [executionApproved, setExecutionApproved] = useState<boolean>(true)
   const doExecute = isExecution // && executionApproved
-  const userWalletAddress = useSelector(userAccountSelector)
   const [openGas, setOpenGas] = useState<boolean>(false)
 
   const submitTx = async (txParameters: TxParameters) => {
@@ -132,15 +137,11 @@ const ReviewSendFundsTx = ({ onClose, onPrev, tx }: ReviewTxProps): React.ReactE
   const signTransactionWithKeplr = async (safeAddress: string) => {
     const chainId = chainInfo.chainId
 
-    const listChain = await getMChainsConfig()
+    // const listChain = await getMChainsConfig()
     // const chainInfo = listChain.find((x) => x.chainId === chainId)
 
     // const denom = chainInfo?.denom || ''
     // const denom = listChain.find((x) => x.chainId === chainId)?.denom || ''
-
-    const mChainInfo = listChain.find((x) => x.chainId === chainId)
-    const denom = mChainInfo?.denom || ''
-
     if (window.keplr) {
       await window.keplr.enable(chainId)
       window.keplr.defaultOptions = {
@@ -255,11 +256,6 @@ const ReviewSendFundsTx = ({ onClose, onPrev, tx }: ReviewTxProps): React.ReactE
               dispatch(enqueueSnackbar(enhanceSnackbarForAction(NOTIFICATIONS.TX_FAILED_MSG)))
               break
           }
-          // if (ErrorCode === 'E028') {
-          //   dispatch(enqueueSnackbar(enhanceSnackbarForAction(NOTIFICATIONS.CREATE_SAFE_PENDING_EXECUTE_MSG)))
-          // } else {
-          //   dispatch(enqueueSnackbar(enhanceSnackbarForAction(NOTIFICATIONS.TX_FAILED_MSG)))
-          // }
         }
 
         onClose()
@@ -277,17 +273,15 @@ const ReviewSendFundsTx = ({ onClose, onPrev, tx }: ReviewTxProps): React.ReactE
       })
   }
 
-  const closeEditModalCallback = (txParameters: TxParameters) => {}
+  const closeEditModalCallback = (_) => {}
 
   const ShowGasFrom = () => {
     setOpenGas(!openGas)
   }
 
-  const recalculateFee = () => {
-    const gasFee =
-      manualGasLimit && chainDefaultGasPrice
-        ? calculateGasFee(+manualGasLimit, +chainDefaultGasPrice, decimal)
-        : chainDefaultGasPrice
+  const recalculateFee = (defaultGas) => {
+    const gasFee = getGasFee(defaultGas, chainDefaultGasPrice, decimal)
+
     setGasPriceFormatted(gasFee)
     setOpenGas(!openGas)
   }
@@ -440,6 +434,16 @@ const ReviewSendFundsTx = ({ onClose, onPrev, tx }: ReviewTxProps): React.ReactE
 
 function calculateGasFee(gas: number, gasPrice: number, decimal: number): number {
   return (+gas * +gasPrice) / Math.pow(10, decimal)
+}
+
+function getGasFee(defaultGas, chainDefaultGasPrice, decimal) {
+  return (
+    Math.ceil(
+      +(defaultGas && chainDefaultGasPrice
+        ? calculateGasFee(+defaultGas, +chainDefaultGasPrice, decimal)
+        : chainDefaultGasPrice) * Math.pow(10, decimal),
+    ) / Math.pow(10, decimal)
+  )
 }
 
 export default ReviewSendFundsTx
