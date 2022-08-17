@@ -22,7 +22,7 @@ export const InfoDetails = ({ children, title, quanlity }: InfoDetailsProps): Re
         )}
         {title === 'Received' && (
           <>
-            Received <span style={{ color: 'rgba(94, 230, 208, 1)' }}>{quanlity}</span> to:
+            Received <span style={{ color: 'rgba(94, 230, 208, 1)' }}>{quanlity}</span> from:
           </>
         )}
       </TextStyled>
