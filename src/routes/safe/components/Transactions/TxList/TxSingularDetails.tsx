@@ -1,40 +1,39 @@
-import { ReactElement, useEffect, useState } from 'react'
-import { useParams } from 'react-router-dom'
 import { Loader } from '@aura/safe-react-components'
-import { shallowEqual, useDispatch, useSelector } from 'react-redux'
 import { TransactionDetails } from '@gnosis.pm/safe-react-gateway-sdk'
+import { ReactElement, useEffect, useState } from 'react'
+import { shallowEqual, useDispatch, useSelector } from 'react-redux'
+import { useParams } from 'react-router-dom'
 
-import { isTxQueued, TxLocation } from 'src/logic/safe/store/models/types/gateway.d'
+import { currentChainId } from 'src/logic/config/store/selectors'
+import { Errors, logError } from 'src/logic/exceptions/CodedException'
 import {
-  extractPrefixedSafeAddress,
-  extractSafeAddress,
-  generateSafeRoute,
-  SafeRouteSlugs,
-  SAFE_ROUTES,
-  history,
-  TRANSACTION_ID_NUMBER,
-  SAFE_ADDRESS_SLUG,
-} from 'src/routes/routes'
-import { Centered } from './styled'
+  addHistoryTransactions,
+  addQueuedTransactions,
+} from 'src/logic/safe/store/actions/transactions/gatewayTransactions'
+import { isTxQueued, Transaction, TxLocation } from 'src/logic/safe/store/models/types/gateway.d'
+import { HistoryPayload, QueuedPayload } from 'src/logic/safe/store/reducer/gatewayTransactions'
 import {
   getTransactionWithLocationByAttribute,
   historyTransactions,
 } from 'src/logic/safe/store/selectors/gatewayTransactions'
-import { TxLocationContext } from './TxLocationProvider'
-import { AppReduxState } from 'src/store'
-import { logError, Errors } from 'src/logic/exceptions/CodedException'
-import { makeTransactionDetail } from './utils'
 import {
-  addQueuedTransactions,
-  addHistoryTransactions,
-} from 'src/logic/safe/store/actions/transactions/gatewayTransactions'
-import { HistoryPayload, QueuedPayload } from 'src/logic/safe/store/reducer/gatewayTransactions'
-import { Transaction } from 'src/logic/safe/store/models/types/gateway.d'
-import { currentChainId } from 'src/logic/config/store/selectors'
-import { QueueTxList } from './QueueTxList'
-import { HistoryTxList } from './HistoryTxList'
+  extractPrefixedSafeAddress,
+  extractSafeAddress,
+  generateSafeRoute,
+  history,
+  SafeRouteSlugs,
+  SAFE_ADDRESS_SLUG,
+  SAFE_ROUTES,
+  TRANSACTION_ID_NUMBER,
+} from 'src/routes/routes'
 import { fetchSafeTransactionById } from 'src/services'
 import { MESSAGES_CODE } from 'src/services/constant/message'
+import { AppReduxState } from 'src/store'
+import { HistoryTxList } from './HistoryTxList'
+import { QueueTxList } from './QueueTxList'
+import { Centered } from './styled'
+import { TxLocationContext } from './TxLocationProvider'
+import { makeTransactionDetail } from './utils'
 
 const TxSingularDetails = (): ReactElement => {
   const { [SAFE_ADDRESS_SLUG]: safeTxHash = '' } = useParams<SafeRouteSlugs>()
@@ -66,7 +65,6 @@ const TxSingularDetails = (): ReactElement => {
   // When safeTxHash changes, we fetch tx details for this hash
   useEffect(() => {
     let isCurrent = true
-
     setFetchedTx(undefined)
 
     if (!txId) {

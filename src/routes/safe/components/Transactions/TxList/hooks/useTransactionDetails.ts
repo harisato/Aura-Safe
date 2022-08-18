@@ -5,13 +5,18 @@ import { ExpandedTxDetails } from 'src/logic/safe/store/models/types/gateway.d'
 import { fetchTransactionDetailsByHash } from 'src/logic/safe/store/actions/fetchTransactionDetails'
 import { getTransactionByAttribute } from 'src/logic/safe/store/selectors/gatewayTransactions'
 import { AppReduxState } from 'src/store'
+import { TransferDirection } from '@gnosis.pm/safe-react-gateway-sdk'
 
 export type LoadTransactionDetails = {
   data?: ExpandedTxDetails
   loading: boolean
 }
 
-export const useTransactionDetails = (transactionId: string, txHash?: string): LoadTransactionDetails => {
+export const useTransactionDetails = (
+  transactionId: string,
+  txHash?: string,
+  direction?: TransferDirection,
+): LoadTransactionDetails => {
   const dispatch = useRef(useDispatch())
   const [txDetails, setTxDetails] = useState<LoadTransactionDetails>({
     loading: true,
@@ -28,9 +33,9 @@ export const useTransactionDetails = (transactionId: string, txHash?: string): L
       // lookup tx details
       // dispatch.current(fetchTransactionDetails({ transactionId }))
 
-      dispatch.current(fetchTransactionDetailsByHash({ transactionId, txHash: txHash || null }))
+      dispatch.current(fetchTransactionDetailsByHash({ transactionId, txHash: txHash || null, direction }))
     }
-  }, [data?.txDetails, transactionId, txHash])
+  }, [data?.txDetails, transactionId, txHash, direction])
 
   return txDetails
 }
