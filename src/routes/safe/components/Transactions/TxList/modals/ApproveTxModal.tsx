@@ -14,7 +14,6 @@ import { useStyles } from './style'
 
 import { toBase64 } from '@cosmjs/encoding'
 import { coins, GasPrice, MsgSendEncodeObject, SignerData, SigningStargateClient } from '@cosmjs/stargate'
-import { generatePath } from 'react-router-dom'
 import ExecuteCheckbox from 'src/components/ExecuteCheckbox'
 import Block from 'src/components/layout/Block'
 import Hairline from 'src/components/layout/Hairline'
@@ -34,25 +33,14 @@ import { ExpandedTxDetails, isMultiSigExecutionDetails, Transaction } from 'src/
 import { ZERO_ADDRESS } from 'src/logic/wallets/ethAddresses'
 import { EMPTY_DATA } from 'src/logic/wallets/ethTransactions'
 import { userAccountSelector } from 'src/logic/wallets/store/selectors'
-import {
-  extractSafeAddress,
-  extractShortChainName,
-  generateSafeRoute,
-  getPrefixedSafeAddressSlug,
-  history,
-  SAFE_ADDRESS_SLUG,
-  SAFE_ROUTES,
-  TRANSACTION_ID_NUMBER,
-} from 'src/routes/routes'
+import { extractSafeAddress, generateSafeRoute, history, SAFE_ROUTES } from 'src/routes/routes'
 import { ModalHeader } from 'src/routes/safe/components/Balances/SendModal/screens/ModalHeader'
 import { EditableTxParameters } from 'src/routes/safe/components/Transactions/helpers/EditableTxParameters'
-import { TxParametersDetail } from 'src/routes/safe/components/Transactions/helpers/TxParametersDetail'
 import { isThresholdReached } from 'src/routes/safe/components/Transactions/TxList/hooks/useTransactionActions'
 import { TxParameters } from 'src/routes/safe/container/hooks/useTransactionParameters'
 import { confirmSafeTransaction, getAccountOnChain, getMChainsConfig, sendSafeTransaction } from 'src/services'
 import { Overwrite } from 'src/types/helpers'
 
-import { Fee, MsgSend } from '@terra-money/terra.js'
 import { loadLastUsedProvider } from 'src/logic/wallets/store/middlewares/providerWatcher'
 
 export const APPROVE_TX_MODAL_SUBMIT_BTN_TEST_ID = 'approve-tx-modal-submit-btn'

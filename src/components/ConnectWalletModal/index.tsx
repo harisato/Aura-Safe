@@ -1,7 +1,7 @@
 import React from 'react'
 import { Modal } from 'src/components/Modal'
-import { getInternalChainId, _getChainId } from '../../config'
-import { connectKeplr, KeplrErrors, suggestChain } from '../../logic/keplr/keplr'
+import { _getChainId } from '../../config'
+import { connectKeplr, suggestChain } from '../../logic/keplr/keplr'
 import { enhanceSnackbarForAction, NOTIFICATIONS } from '../../logic/notifications'
 import enqueueSnackbar from '../../logic/notifications/store/actions/enqueueSnackbar'
 import { store } from '../../store'
@@ -15,8 +15,6 @@ type Props = {
 }
 
 export const ConnectWalletModal = ({ isOpen, onClose }: Props): React.ReactElement => {
-  // const internalChainId = getInternalChainId()
-
   const keplrWallet = async () => {
     const chainId = _getChainId()
 
@@ -28,24 +26,6 @@ export const ConnectWalletModal = ({ isOpen, onClose }: Props): React.ReactEleme
       .catch(() => {
         store.dispatch(enqueueSnackbar(enhanceSnackbarForAction(NOTIFICATIONS.CONNECT_WALLET_ERROR_MSG)))
       })
-
-    // await connectKeplr()
-    //   .then(async (status) => {
-    //     if (status === KeplrErrors.NoChainInfo) {
-    //       await suggestChain(chainId)
-    //       return true
-    //     }
-    //     onClose()
-    //     return null
-    //   })
-    //   .then((e) => {
-    //     if (e) {
-    //       connectKeplr()
-    //     }
-    //   })
-    //   .catch(() => {
-    //     store.dispatch(enqueueSnackbar(enhanceSnackbarForAction(NOTIFICATIONS.CONNECT_WALLET_ERROR_MSG)))
-    //   })
   }
 
   return (
@@ -60,13 +40,10 @@ export const ConnectWalletModal = ({ isOpen, onClose }: Props): React.ReactEleme
             <Img alt="Keplr" height={40} src={Keplr} />
             <ImageTitle> Keplr</ImageTitle>
           </ImageItem>
-
-          {/* {internalChainId !== 20 ? null : (
-            <ImageItem onClick={terraWallet}>
-              <Img alt="Terra" height={40} src={TerraStation} />
-              <ImageTitle> Terra Station </ImageTitle>
-            </ImageItem>
-          )} */}
+          <ImageItem onClick={keplrWallet}>
+            <Img alt="Keplr" height={40} src={Keplr} />
+            <ImageTitle> Keplr</ImageTitle>
+          </ImageItem>
         </ImageContainer>
       </WalletList>
     </Modal>
