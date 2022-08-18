@@ -1,4 +1,4 @@
-import { ChainInfo } from '@gnosis.pm/safe-react-gateway-sdk'
+import { ChainInfo, TransferDirection } from '@gnosis.pm/safe-react-gateway-sdk'
 import axios from 'axios'
 import { WalletKey } from 'src/logic/keplr/keplr'
 import { CHAIN_THEMES, THEME_DF } from 'src/services/constant/chainThemes'
@@ -187,8 +187,14 @@ export async function getAllTx(payload: ITransactionListQuery): Promise<IRespons
   return axios.post(`${baseUrl}/transaction/get-all-txs`, payload).then((res) => res.data)
 }
 
-export async function getTxDetailByHash(txHash: string, safeAddress: string): Promise<IResponse<ITransactionDetail>> {
-  return axios.get(`${baseUrl}/transaction/transaction-details/${txHash}/${safeAddress}`).then((res) => res.data)
+export async function getTxDetailByHash(
+  txHash: string,
+  safeAddress: string,
+  direction: TransferDirection = TransferDirection.OUTGOING,
+): Promise<IResponse<ITransactionDetail>> {
+  return axios
+    .get(`${baseUrl}/transaction/transaction-details/${txHash}/${safeAddress}/?direction=${direction}`)
+    .then((res) => res.data)
 }
 
 export function sendSafeTransaction(payload: any): Promise<IResponse<any>> {

@@ -204,8 +204,6 @@ export const gatewayTransactionsReducer = handleActions<GatewayTransactionsState
         }
 
         for (const [timestamp, transactions] of Object.entries(txGroup)) {
-          // const txIndex = transactions.findIndex(({ id, txHash }) => sameString(id, transactionId))
-          console.log('transactions', { transactions, value })
           const txIndex = transactions.findIndex(({ txHash, id, txInfo }) => {
             const direction = (txInfo as Transfer).direction
             const remoteDirection = (value?.txInfo as Transfer).direction
@@ -215,9 +213,9 @@ export const gatewayTransactionsReducer = handleActions<GatewayTransactionsState
 
             const isSameId = sameString(id, transactionId)
 
-            // return (isSameDirection && isSameTxHas) || isSameId
+            return (isSameDirection && isSameTxHas) || isSameId
 
-            return sameString(txHash, value?.txHash || undefined) || sameString(id, transactionId)
+            // return sameString(txHash, value?.txHash || undefined) || sameString(id, transactionId)
           })
 
           if (txIndex !== -1) {
