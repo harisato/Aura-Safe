@@ -48,6 +48,7 @@ type _ChainInfo = {
 type GasPriceDefault = {
   typeUrl: string
   gasAmount: string
+  multiplier: number
 }
 
 export type MChainInfo = ChainInfo & _ChainInfo

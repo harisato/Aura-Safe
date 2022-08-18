@@ -27,7 +27,6 @@ export const useTransactionDetails = (transactionId: string, txHash?: string): L
     } else {
       // lookup tx details
       // dispatch.current(fetchTransactionDetails({ transactionId }))
-      console.log('useTransactionDetails fetchTransactionDetailsByHash')
 
       dispatch.current(fetchTransactionDetailsByHash({ transactionId, txHash: txHash || null }))
     }

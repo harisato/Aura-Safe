@@ -32,7 +32,7 @@ const ReviewAllowStep = (): ReactElement => {
   const threshold = formValues[FIELD_SAFE_THRESHOLD]
   const ownerList = formValues[FIELD_SAFE_OWNER_LIST]
 
-  const ownerListWithNames = ownerList.map((owner) => {
+  const ownerListWithNames = ownerList?.map((owner) => {
     const ownerFieldName = `owner-address-${owner.address}`
     const ownerNameValue = formValues[ownerFieldName]
     return {
