@@ -5,4 +5,6 @@ export const Wrapper = styled.span`
     vertical-align: text-bottom;
     margin-right: 0.15em;
   }
+  display: flex;
+  align-items: center
 }`

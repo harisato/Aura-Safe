@@ -12,7 +12,7 @@ const styles = createStyles({
   annotation: {
     letterSpacing: '-1px',
     color: secondaryText,
-    margin: '0px'
+    margin: '0px',
     // marginRight: 'auto',
     // marginLeft: '20px',
   },
@@ -28,7 +28,7 @@ const styles = createStyles({
     padding: `0 ${md}`,
     height: '20px',
     alignItems: 'center',
-    color: '#98989B'
+    color: '#98989B',
   },
   icon: {
     width: '20px',
