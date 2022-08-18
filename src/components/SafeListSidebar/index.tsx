@@ -44,11 +44,9 @@ export const SafeListSidebar = ({ children }: Props): ReactElement => {
         onKeyDown={handleEsc}
         open={isOpen}
       >
-        <AddSafeButton onAdd={toggleSidebar} />
-
-        <Hairline />
-
         <SafeList onSafeClick={toggleSidebar} />
+        <Hairline />
+        <AddSafeButton onAdd={toggleSidebar} />
       </Drawer>
       {children}
     </SafeListSidebarContext.Provider>

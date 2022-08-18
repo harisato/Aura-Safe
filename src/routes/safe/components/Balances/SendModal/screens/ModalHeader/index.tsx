@@ -22,7 +22,6 @@ interface HeaderProps {
 export const ModalHeader = ({ onClose, subTitle, title, iconUrl }: HeaderProps): ReactElement => {
   const classes = useStyles()
   const connectedNetwork = getChainInfo()
-
   return (
     <Row align="center" className={classes.heading} grow>
       {iconUrl && <img className={classes.icon} alt={title} src={iconUrl} />}

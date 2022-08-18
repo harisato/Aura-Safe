@@ -1,12 +1,10 @@
-import { SigningCosmWasmClient } from '@cosmjs/cosmwasm-stargate'
-import { MsgSend } from 'cosmjs-types/cosmos/bank/v1beta1/tx'
-import { calculateFee, coins, GasPrice, MsgSendEncodeObject, SignerData, StdFee } from '@cosmjs/stargate'
+import { calculateFee, GasPrice, SignerData, StdFee } from '@cosmjs/stargate'
 import { ChainInfo } from '@gnosis.pm/safe-react-gateway-sdk'
 import { useEffect, useState } from 'react'
-import { getAccountOnChain, getMChainsConfig } from 'src/services'
-import { ReviewTxProp } from '../../components/Balances/SendModal/screens/ReviewSendFundsTx'
 import { getInternalChainId } from 'src/config'
 import { EstimationStatus } from 'src/logic/hooks/useEstimateTransactionGas'
+import { getAccountOnChain, getMChainsConfig } from 'src/services'
+import { ReviewTxProp } from '../../components/Balances/SendModal/screens/ReviewSendFundsTx'
 
 export type TxFee = {
   sendFee: StdFee | undefined

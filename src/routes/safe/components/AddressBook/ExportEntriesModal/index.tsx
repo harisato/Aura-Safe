@@ -151,7 +151,7 @@ export const ExportEntriesModal = ({ isOpen, onClose }: ExportEntriesModalProps)
             Retry
           </StyledButtonDownn>
         ) : (
-          <CSVDownloader data={csvData} bom={true} filename={`gnosis-safe-address-book-${date}`} type="link">
+          <CSVDownloader data={csvData} bom={true} filename={`pyxis-safe-address-book-${date}`} type="link">
             <StyledButtonDownn color="primary" size="md" disabled={loading} onClick={handleClose}>
               {loading && <StyledLoader color="secondaryLight" size="xs" />}
               Download

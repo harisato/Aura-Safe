@@ -204,3 +204,6 @@ export const getCoinDecimal = (): number => {
 export const getCoinSymbol = (): string => {
   return getChainInfo().nativeCurrency.symbol
 }
+export const getCoinMinimalDenom = (): string => {
+  return (getChainInfo() as MChainInfo).denom
+}
