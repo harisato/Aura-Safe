@@ -128,6 +128,16 @@ const useSidebarItems = (): ListItemType[] => {
         href: currentSafeRoutes.ADDRESS_BOOK,
       }),
       makeEntryItem({
+        label: 'Staking',
+        iconType: 'stakingAura',
+        href: currentSafeRoutes.STAKING,
+      }),
+      makeEntryItem({
+        label: 'Voting',
+        iconType: 'votingAura',
+        href: currentSafeRoutes.VOTING,
+      }),
+      makeEntryItem({
         disabled: !safeAppsEnabled,
         label: 'Apps',
         iconType: 'apps',

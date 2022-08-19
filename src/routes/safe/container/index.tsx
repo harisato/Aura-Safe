@@ -24,6 +24,8 @@ const Settings = lazy(() => import('src/routes/safe/components/Settings'))
 const Balances = lazy(() => import('src/routes/safe/components/Balances'))
 const TxList = lazy(() => import('src/routes/safe/components/Transactions/TxList'))
 const AddressBookTable = lazy(() => import('src/routes/safe/components/AddressBook'))
+const Staking = lazy(() => import('src/routes/safe/components/Staking'))
+const Voting = lazy(() => import('src/routes/safe/components/Voting'))
 
 const Container = (): React.ReactElement => {
   const featuresEnabled = useSelector(currentSafeFeaturesEnabled)
@@ -96,6 +98,8 @@ const Container = (): React.ReactElement => {
           ]}
           render={() => wrapInSuspense(<TxList />, null)}
         />
+        <Route exact path={SAFE_ROUTES.STAKING} render={() => wrapInSuspense(<Staking />, null)} />
+        <Route exact path={SAFE_ROUTES.VOTING} render={() => wrapInSuspense(<Voting />, null)} />
         <Route exact path={SAFE_ROUTES.ADDRESS_BOOK} render={() => wrapInSuspense(<AddressBookTable />, null)} />
         <Route
           exact

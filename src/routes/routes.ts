@@ -63,6 +63,8 @@ export const SAFE_ROUTES = {
   // TRANSACTIONS_SINGULAR: `${ADDRESSED_ROUTE}/transactions/:${TRANSACTION_ID_SLUG}(${hashRegExp}+)`, // [TRANSACTION_HASH_SLUG] === 'safeTxHash'
   TRANSACTIONS_SINGULAR: `${ADDRESSED_ROUTE}/transactions/:${TRANSACTION_ID_NUMBER}${singularExp}`, // [TRANSACTION_HASH_SLUG] === 'safeTxHash'
   ADDRESS_BOOK: `${ADDRESSED_ROUTE}/address-book`,
+  STAKING: `${ADDRESSED_ROUTE}/staking`,
+  VOTING: `${ADDRESSED_ROUTE}/voting`,
   APPS: `${ADDRESSED_ROUTE}/apps`,
   SETTINGS: `${ADDRESSED_ROUTE}/settings`,
   SETTINGS_APPEARANCE: `${ADDRESSED_ROUTE}/settings/appearance`,
