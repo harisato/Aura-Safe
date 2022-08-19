@@ -1,66 +1,36 @@
-import React from 'react'
+import React, { useCallback } from 'react'
+
 import { Modal } from 'src/components/Modal'
-import { _getChainId } from '../../config'
-import { connectKeplr, suggestChain } from '../../logic/keplr/keplr'
+import { connectProvider } from 'src/logic/providers'
+import { WALLETS_NAME } from 'src/logic/wallets/constant/wallets'
 import { enhanceSnackbarForAction, NOTIFICATIONS } from '../../logic/notifications'
 import enqueueSnackbar from '../../logic/notifications/store/actions/enqueueSnackbar'
 import { store } from '../../store'
 import Img from '../layout/Img'
 import { ImageContainer, ImageItem, ImageTitle, WalletList } from './styles'
 
-import Keplr from './assets/keplr.svg'
 import Coin98 from './assets/Coin98.svg'
-import { isCoin98Installed } from 'src/logic/providers/coin98'
+import Keplr from './assets/keplr.svg'
 
 type Props = {
   isOpen: boolean
   onClose: () => void
 }
 
-async function handleGetKeyCosmos(): Promise<void> {
-  const chainId = 'aura-testnet'
-
-  try {
-    const result = await window.coin98.cosmos.request({
-      method: 'cosmos_getKey',
-      params: [chainId],
-    })
-
-    console.log('cosmos_getKey', { result })
-
-    return result || {}
-  } catch (err) {
-    console.log({ err })
-  }
-}
-
 export const ConnectWalletModal = ({ isOpen, onClose }: Props): React.ReactElement => {
-  const chainId = _getChainId()
-  const keplrWallet = async () => {
-    suggestChain(chainId)
-      .then(() => connectKeplr())
-      .then(() => {
-        onClose()
-      })
-      .catch(() => {
+  const handleConnect = useCallback(
+    (walletsName: WALLETS_NAME) => {
+      try {
+        connectProvider(walletsName).then(() => {
+          onClose()
+        })
+      } catch (e) {
         store.dispatch(enqueueSnackbar(enhanceSnackbarForAction(NOTIFICATIONS.CONNECT_WALLET_ERROR_MSG)))
-      })
-  }
-
-  const coin98Wallet = async () => {
-    const isInstalled = isCoin98Installed()
-
-    console.log('isInstalled', isInstalled)
-
-    // suggestChain(chainId)
-    //   .then(() => connectKeplr())
-    //   .then(() => {
-    //     onClose()
-    //   })
-    //   .catch(() => {
-    //     store.dispatch(enqueueSnackbar(enhanceSnackbarForAction(NOTIFICATIONS.CONNECT_WALLET_ERROR_MSG)))
-    //   })
-  }
+        console.log(e)
+      }
+    },
+    [onClose],
+  )
 
   return (
     <Modal description="Select a Wallet" handleClose={onClose} open={isOpen} title="Select a Wallet">
@@ -70,11 +40,19 @@ export const ConnectWalletModal = ({ isOpen, onClose }: Props): React.ReactEleme
 
       <WalletList>
         <ImageContainer>
-          <ImageItem onClick={coin98Wallet}>
+          <ImageItem
+            onClick={() => {
+              handleConnect(WALLETS_NAME.Coin98)
+            }}
+          >
             <Img alt="Coin98" height={40} src={Coin98} />
             <ImageTitle> Coin98 </ImageTitle>
           </ImageItem>
-          <ImageItem onClick={keplrWallet}>
+          <ImageItem
+            onClick={() => {
+              handleConnect(WALLETS_NAME.Keplr)
+            }}
+          >
             <Img alt="Keplr" height={40} src={Keplr} />
             <ImageTitle> Keplr </ImageTitle>
           </ImageItem>

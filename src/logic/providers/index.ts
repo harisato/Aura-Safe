@@ -1,68 +1,93 @@
 import { ChainInfo } from '@gnosis.pm/safe-react-gateway-sdk'
 import { Keplr, Key } from '@keplr-wallet/types'
-import * as _ from 'lodash'
-import { Dispatch } from 'redux'
-import { KeplrErrors } from 'src/logic/keplr/keplr'
-import { isCoin98Installed } from 'src/logic/providers/coin98'
-import { WalletProviders } from 'src/logic/providers/constants/constant'
-import { WalletKey } from 'src/logic/providers/types/providers'
+import { fetchProvider, _getDefaultProvider } from 'src/logic/providers/utils'
 
+import { getProvider } from 'src/logic/providers/utils/wallets'
+import { WALLETS_NAME } from 'src/logic/wallets/constant/wallets'
+import { auth } from 'src/services'
 import { JWT_TOKEN_KEY } from 'src/services/constant/common'
-import { getGatewayUrl } from 'src/services/data/environment'
-import { auth } from 'src/services/index'
 import { store } from 'src/store'
-import { parseToAddress } from 'src/utils/parseByteAdress'
 import { saveToStorage } from 'src/utils/storage'
 import session from 'src/utils/storage/session'
 import { getChainInfo, getInternalChainId, _getChainId } from '../../config'
-import { trackAnalyticsEvent, WALLET_EVENTS } from '../../utils/googleAnalytics'
-import { enhanceSnackbarForAction, NOTIFICATIONS } from '../notifications'
-import enqueueSnackbar from '../notifications/store/actions/enqueueSnackbar'
-import { WALLETS_NAME } from '../wallets/constant/wallets'
-import { addProvider } from '../wallets/store/actions'
 import { LAST_USED_PROVIDER_KEY } from '../wallets/store/middlewares/providerWatcher'
-import { makeProvider, ProviderProps } from '../wallets/store/model/provider'
+import { ProviderProps } from '../wallets/store/model/provider'
+import { KeplrErrors } from './constants/constant'
 
-export async function getKeplr(): Promise<Keplr | undefined> {
-  if (window.keplr) {
-    return window.keplr
-  }
+export async function connectProvider(providerName: WALLETS_NAME): Promise<any> {
+  const chainId = _getChainId()
 
-  if (document.readyState === 'complete') {
-    return window.keplr
-  }
-
-  return new Promise((resolve) => {
-    const documentStateChange = (event: Event) => {
-      if (event.target && (event.target as Document).readyState === 'complete') {
-        resolve(window.keplr)
-        document.removeEventListener('readystatechange', documentStateChange)
+  return getProvider()
+    .then((keplr) => {
+      if (!keplr) {
+        alert('Please install keplr extension')
+        throw new Error(KeplrErrors.NotInstall)
       }
-    }
+      // let error = KeplrErrors.Success
 
-    document.addEventListener('readystatechange', documentStateChange)
-  })
+      return keplr
+    })
+    .then((keplr) => Promise.all([keplr, keplr.getKey(chainId)]))
+    .then(([keplr, key]) => {
+      const internalChainId = getInternalChainId()
+      const chainInfo = getChainInfo()
+
+      let _providerInfo: ProviderProps
+      if (!key) {
+        store.dispatch(fetchProvider(_getDefaultProvider(internalChainId)))
+      } else {
+        _providerInfo = {
+          account: key.bech32Address,
+          available: true,
+          hardwareWallet: false,
+          loaded: true,
+          name: providerName,
+          network: chainInfo.chainId,
+          smartContractWallet: false,
+          internalChainId,
+        }
+
+        const tokenList = session.getItem<
+          {
+            name: string
+            address: string
+            token: string
+          }[]
+        >(JWT_TOKEN_KEY)
+
+        const current = tokenList?.find((e) => e.address === key.bech32Address && e.name === chainId)
+
+        if (current) {
+          store.dispatch(fetchProvider(_providerInfo))
+
+          saveToStorage(LAST_USED_PROVIDER_KEY, _providerInfo.name)
+        } else {
+          return handleConnectWallet(keplr, chainInfo, key, chainId, internalChainId, _providerInfo)
+        }
+      }
+    })
+    .catch((e) => {
+      const message = e.message.toUpperCase()
+
+      if (message.includes(KeplrErrors.NoChainInfo)) {
+        // suggestChain()
+        throw new Error(KeplrErrors.NoChainInfo)
+      } else {
+        const internalChainId = getInternalChainId()
+        store.dispatch(fetchProvider(_getDefaultProvider(internalChainId)))
+        throw new Error(KeplrErrors.Failed)
+      }
+    })
 }
 
-export async function getKeplrKey(chainId: string): Promise<WalletKey | undefined> {
-  const keplr = await getKeplr()
-
-  if (!keplr) return
-  const key = await keplr.getKey(chainId)
-  return {
-    myAddress: String(key.bech32Address),
-    myPubkey: parseToAddress(key.pubKey),
-  }
-}
-
-export const handleConnectWallet = (
+export function handleConnectWallet(
   keplr: Keplr,
   chainInfo: ChainInfo,
   key: Key,
   chainId: string,
   internalChainId: number,
   providerInfo: ProviderProps,
-): any => {
+): any {
   const timeStamp = new Date().getTime()
   return keplr
     .signArbitrary(chainId, key.bech32Address, `${timeStamp}`)
@@ -94,142 +119,4 @@ export const handleConnectWallet = (
     .catch((e) => {
       throw new Error(e)
     })
-}
-
-export async function connect(provider?: WalletProviders): Promise<KeplrErrors> {
-  const chainInfo = getChainInfo()
-  const internalChainId = getInternalChainId()
-  const chainId = _getChainId()
-  const keplr = await getKeplr()
-
-  switch (provider) {
-    case WalletProviders.Coin98:
-      const isInstalled = isCoin98Installed()
-
-      console.log(isInstalled)
-
-      break
-    default:
-      break
-  }
-
-  if (!keplr) {
-    alert('Please install keplr extension')
-    return KeplrErrors.NotInstall
-  }
-  let error = KeplrErrors.Success
-  try {
-    await keplr
-      .enable(chainId)
-      .then(() => keplr.getKey(chainId))
-      .then((key: any) => {
-        let providerInfo: ProviderProps
-        if (!key) {
-          store.dispatch(fetchProvider(_getDefaultProvider(internalChainId)))
-        } else {
-          providerInfo = {
-            account: key.bech32Address,
-            available: true,
-            hardwareWallet: false,
-            loaded: true,
-            name: WALLETS_NAME.Keplr,
-            network: chainInfo.chainId,
-            smartContractWallet: false,
-            internalChainId,
-          }
-
-          const tokenList = session.getItem<
-            {
-              name: string
-              address: string
-              token: string
-            }[]
-          >(JWT_TOKEN_KEY)
-
-          const current = tokenList?.find((e) => e.address === key.bech32Address && e.name === chainId)
-
-          if (current) {
-            store.dispatch(fetchProvider(providerInfo))
-
-            saveToStorage(LAST_USED_PROVIDER_KEY, providerInfo.name)
-          } else {
-            return handleConnectWallet(keplr, chainInfo, key, chainId, internalChainId, providerInfo)
-          }
-        }
-      })
-  } catch (e) {
-    const message = e.message.toUpperCase()
-
-    if (message.includes(KeplrErrors.NoChainInfo)) {
-      // suggestChain()
-      error = KeplrErrors.NoChainInfo
-    } else {
-      error = KeplrErrors.Failed
-      store.dispatch(fetchProvider(_getDefaultProvider(internalChainId)))
-    }
-  }
-
-  return error
-}
-
-function _getDefaultProvider(internalChainId: number): ProviderProps {
-  return {
-    account: '',
-    available: false,
-    hardwareWallet: false,
-    loaded: false,
-    name: '',
-    network: '',
-    smartContractWallet: false,
-    internalChainId,
-  }
-}
-
-const processProviderResponse = (dispatch: Dispatch, provider: ProviderProps): void => {
-  const walletRecord = makeProvider(provider)
-  dispatch(addProvider(walletRecord))
-}
-
-const handleProviderNotification = (provider: ProviderProps, dispatch: Dispatch<any>): void => {
-  const { available, loaded } = provider
-
-  if (!loaded) {
-    dispatch(enqueueSnackbar(enhanceSnackbarForAction(NOTIFICATIONS.CONNECT_WALLET_ERROR_MSG)))
-    return
-  }
-
-  if (available) {
-    trackAnalyticsEvent({
-      ...WALLET_EVENTS.CONNECT_WALLET,
-      label: provider.name,
-    })
-  } else {
-    dispatch(enqueueSnackbar(enhanceSnackbarForAction(NOTIFICATIONS.UNLOCK_WALLET_MSG)))
-  }
-}
-
-export async function suggestChain(chainId = 'aura-testnet'): Promise<any> {
-  return getGatewayUrl().then((res: any) => {
-    const chainInfo = _.find(res.chainInfo, ['chainId', chainId])
-    if (chainInfo) {
-      return window['keplr']?.experimentalSuggestChain(chainInfo)
-    } else {
-      const result = confirm(`Please add the ${chainId} chain to your Wallet!`)
-
-      if (result) {
-        window.open(
-          'https://github.com/aura-nw/Aura-Safe/blob/dev/CONNECT_KEPLR.md#i-connect-keplr-wallet-to-aura-testnet',
-        )
-      }
-
-      return null
-    }
-  })
-}
-
-function fetchProvider(providerInfo: ProviderProps): (dispatch: Dispatch<any>) => Promise<void> {
-  return async (dispatch: Dispatch<any>) => {
-    handleProviderNotification(providerInfo, dispatch)
-    processProviderResponse(dispatch, providerInfo)
-  }
 }
