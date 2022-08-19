@@ -22,14 +22,21 @@ const TitleStyled = styled.div`
 function CardVoting(props): ReactElement {
   return (
     <BoxCard>
-      <Col start="sm" layout="column" sm={6} xs={12}>
-        <TitleNumberStyled>#60</TitleNumberStyled>
-        <TitleStyled>Increase MaxValidator value</TitleStyled>
+      <Col layout="column">
+        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+          <div>
+            <TitleNumberStyled>#60</TitleNumberStyled>
+            <TitleStyled>Increase MaxValidator value</TitleStyled>
+          </div>
+          <div style={{ alignSelf: 'center' }}>
+            <StatusCard />
+          </div>
+        </div>
+
+        <Col sm={12} xs={12}>
+          <Row>hello</Row>
+        </Col>
       </Col>
-      <Col end="sm" sm={6} xs={12}>
-        <StatusCard />
-      </Col>
-      <Row>hello</Row>
     </BoxCard>
   )
 }
