@@ -72,7 +72,7 @@ export const NOTIFICATIONS: Record<NotificationId, Notification> = {
   },
   CONNECT_WALLET_ERROR_MSG: {
     message: 'Error connecting to your wallet',
-    options: { variant: ERROR, persist: true },
+    options: { variant: ERROR, persist: false, autoHideDuration: shortDuration, preventDuplicate: true },
   },
   // Safe creation
   CREATE_SAFE_FAILED_MSG: {
@@ -118,7 +118,7 @@ export const NOTIFICATIONS: Record<NotificationId, Notification> = {
   },
   TX_PENDING_MSG: {
     message: 'Transaction still pending. Consider resubmitting with a higher gas price.',
-    options: { variant: ERROR, persist: true, autoHideDuration: shortDuration },
+    options: { variant: ERROR, persist: false, autoHideDuration: shortDuration },
   },
   TX_WAITING_MSG: {
     message: 'A transaction requires your confirmation',

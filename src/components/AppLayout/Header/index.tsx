@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { currentChainId } from 'src/logic/config/store/selectors'
 import useKeplrKeyStoreChange from 'src/logic/keplr/useKeplrKeyStoreChange'
+import { connectProvider } from 'src/logic/providers'
 import { removeProvider } from 'src/logic/wallets/store/actions'
 import { loadLastUsedProvider } from 'src/logic/wallets/store/middlewares/providerWatcher'
 import {
@@ -12,7 +13,6 @@ import {
 } from 'src/logic/wallets/store/selectors'
 import { JWT_TOKEN_KEY } from 'src/services/constant/common'
 import session from 'src/utils/storage/session'
-import { connectKeplr } from '../../../logic/keplr/keplr'
 import { WALLETS_NAME } from '../../../logic/wallets/constant/wallets'
 import Layout from './components/Layout/Layout'
 import ConnectDetails from './components/ProviderDetails/ConnectDetails/ConnectDetails'
@@ -43,10 +43,15 @@ const HeaderComponent = ({
 
   useEffect(() => {
     loadLastUsedProvider().then((lastUsedProvider) => {
-      if (lastUsedProvider === WALLETS_NAME.Keplr) {
-        // setLastUsedProvider(lastUsedProvider)
-        connectKeplr()
-      }
+      // if (lastUsedProvider === WALLETS_NAME.Keplr) {
+      //   // setLastUsedProvider(lastUsedProvider)
+      //   connectKeplr()
+      // }
+
+      lastUsedProvider &&
+        connectProvider(lastUsedProvider as WALLETS_NAME).catch((e) => {
+          console.log(e)
+        })
     })
   }, [chainId])
 
@@ -95,6 +100,7 @@ const HeaderComponent = ({
 
   return (
     <Layout
+      openConnectWallet={openConnectWallet}
       providerDetails={details}
       providerInfo={info}
       showConnect={toggleConnect}

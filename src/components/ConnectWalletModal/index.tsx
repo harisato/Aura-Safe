@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 
 import { Modal } from 'src/components/Modal'
 import { connectProvider } from 'src/logic/providers'
@@ -11,6 +11,7 @@ import { ImageContainer, ImageItem, ImageTitle, WalletList } from './styles'
 
 import Coin98 from './assets/Coin98.svg'
 import Keplr from './assets/keplr.svg'
+import { checkExistedCoin98 } from 'src/logic/providers/utils/wallets'
 
 type Props = {
   isOpen: boolean
@@ -18,12 +19,29 @@ type Props = {
 }
 
 export const ConnectWalletModal = ({ isOpen, onClose }: Props): React.ReactElement => {
+  const [coin98, setCoin98] = useState(false)
+
+  useEffect(() => {
+    if (checkExistedCoin98()) {
+      setCoin98(true)
+    }
+  }, [])
+
+  useEffect(() => {
+    console.log('Change', isOpen)
+  }, [isOpen])
+
   const handleConnect = useCallback(
     (walletsName: WALLETS_NAME) => {
       try {
-        connectProvider(walletsName).then(() => {
-          onClose()
-        })
+        connectProvider(walletsName)
+          .then(() => {
+            onClose()
+          })
+          .catch(() => {
+            store.dispatch(enqueueSnackbar(enhanceSnackbarForAction(NOTIFICATIONS.CONNECT_WALLET_ERROR_MSG)))
+            // console.log('{e}', { e })
+          })
       } catch (e) {
         store.dispatch(enqueueSnackbar(enhanceSnackbarForAction(NOTIFICATIONS.CONNECT_WALLET_ERROR_MSG)))
         console.log(e)
@@ -40,14 +58,16 @@ export const ConnectWalletModal = ({ isOpen, onClose }: Props): React.ReactEleme
 
       <WalletList>
         <ImageContainer>
-          <ImageItem
-            onClick={() => {
-              handleConnect(WALLETS_NAME.Coin98)
-            }}
-          >
-            <Img alt="Coin98" height={40} src={Coin98} />
-            <ImageTitle> Coin98 </ImageTitle>
-          </ImageItem>
+          {coin98 && (
+            <ImageItem
+              onClick={() => {
+                handleConnect(WALLETS_NAME.Coin98)
+              }}
+            >
+              <Img alt="Coin98" height={40} src={Coin98} />
+              <ImageTitle> Coin98 </ImageTitle>
+            </ImageItem>
+          )}
           <ImageItem
             onClick={() => {
               handleConnect(WALLETS_NAME.Keplr)
