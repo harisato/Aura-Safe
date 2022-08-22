@@ -71,7 +71,6 @@ const RootConsumer = (): React.ReactElement | null => {
     if (!gatewayUrl) {
       return
     }
-    console.log('initChains')
 
     const initChains = async () => {
       await loadChains()

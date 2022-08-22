@@ -27,10 +27,6 @@ export const ConnectWalletModal = ({ isOpen, onClose }: Props): React.ReactEleme
     }
   }, [])
 
-  useEffect(() => {
-    console.log('Change', isOpen)
-  }, [isOpen])
-
   const handleConnect = useCallback(
     (walletsName: WALLETS_NAME) => {
       try {
@@ -40,7 +36,6 @@ export const ConnectWalletModal = ({ isOpen, onClose }: Props): React.ReactEleme
           })
           .catch(() => {
             store.dispatch(enqueueSnackbar(enhanceSnackbarForAction(NOTIFICATIONS.CONNECT_WALLET_ERROR_MSG)))
-            // console.log('{e}', { e })
           })
       } catch (e) {
         store.dispatch(enqueueSnackbar(enhanceSnackbarForAction(NOTIFICATIONS.CONNECT_WALLET_ERROR_MSG)))

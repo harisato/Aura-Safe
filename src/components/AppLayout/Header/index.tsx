@@ -4,7 +4,7 @@ import { currentChainId } from 'src/logic/config/store/selectors'
 import useKeplrKeyStoreChange from 'src/logic/keplr/useKeplrKeyStoreChange'
 import { connectProvider } from 'src/logic/providers'
 import { removeProvider } from 'src/logic/wallets/store/actions'
-import { loadLastUsedProvider } from 'src/logic/wallets/store/middlewares/providerWatcher'
+import { LAST_USED_PROVIDER_KEY, loadLastUsedProvider } from 'src/logic/wallets/store/middlewares/providerWatcher'
 import {
   availableSelector,
   loadedSelector,
@@ -12,6 +12,7 @@ import {
   userAccountSelector,
 } from 'src/logic/wallets/store/selectors'
 import { JWT_TOKEN_KEY } from 'src/services/constant/common'
+import { removeFromStorage } from 'src/utils/storage'
 import session from 'src/utils/storage/session'
 import { WALLETS_NAME } from '../../../logic/wallets/constant/wallets'
 import Layout from './components/Layout/Layout'
@@ -28,9 +29,6 @@ const HeaderComponent = ({
   onToggleSafeList: () => void
 }): React.ReactElement => {
   const [toggleConnect, setToggleConnect] = useState<boolean>(false)
-  // const [lastUsedProvider, setLastUsedProvider] = useState('')
-
-  // const [disconnected, setDisconnected] = useState(false)
 
   const provider = useSelector(providerNameSelector)
   const chainId = useSelector(currentChainId)
@@ -43,15 +41,7 @@ const HeaderComponent = ({
 
   useEffect(() => {
     loadLastUsedProvider().then((lastUsedProvider) => {
-      // if (lastUsedProvider === WALLETS_NAME.Keplr) {
-      //   // setLastUsedProvider(lastUsedProvider)
-      //   connectKeplr()
-      // }
-
-      lastUsedProvider &&
-        connectProvider(lastUsedProvider as WALLETS_NAME).catch((e) => {
-          console.log(e)
-        })
+      lastUsedProvider && connectProvider(lastUsedProvider as WALLETS_NAME).catch(() => {})
     })
   }, [chainId])
 
@@ -62,6 +52,7 @@ const HeaderComponent = ({
   const onDisconnect = () => {
     dispatch(removeProvider())
     session.removeItem(JWT_TOKEN_KEY)
+    removeFromStorage(LAST_USED_PROVIDER_KEY)
     // setDisconnected(true)
   }
 

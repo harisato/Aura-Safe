@@ -23,11 +23,11 @@ export async function connectProvider(providerName: WALLETS_NAME): Promise<any> 
         alert('Please install keplr extension')
         throw new Error(KeplrErrors.NotInstall)
       }
-      // let error = KeplrErrors.Success
 
       return keplr
     })
-    .then((keplr) => Promise.all([keplr, keplr.getKey(chainId)]))
+    .then((keplr) => Promise.all([keplr, keplr.enable(chainId)]))
+    .then(([keplr, _]) => Promise.all([keplr, keplr.getKey(chainId)]))
     .then(([keplr, key]) => {
       const internalChainId = getInternalChainId()
       const chainInfo = getChainInfo()
