@@ -3,6 +3,8 @@ import cn from 'classnames'
 import { ReactElement, useContext } from 'react'
 import styled from 'styled-components'
 
+import { useSelector } from 'react-redux'
+import useLocalTxStatus from 'src/logic/hooks/useLocalTxStatus'
 import {
   ExpandedTxDetails,
   isModuleExecutionInfo,
@@ -13,19 +15,17 @@ import {
   LocalTransactionStatus,
   Transaction,
 } from 'src/logic/safe/store/models/types/gateway.d'
+import { userAccountSelector } from 'src/logic/wallets/store/selectors'
 import { useTransactionDetails } from './hooks/useTransactionDetails'
-import { TxDetailsContainer, Centered, AlignItemsWithMargin } from './styled'
+import { AlignItemsWithMargin, Centered, TxDetailsContainer } from './styled'
 import { TxData } from './TxData'
 import { TxExpandedActions } from './TxExpandedActions'
 import { TxInfo } from './TxInfo'
 import { TxLocationContext } from './TxLocationProvider'
+import TxModuleInfo from './TxModuleInfo'
 import { TxOwners } from './TxOwners'
 import { TxSummary } from './TxSummary'
 import { isCancelTxDetails, NOT_AVAILABLE } from './utils'
-import useLocalTxStatus from 'src/logic/hooks/useLocalTxStatus'
-import { useSelector } from 'react-redux'
-import { userAccountSelector } from 'src/logic/wallets/store/selectors'
-import TxModuleInfo from './TxModuleInfo'
 
 const NormalBreakingText = styled(Text)`
   line-break: normal;
@@ -88,7 +88,12 @@ type TxDetailsProps = {
 
 export const TxDetails = ({ transaction }: TxDetailsProps): ReactElement => {
   const { txLocation } = useContext(TxLocationContext)
-  const { data, loading } = useTransactionDetails(transaction.id, transaction.txHash)
+
+  const { data, loading } = useTransactionDetails(
+    transaction.id,
+    transaction.txHash,
+    (transaction.txInfo as any)?.direction,
+  )
   const txStatus = useLocalTxStatus(transaction)
   const willBeReplaced = txStatus === LocalTransactionStatus.WILL_BE_REPLACED
   const isPending = txStatus === LocalTransactionStatus.PENDING
