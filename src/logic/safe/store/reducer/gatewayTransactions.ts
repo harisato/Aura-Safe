@@ -1,4 +1,4 @@
-import { TransactionSummary } from '@gnosis.pm/safe-react-gateway-sdk'
+import { TransactionSummary, Transfer } from '@gnosis.pm/safe-react-gateway-sdk'
 import cloneDeep from 'lodash/cloneDeep'
 import get from 'lodash/get'
 import { Action, handleActions } from 'redux-actions'
@@ -204,10 +204,19 @@ export const gatewayTransactionsReducer = handleActions<GatewayTransactionsState
         }
 
         for (const [timestamp, transactions] of Object.entries(txGroup)) {
-          // const txIndex = transactions.findIndex(({ id, txHash }) => sameString(id, transactionId))
-          const txIndex = transactions.findIndex(
-            ({ txHash, id }) => sameString(txHash, value?.txHash || undefined) || sameString(id, transactionId),
-          )
+          const txIndex = transactions.findIndex(({ txHash, id, txInfo }) => {
+            const direction = (txInfo as Transfer).direction
+            const remoteDirection = (value?.txInfo as Transfer).direction
+            const isSameDirection = sameString(direction, remoteDirection)
+
+            const isSameTxHas = sameString(txHash, value?.txHash || undefined)
+
+            const isSameId = sameString(id, transactionId)
+
+            return (isSameDirection && isSameTxHas) || isSameId
+
+            // return sameString(txHash, value?.txHash || undefined) || sameString(id, transactionId)
+          })
 
           if (txIndex !== -1) {
             txGroup[timestamp][txIndex]['txDetails'] = value
