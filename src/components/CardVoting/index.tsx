@@ -80,7 +80,7 @@ function CardVoting(props): ReactElement {
             <TitleStyled>Increase MaxValidator value</TitleStyled>
           </div>
           <div style={{ alignSelf: 'center' }}>
-            <StatusCard />
+            <StatusCard status="deposit" />
           </div>
         </div>
 

@@ -7,7 +7,7 @@ import BoxCard from 'src/components/BoxCard'
 import TableVoting from 'src/components/TableVoting'
 import { StyleCard, TitleNumberStyled } from './styles'
 import { StyledTableCell, StyledTableRow } from 'src/components/TableVoting'
-
+import StatusCard from 'src/components/StatusCard'
 const RowHead = [
   { name: '#ID' },
   { name: 'TITLE' },
@@ -24,7 +24,8 @@ const RowData = [
     status: 'deposit',
     voting: '2022-01-09 | 07:55:02',
     submitTime: '2022-01-09 | 07:55:02',
-    total: '64.000000 AURA',
+    total: '64.000000',
+    nerwork: ' AURA',
   },
   {
     id: '#60',
@@ -32,7 +33,8 @@ const RowData = [
     status: 'deposit',
     voting: '2022-01-09 | 07:55:02',
     submitTime: '2022-01-09 | 07:55:02',
-    total: '64.000000 AURA',
+    total: '64.000000',
+    nerwork: ' AURA',
   },
 ]
 
@@ -83,11 +85,24 @@ function Voting(props): ReactElement {
                   <StyledTableCell component="th" scope="row">
                     {row.id}
                   </StyledTableCell>
-                  <StyledTableCell align="left">{row.title}</StyledTableCell>
-                  <StyledTableCell align="left">{row.status}</StyledTableCell>
+                  <StyledTableCell align="left">
+                    <Text size="lg" color="linkAura">
+                      {row.title}
+                    </Text>
+                  </StyledTableCell>
+                  <StyledTableCell align="left">
+                    <StatusCard status={row.status} showDot />
+                  </StyledTableCell>
                   <StyledTableCell align="left">{row.voting}</StyledTableCell>
                   <StyledTableCell align="left">{row.submitTime}</StyledTableCell>
-                  <StyledTableCell align="left">{row.total}</StyledTableCell>
+                  <StyledTableCell align="left">
+                    <div style={{ display: 'flex' }}>
+                      {row.total}&ensp;
+                      <Text size="lg" color="linkAura">
+                        {row.nerwork}
+                      </Text>
+                    </div>
+                  </StyledTableCell>
                 </StyledTableRow>
               ))}
             </TableVoting>
