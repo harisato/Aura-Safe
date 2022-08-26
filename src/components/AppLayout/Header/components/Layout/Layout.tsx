@@ -18,7 +18,7 @@ import { LogoContainer, styles } from './styles'
 import WalletPopup from './WalletPopup/WalletPopup'
 
 const Layout = (props: any) => {
-  const { classes, providerDetails, providerInfo, showConnect, onToggleSafeList } = props
+  const { classes, providerDetails, providerInfo, showConnect, openConnectWallet } = props
   const { clickAway, open, toggle } = useStateHandler()
   const { clickAway: clickAwayNetworks, open: openNetworks, toggle: toggleNetworks } = useStateHandler()
   const isWrongChain = useSelector(shouldSwitchWalletChain)
@@ -45,7 +45,7 @@ const Layout = (props: any) => {
 
       {isWrongChain && (
         <div className={classes.wallet}>
-          <WalletSwitch />
+          <WalletSwitch openConnectWallet={openConnectWallet} />
           <Divider />
         </div>
       )}

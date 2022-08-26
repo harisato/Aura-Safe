@@ -1,6 +1,7 @@
 export enum WALLETS_NAME {
   Keplr = 'Keplr',
   TerraStation = 'Terra Station',
+  Coin98 = 'Coin98',
 }
 
 // export const WALLETS_CHAIN_ID: Record<string, string> = {

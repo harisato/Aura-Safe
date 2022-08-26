@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useCallback } from 'react'
 import { Loader } from '@aura/safe-react-components'
 import { useEffect } from 'react'
 import { useSelector } from 'react-redux'
@@ -73,6 +73,11 @@ const Routes = (): React.ReactElement => {
     // Track when pathname changes
   }, [pathname, search, trackPage])
 
+  const redirection = useCallback((chainId) => {
+    setChainId(chainId)
+    return <Redirect to={ROOT_ROUTE} />
+  }, [])
+
   return (
     <Switch>
       <Route
@@ -83,14 +88,7 @@ const Routes = (): React.ReactElement => {
       {
         // Redirection to open network specific welcome pages
         getNetworkRootRoutes().map(({ chainId, route }) => (
-          <Route
-            key={chainId}
-            path={route}
-            render={() => {
-              setChainId(chainId)
-              return <Redirect to={ROOT_ROUTE} />
-            }}
-          />
+          <Route key={chainId} path={route} render={() => redirection(chainId)} />
         ))
       }
       <Route
