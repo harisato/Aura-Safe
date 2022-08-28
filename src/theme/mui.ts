@@ -349,6 +349,8 @@ const theme = createTheme({
         fontFamily: secondaryFontFamily,
         fontWeight: 'normal',
         fontSize: extraSmallFontSize,
+        color: '#9DA1AC !important',
+
         '& p': {
           color: 'white !important',
         },

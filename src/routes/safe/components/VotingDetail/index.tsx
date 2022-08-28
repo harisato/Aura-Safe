@@ -9,6 +9,7 @@ import { borderLinear } from 'src/theme/variables'
 import { Divider } from '@material-ui/core'
 import InformationVoting from './Information'
 import Current from './Current'
+import Vote from './Vote'
 
 const StyledButton = styled(Button)`
   border: 2px solid transparent;
@@ -82,6 +83,14 @@ function VotingDetail(props): ReactElement {
             </Col>
           </Col>
         </BoxCard>
+
+        <Block margin="mdTop">
+          <BoxCard>
+            <Col layout="column" sm={12} xs={12}>
+              <Vote />
+            </Col>
+          </BoxCard>
+        </Block>
       </Block>
     </>
   )
