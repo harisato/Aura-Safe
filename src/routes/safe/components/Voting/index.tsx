@@ -79,7 +79,7 @@ function Voting(props): ReactElement {
         <Col start="sm" sm={12} xs={12}>
           <BoxCard justify="flex-start" column>
             <TitleNumberStyled>Proposals</TitleNumberStyled>
-            <TableVoting RowHead={RowHead} RowData={RowData}>
+            <TableVoting RowHead={RowHead}>
               {RowData.map((row) => (
                 <StyledTableRow key={row.id}>
                   <StyledTableCell component="th" scope="row">

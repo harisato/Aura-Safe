@@ -9,6 +9,7 @@ import TableCell from '@material-ui/core/TableCell'
 import TableContainer from '@material-ui/core/TableContainer'
 import TableHead from '@material-ui/core/TableHead'
 import TableRow from '@material-ui/core/TableRow'
+import Pagination from '@material-ui/lab/Pagination'
 
 export const StyledTableCell = withStyles((theme) => ({
   head: {
@@ -40,6 +41,13 @@ const useStyles = makeStyles({
   table: {
     minWidth: 700,
     marginTop: 20,
+    borderBottom: '1px solid #363843',
+  },
+  pagi: {
+    display: 'flex',
+    marginTop: 20,
+    justifyContent: 'flex-end',
+    color: 'white',
   },
 })
 
@@ -64,6 +72,7 @@ function TableVoting(props): ReactElement {
           </TableHead>
           <TableBody>{children}</TableBody>
         </Table>
+        <Pagination className={classes.pagi} count={5} shape="rounded" showFirstButton showLastButton />
       </TableContainer>
     </>
   )

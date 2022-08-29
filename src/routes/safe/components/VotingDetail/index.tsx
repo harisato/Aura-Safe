@@ -10,6 +10,8 @@ import { Divider } from '@material-ui/core'
 import InformationVoting from './Information'
 import Current from './Current'
 import Vote from './Vote'
+import ValidatorVote from './ValidatorVote'
+import Depositors from './Depositors'
 
 const StyledButton = styled(Button)`
   border: 2px solid transparent;
@@ -88,6 +90,22 @@ function VotingDetail(props): ReactElement {
           <BoxCard>
             <Col layout="column" sm={12} xs={12}>
               <Vote />
+            </Col>
+          </BoxCard>
+        </Block>
+
+        <Block margin="mdTop">
+          <BoxCard>
+            <Col layout="column" sm={12} xs={12}>
+              <ValidatorVote />
+            </Col>
+          </BoxCard>
+        </Block>
+
+        <Block margin="mdTop" style={{ marginBottom: 10 }}>
+          <BoxCard>
+            <Col layout="column" sm={12} xs={12}>
+              <Depositors />
             </Col>
           </BoxCard>
         </Block>

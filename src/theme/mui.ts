@@ -347,21 +347,21 @@ const theme = createTheme({
     MuiTab: {
       root: {
         fontFamily: secondaryFontFamily,
-        fontWeight: 'normal',
-        fontSize: extraSmallFontSize,
+        fontWeight: boldFont,
+        fontSize: 16,
         color: '#9DA1AC !important',
 
         '& p': {
           color: 'white !important',
         },
         '&$selected': {
-          fontWeight: boldFont,
+          color: 'white !important',
           '& p': {
             color: '#5ee6d0 !important',
           },
         },
         '@media (min-width: 960px)': {
-          fontSize: extraSmallFontSize, // override material-ui media query
+          fontSize: 16, // override material-ui media query
         },
       },
     },
@@ -505,6 +505,19 @@ const theme = createTheme({
       },
       scroller: {
         borderBottom: '1px solid rgba(55, 55, 61, 1) !important',
+      },
+    },
+    MuiPaginationItem: {
+      root: {
+        color: 'white',
+        fontSize: 14,
+        fontWeight: 510,
+      },
+      page: {
+        '&$selected': {
+          color: '#5EE6D0',
+          border: '1px solid #5EE6D0',
+        },
       },
     },
   },
