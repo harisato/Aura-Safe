@@ -17,6 +17,17 @@ const TitleStyled = styled.div`
   color: rgba(255, 255, 255, 1);
 `
 
+const StyledTank = styled.div<{ rank: boolean }>`
+  background-color: ${({ rank }) => (rank ? '#363843' : 'transparent')};
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  color: ${({ rank }) => (rank ? '#5ee6d0' : 'white')};
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`
+
 const useStyles = makeStyles({
   root: {
     backgroundColor: 'transparent',
@@ -56,11 +67,15 @@ const RowData = [
 
 const TableVotingDetailInside = () => {
   return (
-    <TableVoting RowHead={RowHead}>
+    <TableVoting RowHead={RowHead} ShowPaginate>
       {RowData.map((row, index) => (
         <StyledTableRow key={row.id}>
           <StyledTableCell component="th" scope="row">
-            {index + 1}
+            {index <= 2 ? (
+              <StyledTank rank={true}> {index + 1}</StyledTank>
+            ) : (
+              <StyledTank rank={false}> {index + 1}</StyledTank>
+            )}
           </StyledTableCell>
           <StyledTableCell align="left">{row.id}</StyledTableCell>
           <StyledTableCell align="left">

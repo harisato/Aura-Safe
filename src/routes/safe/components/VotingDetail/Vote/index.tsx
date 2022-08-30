@@ -56,7 +56,7 @@ const RowData = [
 
 const TableVotingDetailInside = () => {
   return (
-    <TableVoting RowHead={RowHead}>
+    <TableVoting RowHead={RowHead} ShowPaginate>
       {RowData.map((row) => (
         <StyledTableRow key={row.id}>
           <StyledTableCell component="th" scope="row">

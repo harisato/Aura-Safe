@@ -5,7 +5,10 @@ import styled from 'styled-components'
 import StatusCard from '../StatusCard'
 import { Text, Button, Divider } from '@aura/safe-react-components'
 import { borderLinear } from 'src/theme/variables'
+import { useHistory } from 'react-router-dom'
 import Vote from '../Vote'
+import { SAFE_ROUTES, extractSafeAddress, generateSafeRoute } from 'src/routes/routes'
+import { getShortName } from 'src/config'
 
 const TitleNumberStyled = styled.div`
   font-weight: 510;
@@ -71,6 +74,18 @@ const DotVoteStyled = styled.div`
 `
 
 function CardVoting(props): ReactElement {
+  const history = useHistory()
+  const safeAddress = extractSafeAddress()
+
+  const handleDetail = () => {
+    history.push(
+      generateSafeRoute(SAFE_ROUTES.VOTING_DETAIL, {
+        shortName: getShortName(),
+        safeAddress,
+      }),
+    )
+  }
+
   return (
     <BoxCard width={'100%'} top={'10px'} left={'10px'}>
       <Col layout="column">
@@ -142,7 +157,7 @@ function CardVoting(props): ReactElement {
             </TextStyled>
           </div>
           <div>
-            <StyledButtonDetail size="md" disabled={true} onClick={() => {}}>
+            <StyledButtonDetail size="md" disabled={false} onClick={handleDetail}>
               <Text size="lg" color="white">
                 Details
               </Text>

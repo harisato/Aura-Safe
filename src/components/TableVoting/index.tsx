@@ -52,7 +52,7 @@ const useStyles = makeStyles({
 })
 
 function TableVoting(props): ReactElement {
-  const { RowHead, children } = props
+  const { RowHead, children, ShowPaginate } = props
   const classes = useStyles()
 
   return (
@@ -72,7 +72,9 @@ function TableVoting(props): ReactElement {
           </TableHead>
           <TableBody>{children}</TableBody>
         </Table>
-        <Pagination className={classes.pagi} count={5} shape="rounded" showFirstButton showLastButton />
+        {ShowPaginate && (
+          <Pagination className={classes.pagi} count={5} shape="rounded" showFirstButton showLastButton />
+        )}
       </TableContainer>
     </>
   )

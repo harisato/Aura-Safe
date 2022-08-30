@@ -12,6 +12,7 @@ import Current from './Current'
 import Vote from './Vote'
 import ValidatorVote from './ValidatorVote'
 import Depositors from './Depositors'
+import { useHistory } from 'react-router-dom'
 
 const StyledButton = styled(Button)`
   border: 2px solid transparent;
@@ -45,8 +46,9 @@ const StyleDivider = styled(Divider)`
 `
 
 function VotingDetail(props): ReactElement {
+  const history = useHistory()
   const handleBack = () => {
-    console.log(1)
+    history.goBack()
   }
   return (
     <>
