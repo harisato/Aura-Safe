@@ -23,10 +23,10 @@ const ImageContainer = styled(Row)`
   align-items: center;
 `
 const ImageItem = styled.div`
-  width: 50%;
+  width: 30%;
   display: flex;
   align-items: center;
-  justify-content: center;
+  /* justify-content: center; */
   border-radius: 40px;
   cursor: pointer;
   padding: 0.625em 1.25em;

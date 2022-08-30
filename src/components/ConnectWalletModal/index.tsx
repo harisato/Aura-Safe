@@ -1,13 +1,17 @@
-import React from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
+
 import { Modal } from 'src/components/Modal'
-import { getInternalChainId, _getChainId } from '../../config'
-import { connectKeplr, KeplrErrors, suggestChain } from '../../logic/keplr/keplr'
+import { connectProvider } from 'src/logic/providers'
+import { WALLETS_NAME } from 'src/logic/wallets/constant/wallets'
 import { enhanceSnackbarForAction, NOTIFICATIONS } from '../../logic/notifications'
 import enqueueSnackbar from '../../logic/notifications/store/actions/enqueueSnackbar'
 import { store } from '../../store'
 import Img from '../layout/Img'
-import Keplr from './assets/keplr.svg'
 import { ImageContainer, ImageItem, ImageTitle, WalletList } from './styles'
+
+import Coin98 from './assets/Coin98.svg'
+import Keplr from './assets/keplr.svg'
+import { checkExistedCoin98 } from 'src/logic/providers/utils/wallets'
 
 type Props = {
   isOpen: boolean
@@ -15,38 +19,31 @@ type Props = {
 }
 
 export const ConnectWalletModal = ({ isOpen, onClose }: Props): React.ReactElement => {
-  // const internalChainId = getInternalChainId()
+  const [coin98, setCoin98] = useState(false)
 
-  const keplrWallet = async () => {
-    const chainId = _getChainId()
+  useEffect(() => {
+    if (checkExistedCoin98()) {
+      setCoin98(true)
+    }
+  }, [])
 
-    suggestChain(chainId)
-      .then(() => connectKeplr())
-      .then(() => {
-        onClose()
-      })
-      .catch(() => {
+  const handleConnect = useCallback(
+    (walletsName: WALLETS_NAME) => {
+      try {
+        connectProvider(walletsName)
+          .then(() => {
+            onClose()
+          })
+          .catch(() => {
+            store.dispatch(enqueueSnackbar(enhanceSnackbarForAction(NOTIFICATIONS.CONNECT_WALLET_ERROR_MSG)))
+          })
+      } catch (e) {
         store.dispatch(enqueueSnackbar(enhanceSnackbarForAction(NOTIFICATIONS.CONNECT_WALLET_ERROR_MSG)))
-      })
-
-    // await connectKeplr()
-    //   .then(async (status) => {
-    //     if (status === KeplrErrors.NoChainInfo) {
-    //       await suggestChain(chainId)
-    //       return true
-    //     }
-    //     onClose()
-    //     return null
-    //   })
-    //   .then((e) => {
-    //     if (e) {
-    //       connectKeplr()
-    //     }
-    //   })
-    //   .catch(() => {
-    //     store.dispatch(enqueueSnackbar(enhanceSnackbarForAction(NOTIFICATIONS.CONNECT_WALLET_ERROR_MSG)))
-    //   })
-  }
+        console.log(e)
+      }
+    },
+    [onClose],
+  )
 
   return (
     <Modal description="Select a Wallet" handleClose={onClose} open={isOpen} title="Select a Wallet">
@@ -56,17 +53,24 @@ export const ConnectWalletModal = ({ isOpen, onClose }: Props): React.ReactEleme
 
       <WalletList>
         <ImageContainer>
-          <ImageItem onClick={keplrWallet}>
-            <Img alt="Keplr" height={40} src={Keplr} />
-            <ImageTitle> Keplr</ImageTitle>
-          </ImageItem>
-
-          {/* {internalChainId !== 20 ? null : (
-            <ImageItem onClick={terraWallet}>
-              <Img alt="Terra" height={40} src={TerraStation} />
-              <ImageTitle> Terra Station </ImageTitle>
+          {coin98 && (
+            <ImageItem
+              onClick={() => {
+                handleConnect(WALLETS_NAME.Coin98)
+              }}
+            >
+              <Img alt="Coin98" height={40} src={Coin98} />
+              <ImageTitle> Coin98 </ImageTitle>
             </ImageItem>
-          )} */}
+          )}
+          <ImageItem
+            onClick={() => {
+              handleConnect(WALLETS_NAME.Keplr)
+            }}
+          >
+            <Img alt="Keplr" height={40} src={Keplr} />
+            <ImageTitle> Keplr </ImageTitle>
+          </ImageItem>
         </ImageContainer>
       </WalletList>
     </Modal>
