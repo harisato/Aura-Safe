@@ -31,6 +31,7 @@ export const SAFE_SUBSECTION_ROUTE = `${SAFE_SECTION_ROUTE}/:${SAFE_SUBSECTION_S
 
 export const TRANSACTION_ID_SLUG = `safeTxHash`
 export const TRANSACTION_ID_NUMBER = `id`
+export const VOTING_ID_NUMBER = `idVoting`
 
 // URL: gnosis-safe.io/app/:[SAFE_ADDRESS_SLUG]/:[SAFE_SECTION_SLUG]/:[SAFE_SUBSECTION_SLUG]
 export type SafeRouteSlugs = {
@@ -65,6 +66,7 @@ export const SAFE_ROUTES = {
   ADDRESS_BOOK: `${ADDRESSED_ROUTE}/address-book`,
   STAKING: `${ADDRESSED_ROUTE}/staking`,
   VOTING: `${ADDRESSED_ROUTE}/voting`,
+  VOTING_DETAIL: `${ADDRESSED_ROUTE}/voting/detail`,
   APPS: `${ADDRESSED_ROUTE}/apps`,
   SETTINGS: `${ADDRESSED_ROUTE}/settings`,
   SETTINGS_APPEARANCE: `${ADDRESSED_ROUTE}/settings/appearance`,
@@ -106,20 +108,6 @@ export const extractPrefixedSafeAddress = (
   }
 }
 
-export const extractPrefixedSafeId = (path = history.location.pathname, route = ADDRESSED_ROUTE): SafeRouteParams => {
-  const match = matchPath<SafeRouteSlugs>(path, {
-    path: route,
-  })
-
-  const prefixedSafeAddress = match?.params?.[SAFE_ADDRESS_SLUG]
-  const { prefix, address: id } = parsePrefixedAddress(prefixedSafeAddress || '')
-
-  return {
-    shortName: prefix,
-    safeAddress: id,
-  }
-}
-
 export const hasPrefixedSafeAddressInUrl = (): boolean => {
   const match = matchPath<SafeRouteSlugs>(history.location.pathname, {
     // Routes that have addresses in URL
@@ -131,20 +119,14 @@ export const hasPrefixedSafeAddressInUrl = (): boolean => {
 export const extractShortChainName = (): ShortName => extractPrefixedSafeAddress().shortName
 export const extractSafeAddress = (): string => extractPrefixedSafeAddress().safeAddress
 export const extractSafeId = (): number | undefined => extractPrefixedSafeAddress().safeId
+// export const extractVotingId = (): number | undefined => extractPrefixedSafeAddress().votingId
 
 export const getPrefixedSafeAddressSlug = (
   { safeAddress = extractSafeAddress(), shortName = extractShortChainName(), safeId = extractSafeId() } = {
     safeAddress: extractSafeAddress(),
     shortName: extractShortChainName(),
     safeId: extractSafeId(),
-  },
-): string => `${shortName}:${safeAddress}`
-
-export const getPrefixedSafeAddressIdSlug = (
-  { safeAddress = extractSafeAddress(), shortName = extractShortChainName(), safeId = extractSafeId() } = {
-    safeAddress: extractSafeAddress(),
-    shortName: extractShortChainName(),
-    safeId: extractSafeId(),
+    // votingId: extractVotingId(),
   },
 ): string => `${safeId}:${safeAddress}`
 
@@ -154,20 +136,13 @@ export const generateSafeRoute = (
   params: SafeRouteParams,
 ): string =>
   generatePath(path, {
-    [SAFE_ADDRESS_SLUG]: getPrefixedSafeAddressIdSlug(params),
-  })
-
-export const generateSafeRouteWithChainId = (
-  path: typeof SAFE_ROUTES[keyof typeof SAFE_ROUTES],
-  params: SafeRouteParams,
-): string =>
-  generatePath(path, {
-    [SAFE_ADDRESS_SLUG]: getPrefixedSafeAddressIdSlug(params),
+    [SAFE_ADDRESS_SLUG]: getPrefixedSafeAddressSlug(params),
   })
 
 // Singular tx route is excluded as it has a required safeTxHash slug
 // This is to give stricter routing, instead of making the slug optional
 const { TRANSACTIONS_SINGULAR: _hasRequiredSlug, ...STANDARD_SAFE_ROUTES } = SAFE_ROUTES
+
 export const generatePrefixedAddressRoutes = (params: SafeRouteParams): typeof STANDARD_SAFE_ROUTES => {
   return Object.entries(STANDARD_SAFE_ROUTES).reduce<typeof STANDARD_SAFE_ROUTES>(
     (routes, [key, route]) => ({ ...routes, [key]: generateSafeRoute(route, params) }),

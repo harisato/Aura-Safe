@@ -12,15 +12,15 @@ import { useSelector } from 'react-redux'
 import { addressBookName } from 'src/logic/addressBook/store/selectors'
 import { setChainId } from 'src/logic/config/utils'
 import {
-  generateSafeRoute,
   extractSafeAddress,
   LOAD_SPECIFIC_SAFE_ROUTE,
   SAFE_ROUTES,
   SafeRouteParams,
   ALLOW_SPECIFIC_SAFE_ROUTE,
   CANCEL_SPECIFIC_SAFE_ROUTE,
-  generateSafeRouteWithChainId,
+  generateSafeRoute,
 } from 'src/routes/routes'
+
 import { currentChainId } from 'src/logic/config/store/selectors'
 import { ChainId } from 'src/config/chain.d'
 import { getChainById, getInternalChainId } from 'src/config'
@@ -216,13 +216,13 @@ const SafeListItem = ({
 
     onSafeClick()
     onNetworkSwitch?.()
-    history.push(generateSafeRouteWithChainId(SAFE_ROUTES.ASSETS_BALANCES, routesSlug))
+    history.push(generateSafeRoute(SAFE_ROUTES.ASSETS_BALANCES, routesSlug))
   }
 
   const handleLoadSafe = (): void => {
     onSafeClick()
     onNetworkSwitch?.()
-    history.push(generateSafeRouteWithChainId(LOAD_SPECIFIC_SAFE_ROUTE, routesSlug))
+    history.push(generateSafeRoute(LOAD_SPECIFIC_SAFE_ROUTE, routesSlug))
 
     // Navigating to LOAD_SPECIFIC_SAFE_ROUTE doesn't trigger a network switch
     setChainId(networkId)
@@ -231,7 +231,7 @@ const SafeListItem = ({
   const handleAllowSafe = (): void => {
     onSafeClick()
     onNetworkSwitch?.()
-    history.push(generateSafeRouteWithChainId(ALLOW_SPECIFIC_SAFE_ROUTE, routesSlug))
+    history.push(generateSafeRoute(ALLOW_SPECIFIC_SAFE_ROUTE, routesSlug))
 
     // Navigating to LOAD_SPECIFIC_SAFE_ROUTE doesn't trigger a network switch
     setChainId(networkId)
