@@ -1,5 +1,6 @@
 import 'styled-components'
 import { theme } from '@aura/safe-react-components'
+import { Keplr } from '@keplr-wallet/types'
 
 type Theme = typeof theme
 
@@ -11,6 +12,8 @@ declare global {
       autoRefreshOnNetworkChange: boolean
       isMetaMask: boolean
     }
+    keplr: Keplr
+    coin98
   }
 }
 declare module '@openzeppelin/contracts/build/contracts/ERC721'

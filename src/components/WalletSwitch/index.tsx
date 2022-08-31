@@ -4,47 +4,37 @@ import { ReactElement, useCallback } from 'react'
 import { useSelector } from 'react-redux'
 import ChainIndicator from 'src/components/ChainIndicator'
 import { currentChainId } from 'src/logic/config/store/selectors'
-import { connectKeplr, suggestChain } from 'src/logic/keplr/keplr'
 import { enhanceSnackbarForAction, NOTIFICATIONS } from 'src/logic/notifications'
 import enqueueSnackbar from 'src/logic/notifications/store/actions/enqueueSnackbar'
+import { connectProvider } from 'src/logic/providers'
+import { WALLETS_NAME } from 'src/logic/wallets/constant/wallets'
+import { loadLastUsedProvider } from 'src/logic/wallets/store/middlewares/providerWatcher'
 import { store } from 'src/store'
 
 // const useStyles = makeStyles(styles)
-const WalletSwitch = (): ReactElement => {
+const WalletSwitch = ({ openConnectWallet }: { openConnectWallet?: () => void }): ReactElement => {
   // const classes = useStyles()
   const chainId = useSelector(currentChainId)
-  const keplrConnect = useCallback(async () => {
-    suggestChain(chainId)
-      .then(() => connectKeplr())
+
+  const keplrConnect = useCallback(() => {
+    loadLastUsedProvider()
+      .then((lastUsedProvider) => {
+        if (lastUsedProvider) {
+          connectProvider(lastUsedProvider as WALLETS_NAME).catch(() => {
+            store.dispatch(enqueueSnackbar(enhanceSnackbarForAction(NOTIFICATIONS.CONNECT_WALLET_ERROR_MSG)))
+          })
+        } else {
+          openConnectWallet && openConnectWallet()
+        }
+      })
       .catch(() => {
         store.dispatch(enqueueSnackbar(enhanceSnackbarForAction(NOTIFICATIONS.CONNECT_WALLET_ERROR_MSG)))
       })
-    // await connectKeplr()
-    //   .then(async (status) => {
-    //     if (status === KeplrErrors.NoChainInfo) {
-    //       await suggestChain(chainId)
-    //       return true
-    //     }
-
-    //     return null
-    //   })
-    //   .then((result) => {
-    //     if (result) {
-    //       connectKeplr()
-    //     }
-    //   })
-    //   .catch(() => {
-    //     store.dispatch(enqueueSnackbar(enhanceSnackbarForAction(NOTIFICATIONS.CONNECT_WALLET_ERROR_MSG)))
-    //   })
-  }, [chainId])
-
-  const switchWalletChainAlert = async () => {
-    keplrConnect()
-  }
+  }, [openConnectWallet])
 
   return (
     // <span className={classes.border}>
-    <Button size="medium" onClick={switchWalletChainAlert} color="primary" variant="outlined">
+    <Button size="medium" onClick={keplrConnect} color="primary" variant="outlined">
       <Text size="lg" color="white">
         Switch wallet to <ChainIndicator chainId={chainId} />
       </Text>

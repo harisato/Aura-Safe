@@ -12,15 +12,15 @@ import { useSelector } from 'react-redux'
 import { addressBookName } from 'src/logic/addressBook/store/selectors'
 import { setChainId } from 'src/logic/config/utils'
 import {
-  generateSafeRoute,
   extractSafeAddress,
   LOAD_SPECIFIC_SAFE_ROUTE,
   SAFE_ROUTES,
   SafeRouteParams,
   ALLOW_SPECIFIC_SAFE_ROUTE,
   CANCEL_SPECIFIC_SAFE_ROUTE,
-  generateSafeRouteWithChainId,
+  generateSafeRoute,
 } from 'src/routes/routes'
+
 import { currentChainId } from 'src/logic/config/store/selectors'
 import { ChainId } from 'src/config/chain.d'
 import { getChainById, getInternalChainId } from 'src/config'
@@ -33,6 +33,7 @@ import {
   SAFES_PENDING_STORAGE_KEY,
 } from 'src/routes/CreateSafePage/fields/createSafeFields'
 import { userAccountSelector } from 'src/logic/wallets/store/selectors'
+import _ from 'lodash'
 
 const StyledIcon = styled(Icon)<{ checked: boolean }>`
   ${({ checked }) => (checked ? { marginRight: '4px' } : { visibility: 'hidden', width: '28px' })}
@@ -180,17 +181,23 @@ const SafeListItem = ({
     }
   }
 
-  const hashText = (status: SafeStatus, address: string): string => {
+  const hashText = (status: SafeStatus | undefined, address: string): string => {
+    console.log({ status })
+
     switch (status) {
       case SafeStatus.Pending:
         return 'Created by you'
-
+      case SafeStatus.Confirmed:
+        return address
+          ? 'Created by ' +
+              `${_.truncate(address, { length: 13, omission: '...' + address.slice(address.length - 4) })}`
+          : ''
       default:
         return address || ''
     }
   }
 
-  const nameText = (status: SafeStatus, safeName: string): string => {
+  const nameText = (status: SafeStatus | undefined, safeName: string): string => {
     switch (status) {
       case SafeStatus.NeedConfirm:
         return 'Created by:'
@@ -209,13 +216,13 @@ const SafeListItem = ({
 
     onSafeClick()
     onNetworkSwitch?.()
-    history.push(generateSafeRouteWithChainId(SAFE_ROUTES.ASSETS_BALANCES, routesSlug))
+    history.push(generateSafeRoute(SAFE_ROUTES.ASSETS_BALANCES, routesSlug))
   }
 
   const handleLoadSafe = (): void => {
     onSafeClick()
     onNetworkSwitch?.()
-    history.push(generateSafeRouteWithChainId(LOAD_SPECIFIC_SAFE_ROUTE, routesSlug))
+    history.push(generateSafeRoute(LOAD_SPECIFIC_SAFE_ROUTE, routesSlug))
 
     // Navigating to LOAD_SPECIFIC_SAFE_ROUTE doesn't trigger a network switch
     setChainId(networkId)
@@ -224,7 +231,7 @@ const SafeListItem = ({
   const handleAllowSafe = (): void => {
     onSafeClick()
     onNetworkSwitch?.()
-    history.push(generateSafeRouteWithChainId(ALLOW_SPECIFIC_SAFE_ROUTE, routesSlug))
+    history.push(generateSafeRoute(ALLOW_SPECIFIC_SAFE_ROUTE, routesSlug))
 
     // Navigating to LOAD_SPECIFIC_SAFE_ROUTE doesn't trigger a network switch
     setChainId(networkId)
@@ -246,11 +253,11 @@ const SafeListItem = ({
     <ListItem button onClick={handleOpenSafe} ref={safeRef}>
       <StyledIcon type="check" size="md" color="primary" checked={isCurrentSafe} />
       <StyledPrefixedEthHashInfo
-        hash={hashText(pendingStatus!, address)}
-        name={nameText(pendingStatus!, safeName)}
+        hash={hashText(pendingStatus, address)}
+        name={nameText(pendingStatus, safeName)}
         shortName={shortName}
         showAvatar
-        shortenHash={pendingStatus === SafeStatus.Pending ? 100 : 4}
+        shortenHash={[SafeStatus.Pending, SafeStatus.Confirmed].includes(pendingStatus!) ? 100 : 4}
       />
       <ListItemSecondaryAction>
         {ethBalance ? (
