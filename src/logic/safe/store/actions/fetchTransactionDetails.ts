@@ -55,7 +55,15 @@ type DetailedExecutionInfoExtended = {
 }
 
 export const fetchTransactionDetailsByHash =
-  ({ transactionId, txHash }: { transactionId: string; txHash?: string | null }) =>
+  ({
+    transactionId,
+    txHash,
+    direction: _direction,
+  }: {
+    transactionId: string
+    txHash?: string | null
+    direction?: TransferDirection
+  }) =>
   async (dispatch: Dispatch, getState: () => AppReduxState): Promise<Transaction['txDetails']> => {
     const transaction = getTransactionByAttribute(getState(), {
       attributeValue: transactionId,
@@ -71,7 +79,7 @@ export const fetchTransactionDetailsByHash =
     }
 
     try {
-      const { Data, ErrorCode } = await getTxDetailByHash(txQuery, safeAddress)
+      const { Data, ErrorCode } = await getTxDetailByHash(txQuery, safeAddress, _direction)
       if (ErrorCode !== MESSAGES_CODE.SUCCESSFUL.ErrorCode) {
         return
       }
