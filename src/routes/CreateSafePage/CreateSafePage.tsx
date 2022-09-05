@@ -38,7 +38,6 @@ import { Modal } from 'src/components/Modal'
 import NetworkLabel from 'src/components/NetworkLabel/NetworkLabel'
 import { getInternalChainId, getShortName, _getChainId } from 'src/config'
 import { createMSafe, ISafeCreate } from 'src/services'
-import { parseToAddress } from 'src/utils/parseByteAdress'
 import { loadFromStorage, saveToStorage } from 'src/utils/storage'
 import { AddressBookEntry, makeAddressBookEntry } from '../../logic/addressBook/model/addressBook'
 import { addressBookSafeLoad } from '../../logic/addressBook/store/actions'
@@ -47,8 +46,6 @@ import enqueueSnackbar from '../../logic/notifications/store/actions/enqueueSnac
 import { SafeStatus } from '../../logic/safe/hooks/useOwnerSafes'
 import { addOrUpdateSafe } from '../../logic/safe/store/actions/addOrUpdateSafe'
 import { buildMSafe } from '../../logic/safe/store/actions/fetchSafe'
-import { WALLETS_NAME } from '../../logic/wallets/constant/wallets'
-import { loadLastUsedProvider } from '../../logic/wallets/store/middlewares/providerWatcher'
 import { MESSAGES_CODE } from '../../services/constant/message'
 import { useAnalytics, USER_EVENTS } from '../../utils/googleAnalytics'
 
@@ -56,6 +53,7 @@ import { Dispatch } from 'redux'
 import useConnectWallet from 'src/logic/hooks/useConnectWallet'
 import ArrowBack from './assets/arrow-left.svg'
 import { BackIcon, EmphasisLabel, LoaderContainer, StyledBorder, StyledButtonBorder, StyledButtonLabel } from './styles'
+import { getKeplrKey } from 'src/logic/keplr/keplr'
 
 type ModalDataType = {
   safeAddress: string
@@ -101,20 +99,13 @@ function CreateSafePage(): ReactElement {
   }, [provider])
 
   const showSafeCreationProcess = async (newSafeFormValues: CreateSafeFormValues): Promise<void> => {
-    const result = await loadLastUsedProvider()
-      .then((lastUsedProvider) => {
-        if (lastUsedProvider === WALLETS_NAME.Keplr) {
-          return makeSafeCreate(userWalletAddress, newSafeFormValues)
-        }
-        return null
-      })
-      .then((payload) => {
-        if (payload) {
-          return createMSafe(payload)
-        }
+    const result = await makeSafeCreate(userWalletAddress, newSafeFormValues).then((payload) => {
+      if (payload) {
+        return createMSafe(payload)
+      }
 
-        return null
-      })
+      return null
+    })
 
     if (!result) return
 
@@ -360,17 +351,30 @@ function getInitialValues(userAddress, addressBook, location, suggestedSafeName)
 async function makeSafeCreate(creatorAddress: string, newSafeFormValues: CreateSafeFormValues): Promise<ISafeCreate> {
   const chainId = _getChainId()
   const internalChainId = getInternalChainId()
-  const pubkey = await window.keplr?.getKey(chainId)
-  const creatorPubkey = parseToAddress(pubkey?.pubKey as Uint8Array)
-  return {
-    internalChainId,
-    creatorAddress,
-    creatorPubkey,
-    otherOwnersAddress: newSafeFormValues[FIELD_SAFE_OWNERS_LIST].map(
-      ({ addressFieldName }) => newSafeFormValues[addressFieldName],
-    ).filter((e) => e !== creatorAddress),
-    threshold: newSafeFormValues[FIELD_NEW_SAFE_THRESHOLD],
-  } as ISafeCreate
+  // const pubkey = await window.keplr?.getKey(chainId)
+  // const creatorPubkey = parseToAddress(key?.myPubkey as Uint8Array)
+
+  return getKeplrKey(chainId).then(
+    (key) =>
+      ({
+        internalChainId,
+        creatorAddress,
+        creatorPubkey: key?.myPubkey,
+        otherOwnersAddress: newSafeFormValues[FIELD_SAFE_OWNERS_LIST].map(
+          ({ addressFieldName }) => newSafeFormValues[addressFieldName],
+        ).filter((e) => e !== creatorAddress),
+        threshold: newSafeFormValues[FIELD_NEW_SAFE_THRESHOLD],
+      } as ISafeCreate),
+  )
+  // return {
+  //   internalChainId,
+  //   creatorAddress,
+  //   creatorPubkey,
+  //   otherOwnersAddress: newSafeFormValues[FIELD_SAFE_OWNERS_LIST].map(
+  //     ({ addressFieldName }) => newSafeFormValues[addressFieldName],
+  //   ).filter((e) => e !== creatorAddress),
+  //   threshold: newSafeFormValues[FIELD_NEW_SAFE_THRESHOLD],
+  // } as ISafeCreate
 }
 
 export const updateAddressBook = async (

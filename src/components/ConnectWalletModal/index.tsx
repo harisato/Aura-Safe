@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useCallback } from 'react'
 
 import { Modal } from 'src/components/Modal'
 import { connectProvider } from 'src/logic/providers'
@@ -19,17 +19,18 @@ type Props = {
 }
 
 export const ConnectWalletModal = ({ isOpen, onClose }: Props): React.ReactElement => {
-  const [coin98, setCoin98] = useState(false)
-
-  useEffect(() => {
-    if (checkExistedCoin98()) {
-      setCoin98(true)
-    }
-  }, [])
-
   const handleConnect = useCallback(
     (walletsName: WALLETS_NAME) => {
       try {
+        if (walletsName === WALLETS_NAME.Coin98) {
+          const coin98 = checkExistedCoin98()
+
+          if (!coin98) {
+            window.open('https://chrome.google.com/webstore/detail/coin98-wallet/aeachknmefphepccionboohckonoeemg')
+            return
+          }
+        }
+
         connectProvider(walletsName)
           .then(() => {
             onClose()
@@ -53,16 +54,15 @@ export const ConnectWalletModal = ({ isOpen, onClose }: Props): React.ReactEleme
 
       <WalletList>
         <ImageContainer>
-          {coin98 && (
-            <ImageItem
-              onClick={() => {
-                handleConnect(WALLETS_NAME.Coin98)
-              }}
-            >
-              <Img alt="Coin98" height={40} src={Coin98} />
-              <ImageTitle> Coin98 </ImageTitle>
-            </ImageItem>
-          )}
+          <ImageItem
+            onClick={() => {
+              handleConnect(WALLETS_NAME.Coin98)
+            }}
+          >
+            <Img alt="Coin98" height={40} src={Coin98} />
+            <ImageTitle> Coin98 </ImageTitle>
+          </ImageItem>
+
           <ImageItem
             onClick={() => {
               handleConnect(WALLETS_NAME.Keplr)

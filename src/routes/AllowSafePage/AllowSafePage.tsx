@@ -16,7 +16,6 @@ import { addressBookSafeLoad } from 'src/logic/addressBook/store/actions'
 import { currentNetworkAddressBookAsMap } from 'src/logic/addressBook/store/selectors'
 import { currentChainId } from 'src/logic/config/store/selectors'
 import { useMnemonicSafeName } from 'src/logic/hooks/useMnemonicName'
-import { getKeplrKey, WalletKey } from 'src/logic/keplr/keplr'
 import { enhanceSnackbarForAction, ERROR } from 'src/logic/notifications'
 import enqueueSnackbar from 'src/logic/notifications/store/actions/enqueueSnackbar'
 import { SafeStatus } from 'src/logic/safe/hooks/useOwnerSafes'
@@ -29,8 +28,6 @@ import { allowMSafe, getMSafeInfo } from 'src/services'
 import { MESSAGES_CODE } from 'src/services/constant/message'
 import { secondary, sm } from 'src/theme/variables'
 import { loadFromStorage, saveToStorage } from 'src/utils/storage'
-import { WALLETS_NAME } from '../../logic/wallets/constant/wallets'
-import { loadLastUsedProvider } from '../../logic/wallets/store/middlewares/providerWatcher'
 import {
   ALLOW_SPECIFIC_SAFE_ROUTE,
   extractPrefixedSafeAddress,
@@ -62,6 +59,7 @@ import { borderLinear } from 'src/theme/variables'
 
 import { Text } from '@aura/safe-react-components'
 import Button from 'src/components/layout/Button'
+import { getKeplrKey } from 'src/logic/providers'
 
 const BackIcon = styled(IconButton)`
   color: ${secondary};
@@ -183,11 +181,8 @@ function Allow(): ReactElement {
   const onSubmitAllowSafe = async (values: AllowSafeFormValues): Promise<void> => {
     const id = values[FIELD_ALLOW_SAFE_ID]
     const safeName = values[FIELD_ALLOW_CUSTOM_SAFE_NAME] || values[FIELD_ALLOW_SUGGESTED_SAFE_NAME]
-    const lastUsedProvider = await loadLastUsedProvider()
-    let walletKey: WalletKey | undefined
-    if (lastUsedProvider === WALLETS_NAME.Keplr) {
-      walletKey = await getKeplrKey(chainId)
-    }
+
+    const walletKey = await getKeplrKey(chainId)
     if (!id || !walletKey) {
       return
     }
