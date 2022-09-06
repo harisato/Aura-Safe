@@ -52,6 +52,9 @@ export type TxType =
   | 'sendCollectible'
   | 'reviewCollectible'
   | 'voting'
+  | 'delegate'
+  | 'redelegate'
+  | 'claimReward'
   | ''
 
 type Props = {
@@ -163,14 +166,7 @@ const SendModal = ({
           />
         )}
 
-        {activeScreen === 'voting' && (
-          <ReviewVoteTx
-            onClose={onClose}
-            onPrev={() => {
-              handleVoting('voting')
-            }}
-          />
-        )}
+        {activeScreen === 'voting' && <ReviewVoteTx onClose={onClose} />}
 
         {activeScreen === 'contractInteraction' && isABI && (
           <ContractInteraction
