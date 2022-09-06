@@ -73,7 +73,7 @@ const DotVoteStyled = styled.div`
   margin-right: 10px;
 `
 
-function CardVoting(props): ReactElement {
+function CardVoting({ handleVote }: { handleVote?: () => void }): ReactElement {
   const history = useHistory()
   const safeAddress = extractSafeAddress()
 
@@ -163,7 +163,7 @@ function CardVoting(props): ReactElement {
               </Text>
             </StyledButtonDetail>
 
-            <StyledButton size="md" disabled={true} onClick={() => {}}>
+            <StyledButton size="md" disabled={false} onClick={handleVote}>
               <Text size="lg" color="white">
                 Vote
               </Text>

@@ -1,4 +1,4 @@
-import { ReactElement } from 'react'
+import { ReactElement, useState } from 'react'
 import { Breadcrumb, BreadcrumbElement, Menu, Text } from '@aura/safe-react-components'
 import Col from 'src/components/layout/Col'
 import CardVoting from 'src/components/CardVoting'
@@ -8,6 +8,8 @@ import TableVoting from 'src/components/TableVoting'
 import { StyleCard, TitleNumberStyled } from './styles'
 import { StyledTableCell, StyledTableRow } from 'src/components/TableVoting'
 import StatusCard from 'src/components/StatusCard'
+import SendModal from 'src/routes/safe/components/Balances/SendModal'
+
 const RowHead = [
   { name: '#ID' },
   { name: 'TITLE' },
@@ -28,7 +30,7 @@ const RowData = [
     nerwork: ' AURA',
   },
   {
-    id: '#60',
+    id: '#61',
     title: 'Signal proposal',
     status: 'deposit',
     voting: '2022-01-09 | 07:55:02',
@@ -39,6 +41,8 @@ const RowData = [
 ]
 
 function Voting(props): ReactElement {
+  const [openVotingModal, setOpenVotingModal] = useState<boolean>(false)
+
   return (
     <>
       <Menu>
@@ -61,7 +65,11 @@ function Voting(props): ReactElement {
           }}
         >
           <Col sm={6} xs={12}>
-            <CardVoting />
+            <CardVoting
+              handleVote={() => {
+                setOpenVotingModal(true)
+              }}
+            />
           </Col>
           <Col sm={6} xs={12}>
             <CardVoting />
@@ -109,6 +117,14 @@ function Voting(props): ReactElement {
           </BoxCard>
         </Col>
       </StyleCard>
+
+      <SendModal
+        isOpen={openVotingModal}
+        onClose={() => {
+          setOpenVotingModal(false)
+        }}
+        activeScreenType={'voting'}
+      />
     </>
   )
 }
