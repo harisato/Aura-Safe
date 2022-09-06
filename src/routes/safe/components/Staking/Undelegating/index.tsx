@@ -1,5 +1,6 @@
 import { ReactElement } from 'react'
 import { Text } from '@aura/safe-react-components'
+import Col from 'src/components/layout/Col'
 import styled from 'styled-components'
 
 const BoxCardStakingOverview = styled.div`
@@ -25,6 +26,15 @@ const BoxCardStakingList = styled.div`
   border-radius: 25px;
 `
 
+const DelegateRow = styled.div`
+  display: flex;
+  width: 100%;
+`
+
+const TotalDelegate = styled.div`
+  display: flex;
+`
+
 function Undelegating(props): ReactElement {
   return (
     <BoxCardStaking>
@@ -33,7 +43,31 @@ function Undelegating(props): ReactElement {
           Undelegating
         </Text>
       </BoxCardStakingOverview>
-      <BoxCardStakingList>{/* <TableVotingDetailInside /> */}</BoxCardStakingList>
+      <BoxCardStakingList>
+        <DelegateRow>
+          <Col end="lg" sm={2} xs={12}>
+            <Text size="lg" color="linkAura">
+              DokiaCapital
+            </Text>
+          </Col>
+          <Col end="lg" sm={2} xs={12}>
+            <div>
+              <TotalDelegate>
+                <Text size="lg" color="white">
+                  1.000000
+                </Text>
+                <Text size="lg" color="linkAura">
+                  AURA
+                </Text>
+              </TotalDelegate>
+
+              <Text size="lg" color="disableAura">
+                14 days remaining
+              </Text>
+            </div>
+          </Col>
+        </DelegateRow>
+      </BoxCardStakingList>
     </BoxCardStaking>
   )
 }

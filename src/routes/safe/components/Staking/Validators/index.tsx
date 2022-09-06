@@ -102,7 +102,7 @@ function Validators(props): ReactElement {
   return (
     <>
       <Col start="sm" sm={12} xs={12}>
-        <TitleStyled>Depositors</TitleStyled>
+        <TitleStyled>Validators</TitleStyled>
       </Col>
 
       <AppBar position="static" className={classes.root}>
