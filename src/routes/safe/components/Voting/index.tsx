@@ -1,20 +1,19 @@
-import { ReactElement, useEffect, useState } from 'react'
 import { Breadcrumb, BreadcrumbElement, Loader, Menu, Text } from '@aura/safe-react-components'
-import Col from 'src/components/layout/Col'
+import { ReactElement, useEffect, useState } from 'react'
+
+import BoxCard from 'src/components/BoxCard'
 import CardVoting from 'src/components/CardVoting'
 import Block from 'src/components/layout/Block'
-import BoxCard from 'src/components/BoxCard'
-import TableVoting from 'src/components/TableVoting'
-import { StyleCard, TitleNumberStyled } from './styles'
-import { StyledTableCell, StyledTableRow } from 'src/components/TableVoting'
+import Col from 'src/components/layout/Col'
+import { LoadingContainer } from 'src/components/LoaderContainer'
 import StatusCard from 'src/components/StatusCard'
+import TableVoting, { StyledTableCell, StyledTableRow } from 'src/components/TableVoting'
+import { getInternalChainId } from 'src/config'
 import SendModal from 'src/routes/safe/components/Balances/SendModal'
 import { getProposals } from 'src/services'
-import { getInternalChainId } from 'src/config'
-import { format } from 'date-fns'
-import { formatDateTime, formatDateTime2 } from 'src/utils/date'
 import { IProposal } from 'src/types/proposal'
-import { LoadingContainer } from 'src/components/LoaderContainer'
+import { formatDateTime2 } from 'src/utils/date'
+import { StyleCard, TitleNumberStyled } from './styles'
 
 const RowHead = [
   { name: '#ID' },
@@ -25,28 +24,7 @@ const RowHead = [
   { name: 'TOTAL DEPOSIT' },
 ]
 
-const RowData = [
-  {
-    id: '#60',
-    title: 'Signal proposal',
-    status: 'deposit',
-    voting: '2022-01-09 | 07:55:02',
-    submitTime: '2022-01-09 | 07:55:02',
-    total: '64.000000',
-    nerwork: ' AURA',
-  },
-  {
-    id: '#61',
-    title: 'Signal proposal',
-    status: 'deposit',
-    voting: '2022-01-09 | 07:55:02',
-    submitTime: '2022-01-09 | 07:55:02',
-    total: '64.000000',
-    nerwork: ' AURA',
-  },
-]
-
-function Voting(props): ReactElement {
+function Voting(): ReactElement {
   const [openVotingModal, setOpenVotingModal] = useState<boolean>(false)
 
   const [proposals, setProposals] = useState<IProposal[]>([])
@@ -62,11 +40,15 @@ function Voting(props): ReactElement {
 
   const formatTime = (time) => formatDateTime2(new Date(time).getTime())
 
-  return proposals.length <= 0 ? (
-    <LoadingContainer>
-      <Loader size="md" />
-    </LoadingContainer>
-  ) : (
+  if (proposals.length <= 0) {
+    return (
+      <LoadingContainer>
+        <Loader size="md" />
+      </LoadingContainer>
+    )
+  }
+
+  return (
     <>
       <Menu>
         <Col start="sm" sm={12} xs={12}>
@@ -97,22 +79,6 @@ function Voting(props): ReactElement {
               />
             </Col>
           ))}
-          {/* <Col sm={6} xs={12}>
-            <CardVoting
-              handleVote={() => {
-                setOpenVotingModal(true)
-              }}
-            />
-          </Col>
-          <Col sm={6} xs={12}>
-            <CardVoting />
-          </Col>
-          <Col sm={6} xs={12}>
-            <CardVoting />
-          </Col>
-          <Col sm={6} xs={12}>
-            <CardVoting />
-          </Col> */}
         </Col>
       </Block>
       <StyleCard>
