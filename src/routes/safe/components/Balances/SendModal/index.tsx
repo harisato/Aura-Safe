@@ -166,7 +166,15 @@ const SendModal = ({
           />
         )}
 
-        {activeScreen === 'voting' && <ReviewVoteTx onClose={onClose} />}
+        {activeScreen === 'voting' && (
+          <ReviewVoteTx
+            onClose={onClose}
+            votingTx={{
+              option: 1,
+              proposalId: 205,
+            }}
+          />
+        )}
 
         {activeScreen === 'contractInteraction' && isABI && (
           <ContractInteraction

@@ -1,9 +1,15 @@
+import { toBase64 } from '@cosmjs/encoding'
+import { calculateFee, GasPrice, MsgVoteEncodeObject } from '@cosmjs/stargate'
 import { makeStyles } from '@material-ui/core/styles'
 import { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import { generatePath } from 'react-router-dom'
+
 import Block from 'src/components/layout/Block'
+import ButtonLink from 'src/components/layout/ButtonLink'
 import Col from 'src/components/layout/Col'
 import Hairline from 'src/components/layout/Hairline'
+import Img from 'src/components/layout/Img'
 import Paragraph from 'src/components/layout/Paragraph'
 import Row from 'src/components/layout/Row'
 import { Modal } from 'src/components/Modal'
@@ -16,23 +22,13 @@ import {
   getInternalChainId,
   getNativeCurrencyLogoUri,
 } from 'src/config'
-import { EstimationStatus } from 'src/logic/hooks/useEstimateTransactionGas'
+import { getChains } from 'src/config/cache/chains'
 import { useEstimationStatus } from 'src/logic/hooks/useEstimationStatus'
-
-import { toBase64 } from '@cosmjs/encoding'
-import {
-  calculateFee,
-  coins,
-  GasPrice,
-  MsgSendEncodeObject,
-  MsgVoteEncodeObject,
-  SignerData,
-  SigningStargateClient,
-} from '@cosmjs/stargate'
-import { generatePath } from 'react-router-dom'
-import ButtonLink from 'src/components/layout/ButtonLink'
 import { enhanceSnackbarForAction, ERROR, NOTIFICATIONS } from 'src/logic/notifications'
 import enqueueSnackbar from 'src/logic/notifications/store/actions/enqueueSnackbar'
+import { MsgTypeUrl } from 'src/logic/providers/constants/constant'
+import { createMessage } from 'src/logic/providers/signing'
+import calculateGasFee from 'src/logic/providers/utils/fee'
 import fetchTransactions from 'src/logic/safe/store/actions/transactions/fetchTransactions'
 import { userAccountSelector } from 'src/logic/wallets/store/selectors'
 import {
@@ -43,28 +39,19 @@ import {
   SAFE_ADDRESS_SLUG,
   SAFE_ROUTES,
 } from 'src/routes/routes'
-import { createSafeTransaction, getAccountOnChain, getMChainsConfig } from 'src/services'
+import { setImageToPlaceholder } from 'src/routes/safe/components/Balances/utils'
+import { createSafeTransaction, MChainInfo } from 'src/services'
 import { DEFAULT_GAS_LIMIT } from 'src/services/constant/common'
 import { MESSAGES_CODE } from 'src/services/constant/message'
 import { ICreateSafeTransaction } from 'src/types/transaction'
 import { ModalHeader } from '../ModalHeader'
 import { styles } from './style'
-import Img from 'src/components/layout/Img'
-import { setImageToPlaceholder } from 'src/routes/safe/components/Balances/utils'
-import { createMessage } from 'src/logic/providers/signing'
-import { MsgTypeUrl } from 'src/logic/providers/constants/constant'
 
 const useStyles = makeStyles(styles)
 
-export type ReviewTxProp = {
-  amount: string
-  token: string
-  txType?: string
-}
 export type VotingTx = {
-  amount: string
-  token: string
-  txType?: string
+  option: number
+  proposalId: number
 }
 
 type ReviewVotingTxProps = {
@@ -78,14 +65,12 @@ const ReviewVoteTx = ({ onClose, votingTx }: ReviewVotingTxProps): React.ReactEl
   const safeAddress = extractSafeAddress()
 
   const nativeCurrencyLogoUri = getNativeCurrencyLogoUri()
-  // const tokens: any = useSelector(extendedSafeTokensSelector)
-  // const txToken = useMemo(() => tokens.find((token) => sameAddress(token.address, tx.token)), [tokens, tx.token])
 
   const chainDefaultGas = getChainDefaultGas()
   const chainDefaultGasPrice = getChainDefaultGasPrice()
   const decimal = getCoinDecimal()
 
-  const defaultGas = chainDefaultGas.find((chain) => chain.typeUrl === '/cosmos.bank.v1beta1.MsgSend')?.gasAmount
+  const defaultGas = chainDefaultGas.find((chain) => chain.typeUrl === MsgTypeUrl.Vote)?.gasAmount
 
   const gasFee =
     defaultGas && chainDefaultGasPrice
@@ -97,12 +82,6 @@ const ReviewVoteTx = ({ onClose, votingTx }: ReviewVotingTxProps): React.ReactEl
   const [gasPriceFormatted, setGasPriceFormatted] = useState(gasFee)
   const chainInfo = getChainInfo()
 
-  const { txEstimationExecutionStatus, isExecution, isOffChainSignature } = {
-    txEstimationExecutionStatus: EstimationStatus.SUCCESS,
-    isExecution: false,
-    isOffChainSignature: true,
-  }
-
   const [buttonStatus, setButtonStatus] = useEstimationStatus()
 
   const userWalletAddress = useSelector(userAccountSelector)
@@ -110,30 +89,55 @@ const ReviewVoteTx = ({ onClose, votingTx }: ReviewVotingTxProps): React.ReactEl
 
   const submitTx = async () => {
     setDisabled(true)
-    signTransactionWithKeplr(safeAddress)
+    signTransaction(safeAddress)
   }
 
-  const signTransactionWithKeplr = async (safeAddress: string) => {
-    // createMessage()
+  const signTransaction = async (safeAddress: string) => {
     const chainId = chainInfo.chainId
+    const listChain = getChains()
 
-    const listChain = await getMChainsConfig()
-
-    const mChainInfo = listChain.find((x) => x.chainId === chainId)
+    const mChainInfo = listChain.find((x) => x.chainId === chainId) as MChainInfo
     const denom = mChainInfo?.denom || ''
 
     const _gasPrice = GasPrice.fromString(String(chainDefaultGasPrice || gasPriceFormatted).concat(denom))
 
     const _sendFee = calculateFee(Number(manualGasLimit || defaultGas || DEFAULT_GAS_LIMIT), _gasPrice)
+
+    if (!(votingTx && safeAddress)) {
+      dispatch(enqueueSnackbar(enhanceSnackbarForAction(NOTIFICATIONS.TX_REJECTED_MSG)))
+      return
+    }
+
     const voteData: MsgVoteEncodeObject['value'] = {
-      option: 1,
-      proposalId: 1 as any,
+      option: votingTx?.option,
+      proposalId: votingTx?.proposalId as any,
       voter: safeAddress,
     }
 
     createMessage(chainId, safeAddress, MsgTypeUrl.Vote, voteData, _sendFee)
+      .then((signResult) => {
+        if (!signResult) return
 
-    return
+        const signatures = toBase64(signResult.signatures[0])
+        const bodyBytes = toBase64(signResult.bodyBytes)
+        const authInfoBytes = toBase64(signResult.authInfoBytes)
+
+        const data: ICreateSafeTransaction = {
+          internalChainId: getInternalChainId(),
+          creatorAddress: userWalletAddress,
+          signature: signatures,
+          bodyBytes: bodyBytes,
+          authInfoBytes: authInfoBytes,
+        }
+
+        createTxFromApi(data)
+      })
+      .catch((error) => {
+        console.log('error', error)
+
+        dispatch(enqueueSnackbar(enhanceSnackbarForAction(NOTIFICATIONS.TX_REJECTED_MSG)))
+        onClose()
+      })
 
     // if (window.keplr) {
     //   await window.keplr.enable(chainId)
@@ -356,17 +360,13 @@ const ReviewVoteTx = ({ onClose, votingTx }: ReviewVotingTxProps): React.ReactEl
           confirmButtonProps={{
             onClick: () => submitTx(),
             status: buttonStatus,
-            text: txEstimationExecutionStatus === EstimationStatus.LOADING ? 'Estimating' : undefined,
+            text: undefined,
             disabled: isDisabled,
           }}
         />
       </Modal.Footer>
     </>
   )
-}
-
-function calculateGasFee(gas: number, gasPrice: number, decimal: number): number {
-  return (+gas * +gasPrice) / Math.pow(10, decimal)
 }
 
 export default ReviewVoteTx

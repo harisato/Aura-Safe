@@ -25,80 +25,60 @@ const getMessage: {
   [MsgTypeUrl.Vote]: Vote,
 }
 
-function createMessage(chainId: string, safeAddress: string, typeUrl: MsgTypeUrl, value: unknown, fee: StdFee): void {
-  try {
-    loadLastUsedProvider()
-      .then((loadLastUsedProvider) =>
-        loadLastUsedProvider ? getProvider(loadLastUsedProvider as WALLETS_NAME) : undefined,
-      )
-      .then((provider) => {
-        console.log('PROVIDER: ', provider)
+const signMessage = async (
+  chainId: string,
+  safeAddress: string,
+  typeUrl: MsgTypeUrl,
+  value: unknown,
+  fee: StdFee,
+): Promise<any> => {
+  return loadLastUsedProvider()
+    .then((loadLastUsedProvider) =>
+      loadLastUsedProvider ? getProvider(loadLastUsedProvider as WALLETS_NAME) : undefined,
+    )
+    .then((provider) => {
+      if (!provider) return
+      provider.defaultOptions = getDefaultOptions()
 
-        if (!provider) return
-        provider.defaultOptions = getDefaultOptions()
+      const offlineSignerOnlyAmino = window.getOfflineSignerOnlyAmino
 
-        const offlineSignerOnlyAmino = window.getOfflineSignerOnlyAmino
+      if (offlineSignerOnlyAmino) {
+        return offlineSignerOnlyAmino(chainId)
+      }
 
-        if (offlineSignerOnlyAmino) {
-          return offlineSignerOnlyAmino(chainId)
-        }
+      return undefined
+    })
+    .then((signer) => {
+      if (!signer) return
 
+      return Promise.all([
+        signer.getAccounts(),
+        SigningStargateClient.offline(signer),
+        getAccountOnChain(safeAddress, getInternalChainId()),
+      ])
+    })
+    .then((data) => {
+      if (!data) {
+        return
+      }
+
+      const [account, client, accountOnChain] = data
+
+      const msg = getMessage[typeUrl](value)
+
+      const signerData: SignerData = {
+        accountNumber: (accountOnChain.Data as any).accountNumber,
+        sequence: (accountOnChain.Data as any).sequence,
+        chainId,
+      }
+
+      const signerAddress = _.get(account, '[0].address')
+      debugger
+      if (!(signerAddress && msg && fee && signerData)) {
         return undefined
-      })
-      .then((signer) => {
-        console.log('signer: ', signer)
-        if (!signer) return
-
-        return Promise.all([
-          signer.getAccounts(),
-          SigningStargateClient.offline(signer),
-          getAccountOnChain(safeAddress, getInternalChainId()),
-        ])
-      })
-      .then((data) => {
-        console.log('data: ', data)
-        if (!data) {
-          return
-        }
-
-        const [account, client, accountOnChain] = data
-
-        const msg = getMessage[typeUrl](value)
-
-        const signerData: SignerData = {
-          accountNumber: (accountOnChain.Data as any).accountNumber,
-          sequence: (accountOnChain.Data as any).sequence,
-          chainId,
-        }
-        debugger
-        return Promise.all([client.sign(account[0]?.address, [msg], fee, '', signerData), Promise.resolve(account)])
-      })
-      .then((result) => {
-        console.log('result: ', result)
-        if (!result) return
-
-        const [signResult, account] = result
-
-        const signatures = toBase64(signResult.signatures[0])
-        const bodyBytes = toBase64(signResult.bodyBytes)
-        const authInfoBytes = toBase64(signResult.authInfoBytes)
-
-        const data: ICreateSafeTransaction = {
-          internalChainId: getInternalChainId(),
-          creatorAddress: _.get(account, '[0].address'),
-          signature: signatures,
-          bodyBytes: bodyBytes,
-          authInfoBytes: authInfoBytes,
-        }
-
-        console.log(data)
-      })
-      .catch((e) => {
-        console.log({ e })
-      })
-  } catch (error) {
-    console.log(error)
-  }
+      }
+      return client.sign(signerAddress, [msg], fee, '', signerData)
+    })
 }
 
-export { createMessage }
+export { signMessage as createMessage }

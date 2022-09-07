@@ -1,5 +1,5 @@
-import { ReactElement, useState } from 'react'
-import { Breadcrumb, BreadcrumbElement, Menu, Text } from '@aura/safe-react-components'
+import { ReactElement, useEffect, useState } from 'react'
+import { Breadcrumb, BreadcrumbElement, Loader, Menu, Text } from '@aura/safe-react-components'
 import Col from 'src/components/layout/Col'
 import CardVoting from 'src/components/CardVoting'
 import Block from 'src/components/layout/Block'
@@ -9,6 +9,12 @@ import { StyleCard, TitleNumberStyled } from './styles'
 import { StyledTableCell, StyledTableRow } from 'src/components/TableVoting'
 import StatusCard from 'src/components/StatusCard'
 import SendModal from 'src/routes/safe/components/Balances/SendModal'
+import { getProposals } from 'src/services'
+import { getInternalChainId } from 'src/config'
+import { format } from 'date-fns'
+import { formatDateTime, formatDateTime2 } from 'src/utils/date'
+import { IProposal } from 'src/types/proposal'
+import { LoadingContainer } from 'src/components/LoaderContainer'
 
 const RowHead = [
   { name: '#ID' },
@@ -43,7 +49,24 @@ const RowData = [
 function Voting(props): ReactElement {
   const [openVotingModal, setOpenVotingModal] = useState<boolean>(false)
 
-  return (
+  const [proposals, setProposals] = useState<IProposal[]>([])
+
+  useEffect(() => {
+    getProposals(getInternalChainId()).then((response) => {
+      const { Data } = response
+      if (Data) {
+        setProposals(Data.proposals)
+      }
+    })
+  }, [])
+
+  const formatTime = (time) => formatDateTime2(new Date(time).getTime())
+
+  return proposals.length <= 0 ? (
+    <LoadingContainer>
+      <Loader size="md" />
+    </LoadingContainer>
+  ) : (
     <>
       <Menu>
         <Col start="sm" sm={12} xs={12}>
@@ -64,7 +87,17 @@ function Voting(props): ReactElement {
             marginLeft: -10,
           }}
         >
-          <Col sm={6} xs={12}>
+          {proposals.slice(0, 4).map((proposal) => (
+            <Col sm={6} xs={12} key={proposal.proposal_id}>
+              <CardVoting
+                proposal={proposal}
+                handleVote={() => {
+                  setOpenVotingModal(true)
+                }}
+              />
+            </Col>
+          ))}
+          {/* <Col sm={6} xs={12}>
             <CardVoting
               handleVote={() => {
                 setOpenVotingModal(true)
@@ -79,7 +112,7 @@ function Voting(props): ReactElement {
           </Col>
           <Col sm={6} xs={12}>
             <CardVoting />
-          </Col>
+          </Col> */}
         </Col>
       </Block>
       <StyleCard>
@@ -88,26 +121,26 @@ function Voting(props): ReactElement {
           <BoxCard justify="flex-start" column>
             <TitleNumberStyled>Proposals</TitleNumberStyled>
             <TableVoting RowHead={RowHead}>
-              {RowData.map((row) => (
-                <StyledTableRow key={row.id}>
+              {proposals.map((row) => (
+                <StyledTableRow key={row.proposal_id}>
                   <StyledTableCell component="th" scope="row">
-                    {row.id}
+                    {row.proposal_id}
                   </StyledTableCell>
                   <StyledTableCell align="left">
                     <Text size="lg" color="linkAura">
-                      {row.title}
+                      {row.content.title}
                     </Text>
                   </StyledTableCell>
                   <StyledTableCell align="left">
                     <StatusCard status={row.status} showDot />
                   </StyledTableCell>
-                  <StyledTableCell align="left">{row.voting}</StyledTableCell>
-                  <StyledTableCell align="left">{row.submitTime}</StyledTableCell>
+                  <StyledTableCell align="left">{formatTime(row.voting_start_time)}</StyledTableCell>
+                  <StyledTableCell align="left">{formatTime(row.voting_end_time)}</StyledTableCell>
                   <StyledTableCell align="left">
                     <div style={{ display: 'flex' }}>
-                      {row.total}&ensp;
+                      {row.total_deposit[0].amount}&ensp;
                       <Text size="lg" color="linkAura">
-                        {row.nerwork}
+                        {row.total_deposit[0].denom}
                       </Text>
                     </div>
                   </StyledTableCell>

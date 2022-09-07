@@ -3,6 +3,7 @@ import axios from 'axios'
 import { WalletKey } from 'src/logic/keplr/keplr'
 import { CHAIN_THEMES, THEME_DF } from 'src/services/constant/chainThemes'
 import { getExplorerUrl } from 'src/services/data/environment'
+import { IProposalRes } from 'src/types/proposal'
 import {
   ICreateSafeTransaction,
   ISignSafeTransaction,
@@ -212,4 +213,8 @@ export async function getAccountOnChain(safeAddress: string, internalChainId): P
 
 export function auth(payload: any): Promise<IResponse<any>> {
   return axios.post(`${baseUrl}/auth`, payload).then((res) => res.data)
+}
+
+export async function getProposals(internalChainId: number | string): Promise<IResponse<IProposalRes>> {
+  return axios.get(`${baseUrl}/gov/${internalChainId}/proposals`).then((res) => res.data)
 }

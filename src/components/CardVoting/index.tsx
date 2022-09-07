@@ -9,6 +9,8 @@ import { useHistory } from 'react-router-dom'
 import Vote from '../Vote'
 import { SAFE_ROUTES, extractSafeAddress, generateSafeRoute } from 'src/routes/routes'
 import { getShortName } from 'src/config'
+import { IProposal } from 'src/types/proposal'
+import { formatDateTime2 } from 'src/utils/date'
 
 const TitleNumberStyled = styled.div`
   font-weight: 510;
@@ -73,7 +75,14 @@ const DotVoteStyled = styled.div`
   margin-right: 10px;
 `
 
-function CardVoting({ handleVote }: { handleVote?: () => void }): ReactElement {
+interface Props {
+  handleVote?: () => void
+  proposal: IProposal
+}
+
+const formatTime = (time) => formatDateTime2(new Date(time).getTime())
+
+function CardVoting({ handleVote, proposal }: Props): ReactElement {
   const history = useHistory()
   const safeAddress = extractSafeAddress()
 
@@ -91,11 +100,11 @@ function CardVoting({ handleVote }: { handleVote?: () => void }): ReactElement {
       <Col layout="column">
         <div style={{ display: 'flex', justifyContent: 'space-between' }}>
           <div>
-            <TitleNumberStyled>#60</TitleNumberStyled>
-            <TitleStyled>Increase MaxValidator value</TitleStyled>
+            <TitleNumberStyled>#{proposal.proposal_id}</TitleNumberStyled>
+            <TitleStyled>{proposal.content.title}</TitleStyled>
           </div>
           <div style={{ alignSelf: 'center' }}>
-            <StatusCard status="deposit" />
+            <StatusCard status={proposal.status} />
           </div>
         </div>
 
@@ -103,21 +112,21 @@ function CardVoting({ handleVote }: { handleVote?: () => void }): ReactElement {
           <ContentCard>
             <TitleContentCard>Proposer</TitleContentCard>
             <Text size="lg" color="linkAura">
-              aura1k...awuen817n
+              {'-'}
             </Text>
           </ContentCard>
 
           <ContentCard>
             <TitleContentCard>Voting Start</TitleContentCard>
             <Text size="lg" color="white">
-              2022-01-09 | 07:55:02
+              {formatTime(proposal.voting_start_time)}
             </Text>
           </ContentCard>
 
           <ContentCard>
             <TitleContentCard>Voting End</TitleContentCard>
             <Text size="lg" color="white">
-              2022-01-09 | 07:55:02
+              {formatTime(proposal.voting_end_time)}
             </Text>
           </ContentCard>
         </Col>
