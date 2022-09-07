@@ -319,10 +319,8 @@ export const ApproveTxModal = ({
             })
         } else {
           // case when Confirm Click
-          const lastUsedProvider = await loadLastUsedProvider()
-          if (lastUsedProvider?.toLowerCase() === 'keplr') {
-            signTransactionWithKeplr(safeAddress)
-          }
+
+          signTransactionWithKeplr(safeAddress)
         }
       } catch (error) {
         if (thresholdReached) {
@@ -431,6 +429,7 @@ export const ApproveTxModal = ({
         const bodyBytes = toBase64(signResult.bodyBytes)
 
         // call api to confirm transaction
+
         const data = {
           fromAddress: userWalletAddress,
           transactionId: transaction?.id,
