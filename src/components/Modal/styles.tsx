@@ -98,6 +98,12 @@ const TitleStyled = styled(TitleSRC)`
   }
 `
 
+const BoxStyled = styled.div`
+  display: flex;
+  align-items: center;
+  flex-basis: 100%;
+`
+
 const BodySection = styled.div<{ withoutPadding: BodyProps['withoutPadding']; fitContent?: boolean }>`
   padding: ${({ withoutPadding }) => (withoutPadding ? 0 : '24px')};
   min-height: ${({ fitContent }) => (fitContent ? 'fit-content' : '200px')};
@@ -150,4 +156,5 @@ export {
   StyledButtonClose,
   StyledButtonConfirm,
   StyledBorderButton,
+  BoxStyled,
 }

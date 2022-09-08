@@ -89,6 +89,7 @@ const TableVotingDetailInside = () => {
 const useStyles = makeStyles(styles)
 
 function CardStaking(props): ReactElement {
+  const { handleModal } = props
   const classes = useStyles()
   return (
     <BoxCardStaking>
@@ -112,7 +113,9 @@ function CardStaking(props): ReactElement {
           </div>
         </div>
         <StyledButton>
-          <span style={{ fontSize: 14, fontWeight: 590 }}>Claim Reward: 0.012672 AURA</span>
+          <span style={{ fontSize: 14, fontWeight: 590 }} onClick={handleModal}>
+            Claim Reward: 0.012672 AURA
+          </span>
         </StyledButton>
       </BoxCardStakingOverview>
       <BoxCardStakingList>

@@ -12,6 +12,7 @@ import {
   StyledButtonClose,
   StyledButtonConfirm,
   StyledBorderButton,
+  BoxStyled,
 } from './styles'
 import {
   GnoModalProps,
@@ -52,6 +53,8 @@ const Title = ({ children, ...props }: TitleProps): ReactElement => (
   </TitleStyled>
 )
 
+const Box = ({ children, ...props }: any): ReactElement => <BoxStyled {...props}>{children}</BoxStyled>
+
 const Header = ({ children, onClose }: HeaderProps): ReactElement => {
   return (
     <HeaderSection className="modal-header">
@@ -68,6 +71,7 @@ const Header = ({ children, onClose }: HeaderProps): ReactElement => {
 
 Header.Title = Title
 
+Header.Box = Box
 /*** Body ***/
 
 const Body = ({ children, withoutPadding = false }: BodyProps): ReactElement => (
