@@ -1,4 +1,4 @@
-import { ReactElement } from 'react'
+import { ReactElement, useEffect, useMemo, useState } from 'react'
 import BoxCard from '../BoxCard'
 import Col from 'src/components/layout/Col'
 import styled from 'styled-components'
@@ -9,8 +9,11 @@ import { useHistory } from 'react-router-dom'
 import Vote from '../Vote'
 import { SAFE_ROUTES, extractSafeAddress, generateSafeRoute } from 'src/routes/routes'
 import { getShortName } from 'src/config'
-import { IProposal } from 'src/types/proposal'
+import { IProposal, VoteLabel } from 'src/types/proposal'
 import { formatDateTime2 } from 'src/utils/date'
+import { calcBalance, calcPercentInObj, calcVotePercent, maxVote } from 'src/utils/calc'
+import { MChainInfo } from 'src/services'
+import { getBalanceAndDecimalsFromToken } from 'src/logic/tokens/utils/tokenHelpers'
 
 const TitleNumberStyled = styled.div`
   font-weight: 510;
@@ -82,9 +85,38 @@ interface Props {
 
 const formatTime = (time) => formatDateTime2(new Date(time).getTime())
 
+const calcMax = (
+  proposal,
+): {
+  key: VoteLabel
+  value: string
+} => {
+  if (proposal && proposal.final_tally_result) {
+    const percent = calcVotePercent(calcPercentInObj(proposal.final_tally_result))
+    const max = maxVote(percent)
+
+    return (
+      max || {
+        key: 'Yes',
+        value: '0%',
+      }
+    )
+  }
+
+  return {
+    key: 'Yes',
+    value: '0%',
+  }
+}
+
 function CardVoting({ handleVote, proposal }: Props): ReactElement {
   const history = useHistory()
   const safeAddress = extractSafeAddress()
+
+  const maxVote: {
+    key: VoteLabel
+    value: string
+  } = useMemo(() => calcMax(proposal), [proposal])
 
   const handleDetail = () => {
     history.push(
@@ -133,7 +165,7 @@ function CardVoting({ handleVote, proposal }: Props): ReactElement {
 
         <Col sm={12} xs={12} style={{ display: 'flex', justifyContent: 'space-between' }}>
           <Col sm={8} xs={12}>
-            <Vote vote={{ yes: '100', no: '10', abstain: '0', no_with_veto: '0' }} />
+            <Vote vote={proposal.final_tally_result} />
           </Col>
           <Col sm={3} xs={12} style={{ display: 'flex', flexDirection: 'column', alignSelf: 'center' }}>
             <div>
@@ -144,12 +176,12 @@ function CardVoting({ handleVote, proposal }: Props): ReactElement {
               <div style={{ display: 'flex' }}>
                 <DotVoteStyled />
                 <Text size="xl" color="white">
-                  Yes
+                  {maxVote.key}
                 </Text>
               </div>
               <div>
                 <Text size="xl" color="white">
-                  89.76%
+                  {maxVote.value}
                 </Text>
               </div>
             </ContainDotVot>
@@ -160,7 +192,6 @@ function CardVoting({ handleVote, proposal }: Props): ReactElement {
           style={{ display: 'flex', justifyContent: 'space-between', borderTop: '1px solid #363843', paddingTop: 10 }}
         >
           <div style={{ alignSelf: 'center' }}>
-            {' '}
             <TextStyled size="lg" color="linkAura">
               Voting ended
             </TextStyled>

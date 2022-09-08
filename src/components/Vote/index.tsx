@@ -8,21 +8,32 @@ const VoteStyled = styled.div`
   margin-top: 20px;
   margin-bottom: 20px;
   display: flex;
+  background-color: #494c58;
+  border-radius: 5px;
+  overflow: hidden;
 `
 
-const YesStyled = styled.div<{ perYes: string; notVote: boolean }>`
-  background-color: ${({ notVote }) => (notVote ? '#9DA8FF' : '#5ee6d0')};
-  width: ${({ perYes }) => perYes};
+const YesStyled = styled.div<{ per: string }>`
+  background-color: #5ee6d0;
+  width: ${({ per }) => per};
   height: 100%;
-  border-top-left-radius: 5px;
-  border-bottom-left-radius: 5px;
 `
 
-const NoStyled = styled.div<{ perNo: string; notVote: boolean }>`
-  background-color: ${({ notVote }) => (notVote ? '#494C58' : '#FA8684')};
-  width: ${({ perNo }) => perNo};
-  border-top-right-radius: 5px;
-  border-bottom-right-radius: 5px;
+const NoStyled = styled.div<{ per: string }>`
+  background-color: #fa8684;
+  width: ${({ per }) => per};
+  height: 100%;
+`
+
+const AbstainStyled = styled.div<{ per: string }>`
+  background-color: #494c58;
+  width: ${({ per }) => per};
+  height: 100%;
+`
+
+const NoWithVetoStyled = styled.div<{ per: string }>`
+  background-color: #9da8ff;
+  width: ${({ per }) => per};
   height: 100%;
 `
 interface Props {
@@ -40,19 +51,17 @@ interface IVotePercent {
 }
 
 function Vote({ vote }: Props): ReactElement {
-  const { yes: _yes, no: _no, abstain: _abstain, no_with_veto: _no_with_veto } = vote
-
   const [percent, setPercent] = useState<IVotePercent | null>(null)
 
   useEffect(() => {
     const { yes, no, abstain, no_with_veto } = ((): IVotePercent => {
-      const total = +_yes + +_abstain + +_no + +_no_with_veto
+      const total = +vote.yes + +vote.abstain + +vote.no + +vote.no_with_veto
 
       return {
-        yes: `${(+_yes * 100) / +total}%`,
-        no: `${(+_no * 100) / +total}%`,
-        abstain: `${(+_abstain * 100) / +total}%`,
-        no_with_veto: `${(+_no_with_veto * 100) / +total}%`,
+        yes: `${(+vote.yes * 100) / +total}%`,
+        no: `${(+vote.no * 100) / +total}%`,
+        abstain: `${(+vote.abstain * 100) / +total}%`,
+        no_with_veto: `${(+vote.no_with_veto * 100) / +total}%`,
       }
     })()
 
@@ -61,8 +70,10 @@ function Vote({ vote }: Props): ReactElement {
 
   return percent ? (
     <VoteStyled>
-      <YesStyled perYes={percent.yes} notVote={false} />
-      <NoStyled perNo={percent.no} notVote={false} />
+      <YesStyled per={percent.yes} />
+      <NoStyled per={percent.no} />
+      <AbstainStyled per={percent.abstain} />
+      <NoWithVetoStyled per={percent.no_with_veto} />
     </VoteStyled>
   ) : (
     <></>

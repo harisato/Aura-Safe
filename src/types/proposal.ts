@@ -6,6 +6,16 @@ export enum ProposalStatus {
   Failed = 'PROPOSAL_STATUS_FAILED',
 }
 
+export type VoteLabel = 'Yes' | 'No' | 'Abstain' | 'NoWithVeto'
+export type VoteKey = 'yes' | 'abstain' | 'no' | 'no_with_veto'
+
+export enum VoteMapping {
+  'yes' = 'Yes',
+  'abstain' = 'No',
+  'no' = 'Abstain',
+  'no_with_veto' = 'NoWithVeto',
+}
+
 export interface Amount {
   denom: string
   amount: string

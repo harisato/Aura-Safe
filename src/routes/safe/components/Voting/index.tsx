@@ -8,10 +8,11 @@ import Col from 'src/components/layout/Col'
 import { LoadingContainer } from 'src/components/LoaderContainer'
 import StatusCard from 'src/components/StatusCard'
 import TableVoting, { StyledTableCell, StyledTableRow } from 'src/components/TableVoting'
-import { getInternalChainId } from 'src/config'
+import { getChainInfo, getInternalChainId } from 'src/config'
 import SendModal from 'src/routes/safe/components/Balances/SendModal'
-import { getProposals } from 'src/services'
+import { getProposals, MChainInfo } from 'src/services'
 import { IProposal } from 'src/types/proposal'
+import { calcBalance } from 'src/utils/calc'
 import { formatDateTime2 } from 'src/utils/date'
 import { StyleCard, TitleNumberStyled } from './styles'
 
@@ -24,7 +25,18 @@ const RowHead = [
   { name: 'TOTAL DEPOSIT' },
 ]
 
+const parseBalance = (balance: IProposal['total_deposit'], chainInfo: MChainInfo) => {
+  const symbol = chainInfo.nativeCurrency.symbol
+  const amount = calcBalance(balance[0].amount, chainInfo.nativeCurrency.decimals)
+
+  return {
+    amount: Number(amount)?.toFixed(6) || '-',
+    symbol: Number(amount)?.toFixed(6) ? symbol : '',
+  }
+}
+
 function Voting(): ReactElement {
+  const chainInfo = getChainInfo() as MChainInfo
   const [openVotingModal, setOpenVotingModal] = useState<boolean>(false)
 
   const [proposals, setProposals] = useState<IProposal[]>([])
@@ -104,9 +116,9 @@ function Voting(): ReactElement {
                   <StyledTableCell align="left">{formatTime(row.voting_end_time)}</StyledTableCell>
                   <StyledTableCell align="left">
                     <div style={{ display: 'flex' }}>
-                      {row.total_deposit[0].amount}&ensp;
+                      {parseBalance(row.total_deposit, chainInfo).amount}&ensp;
                       <Text size="lg" color="linkAura">
-                        {row.total_deposit[0].denom}
+                        {parseBalance(row.total_deposit, chainInfo).symbol}
                       </Text>
                     </div>
                   </StyledTableCell>
