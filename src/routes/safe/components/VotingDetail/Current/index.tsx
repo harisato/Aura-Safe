@@ -44,7 +44,7 @@ function Current(props): ReactElement {
               </TextVote>
             </ContainerTextVote>
           </Col>
-          <Vote perNo="40%" perYes="60%" notVote />
+          <Vote perNo="40%" perYes="60%" notVote vote={{ yes: '100', no: '0', abstain: '0', no_with_veto: '0' }} />
           <Col end="sm" sm={12} xs={12}>
             <ContainVote>
               <Col start="sm" sm={4} xs={12} layout="column">
@@ -85,7 +85,7 @@ function Current(props): ReactElement {
               <TextVote>50%</TextVote>
             </ContainerTextVote>
           </Col>
-          <Vote perNo="40%" perYes="60%" />
+          <Vote perNo="40%" perYes="60%" vote={{ yes: '100', no: '0', abstain: '0', no_with_veto: '0' }} />
           <Col end="sm" sm={12} xs={12}>
             <ContainVote>
               <Col start="sm" sm={4} xs={12} layout="column">

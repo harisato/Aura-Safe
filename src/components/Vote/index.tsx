@@ -1,4 +1,5 @@
-import React, { ReactElement } from 'react'
+import React, { ReactElement, useEffect, useState } from 'react'
+import { IProposal } from 'src/types/proposal'
 import styled from 'styled-components'
 
 const VoteStyled = styled.div`
@@ -24,14 +25,47 @@ const NoStyled = styled.div<{ perNo: string; notVote: boolean }>`
   border-bottom-right-radius: 5px;
   height: 100%;
 `
-function Vote(props): ReactElement {
-  const { perYes, perNo, notVote } = props
+interface Props {
+  vote: IProposal['final_tally_result']
+  perYes?: string
+  perNo?: string
+  notVote?: boolean
+}
 
-  return (
+interface IVotePercent {
+  yes: string
+  no: string
+  abstain: string
+  no_with_veto: string
+}
+
+function Vote({ vote }: Props): ReactElement {
+  const { yes: _yes, no: _no, abstain: _abstain, no_with_veto: _no_with_veto } = vote
+
+  const [percent, setPercent] = useState<IVotePercent | null>(null)
+
+  useEffect(() => {
+    const { yes, no, abstain, no_with_veto } = ((): IVotePercent => {
+      const total = +_yes + +_abstain + +_no + +_no_with_veto
+
+      return {
+        yes: `${(+_yes * 100) / +total}%`,
+        no: `${(+_no * 100) / +total}%`,
+        abstain: `${(+_abstain * 100) / +total}%`,
+        no_with_veto: `${(+_no_with_veto * 100) / +total}%`,
+      }
+    })()
+
+    setPercent({ yes, no, abstain, no_with_veto })
+  }, [vote, setPercent])
+
+  return percent ? (
     <VoteStyled>
-      <YesStyled perYes={perYes} notVote={notVote} />
-      <NoStyled perNo={perNo} notVote={notVote} />
+      <YesStyled perYes={percent.yes} notVote={false} />
+      <NoStyled perNo={percent.no} notVote={false} />
     </VoteStyled>
+  ) : (
+    <></>
   )
 }
 
