@@ -42,7 +42,7 @@ const TitleStyled = styled.div`
 const StyleDivider = styled(Divider)`
   background-color: #363843 !important;
   margin-top: 10px;
-  margon-bottom: 10px;
+  margin-bottom: 10px;
 `
 
 function VotingDetail(props): ReactElement {

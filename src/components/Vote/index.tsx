@@ -1,4 +1,4 @@
-import React, { ReactElement, useEffect, useState } from 'react'
+import { ReactElement, useEffect, useState } from 'react'
 import { IProposal } from 'src/types/proposal'
 import styled from 'styled-components'
 
@@ -13,34 +13,31 @@ const VoteStyled = styled.div`
   overflow: hidden;
 `
 
-const YesStyled = styled.div<{ per: string }>`
+const YesStyled = styled.div<{ percent: string }>`
   background-color: #5ee6d0;
-  width: ${({ per }) => per};
+  width: ${({ percent: per }) => per};
   height: 100%;
 `
 
-const NoStyled = styled.div<{ per: string }>`
+const NoStyled = styled.div<{ percent: string }>`
   background-color: #fa8684;
-  width: ${({ per }) => per};
+  width: ${({ percent: per }) => per};
   height: 100%;
 `
 
-const AbstainStyled = styled.div<{ per: string }>`
+const AbstainStyled = styled.div<{ percent: string }>`
   background-color: #494c58;
-  width: ${({ per }) => per};
+  width: ${({ percent: per }) => per};
   height: 100%;
 `
 
-const NoWithVetoStyled = styled.div<{ per: string }>`
+const NoWithVetoStyled = styled.div<{ percent: string }>`
   background-color: #9da8ff;
-  width: ${({ per }) => per};
+  width: ${({ percent: per }) => per};
   height: 100%;
 `
 interface Props {
-  vote: IProposal['final_tally_result']
-  perYes?: string
-  perNo?: string
-  notVote?: boolean
+  vote: IProposal['tally']
 }
 
 interface IVotePercent {
@@ -55,13 +52,11 @@ function Vote({ vote }: Props): ReactElement {
 
   useEffect(() => {
     const { yes, no, abstain, no_with_veto } = ((): IVotePercent => {
-      const total = +vote.yes + +vote.abstain + +vote.no + +vote.no_with_veto
-
       return {
-        yes: `${(+vote.yes * 100) / +total}%`,
-        no: `${(+vote.no * 100) / +total}%`,
-        abstain: `${(+vote.abstain * 100) / +total}%`,
-        no_with_veto: `${(+vote.no_with_veto * 100) / +total}%`,
+        yes: `${vote.yes.percent}%`,
+        no: `${vote.no.percent}%`,
+        abstain: `${vote.abstain.percent}%`,
+        no_with_veto: `${vote.noWithVeto.percent}%`,
       }
     })()
 
@@ -70,10 +65,10 @@ function Vote({ vote }: Props): ReactElement {
 
   return percent ? (
     <VoteStyled>
-      <YesStyled per={percent.yes} />
-      <NoStyled per={percent.no} />
-      <AbstainStyled per={percent.abstain} />
-      <NoWithVetoStyled per={percent.no_with_veto} />
+      <YesStyled percent={percent.yes} />
+      <NoStyled percent={percent.no} />
+      <NoWithVetoStyled percent={percent.no_with_veto} />
+      <AbstainStyled percent={percent.abstain} />
     </VoteStyled>
   ) : (
     <></>

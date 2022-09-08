@@ -1,5 +1,6 @@
 import { Breadcrumb, BreadcrumbElement, Loader, Menu, Text } from '@aura/safe-react-components'
 import { ReactElement, useEffect, useState } from 'react'
+import { useDispatch } from 'react-redux'
 
 import BoxCard from 'src/components/BoxCard'
 import CardVoting from 'src/components/CardVoting'
@@ -9,6 +10,7 @@ import { LoadingContainer } from 'src/components/LoaderContainer'
 import StatusCard from 'src/components/StatusCard'
 import TableVoting, { StyledTableCell, StyledTableRow } from 'src/components/TableVoting'
 import { getChainInfo, getInternalChainId } from 'src/config'
+import addProposals from 'src/logic/proposal/store/actions/addProposal'
 import SendModal from 'src/routes/safe/components/Balances/SendModal'
 import { getProposals, MChainInfo } from 'src/services'
 import { IProposal } from 'src/types/proposal'
@@ -25,7 +27,7 @@ const RowHead = [
   { name: 'TOTAL DEPOSIT' },
 ]
 
-const parseBalance = (balance: IProposal['total_deposit'], chainInfo: MChainInfo) => {
+const parseBalance = (balance: IProposal['totalDeposit'], chainInfo: MChainInfo) => {
   const symbol = chainInfo.nativeCurrency.symbol
   const amount = calcBalance(balance[0].amount, chainInfo.nativeCurrency.decimals)
 
@@ -36,6 +38,7 @@ const parseBalance = (balance: IProposal['total_deposit'], chainInfo: MChainInfo
 }
 
 function Voting(): ReactElement {
+  const dispatch = useDispatch()
   const chainInfo = getChainInfo() as MChainInfo
   const [openVotingModal, setOpenVotingModal] = useState<boolean>(false)
 
@@ -46,6 +49,8 @@ function Voting(): ReactElement {
       const { Data } = response
       if (Data) {
         setProposals(Data.proposals)
+
+        dispatch(addProposals(Data.proposals))
       }
     })
   }, [])
@@ -82,7 +87,7 @@ function Voting(): ReactElement {
           }}
         >
           {proposals.slice(0, 4).map((proposal) => (
-            <Col sm={6} xs={12} key={proposal.proposal_id}>
+            <Col sm={6} xs={12} key={proposal.id}>
               <CardVoting
                 proposal={proposal}
                 handleVote={() => {
@@ -100,25 +105,25 @@ function Voting(): ReactElement {
             <TitleNumberStyled>Proposals</TitleNumberStyled>
             <TableVoting RowHead={RowHead}>
               {proposals.map((row) => (
-                <StyledTableRow key={row.proposal_id}>
+                <StyledTableRow key={row.id}>
                   <StyledTableCell component="th" scope="row">
-                    {row.proposal_id}
+                    {row.id}
                   </StyledTableCell>
                   <StyledTableCell align="left">
                     <Text size="lg" color="linkAura">
-                      {row.content.title}
+                      {row.title}
                     </Text>
                   </StyledTableCell>
                   <StyledTableCell align="left">
                     <StatusCard status={row.status} showDot />
                   </StyledTableCell>
-                  <StyledTableCell align="left">{formatTime(row.voting_start_time)}</StyledTableCell>
-                  <StyledTableCell align="left">{formatTime(row.voting_end_time)}</StyledTableCell>
+                  <StyledTableCell align="left">{formatTime(row.votingStart)}</StyledTableCell>
+                  <StyledTableCell align="left">{formatTime(row.votingEnd)}</StyledTableCell>
                   <StyledTableCell align="left">
                     <div style={{ display: 'flex' }}>
-                      {parseBalance(row.total_deposit, chainInfo).amount}&ensp;
+                      {parseBalance(row.totalDeposit, chainInfo).amount}&ensp;
                       <Text size="lg" color="linkAura">
-                        {parseBalance(row.total_deposit, chainInfo).symbol}
+                        {parseBalance(row.totalDeposit, chainInfo).symbol}
                       </Text>
                     </div>
                   </StyledTableCell>

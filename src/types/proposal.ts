@@ -16,43 +16,36 @@ export enum VoteMapping {
   'no_with_veto' = 'NoWithVeto',
 }
 
-export interface Amount {
-  denom: string
-  amount: string
+export interface VoteResult {
+  number?: string
+  name?: string
+  percent: string
 }
 
-export interface ProposalContent {
-  ['@type']: string
-  title: string
-  description: string
-  recipient: string
-  amount: Amount[]
-}
-
-export interface FinalTallyResult {
-  yes: string
-  abstain: string
-  no: string
-  no_with_veto: string
+export interface Tally {
+  yes: VoteResult
+  abstain: VoteResult
+  no: VoteResult
+  noWithVeto: VoteResult
+  mostVotedOn: VoteResult
 }
 
 export interface TotalDeposit {
   denom: string
   amount: string
+  _id: string
 }
 
 export interface IProposal {
-  proposal_id: string
-  content: ProposalContent
-  status: string | ProposalStatus
-  final_tally_result: FinalTallyResult
-  submit_time: string
-  deposit_end_time: string
-  total_deposit: TotalDeposit[]
-  voting_start_time: string
-  voting_end_time: string
+  id: number
+  title: string
+  status: ProposalStatus
+  votingStart: Date
+  votingEnd: Date
+  submitTime: Date
+  totalDeposit: TotalDeposit[]
+  tally: Tally
 }
 export interface IProposalRes {
-  pagination: any
   proposals: IProposal[]
 }

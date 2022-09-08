@@ -9,7 +9,7 @@ import { useHistory } from 'react-router-dom'
 import Vote from '../Vote'
 import { SAFE_ROUTES, extractSafeAddress, generateSafeRoute } from 'src/routes/routes'
 import { getShortName } from 'src/config'
-import { IProposal, VoteLabel } from 'src/types/proposal'
+import { IProposal, VoteLabel, VoteMapping } from 'src/types/proposal'
 import { formatDateTime2 } from 'src/utils/date'
 import { calcBalance, calcPercentInObj, calcVotePercent, maxVote } from 'src/utils/calc'
 import { MChainInfo } from 'src/services'
@@ -132,8 +132,8 @@ function CardVoting({ handleVote, proposal }: Props): ReactElement {
       <Col layout="column">
         <div style={{ display: 'flex', justifyContent: 'space-between' }}>
           <div>
-            <TitleNumberStyled>#{proposal.proposal_id}</TitleNumberStyled>
-            <TitleStyled>{proposal.content.title}</TitleStyled>
+            <TitleNumberStyled>#{proposal.id}</TitleNumberStyled>
+            <TitleStyled>{proposal.title}</TitleStyled>
           </div>
           <div style={{ alignSelf: 'center' }}>
             <StatusCard status={proposal.status} />
@@ -151,21 +151,21 @@ function CardVoting({ handleVote, proposal }: Props): ReactElement {
           <ContentCard>
             <TitleContentCard>Voting Start</TitleContentCard>
             <Text size="lg" color="white">
-              {formatTime(proposal.voting_start_time)}
+              {formatTime(proposal.votingStart)}
             </Text>
           </ContentCard>
 
           <ContentCard>
             <TitleContentCard>Voting End</TitleContentCard>
             <Text size="lg" color="white">
-              {formatTime(proposal.voting_end_time)}
+              {formatTime(proposal.votingEnd)}
             </Text>
           </ContentCard>
         </Col>
 
         <Col sm={12} xs={12} style={{ display: 'flex', justifyContent: 'space-between' }}>
           <Col sm={8} xs={12}>
-            <Vote vote={proposal.final_tally_result} />
+            <Vote vote={proposal.tally} />
           </Col>
           <Col sm={3} xs={12} style={{ display: 'flex', flexDirection: 'column', alignSelf: 'center' }}>
             <div>
@@ -176,12 +176,12 @@ function CardVoting({ handleVote, proposal }: Props): ReactElement {
               <div style={{ display: 'flex' }}>
                 <DotVoteStyled />
                 <Text size="xl" color="white">
-                  {maxVote.key}
+                  {VoteMapping[proposal.tally.mostVotedOn.name || 'yes']}
                 </Text>
               </div>
               <div>
                 <Text size="xl" color="white">
-                  {maxVote.value}
+                  {proposal.tally.mostVotedOn.percent}%
                 </Text>
               </div>
             </ContainDotVot>
