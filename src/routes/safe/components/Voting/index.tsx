@@ -9,8 +9,9 @@ import Col from 'src/components/layout/Col'
 import { LoadingContainer } from 'src/components/LoaderContainer'
 import StatusCard from 'src/components/StatusCard'
 import TableVoting, { StyledTableCell, StyledTableRow } from 'src/components/TableVoting'
-import { getChainInfo, getInternalChainId } from 'src/config'
+import { getChainInfo, getInternalChainId, _getChainId } from 'src/config'
 import addProposals from 'src/logic/proposal/store/actions/addProposal'
+import { extractSafeAddress } from 'src/routes/routes'
 import SendModal from 'src/routes/safe/components/Balances/SendModal'
 import { getProposals, MChainInfo } from 'src/services'
 import { IProposal } from 'src/types/proposal'
@@ -40,7 +41,12 @@ const parseBalance = (balance: IProposal['totalDeposit'], chainInfo: MChainInfo)
 function Voting(): ReactElement {
   const dispatch = useDispatch()
   const chainInfo = getChainInfo() as MChainInfo
+
+  const safeAddress = extractSafeAddress()
+
   const [openVotingModal, setOpenVotingModal] = useState<boolean>(false)
+
+  const chainId = _getChainId()
 
   const [proposals, setProposals] = useState<IProposal[]>([])
 
@@ -50,7 +56,13 @@ function Voting(): ReactElement {
       if (Data) {
         setProposals(Data.proposals)
 
-        dispatch(addProposals(Data.proposals))
+        dispatch(
+          addProposals({
+            chainId,
+            safeAddress,
+            proposals: Data.proposals,
+          }),
+        )
       }
     })
   }, [])
