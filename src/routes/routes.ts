@@ -32,6 +32,7 @@ export const SAFE_SUBSECTION_ROUTE = `${SAFE_SECTION_ROUTE}/:${SAFE_SUBSECTION_S
 export const TRANSACTION_ID_SLUG = `safeTxHash`
 export const TRANSACTION_ID_NUMBER = `id`
 export const VOTING_ID_NUMBER = `idVoting`
+export const PROPOSAL_ID = `id`
 
 // URL: gnosis-safe.io/app/:[SAFE_ADDRESS_SLUG]/:[SAFE_SECTION_SLUG]/:[SAFE_SUBSECTION_SLUG]
 export type SafeRouteSlugs = {
@@ -40,6 +41,7 @@ export type SafeRouteSlugs = {
   [SAFE_SUBSECTION_SLUG]?: string
   [TRANSACTION_ID_SLUG]?: string
   [TRANSACTION_ID_NUMBER]?: string
+  [PROPOSAL_ID]?: string
 }
 
 export const LOAD_SPECIFIC_SAFE_ROUTE = `/load/:${SAFE_ADDRESS_SLUG}?` // ? = optional slug
@@ -65,8 +67,8 @@ export const SAFE_ROUTES = {
   TRANSACTIONS_SINGULAR: `${ADDRESSED_ROUTE}/transactions/:${TRANSACTION_ID_NUMBER}${singularExp}`, // [TRANSACTION_HASH_SLUG] === 'safeTxHash'
   ADDRESS_BOOK: `${ADDRESSED_ROUTE}/address-book`,
   STAKING: `${ADDRESSED_ROUTE}/staking`,
-  VOTING: `${ADDRESSED_ROUTE}/voting`,
-  VOTING_DETAIL: `${ADDRESSED_ROUTE}/voting/detail`,
+  VOTING: `${ADDRESSED_ROUTE}/voting/`,
+  VOTING_DETAIL: `${ADDRESSED_ROUTE}/voting/detail/:${TRANSACTION_ID_NUMBER}`,
   APPS: `${ADDRESSED_ROUTE}/apps`,
   SETTINGS: `${ADDRESSED_ROUTE}/settings`,
   SETTINGS_APPEARANCE: `${ADDRESSED_ROUTE}/settings/appearance`,

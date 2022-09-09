@@ -12,7 +12,11 @@ import Current from './Current'
 import Vote from './Vote'
 import ValidatorVote from './ValidatorVote'
 import Depositors from './Depositors'
-import { useHistory } from 'react-router-dom'
+import { useHistory, useParams } from 'react-router-dom'
+import { useSelector } from 'react-redux'
+import { proposalDetail, proposalsListSelector } from 'src/logic/proposal/store/selectors'
+import { AppReduxState } from 'src/store'
+import { PROPOSAL_ID, SafeRouteSlugs } from 'src/routes/routes'
 
 const StyledButton = styled(Button)`
   border: 2px solid transparent;
@@ -47,6 +51,17 @@ const StyleDivider = styled(Divider)`
 
 function VotingDetail(props): ReactElement {
   const history = useHistory()
+
+  const { [PROPOSAL_ID]: proposalId = '' } = useParams<SafeRouteSlugs>()
+
+  console.log(proposalId)
+
+  const proposal = useSelector((state: AppReduxState) =>
+    proposalDetail(state, { attributeName: 'id', attributeValue: 218 }),
+  )
+
+  console.log(proposal)
+
   const handleBack = () => {
     history.goBack()
   }

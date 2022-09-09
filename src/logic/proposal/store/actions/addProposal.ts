@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-types */
 import { createAction } from 'redux-actions'
 import { IProposalState } from 'src/logic/proposal/store/reducer/proposals'
 

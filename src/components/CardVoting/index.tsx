@@ -14,6 +14,8 @@ import { formatDateTime2 } from 'src/utils/date'
 import { calcBalance, calcPercentInObj, calcVotePercent, maxVote } from 'src/utils/calc'
 import { MChainInfo } from 'src/services'
 import { getBalanceAndDecimalsFromToken } from 'src/logic/tokens/utils/tokenHelpers'
+import { useSelector } from 'react-redux'
+import { proposalsListSelector } from 'src/logic/proposal/store/selectors'
 
 const TitleNumberStyled = styled.div`
   font-weight: 510;
@@ -85,38 +87,9 @@ interface Props {
 
 const formatTime = (time) => formatDateTime2(new Date(time).getTime())
 
-const calcMax = (
-  proposal,
-): {
-  key: VoteLabel
-  value: string
-} => {
-  if (proposal && proposal.final_tally_result) {
-    const percent = calcVotePercent(calcPercentInObj(proposal.final_tally_result))
-    const max = maxVote(percent)
-
-    return (
-      max || {
-        key: 'Yes',
-        value: '0%',
-      }
-    )
-  }
-
-  return {
-    key: 'Yes',
-    value: '0%',
-  }
-}
-
 function CardVoting({ handleVote, proposal }: Props): ReactElement {
   const history = useHistory()
   const safeAddress = extractSafeAddress()
-
-  const maxVote: {
-    key: VoteLabel
-    value: string
-  } = useMemo(() => calcMax(proposal), [proposal])
 
   const handleDetail = () => {
     history.push(
