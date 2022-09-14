@@ -1,22 +1,21 @@
-import { ReactElement } from 'react'
-import { Breadcrumb, BreadcrumbElement, Menu, Text, Button } from '@aura/safe-react-components'
-import Col from 'src/components/layout/Col'
-import Block from 'src/components/layout/Block'
-import BoxCard from 'src/components/BoxCard'
-import StatusCard from 'src/components/StatusCard'
-import styled from 'styled-components'
-import { borderLinear } from 'src/theme/variables'
+import { Breadcrumb, BreadcrumbElement, Button, Menu, Text } from '@aura/safe-react-components'
 import { Divider } from '@material-ui/core'
-import InformationVoting from './Information'
-import Current from './Current'
-import Vote from './Vote'
-import ValidatorVote from './ValidatorVote'
-import Depositors from './Depositors'
-import { useHistory, useParams } from 'react-router-dom'
+import { ReactElement } from 'react'
 import { useSelector } from 'react-redux'
-import { proposalDetail, proposalsListSelector } from 'src/logic/proposal/store/selectors'
+import { useHistory } from 'react-router-dom'
+import BoxCard from 'src/components/BoxCard'
+import Block from 'src/components/layout/Block'
+import Col from 'src/components/layout/Col'
+import StatusCard from 'src/components/StatusCard'
+import { proposalDetail } from 'src/logic/proposal/store/selectors'
 import { AppReduxState } from 'src/store'
-import { PROPOSAL_ID, SafeRouteSlugs } from 'src/routes/routes'
+import { borderLinear } from 'src/theme/variables'
+import styled from 'styled-components'
+import Current from './Current'
+import Depositors from './Depositors'
+import InformationVoting from './Information'
+import ValidatorVote from './ValidatorVote'
+import Vote from './Vote'
 
 const StyledButton = styled(Button)`
   border: 2px solid transparent;
@@ -52,9 +51,11 @@ const StyleDivider = styled(Divider)`
 function VotingDetail(props): ReactElement {
   const history = useHistory()
 
-  const { [PROPOSAL_ID]: proposalId = '' } = useParams<SafeRouteSlugs>()
+  // const { [PROPOSAL_ID]: proposalId = '' } = useParams<SafeRouteSlugs>()
 
-  console.log(proposalId)
+  // console.log(proposalId)
+
+  // console.log(extractVotingId())
 
   const proposal = useSelector((state: AppReduxState) =>
     proposalDetail(state, { attributeName: 'id', attributeValue: 218 }),

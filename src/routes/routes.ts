@@ -25,14 +25,17 @@ export const ADDRESSED_ROUTE = `/:${SAFE_ADDRESS_SLUG}(${chainSpecificSafeAddres
 const SAFE_SECTION_SLUG = 'safeSection'
 export const SAFE_SECTION_ROUTE = `${ADDRESSED_ROUTE}/:${SAFE_SECTION_SLUG}`
 
+// Safe section routes, i.e. /:prefixedSafeAddress/settings
+const VOTING_SECTION_SLUG = 'proposalId'
+export const VOTING_SECTION_ROUTE = `${ADDRESSED_ROUTE}/voting/detail/:${VOTING_SECTION_SLUG}`
+
 // Safe subsection routes, i.e. /:prefixedSafeAddress/settings/advanced
 export const SAFE_SUBSECTION_SLUG = 'safeSubsection'
 export const SAFE_SUBSECTION_ROUTE = `${SAFE_SECTION_ROUTE}/:${SAFE_SUBSECTION_SLUG}`
 
 export const TRANSACTION_ID_SLUG = `safeTxHash`
 export const TRANSACTION_ID_NUMBER = `id`
-export const VOTING_ID_NUMBER = `idVoting`
-export const PROPOSAL_ID = `id`
+// export const VOTING_ID_NUMBER = `proposalId`
 
 // URL: gnosis-safe.io/app/:[SAFE_ADDRESS_SLUG]/:[SAFE_SECTION_SLUG]/:[SAFE_SUBSECTION_SLUG]
 export type SafeRouteSlugs = {
@@ -41,7 +44,7 @@ export type SafeRouteSlugs = {
   [SAFE_SUBSECTION_SLUG]?: string
   [TRANSACTION_ID_SLUG]?: string
   [TRANSACTION_ID_NUMBER]?: string
-  [PROPOSAL_ID]?: string
+  // [VOTING_SECTION_SLUG]?: string
 }
 
 export const LOAD_SPECIFIC_SAFE_ROUTE = `/load/:${SAFE_ADDRESS_SLUG}?` // ? = optional slug
@@ -68,7 +71,8 @@ export const SAFE_ROUTES = {
   ADDRESS_BOOK: `${ADDRESSED_ROUTE}/address-book`,
   STAKING: `${ADDRESSED_ROUTE}/staking`,
   VOTING: `${ADDRESSED_ROUTE}/voting/`,
-  VOTING_DETAIL: `${ADDRESSED_ROUTE}/voting/detail/:${TRANSACTION_ID_NUMBER}`,
+  // VOTING_DETAIL: `${ADDRESSED_ROUTE}/voting/detail/:${VOTING_SECTION_SLUG}`,
+  VOTING_DETAIL: `${ADDRESSED_ROUTE}/voting/detail/:id`,
   APPS: `${ADDRESSED_ROUTE}/apps`,
   SETTINGS: `${ADDRESSED_ROUTE}/settings`,
   SETTINGS_APPEARANCE: `${ADDRESSED_ROUTE}/settings/appearance`,
@@ -109,6 +113,14 @@ export const extractPrefixedSafeAddress = (
     shortName: prefix,
   }
 }
+// export const extractVoting = (path = history.location.pathname, route = VOTING_SECTION_ROUTE): string | undefined => {
+//   const match = matchPath<SafeRouteSlugs>(path, {
+//     path: route,
+//   })
+//   const proposalId = match?.params?.[VOTING_SECTION_SLUG]
+
+//   return proposalId
+// }
 
 export const hasPrefixedSafeAddressInUrl = (): boolean => {
   const match = matchPath<SafeRouteSlugs>(history.location.pathname, {
@@ -121,14 +133,13 @@ export const hasPrefixedSafeAddressInUrl = (): boolean => {
 export const extractShortChainName = (): ShortName => extractPrefixedSafeAddress().shortName
 export const extractSafeAddress = (): string => extractPrefixedSafeAddress().safeAddress
 export const extractSafeId = (): number | undefined => extractPrefixedSafeAddress().safeId
-// export const extractVotingId = (): number | undefined => extractPrefixedSafeAddress().votingId
+// export const extractVotingId = (): string | undefined => extractVoting()
 
 export const getPrefixedSafeAddressSlug = (
   { safeAddress = extractSafeAddress(), shortName = extractShortChainName(), safeId = extractSafeId() } = {
     safeAddress: extractSafeAddress(),
     shortName: extractShortChainName(),
     safeId: extractSafeId(),
-    // votingId: extractVotingId(),
   },
 ): string => `${safeId}:${safeAddress}`
 
