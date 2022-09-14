@@ -36,15 +36,26 @@ export interface TotalDeposit {
   _id: string
 }
 
+export interface Turnout {
+  voted: VoteResult
+  votedAbstain: VoteResult
+  didNotVote: VoteResult
+}
+
 export interface IProposal {
   id: number
   title: string
+  proposer: string
   status: ProposalStatus
   votingStart: Date
   votingEnd: Date
   submitTime: Date
   totalDeposit: TotalDeposit[]
   tally: Tally
+  description: string
+  type: string
+  depositEndTime: Date
+  turnout: Turnout
 }
 export interface IProposalRes {
   proposals: IProposal[]

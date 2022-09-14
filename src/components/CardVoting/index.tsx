@@ -109,7 +109,7 @@ function CardVoting({ handleVote, proposal }: Props): ReactElement {
           <ContentCard>
             <TitleContentCard>Proposer</TitleContentCard>
             <Text size="lg" color="linkAura">
-              {'-'}
+              {proposal.proposer || '-'}
             </Text>
           </ContentCard>
 

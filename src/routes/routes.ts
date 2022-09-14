@@ -44,6 +44,7 @@ export type SafeRouteSlugs = {
   [SAFE_SUBSECTION_SLUG]?: string
   [TRANSACTION_ID_SLUG]?: string
   [TRANSACTION_ID_NUMBER]?: string
+  [VOTING_ID_NUMBER]?: string
 }
 
 export const LOAD_SPECIFIC_SAFE_ROUTE = `/load/:${SAFE_ADDRESS_SLUG}?` // ? = optional slug

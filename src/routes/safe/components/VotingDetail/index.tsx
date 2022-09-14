@@ -1,13 +1,18 @@
-import { Breadcrumb, BreadcrumbElement, Button, Menu, Text } from '@aura/safe-react-components'
+import { Breadcrumb, BreadcrumbElement, Button, Loader, Menu, Text } from '@aura/safe-react-components'
 import { Divider } from '@material-ui/core'
-import { ReactElement } from 'react'
-import { useSelector } from 'react-redux'
-import { useHistory } from 'react-router-dom'
+import { ReactElement, useEffect, useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import { useHistory, useParams } from 'react-router-dom'
 import BoxCard from 'src/components/BoxCard'
 import Block from 'src/components/layout/Block'
 import Col from 'src/components/layout/Col'
+import { LoadingContainer } from 'src/components/LoaderContainer'
 import StatusCard from 'src/components/StatusCard'
+import { getInternalChainId, _getChainId } from 'src/config'
+import addOrUpdateProposals from 'src/logic/proposal/store/actions/addOrUpdateProposals'
 import { proposalDetail } from 'src/logic/proposal/store/selectors'
+import { extractSafeAddress, SafeRouteSlugs, VOTING_ID_NUMBER } from 'src/routes/routes'
+import { getProposalDetail } from 'src/services'
 import { AppReduxState } from 'src/store'
 import { borderLinear } from 'src/theme/variables'
 import styled from 'styled-components'
@@ -48,24 +53,59 @@ const StyleDivider = styled(Divider)`
   margin-bottom: 10px;
 `
 
+const VotingStatusWrapper = styled.div`
+  align-self: center;
+  display: flex;
+  justify-content: space-between;
+  min-width: 300px;
+  align-items: center;
+`
+
 function VotingDetail(props): ReactElement {
   const history = useHistory()
+  const dispatch = useDispatch()
 
-  // const { [PROPOSAL_ID]: proposalId = '' } = useParams<SafeRouteSlugs>()
+  const safeAddress = extractSafeAddress()
+  const chainId = _getChainId()
 
-  // console.log(proposalId)
+  const [loading, setLoading] = useState<boolean>(true)
 
-  // console.log(extractVotingId())
+  const { [VOTING_ID_NUMBER]: proposalId = '' } = useParams<SafeRouteSlugs>()
 
   const proposal = useSelector((state: AppReduxState) =>
-    proposalDetail(state, { attributeName: 'id', attributeValue: 218 }),
+    proposalDetail(state, { attributeName: 'id', attributeValue: proposalId }),
   )
 
-  console.log(proposal)
+  useEffect(() => {
+    if (!proposal?.description && proposalId) {
+      setLoading(true)
+      getProposalDetail(getInternalChainId(), proposalId).then((proposal) => {
+        dispatch(
+          addOrUpdateProposals({
+            chainId,
+            safeAddress,
+            proposals: [proposal.Data],
+          }),
+        )
+        setLoading(false)
+      })
+    } else {
+      setLoading(false)
+    }
+  }, [proposal, setLoading, proposalId, dispatch, safeAddress, chainId])
 
   const handleBack = () => {
     history.goBack()
   }
+
+  if (!proposal || loading) {
+    return (
+      <LoadingContainer>
+        <Loader size="md" />
+      </LoadingContainer>
+    )
+  }
+
   return (
     <>
       <Menu>
@@ -83,20 +123,21 @@ function VotingDetail(props): ReactElement {
           <Col layout="column" sm={12} xs={12}>
             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
               <div>
-                <TitleNumberStyled>#60</TitleNumberStyled>
-                <TitleStyled>Increase MaxValidator value</TitleStyled>
+                <TitleNumberStyled>#{proposal.id}</TitleNumberStyled>
+                <TitleStyled> {proposal.title}</TitleStyled>
               </div>
-              <div style={{ alignSelf: 'center', display: 'flex', justifyContent: 'space-between', width: '300px' }}>
-                <StatusCard status="deposit" />
+
+              <VotingStatusWrapper>
+                <StatusCard status={proposal.status} />
                 <Divider orientation="vertical" flexItem />
                 <StyledButton size="md" disabled={true} onClick={() => {}}>
                   <Text size="lg" color="white">
                     Vote
                   </Text>
                 </StyledButton>
-              </div>
+              </VotingStatusWrapper>
             </div>
-            <InformationVoting />
+            <InformationVoting proposal={proposal} />
             <StyleDivider />
             <Col sm={12} xs={12}>
               <Current />

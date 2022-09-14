@@ -21,16 +21,15 @@ export const proposalDetail = createSelector(
   (_: AppReduxState, attrDetail: { attributeName: keyof IProposal; attributeValue: IProposal[keyof IProposal] }) =>
     attrDetail,
   (proposals, chainId, safeAddress, attrDetail): IProposal | undefined => {
-    const { attributeValue } = attrDetail
+    const { attributeValue, attributeName } = attrDetail
 
     const proposalList = chainId && safeAddress ? proposals[chainId]?.[safeAddress] : undefined
 
     if (!proposalList) {
       return undefined
     }
-    // console.log({ attributeName, attributeValue, proposals, chainId, safeAddress, attrDetail })
 
-    const proposal = proposalList ? _.find(proposalList, (item) => item.id === attributeValue) : undefined
+    const proposal = proposalList ? _.find(proposalList, (item) => item[attributeName] == attributeValue) : undefined
 
     return proposal
   },

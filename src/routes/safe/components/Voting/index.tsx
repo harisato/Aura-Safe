@@ -65,7 +65,7 @@ function Voting(): ReactElement {
         )
       }
     })
-  }, [])
+  }, [chainId, dispatch, safeAddress])
 
   const formatTime = (time) => formatDateTimeDivider(new Date(time).getTime())
 
