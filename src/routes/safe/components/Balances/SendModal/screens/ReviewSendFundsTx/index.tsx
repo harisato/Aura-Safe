@@ -106,12 +106,12 @@ const ReviewSendFundsTx = ({ onClose, onPrev, tx }: ReviewTxProps): React.ReactE
   const [gasPriceFormatted, setGasPriceFormatted] = useState<string | number>(gasFee)
   const chainInfo = getChainInfo()
 
-  let lastUsedProvider = ''
+  // let lastUsedProvider = ''
 
-  loadLastUsedProvider().then((result) => {
-    lastUsedProvider = result || ''
-    if (result?.toLowerCase() !== 'keplr') setGasPriceFormatted(15000)
-  })
+  // loadLastUsedProvider().then((result) => {
+  //   lastUsedProvider = result || ''
+  //   if (result?.toLowerCase() !== 'keplr') setGasPriceFormatted(15000)
+  // })
 
   const { gasCostFormatted, txEstimationExecutionStatus, isExecution, isOffChainSignature } = {
     gasCostFormatted: '',
@@ -129,9 +129,7 @@ const ReviewSendFundsTx = ({ onClose, onPrev, tx }: ReviewTxProps): React.ReactE
 
   const submitTx = async (txParameters: TxParameters) => {
     setDisabled(true)
-    if (lastUsedProvider?.toLowerCase() === 'keplr') {
-      signTransactionWithKeplr(safeAddress)
-    }
+    signTransactionWithKeplr(safeAddress)
   }
 
   const signTransactionWithKeplr = async (safeAddress: string) => {
