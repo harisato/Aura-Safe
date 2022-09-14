@@ -11,6 +11,9 @@ import StakeFish from './assets/StakeFish.svg'
 import Inotel from './assets/Inotel.png'
 import NotificationPopup from 'src/components/NotificationPopup'
 import styled from 'styled-components'
+import CloseButton from 'src/components/CloseButton'
+import ButtonSelect from 'src/components/ButtonSelect'
+
 import { Divider } from '@material-ui/core'
 
 const ImgStyled = styled.img`
@@ -71,6 +74,16 @@ const TextGreen = styled.span`
 
 const TextDelegateNoti = styled.span`
   color: #e5e7ea;
+`
+
+const BoxDelegate = styled.div`
+  display: flex;
+`
+
+const FotterModal = styled.div`
+  display: flex;
+  margin-top: 10px;
+  justify-content: flex-end;
 `
 
 function Staking(props): ReactElement {
@@ -147,27 +160,58 @@ function Staking(props): ReactElement {
           </div>
         </NotificationPopup>
 
-        <Col sm={12} xs={12}>
-          <Col sm={6} xs={12}>
-            <Col sm={6} xs={12}>
-              <Text size="lg" color="white">
-                My delegation
+        <div style={{ display: 'flex', marginTop: 10 }}>
+          <Col sm={6} xs={12} layout="column">
+            <BoxDelegate>
+              <Col sm={7} xs={12}>
+                <Text size="lg" color="white">
+                  My delegation
+                </Text>
+              </Col>
+              <Text size="lg" color="numberAura">
+                5.000000 <TextGreen>AURA</TextGreen>
               </Text>
-              <Text size="lg" color="white">
-                5.000000 AURA
+            </BoxDelegate>
+            <BoxDelegate>
+              <Col sm={7} xs={12}>
+                <Text size="lg" color="white">
+                  Pending Reward
+                </Text>
+              </Col>
+              <Text size="lg" color="numberAura">
+                0.632315 <TextGreen>AURA</TextGreen>
               </Text>
-            </Col>
-            <Col sm={6} xs={12}>
-              <Text size="lg" color="white">
-                Pending Reward
-              </Text>
-              <Text size="lg" color="white">
-                0.632315 AURA
-              </Text>
-            </Col>
+            </BoxDelegate>
           </Col>
-          <Col sm={6} xs={12}></Col>
-        </Col>
+          <Col sm={6} xs={12} layout="column">
+            <BoxDelegate>
+              <Col sm={7} xs={12}>
+                <Text size="lg" color="white">
+                  Delegatable Balance
+                </Text>
+              </Col>
+
+              <Text size="lg" color="numberAura">
+                17.641376 <TextGreen>AURA</TextGreen>
+              </Text>
+            </BoxDelegate>
+            <BoxDelegate>
+              <Col sm={7} xs={12}>
+                <Text size="lg" color="white">
+                  Total Reward
+                </Text>
+              </Col>
+
+              <Text size="lg" color="numberAura">
+                2.239288 <TextGreen>AURA</TextGreen>
+              </Text>
+            </BoxDelegate>
+          </Col>
+        </div>
+        <FotterModal>
+          <CloseButton title="Close" />
+          <ButtonSelect />
+        </FotterModal>
       </ModalNew>
     </>
   )
