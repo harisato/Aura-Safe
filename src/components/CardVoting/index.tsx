@@ -1,21 +1,15 @@
-import { ReactElement, useEffect, useMemo, useState } from 'react'
-import BoxCard from '../BoxCard'
+import { Button, Text } from '@aura/safe-react-components'
+import { ReactElement } from 'react'
+import { generatePath, useHistory } from 'react-router-dom'
 import Col from 'src/components/layout/Col'
-import styled from 'styled-components'
-import StatusCard from '../StatusCard'
-import { Text, Button, Divider } from '@aura/safe-react-components'
+import { getPrefixedSafeAddressSlug, SAFE_ADDRESS_SLUG, SAFE_ROUTES, VOTING_ID_NUMBER } from 'src/routes/routes'
 import { borderLinear } from 'src/theme/variables'
-import { useHistory } from 'react-router-dom'
+import { IProposal, VoteMapping } from 'src/types/proposal'
+import { formatDateTimeDivider } from 'src/utils/date'
+import styled from 'styled-components'
+import BoxCard from '../BoxCard'
+import StatusCard from '../StatusCard'
 import Vote from '../Vote'
-import { SAFE_ROUTES, extractSafeAddress, generateSafeRoute } from 'src/routes/routes'
-import { getShortName } from 'src/config'
-import { IProposal, VoteLabel, VoteMapping } from 'src/types/proposal'
-import { formatDateTime2 } from 'src/utils/date'
-import { calcBalance, calcPercentInObj, calcVotePercent, maxVote } from 'src/utils/calc'
-import { MChainInfo } from 'src/services'
-import { getBalanceAndDecimalsFromToken } from 'src/logic/tokens/utils/tokenHelpers'
-import { useSelector } from 'react-redux'
-import { proposalsListSelector } from 'src/logic/proposal/store/selectors'
 
 const TitleNumberStyled = styled.div`
   font-weight: 510;
@@ -85,19 +79,17 @@ interface Props {
   proposal: IProposal
 }
 
-const formatTime = (time) => formatDateTime2(new Date(time).getTime())
+const formatTime = (time) => formatDateTimeDivider(new Date(time).getTime())
 
 function CardVoting({ handleVote, proposal }: Props): ReactElement {
   const history = useHistory()
-  const safeAddress = extractSafeAddress()
 
-  const handleDetail = () => {
-    history.push(
-      generateSafeRoute(SAFE_ROUTES.VOTING_DETAIL, {
-        shortName: getShortName(),
-        safeAddress,
-      }),
-    )
+  const handleDetail = (proposalId) => {
+    const proposalDetailsPathname = generatePath(SAFE_ROUTES.VOTING_DETAIL, {
+      [SAFE_ADDRESS_SLUG]: getPrefixedSafeAddressSlug(),
+      [VOTING_ID_NUMBER]: proposalId,
+    })
+    history.push(proposalDetailsPathname)
   }
 
   return (
@@ -170,7 +162,7 @@ function CardVoting({ handleVote, proposal }: Props): ReactElement {
             </TextStyled>
           </div>
           <div>
-            <StyledButtonDetail size="md" disabled={false} onClick={handleDetail}>
+            <StyledButtonDetail size="md" disabled={false} onClick={() => handleDetail(proposal.id)}>
               <Text size="lg" color="white">
                 Details
               </Text>

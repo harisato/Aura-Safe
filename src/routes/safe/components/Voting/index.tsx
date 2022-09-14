@@ -16,7 +16,7 @@ import SendModal from 'src/routes/safe/components/Balances/SendModal'
 import { getProposals, MChainInfo } from 'src/services'
 import { IProposal } from 'src/types/proposal'
 import { calcBalance } from 'src/utils/calc'
-import { formatDateTime2 } from 'src/utils/date'
+import { formatDateTimeDivider } from 'src/utils/date'
 import { StyleCard, TitleNumberStyled } from './styles'
 
 const RowHead = [
@@ -67,7 +67,7 @@ function Voting(): ReactElement {
     })
   }, [])
 
-  const formatTime = (time) => formatDateTime2(new Date(time).getTime())
+  const formatTime = (time) => formatDateTimeDivider(new Date(time).getTime())
 
   if (proposals.length <= 0) {
     return (
