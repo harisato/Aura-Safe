@@ -16,7 +16,7 @@ import { getProposalDetail } from 'src/services'
 import { AppReduxState } from 'src/store'
 import { borderLinear } from 'src/theme/variables'
 import styled from 'styled-components'
-import Current from './Current'
+import CurrentTurnout from './Current'
 import Depositors from './Depositors'
 import InformationVoting from './Information'
 import ValidatorVote from './ValidatorVote'
@@ -61,7 +61,7 @@ const VotingStatusWrapper = styled.div`
   align-items: center;
 `
 
-function VotingDetail(props): ReactElement {
+function VotingDetail(): ReactElement {
   const history = useHistory()
   const dispatch = useDispatch()
 
@@ -140,7 +140,7 @@ function VotingDetail(props): ReactElement {
             <InformationVoting proposal={proposal} />
             <StyleDivider />
             <Col sm={12} xs={12}>
-              <Current />
+              <CurrentTurnout turnout={proposal.turnout} tally={proposal.tally} />
             </Col>
           </Col>
         </BoxCard>

@@ -153,19 +153,21 @@ function VotingDetail({ proposal }: Props): ReactElement {
               <TitleContentCard>Details</TitleContentCard>
             </Col>
             <Col sm={10} xs={12}>
-              <DetailVoting />
+              <DetailVoting description={proposal.description} />
             </Col>
           </ContentCard>
-          <ContentCard>
-            <Col sm={2} xs={12}>
-              <TitleContentCard>Request Amount</TitleContentCard>
-            </Col>
-            <Col sm={10} xs={12}>
-              <Text size="lg" color="white">
-                37.500000 <span style={{ color: '#5EE6D0' }}>ATOM</span>
-              </Text>
-            </Col>
-          </ContentCard>
+          {false && (
+            <ContentCard>
+              <Col sm={2} xs={12}>
+                <TitleContentCard>Request Amount</TitleContentCard>
+              </Col>
+              <Col sm={10} xs={12}>
+                <Text size="lg" color="white">
+                  37.500000 <span style={{ color: '#5EE6D0' }}>ATOM</span>
+                </Text>
+              </Col>
+            </ContentCard>
+          )}
         </Col>
       </Col>
     </>

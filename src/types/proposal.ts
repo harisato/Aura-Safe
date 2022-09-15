@@ -22,7 +22,7 @@ export interface VoteResult {
   percent: string
 }
 
-export interface Tally {
+interface Tally {
   yes: VoteResult
   abstain: VoteResult
   no: VoteResult
@@ -30,13 +30,13 @@ export interface Tally {
   mostVotedOn: VoteResult
 }
 
-export interface TotalDeposit {
+interface Amount {
   denom: string
   amount: string
   _id: string
 }
 
-export interface Turnout {
+interface Turnout {
   voted: VoteResult
   votedAbstain: VoteResult
   didNotVote: VoteResult
@@ -50,12 +50,13 @@ export interface IProposal {
   votingStart: Date
   votingEnd: Date
   submitTime: Date
-  totalDeposit: TotalDeposit[]
+  totalDeposit: Amount[]
   tally: Tally
   description: string
   type: string
   depositEndTime: Date
   turnout: Turnout
+  requestAmount: Amount
 }
 export interface IProposalRes {
   proposals: IProposal[]
