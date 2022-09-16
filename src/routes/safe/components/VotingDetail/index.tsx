@@ -15,12 +15,15 @@ import { extractSafeAddress, SafeRouteSlugs, VOTING_ID_NUMBER } from 'src/routes
 import { getProposalDetail } from 'src/services'
 import { AppReduxState } from 'src/store'
 import { borderLinear } from 'src/theme/variables'
+import { ProposalStatus } from 'src/types/proposal'
 import styled from 'styled-components'
 import CurrentTurnout from './Current'
 import Depositors from './Depositors'
 import InformationVoting from './Information'
 import ValidatorVote from './ValidatorVote'
 import Vote from './Vote'
+import VoteBar from 'src/components/Vote'
+import VotingBarDetail from 'src/routes/safe/components/VotingBarDetail'
 
 const StyledButton = styled(Button)`
   border: 2px solid transparent;
@@ -139,9 +142,13 @@ function VotingDetail(): ReactElement {
             </div>
             <InformationVoting proposal={proposal} />
             <StyleDivider />
-            <Col sm={12} xs={12}>
-              <CurrentTurnout turnout={proposal.turnout} tally={proposal.tally} />
-            </Col>
+            {proposal.status === ProposalStatus.VotingPeriod && (
+              <Col sm={12} xs={12}>
+                <CurrentTurnout turnout={proposal.turnout} tally={proposal.tally} />
+              </Col>
+            )}
+
+            {proposal.status !== ProposalStatus.VotingPeriod && <VotingBarDetail proposal={proposal} />}
           </Col>
         </BoxCard>
 

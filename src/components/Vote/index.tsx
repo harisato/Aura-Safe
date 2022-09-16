@@ -47,7 +47,7 @@ interface IVotePercent {
   no_with_veto: string
 }
 
-function Vote({ vote }: Props): ReactElement {
+function VoteBar({ vote }: Props): ReactElement {
   const [percent, setPercent] = useState<IVotePercent | null>(null)
 
   useEffect(() => {
@@ -75,4 +75,4 @@ function Vote({ vote }: Props): ReactElement {
   )
 }
 
-export default Vote
+export default VoteBar

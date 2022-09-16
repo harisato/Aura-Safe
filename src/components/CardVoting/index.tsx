@@ -9,7 +9,7 @@ import { formatDateTimeDivider } from 'src/utils/date'
 import styled from 'styled-components'
 import BoxCard from '../BoxCard'
 import StatusCard from '../StatusCard'
-import Vote from '../Vote'
+import VoteBar from '../Vote'
 
 const TitleNumberStyled = styled.div`
   font-weight: 510;
@@ -130,7 +130,7 @@ function CardVoting({ handleVote, proposal }: Props): ReactElement {
 
         <Col sm={12} xs={12} style={{ display: 'flex', justifyContent: 'space-between' }}>
           <Col sm={8} xs={12}>
-            <Vote vote={proposal.tally} />
+            <VoteBar vote={proposal.tally} />
           </Col>
           <Col sm={3} xs={12} style={{ display: 'flex', flexDirection: 'column', alignSelf: 'center' }}>
             <div>

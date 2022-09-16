@@ -5,6 +5,7 @@ import Markdown from 'marked-react'
 
 const DetailWrapper = styled.div`
   display: flex;
+  width: 100%;
   flex-direction: column;
   align-items: flex-start;
   border-radius: 8px;

@@ -1,7 +1,7 @@
 import React, { ReactElement } from 'react'
 import Col from 'src/components/layout/Col'
 import StatusCard from 'src/components/StatusCard'
-import Vote from 'src/components/Vote'
+import VoteBar from 'src/components/Vote'
 import { getChainInfo, getCoinDecimal } from 'src/config'
 import { MChainInfo } from 'src/services'
 import { IProposal } from 'src/types/proposal'
@@ -56,7 +56,7 @@ function CurrentTurnout({ turnout, tally }: Props): ReactElement {
               </TextVote>
             </ContainerTextVote>
           </Col>
-          <Vote vote={tally} />
+          <VoteBar vote={tally} />
           <Col end="sm" sm={12} xs={12}>
             <ContainVote>
               <Col start="sm" sm={4} xs={12} layout="column">
@@ -97,7 +97,7 @@ function CurrentTurnout({ turnout, tally }: Props): ReactElement {
               <TextVote>50%</TextVote>
             </ContainerTextVote>
           </Col>
-          <Vote vote={tally} />
+          <VoteBar vote={tally} />
           <Col end="sm" sm={12} xs={12}>
             <ContainVote>
               <Col start="sm" sm={4} xs={12} layout="column">
