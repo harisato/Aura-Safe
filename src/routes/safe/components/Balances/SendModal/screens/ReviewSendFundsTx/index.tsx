@@ -277,10 +277,12 @@ const ReviewSendFundsTx = ({ onClose, onPrev, tx }: ReviewTxProps): React.ReactE
     setOpenGas(!openGas)
   }
 
-  const recalculateFee = (defaultGas) => {
-    const gasFee = getGasFee(defaultGas, chainDefaultGasPrice, decimal)
+  const recalculateFee = () => {
+    const gasFee = getGasFee(manualGasLimit, chainDefaultGasPrice, decimal)
 
-    setGasPriceFormatted(gasFee)
+    if (gasFee) {
+      setGasPriceFormatted(gasFee)
+    }
     setOpenGas(!openGas)
   }
 
