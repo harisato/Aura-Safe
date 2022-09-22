@@ -92,12 +92,26 @@ export function handleConnectWallet(
   providerInfo: ProviderProps,
 ): any {
   const timeStamp = new Date().getTime()
+  const msg = `Welcome to Pyxis Safe!
+
+This message is only to authenticate yourself. Please sign to proceed with using Pyxis Safe.
+
+Signing this message will not trigger a blockchain transaction or cost any gas fees.
+
+To ensure your security, your authentication status will reset after you close the browser.
+
+Wallet address:
+${key.bech32Address}
+
+Timestamp:
+${timeStamp}`
+
   return keplr
-    .signArbitrary(chainId, key.bech32Address, `${timeStamp}`)
+    .signArbitrary(chainId, key.bech32Address, msg)
     .then((account) =>
       auth({
         pubkey: account.pub_key.value,
-        data: `${timeStamp}`,
+        data: Buffer.from(msg, 'binary').toString('base64'),
         signature: account.signature,
         internalChainId: internalChainId,
       }),
