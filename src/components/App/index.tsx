@@ -90,7 +90,7 @@ const App: React.FC = ({ children }) => {
   const onTermShow = () => onShow('Term')
   const onTermHide = () => {
     onHide('Term')
-    store.dispatch(setTerm({ checkTerm: false, termValue: '' }))
+    store.dispatch(setTerm({ checkTerm: false, termValue: null }))
   }
 
   // Load the Safes from LS just once,

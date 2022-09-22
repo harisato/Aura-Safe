@@ -93,7 +93,6 @@ const ReceiveModal = ({ onClose, safeAddress, safeName }: Props): ReactElement =
   const classes = useStyles(chainInfo)
 
   const handleAccpect = () => {
-    store.dispatch(setTerm({ checkTerm: false, termValue: termValue }))
     handleConnectWallet(
       termValue.keplr,
       termValue.chainInfo,
@@ -102,6 +101,7 @@ const ReceiveModal = ({ onClose, safeAddress, safeName }: Props): ReactElement =
       termValue.internalChainId,
       termValue._providerInfo,
     )
+    store.dispatch(setTerm({ checkTerm: false, termValue: null }))
   }
 
   return (
