@@ -1,13 +1,14 @@
 import { Keplr } from '@keplr-wallet/types'
 import _ from 'lodash'
+import { KeplrErrors } from 'src/logic/providers/constants/constant'
 import { WALLETS_NAME } from 'src/logic/wallets/constant/wallets'
 import { getGatewayUrl } from 'src/services/data/environment'
 
-export async function experimentalSuggestChain(chainId = 'aura-testnet'): Promise<any> {
+export async function suggestChain(keplr: Keplr, chainId = 'aura-testnet'): Promise<any> {
   return getGatewayUrl().then((res: any) => {
     const chainInfo = _.find(res.chainInfo, ['chainId', chainId])
     if (chainInfo) {
-      return window['keplr']?.experimentalSuggestChain(chainInfo)
+      return keplr.experimentalSuggestChain(chainInfo)
     } else {
       const result = confirm(`Please add the ${chainId} chain to your Wallet!`)
 
@@ -17,7 +18,7 @@ export async function experimentalSuggestChain(chainId = 'aura-testnet'): Promis
         )
       }
 
-      return null
+      throw new Error(KeplrErrors.NoChainInfo)
     }
   })
 }

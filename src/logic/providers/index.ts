@@ -1,16 +1,18 @@
 import { ChainInfo } from '@gnosis.pm/safe-react-gateway-sdk'
 import { Keplr, Key } from '@keplr-wallet/types'
+import { WalletKey } from 'src/logic/providers/types/providers'
 import { fetchProvider, _getDefaultProvider } from 'src/logic/providers/utils'
 
-import { getProvider } from 'src/logic/providers/utils/wallets'
+import { getProvider, suggestChain } from 'src/logic/providers/utils/wallets'
 import { WALLETS_NAME } from 'src/logic/wallets/constant/wallets'
 import { auth } from 'src/services'
 import { JWT_TOKEN_KEY } from 'src/services/constant/common'
 import { store } from 'src/store'
+import { parseToAddress } from 'src/utils/parseByteAdress'
 import { saveToStorage } from 'src/utils/storage'
 import session from 'src/utils/storage/session'
 import { getChainInfo, getInternalChainId, _getChainId } from '../../config'
-import { LAST_USED_PROVIDER_KEY } from '../wallets/store/middlewares/providerWatcher'
+import { LAST_USED_PROVIDER_KEY, loadLastUsedProvider } from '../wallets/store/middlewares/providerWatcher'
 import { ProviderProps } from '../wallets/store/model/provider'
 import { KeplrErrors } from './constants/constant'
 
@@ -26,8 +28,9 @@ export async function connectProvider(providerName: WALLETS_NAME): Promise<any> 
 
       return keplr
     })
-    .then((keplr) => Promise.all([keplr, keplr.enable(chainId)]))
-    .then(([keplr, _]) => Promise.all([keplr, keplr.getKey(chainId)]))
+    .then((keplr) => Promise.all([keplr, suggestChain(keplr, chainId)]))
+    .then(([keplr]) => Promise.all([keplr, keplr.enable(chainId)]))
+    .then(([keplr]) => Promise.all([keplr, keplr.getKey(chainId)]))
     .then(([keplr, key]) => {
       const internalChainId = getInternalChainId()
       const chainInfo = getChainInfo()
@@ -89,12 +92,26 @@ export function handleConnectWallet(
   providerInfo: ProviderProps,
 ): any {
   const timeStamp = new Date().getTime()
+  const msg = `Welcome to Pyxis Safe!
+
+This message is only to authenticate yourself. Please sign to proceed with using Pyxis Safe.
+
+Signing this message will not trigger a blockchain transaction or cost any gas fees.
+
+To ensure your security, your authentication status will reset after you close the browser.
+
+Wallet address:
+${key.bech32Address}
+
+Timestamp:
+${timeStamp}`
+
   return keplr
-    .signArbitrary(chainId, key.bech32Address, `${timeStamp}`)
+    .signArbitrary(chainId, key.bech32Address, msg)
     .then((account) =>
       auth({
         pubkey: account.pub_key.value,
-        data: `${timeStamp}`,
+        data: Buffer.from(msg, 'binary').toString('base64'),
         signature: account.signature,
         internalChainId: internalChainId,
       }),
@@ -119,4 +136,22 @@ export function handleConnectWallet(
     .catch((e) => {
       throw new Error(e)
     })
+}
+
+export async function getKeplrKey(chainId: string): Promise<WalletKey | undefined> {
+  return loadLastUsedProvider()
+    .then((loadLastUsedProvider) => getProvider((loadLastUsedProvider as WALLETS_NAME) || WALLETS_NAME.Keplr))
+    .then((keplr) => {
+      if (keplr) {
+        return keplr.getKey(chainId)
+      }
+    })
+    .then((key) =>
+      key
+        ? {
+            myAddress: String(key.bech32Address),
+            myPubkey: parseToAddress(key.pubKey),
+          }
+        : undefined,
+    )
 }

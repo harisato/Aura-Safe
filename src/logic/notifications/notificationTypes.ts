@@ -262,6 +262,6 @@ export const NOTIFICATIONS: Record<NotificationId, Notification> = {
   // Safe Create
   SAFE_CREATION_DUPLICATED: {
     message: 'Duplicate safe information!',
-    options: { variant: ERROR, persist: false, preventDuplicate: true, autoHideDuration: shortDuration },
+    options: { variant: ERROR, preventDuplicate: false, autoHideDuration: shortDuration },
   },
 }
