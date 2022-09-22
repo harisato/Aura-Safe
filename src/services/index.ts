@@ -54,7 +54,7 @@ type GasPriceDefault = {
 export type MChainInfo = ChainInfo & _ChainInfo
 
 export function setBaseUrl(url: string): void {
-  baseUrl = url
+  baseUrl = 'https://safe.serenity.aura.network/api'
 }
 
 export function getMChainsConfig(): Promise<MChainInfo[]> {
@@ -208,6 +208,10 @@ export function confirmSafeTransaction(payload: any): Promise<IResponse<any>> {
 
 export async function getAccountOnChain(safeAddress: string, internalChainId): Promise<IResponse<any>> {
   return axios.get(`${baseUrl}/general/get-account-onchain/${safeAddress}/${internalChainId}`).then((res) => res.data)
+}
+
+export async function getAddress(safeAddress: string): Promise<IResponse<any>> {
+  return axios.get(`${baseUrl}/user/${safeAddress}`).then((res) => res.data)
 }
 
 export function auth(payload: any): Promise<IResponse<any>> {

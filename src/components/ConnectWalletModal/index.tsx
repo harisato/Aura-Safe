@@ -30,9 +30,8 @@ export const ConnectWalletModal = ({ isOpen, onClose }: Props): React.ReactEleme
             return
           }
         }
-
         connectProvider(walletsName)
-          .then(() => {
+          .then((res) => {
             onClose()
           })
           .catch(() => {

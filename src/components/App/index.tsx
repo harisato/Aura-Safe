@@ -23,13 +23,19 @@ import { useSafeScheduledUpdates } from 'src/logic/safe/hooks/useSafeScheduledUp
 import useSafeActions from 'src/logic/safe/hooks/useSafeActions'
 import { formatAmountInUsFormat } from 'src/logic/tokens/utils/formatAmount'
 import { grantedSelector } from 'src/routes/safe/container/selector'
+
 import ReceiveModal from './ReceiveModal'
+import TermModal from './TermModal'
 import { useSidebarItems } from 'src/components/AppLayout/Sidebar/useSidebarItems'
 import useAddressBookSync from 'src/logic/addressBook/hooks/useAddressBookSync'
 import { extractSafeAddress, extractSafeId } from 'src/routes/routes'
 import loadSafesFromStorage from 'src/logic/safe/store/actions/loadSafesFromStorage'
 import loadCurrentSessionFromStorage from 'src/logic/currentSession/store/actions/loadCurrentSessionFromStorage'
 import { ConnectWalletModal } from 'src/components/ConnectWalletModal'
+
+import { TermSelector } from 'src/logic/checkTerm/store/selector'
+import { store } from 'src/store'
+import { setTerm } from 'src/logic/checkTerm/store/actions/setTerm'
 
 const notificationStyles = {
   success: {
@@ -67,6 +73,8 @@ const App: React.FC = ({ children }) => {
   const granted = useSelector(grantedSelector)
   const sidebarItems = useSidebarItems()
   const dispatch = useDispatch()
+  const CheckTerm = useSelector(TermSelector).checkTerm
+
   useLoadSafe(addressFromUrl, safeIdFromUrl) // load initially
   useSafeScheduledUpdates(addressFromUrl, safeIdFromUrl) // load every X seconds
   useAddressBookSync()
@@ -79,12 +87,26 @@ const App: React.FC = ({ children }) => {
   const onReceiveShow = () => onShow('Receive')
   const onReceiveHide = () => onHide('Receive')
 
+  const onTermShow = () => onShow('Term')
+  const onTermHide = () => {
+    onHide('Term')
+    store.dispatch(setTerm({ checkTerm: false, termValue: '' }))
+  }
+
   // Load the Safes from LS just once,
   // they'll be reloaded on network change
   useEffect(() => {
     dispatch(loadSafesFromStorage())
     dispatch(loadCurrentSessionFromStorage())
   }, [dispatch])
+
+  useEffect(() => {
+    if (CheckTerm) {
+      onTermShow()
+    } else {
+      onTermHide()
+    }
+  }, [CheckTerm])
 
   return (
     <Frame>
@@ -144,6 +166,15 @@ const App: React.FC = ({ children }) => {
               <ReceiveModal onClose={onReceiveHide} safeAddress={addressFromUrl} safeName={safeName} />
             </Modal>
           )}
+
+          <Modal
+            description="Term Tokens Form"
+            handleClose={onTermHide}
+            open={safeActionsState.showTerm}
+            title="Term Tokens"
+          >
+            <TermModal onClose={onTermHide} safeAddress={addressFromUrl} safeName={safeName} />
+          </Modal>
         </>
       </SnackbarProvider>
       <CookiesBanner />

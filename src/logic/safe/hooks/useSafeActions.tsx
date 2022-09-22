@@ -6,6 +6,7 @@ type SafeActionsState = {
     selectedToken?: string
   }
   showReceive: boolean
+  showTerm: boolean
 }
 
 const INITIAL_STATE: SafeActionsState = {
@@ -14,6 +15,7 @@ const INITIAL_STATE: SafeActionsState = {
     selectedToken: undefined,
   },
   showReceive: false,
+  showTerm: false,
 }
 
 type Response = {

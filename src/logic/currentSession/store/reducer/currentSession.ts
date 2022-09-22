@@ -9,7 +9,7 @@ import { REMOVE_VIEWED_SAFE } from '../actions/removeViewedSafe'
 export const CURRENT_SESSION_REDUCER_ID = 'currentSession'
 const MAX_VIEWED_SAFES = 10
 
-export type ViewdSafeType = { safeAddress: string, safeId?: string }
+export type ViewdSafeType = { safeAddress: string; safeId?: string }
 
 export type CurrentSessionState = {
   viewedSafes: ViewdSafeType[]
@@ -36,7 +36,7 @@ const currentSessionReducer = handleActions<CurrentSessionState, CurrentSessionP
 
       const newState = {
         ...state,
-        viewedSafes: [...viewedSafes, action.payload ].slice(0, MAX_VIEWED_SAFES),
+        viewedSafes: [...viewedSafes, action.payload].slice(0, MAX_VIEWED_SAFES),
       }
 
       saveCurrentSessionToStorage(newState)

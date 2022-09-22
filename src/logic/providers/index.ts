@@ -2,7 +2,6 @@ import { ChainInfo } from '@gnosis.pm/safe-react-gateway-sdk'
 import { Keplr, Key } from '@keplr-wallet/types'
 import { WalletKey } from 'src/logic/providers/types/providers'
 import { fetchProvider, _getDefaultProvider } from 'src/logic/providers/utils'
-
 import { getProvider, suggestChain } from 'src/logic/providers/utils/wallets'
 import { WALLETS_NAME } from 'src/logic/wallets/constant/wallets'
 import { auth } from 'src/services'
@@ -15,7 +14,8 @@ import { getChainInfo, getInternalChainId, _getChainId } from '../../config'
 import { LAST_USED_PROVIDER_KEY, loadLastUsedProvider } from '../wallets/store/middlewares/providerWatcher'
 import { ProviderProps } from '../wallets/store/model/provider'
 import { KeplrErrors } from './constants/constant'
-
+import { getAddress } from 'src/services/index'
+import { setTerm } from '../checkTerm/store/actions/setTerm'
 export async function connectProvider(providerName: WALLETS_NAME): Promise<any> {
   const chainId = _getChainId()
 
@@ -36,6 +36,7 @@ export async function connectProvider(providerName: WALLETS_NAME): Promise<any> 
       const chainInfo = getChainInfo()
 
       let _providerInfo: ProviderProps
+
       if (!key) {
         store.dispatch(fetchProvider(_getDefaultProvider(internalChainId)))
       } else {
@@ -49,7 +50,6 @@ export async function connectProvider(providerName: WALLETS_NAME): Promise<any> 
           smartContractWallet: false,
           internalChainId,
         }
-
         const tokenList = session.getItem<
           {
             name: string
@@ -57,15 +57,25 @@ export async function connectProvider(providerName: WALLETS_NAME): Promise<any> 
             token: string
           }[]
         >(JWT_TOKEN_KEY)
-
         const current = tokenList?.find((e) => e.address === key.bech32Address && e.name === chainId)
-
         if (current) {
           store.dispatch(fetchProvider(_providerInfo))
-
           saveToStorage(LAST_USED_PROVIDER_KEY, _providerInfo.name)
         } else {
-          return handleConnectWallet(keplr, chainInfo, key, chainId, internalChainId, _providerInfo)
+          getAddress(key.bech32Address)
+            .then((res) => {
+              if (res.ErrorCode === 'SUCCESSFUL') {
+                return handleConnectWallet(keplr, chainInfo, key, chainId, internalChainId, _providerInfo)
+              } else {
+                store.dispatch(
+                  setTerm({
+                    checkTerm: true,
+                    termValue: { keplr, chainInfo, key, chainId, internalChainId, _providerInfo },
+                  }),
+                )
+              }
+            })
+            .catch((err) => {})
         }
       }
     })

@@ -106,7 +106,7 @@ const ReceiveModal = ({ onClose, safeAddress, safeName }: Props): ReactElement =
 
   return (
     <>
-      <Row align="center" className={classes.heading} grow>
+      <Row align="center" className={classes.heading}>
         <Paragraph noMargin size="xl" weight="bolder">
           Receive assets
         </Paragraph>
