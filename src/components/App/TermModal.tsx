@@ -108,21 +108,20 @@ const ReceiveModal = ({ onClose, safeAddress, safeName }: Props): ReactElement =
     <>
       <Row align="center" className={classes.heading} grow>
         <Paragraph noMargin size="xl" weight="bolder">
-          Terms of Service and Privacy Policy
+          Welcome to Pyxis Safe!
         </Paragraph>
         <IconButton disableRipple onClick={onClose}>
           <Close className={classes.close} />
         </IconButton>
       </Row>
       <Hairline />
-      <Paragraph className={classes.annotation} noMargin align="center" weight="bolder" size="lg">
-        Welcome to Pyxis Safe
-      </Paragraph>
+
       <Paragraph align="center">
         <img src={Logo} className={classes.logo} />
       </Paragraph>
       <Paragraph align="center" size="sx">
-        By connecting your walletand using Pyxis Safe, you agree to our Terms of Service and Privacy Policy
+        As this is the first time you use Pyxis Safe, please have a look and accept our Term of Service and Privacy
+        Policy before using.
       </Paragraph>
       <Hairline />
       <Row align="center" className={classes.buttonRow}>
