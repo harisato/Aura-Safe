@@ -4,7 +4,6 @@ import FormControl from '@material-ui/core/FormControl'
 import Select from '@material-ui/core/Select'
 import Input from '@material-ui/core/Input'
 import { borderLinear } from 'src/theme/variables'
-import CaretDown from './CaretDown.svg'
 
 const useStyles = makeStyles((theme) => ({
   formControl: {
@@ -30,42 +29,36 @@ const useStyles = makeStyles((theme) => ({
   boxSelect: {
     backgroundColor: 'transparent',
     color: 'white !important',
-    height: 27,
+    height: 60,
     '&. Mui-focused': {
       border: 'none',
     },
   },
   selectMenu: {
-    marginLeft: 10,
     border: '2px solid transparent',
-    borderRadius: '20px',
-    backgroundImage: borderLinear,
-    transition: '0.3s',
-    backgroundOrigin: 'border-box',
-    backgroundClip: 'content-box, border-box',
+    color: 'white',
+    marginTop: 10,
+    backgroundColor: '#363843',
   },
   optionSelect: {
     backgroundColor: 'red',
   },
 }))
 
-const CaretDownIcon = (props) => <img src={CaretDown} />
-
-export default function CustomizedSelects(props) {
-  const { handleButtonDelegate } = props
+export default function SelectValidator(props) {
+  const {} = props
   const classes = useStyles()
   const [age, setAge] = React.useState(1)
 
   const handleChange = (event) => {
     setAge(event.target.value)
-    handleButtonDelegate(event.target.value)
+    // handleButtonDelegate(event.target.value)
   }
 
   return (
     <div className={classes.selectMenu}>
       <FormControl className={classes.formControl}>
         <Select
-          IconComponent={CaretDownIcon}
           native
           value={age}
           onChange={handleChange}

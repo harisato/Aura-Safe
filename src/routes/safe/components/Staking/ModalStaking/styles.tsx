@@ -70,6 +70,63 @@ const FotterModal = styled.div`
   margin-top: 10px;
   justify-content: flex-end;
 `
+
+const TextTitleStaking = styled.div`
+  color: #e5e7ea;
+  font-weight: 510;
+  font-size: 16px;
+`
+
+const PaddingPopup = styled.div`
+  margin-top: 10px;
+`
+
+const StyledInputModal = styled.input`
+  background: transparent;
+  border: none;
+  color: white;
+  outline: none;
+  width: 85%;
+  border: none;
+`
+
+const StyledButtonModal = styled.button`
+  background: #717582;
+  border-radius: 2px;
+  padding: 6px 16px;
+  font-weight: 510;
+  font-size: 14px;
+  color: white;
+`
+
+const BorderInput = styled.div`
+  border: 1px solid #363843;
+  width: 100%;
+  padding: 10px;
+  border-top-left-radius: 8px;
+  border-bottom-left-radius: 8px;
+`
+
+const BorderAura = styled.div`
+  border: 1px solid #363843;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 10px;
+  border-top-right-radius: 8px;
+  border-bottom-right-radius: 8px;
+`
+
+const InputAura = styled.div`
+  margin-top: 10px;
+  display: flex;
+  width: 100%;
+`
+
+const TextDisable = styled.span`
+  color: #868a97;
+`
+
 export {
   ImgStyled,
   HeaderPopup,
@@ -85,4 +142,12 @@ export {
   TextDelegateNoti,
   BoxDelegate,
   FotterModal,
+  TextTitleStaking,
+  PaddingPopup,
+  InputAura,
+  StyledInputModal,
+  StyledButtonModal,
+  BorderInput,
+  BorderAura,
+  TextDisable,
 }
