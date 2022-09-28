@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react'
+import React, { useCallback, useContext } from 'react'
 
 import { Modal } from 'src/components/Modal'
 import { connectProvider } from 'src/logic/providers'
@@ -12,6 +12,7 @@ import { ImageContainer, ImageItem, ImageTitle, WalletList } from './styles'
 import Coin98 from './assets/Coin98.svg'
 import Keplr from './assets/keplr.svg'
 import { checkExistedCoin98 } from 'src/logic/providers/utils/wallets'
+import TermContext from 'src/logic/TermContext'
 
 type Props = {
   isOpen: boolean
@@ -19,6 +20,8 @@ type Props = {
 }
 
 export const ConnectWalletModal = ({ isOpen, onClose }: Props): React.ReactElement => {
+  const termContext = useContext(TermContext)
+
   const handleConnect = useCallback(
     (walletsName: WALLETS_NAME) => {
       try {
@@ -30,7 +33,7 @@ export const ConnectWalletModal = ({ isOpen, onClose }: Props): React.ReactEleme
             return
           }
         }
-        connectProvider(walletsName)
+        connectProvider(walletsName, termContext)
           .then((res) => {
             onClose()
           })

@@ -1,4 +1,4 @@
-import { useContext, useEffect } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { makeStyles } from '@material-ui/core/styles'
 import { SnackbarProvider } from 'notistack'
 import { useDispatch, useSelector } from 'react-redux'
@@ -36,6 +36,8 @@ import { ConnectWalletModal } from 'src/components/ConnectWalletModal'
 import { TermSelector } from 'src/logic/checkTerm/store/selector'
 import { store } from 'src/store'
 import { setTerm } from 'src/logic/checkTerm/store/actions/setTerm'
+import { truncate } from 'lodash'
+import TermContext from 'src/logic/TermContext'
 
 const notificationStyles = {
   success: {
@@ -64,6 +66,8 @@ const useStyles = makeStyles(notificationStyles)
 const App: React.FC = ({ children }) => {
   const classes = useStyles()
   const { toggleSidebar } = useContext(SafeListSidebarContext)
+  const termContext = useContext(TermContext)
+  const TermState = termContext?.term || false
   const { name: safeName, totalFiatBalance: currentSafeBalance } = useSelector(currentSafeWithNames)
   const addressFromUrl = extractSafeAddress()
   const safeIdFromUrl = extractSafeId()
@@ -73,8 +77,6 @@ const App: React.FC = ({ children }) => {
   const granted = useSelector(grantedSelector)
   const sidebarItems = useSidebarItems()
   const dispatch = useDispatch()
-  const CheckTerm = useSelector(TermSelector).checkTerm
-
   useLoadSafe(addressFromUrl, safeIdFromUrl) // load initially
   useSafeScheduledUpdates(addressFromUrl, safeIdFromUrl) // load every X seconds
   useAddressBookSync()
@@ -87,10 +89,8 @@ const App: React.FC = ({ children }) => {
   const onReceiveShow = () => onShow('Receive')
   const onReceiveHide = () => onHide('Receive')
 
-  const onTermShow = () => onShow('Term')
   const onTermHide = () => {
-    onHide('Term')
-    store.dispatch(setTerm({ checkTerm: false, termValue: null }))
+    termContext?.SetTerm(false)
   }
 
   // Load the Safes from LS just once,
@@ -99,14 +99,6 @@ const App: React.FC = ({ children }) => {
     dispatch(loadSafesFromStorage())
     dispatch(loadCurrentSessionFromStorage())
   }, [dispatch])
-
-  useEffect(() => {
-    if (CheckTerm) {
-      onTermShow()
-    } else {
-      onTermHide()
-    }
-  }, [CheckTerm])
 
   return (
     <Frame>
@@ -167,13 +159,8 @@ const App: React.FC = ({ children }) => {
             </Modal>
           )}
 
-          <Modal
-            description="Term Tokens Form"
-            handleClose={onTermHide}
-            open={safeActionsState.showTerm}
-            title="Term Tokens"
-          >
-            <TermModal onClose={onTermHide} safeAddress={addressFromUrl} safeName={safeName} />
+          <Modal description="Term Tokens Form" handleClose={onTermHide} open={TermState} title="Term Tokens">
+            <TermModal onClose={onTermHide} valueTerm={termContext?.valueTerm} />
           </Modal>
         </>
       </SnackbarProvider>

@@ -1,5 +1,5 @@
 import { Action, handleActions } from 'redux-actions'
-import { SET_TERM } from '../actions/setTerm'
+import { SET_TERM, SET_VALUE_TERM } from '../actions/setTerm'
 import { WALLETS_NAME } from 'src/logic/wallets/constant/wallets'
 export const TERM_ID = 'TERM'
 
@@ -13,13 +13,20 @@ export const TermInitialState = {
   termValue: null,
 }
 
-export type TermPayload = { checkTerm: boolean; termValue: any }
+export type TermPayload = { checkTerm: boolean }
+
+export type TermValuePayload = { termValue: any }
 
 const termReducer = handleActions<TermState>(
   {
     [SET_TERM]: (state, action: Action<TermPayload>) => {
-      const { checkTerm, termValue } = action.payload
+      const { checkTerm } = action.payload
       state.checkTerm = checkTerm
+      // state.termValue = termValue
+      return state
+    },
+    [SET_VALUE_TERM]: (state, action: Action<TermValuePayload>) => {
+      const { termValue } = action.payload
       state.termValue = termValue
       return state
     },
