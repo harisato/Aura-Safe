@@ -7,41 +7,59 @@ import { borderLinear } from 'src/theme/variables'
 
 const useStyles = makeStyles((theme) => ({
   formControl: {
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    color: 'white !important',
+    '&:after': {
+      borderRadius: '10px important',
+    },
+
+    '&:before': {
+      borderRadius: '10px important',
+    },
+
     '& .MuiInput-underline': {
-      '&::after': {
+      '&:after': {
         borderBottomColor: 'transparent',
         padding: 20,
       },
     },
-    '& .MuiSelect-select': {
-      border: 'none',
-      textAlign: 'center',
-      '& option': {},
+
+    '& .MuiInput-input': {
+      color: 'white !important',
     },
-    '& .MuiSelect-select:not([multiple]) option, .MuiSelect-select:not([multiple]) optgroup': {
-      backgroundColor: '#131419',
-      borderRadius: 10,
-      fontSize: 16,
-      border: 'none',
-      outline: 'none',
+
+    '& .MuiSelect-select': {
+      textAlign: 'center',
+      '&:focus': {
+        backgroundColor: 'transparent !important',
+      },
     },
   },
   boxSelect: {
     backgroundColor: 'transparent',
-    color: 'white !important',
     height: 60,
-    '&. Mui-focused': {
-      border: 'none',
-    },
+    borderRadius: '10px !important',
   },
+
   selectMenu: {
     border: '2px solid transparent',
     color: 'white',
     marginTop: 10,
     backgroundColor: '#363843',
   },
+
   optionSelect: {
     backgroundColor: 'red',
+  },
+
+  selectStyled: {
+    // backgroundColor: 'white !important',
+    backgroundColor: '#131419 !important',
+    outline: 'none',
+    borderRadius: '10px important',
+    fontSize: 16,
   },
 }))
 
@@ -66,8 +84,12 @@ export default function SelectValidator(props) {
           className={classes.boxSelect}
           input={<Input id="demo-dialog-native" />}
         >
-          <option value={1}>Delegate</option>
-          <option value={2}>Redelegate</option>
+          <option className={classes.selectStyled} value={1}>
+            Delegate
+          </option>
+          <option className={classes.selectStyled} value={2}>
+            Redelegate
+          </option>
         </Select>
       </FormControl>
     </div>
