@@ -239,6 +239,8 @@ function Allow(): ReactElement {
     }
   }
 
+  console.log('initialFormValues', initialFormValues)
+
   return (
     <>
       <Page>

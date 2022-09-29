@@ -54,7 +54,7 @@ type GasPriceDefault = {
 export type MChainInfo = ChainInfo & _ChainInfo
 
 export function setBaseUrl(url: string): void {
-  baseUrl = url
+  baseUrl = 'https://safe.serenity.aura.network/api/'
 }
 
 export function getMChainsConfig(): Promise<MChainInfo[]> {

@@ -18,7 +18,7 @@ import { WALLETS_NAME } from '../wallets/constant/wallets'
 import { addProvider } from '../wallets/store/actions'
 import { LAST_USED_PROVIDER_KEY } from '../wallets/store/middlewares/providerWatcher'
 import { makeProvider, ProviderProps } from '../wallets/store/model/provider'
-
+import { handleConnectWallet } from '../providers/index'
 export type WalletKey = {
   myAddress: string
   myPubkey: string
@@ -64,58 +64,6 @@ export async function getKeplrKey(chainId: string): Promise<WalletKey | undefine
     myAddress: String(key.bech32Address),
     myPubkey: parseToAddress(key.pubKey),
   }
-}
-
-export const handleConnectWallet = (
-  keplr: Keplr,
-  chainInfo: ChainInfo,
-  key: Key,
-  chainId: string,
-  internalChainId: number,
-  providerInfo: ProviderProps,
-): any => {
-  const timeStamp = new Date().getTime()
-  const msg = `Welcome to Pyxis Safe!
-
-This message is only to authenticate yourself. Please sign to proceed with using Pyxis Safe.
-
-Signing this message will not trigger a blockchain transaction or cost any gas fees.
-
-To ensure your security, your authentication status will reset after you close the browser.
-
-Wallet address:
-${key.bech32Address}
-
-Timestamp:
-${timeStamp}`
-  return keplr
-    .signArbitrary(chainId, key.bech32Address, `${msg}`)
-    .then((account) =>
-      auth({
-        pubkey: account.pub_key.value,
-        data: `${msg}`,
-        signature: account.signature,
-        internalChainId: internalChainId,
-      }),
-    )
-    .then((response) => {
-      if (response?.Data) {
-        const token: any = session.getItem(JWT_TOKEN_KEY) || []
-
-        token.push({
-          address: key.bech32Address,
-          name: chainInfo.chainId,
-          token: response.Data.AccessToken,
-        })
-
-        store.dispatch(fetchProvider(providerInfo))
-        saveToStorage(LAST_USED_PROVIDER_KEY, providerInfo.name)
-        session.setItem(JWT_TOKEN_KEY, token)
-      }
-    })
-    .catch((e) => {
-      throw new Error(e)
-    })
 }
 
 export async function connectKeplr(): Promise<KeplrErrors> {
