@@ -83,46 +83,44 @@ const StyledButtonClose = styled.div`
 
 type Props = {
   onClose: () => void
-  safeAddress: string
-  safeName: string
+  valueTerm: any
 }
 
-const ReceiveModal = ({ onClose, safeAddress, safeName }: Props): ReactElement => {
+const ReceiveModal = ({ onClose, valueTerm }: Props): ReactElement => {
   const chainInfo = getChainInfo()
-  const termValue = useSelector(TermSelector).termValue
   const classes = useStyles(chainInfo)
 
   const handleAccpect = () => {
     handleConnectWallet(
-      termValue.keplr,
-      termValue.chainInfo,
-      termValue.key,
-      termValue.chainId,
-      termValue.internalChainId,
-      termValue._providerInfo,
-    )
-    store.dispatch(setTerm({ checkTerm: false, termValue: null }))
+      valueTerm.keplr,
+      valueTerm.chainInfo,
+      valueTerm.key,
+      valueTerm.chainId,
+      valueTerm.internalChainId,
+      valueTerm._providerInfo,
+    ).then((res) => {
+      onClose()
+    })
   }
 
   return (
     <>
       <Row align="center" className={classes.heading} grow>
         <Paragraph noMargin size="xl" weight="bolder">
-          Terms of Service and Privacy Policy
+          Welcome to Pyxis Safe!
         </Paragraph>
         <IconButton disableRipple onClick={onClose}>
           <Close className={classes.close} />
         </IconButton>
       </Row>
       <Hairline />
-      <Paragraph className={classes.annotation} noMargin align="center" weight="bolder" size="lg">
-        Welcome to Pyxis Safe
-      </Paragraph>
+
       <Paragraph align="center">
         <img src={Logo} className={classes.logo} />
       </Paragraph>
       <Paragraph align="center" size="sx">
-        By connecting your walletand using Pyxis Safe, you agree to our Terms of Service and Privacy Policy
+        As this is the first time you use Pyxis Safe, please have a look and accept our Term of Service and Privacy
+        Policy before using.
       </Paragraph>
       <Hairline />
       <Row align="center" className={classes.buttonRow}>

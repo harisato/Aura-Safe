@@ -25,6 +25,7 @@ import { getGatewayUrl } from 'src/services/data/environment'
 import { setBaseUrl } from 'src/services'
 import local from 'src/utils/storage/local'
 import { ConfigState } from 'src/logic/config/store/reducer/reducer'
+import { TermProvider } from 'src/logic/TermContext/index'
 
 // Preloader is rendered outside of '#root' and acts as a loading spinner
 // for the app and then chains loading
@@ -123,7 +124,9 @@ const Root = (): React.ReactElement => (
     <LegacyRouteRedirection history={history} />
     <Providers store={store} history={history} styledTheme={styledTheme} muiTheme={theme}>
       <Sentry.ErrorBoundary fallback={GlobalErrorBoundary}>
-        <RootConsumer />
+        <TermProvider>
+          <RootConsumer />
+        </TermProvider>
       </Sentry.ErrorBoundary>
     </Providers>
   </>
