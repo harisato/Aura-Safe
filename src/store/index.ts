@@ -64,7 +64,6 @@ export const LS_CONFIG: RLSOptions | LoadOptions = {
     [CURRENCY_REDUCER_ID]: initialCurrencyState,
     [APPEARANCE_REDUCER_ID]: initialAppearanceState,
     [CONFIG_REDUCER_ID]: initialConfigState,
-    [TERM_ID]: TermInitialState,
   },
 }
 

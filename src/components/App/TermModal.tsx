@@ -83,25 +83,24 @@ const StyledButtonClose = styled.div`
 
 type Props = {
   onClose: () => void
-  safeAddress: string
-  safeName: string
+  valueTerm: any
 }
 
-const ReceiveModal = ({ onClose, safeAddress, safeName }: Props): ReactElement => {
+const ReceiveModal = ({ onClose, valueTerm }: Props): ReactElement => {
   const chainInfo = getChainInfo()
-  const termValue = useSelector(TermSelector).termValue
   const classes = useStyles(chainInfo)
 
   const handleAccpect = () => {
     handleConnectWallet(
-      termValue.keplr,
-      termValue.chainInfo,
-      termValue.key,
-      termValue.chainId,
-      termValue.internalChainId,
-      termValue._providerInfo,
-    )
-    store.dispatch(setTerm({ checkTerm: false, termValue: null }))
+      valueTerm.keplr,
+      valueTerm.chainInfo,
+      valueTerm.key,
+      valueTerm.chainId,
+      valueTerm.internalChainId,
+      valueTerm._providerInfo,
+    ).then((res) => {
+      onClose()
+    })
   }
 
   return (

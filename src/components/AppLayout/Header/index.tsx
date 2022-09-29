@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useContext } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { currentChainId } from 'src/logic/config/store/selectors'
 import useKeplrKeyStoreChange from 'src/logic/keplr/useKeplrKeyStoreChange'
@@ -20,6 +20,7 @@ import ConnectDetails from './components/ProviderDetails/ConnectDetails/ConnectD
 import { UserDetails } from './components/ProviderDetails/UserDetails/UserDetails'
 import ProviderAccessible from './components/ProviderInfo/ProviderAccessible/ProviderAccessible'
 import ProviderDisconnected from './components/ProviderInfo/ProviderDisconnected/ProviderDisconnected'
+import TermContext from 'src/logic/TermContext'
 
 const HeaderComponent = ({
   openConnectWallet,
@@ -29,7 +30,7 @@ const HeaderComponent = ({
   onToggleSafeList: () => void
 }): React.ReactElement => {
   const [toggleConnect, setToggleConnect] = useState<boolean>(false)
-
+  const termContext = useContext(TermContext)
   const provider = useSelector(providerNameSelector)
   const chainId = useSelector(currentChainId)
   const userAddress = useSelector(userAccountSelector)
@@ -41,7 +42,7 @@ const HeaderComponent = ({
 
   useEffect(() => {
     loadLastUsedProvider().then((lastUsedProvider) => {
-      lastUsedProvider && connectProvider(lastUsedProvider as WALLETS_NAME).catch(() => {})
+      lastUsedProvider && connectProvider(lastUsedProvider as WALLETS_NAME, termContext).catch(() => {})
     })
   }, [chainId])
 

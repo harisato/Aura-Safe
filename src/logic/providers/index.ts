@@ -15,8 +15,8 @@ import { LAST_USED_PROVIDER_KEY, loadLastUsedProvider } from '../wallets/store/m
 import { ProviderProps } from '../wallets/store/model/provider'
 import { KeplrErrors } from './constants/constant'
 import { getAddress } from 'src/services/index'
-import { setTerm } from '../checkTerm/store/actions/setTerm'
-export async function connectProvider(providerName: WALLETS_NAME): Promise<any> {
+
+export async function connectProvider(providerName: WALLETS_NAME, termContext: any): Promise<any> {
   const chainId = _getChainId()
 
   return getProvider()
@@ -66,13 +66,10 @@ export async function connectProvider(providerName: WALLETS_NAME): Promise<any> 
             .then((res) => {
               if (res.ErrorCode === 'SUCCESSFUL') {
                 return handleConnectWallet(keplr, chainInfo, key, chainId, internalChainId, _providerInfo)
-              } else {
-                store.dispatch(
-                  setTerm({
-                    checkTerm: true,
-                    termValue: { keplr, chainInfo, key, chainId, internalChainId, _providerInfo },
-                  }),
-                )
+              }
+              if (res.ErrorCode !== 'SUCCESSFUL') {
+                termContext.SetTerm(true)
+                termContext.SetValueTerm({ keplr, chainInfo, key, chainId, internalChainId, _providerInfo })
               }
             })
             .catch((err) => {})
@@ -129,19 +126,16 @@ ${timeStamp}`
     .then((response) => {
       if (response?.Data) {
         const token: any = session.getItem(JWT_TOKEN_KEY) || []
-
         token.push({
           address: key.bech32Address,
           name: chainInfo.chainId,
           token: response.Data.AccessToken,
         })
-
         store.dispatch(fetchProvider(providerInfo))
-
         saveToStorage(LAST_USED_PROVIDER_KEY, providerInfo.name)
-
         session.setItem(JWT_TOKEN_KEY, token)
       }
+      return response
     })
     .catch((e) => {
       throw new Error(e)
