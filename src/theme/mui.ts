@@ -454,6 +454,7 @@ const theme = createTheme({
     MuiMenuItem: {
       root: {
         fontFamily: secondaryFontFamily,
+        border: 'none',
       },
     },
     MuiListItemIcon: {
