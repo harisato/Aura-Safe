@@ -93,6 +93,7 @@ function Allow(): ReactElement {
   const [showCreatedModal, setShowModal] = useState(false)
   const [dataAllowSafe, setDataAllowSafe] = useState(null)
   const [initialFormValues, setInitialFormValues] = useState<AllowSafeFormValues>()
+  const [safeConfirm, setSafeConfirm] = useState<string[]>()
   const addressBook = useSelector(currentNetworkAddressBookAsMap)
   const chainId = useSelector(currentChainId)
 
@@ -136,10 +137,10 @@ function Allow(): ReactElement {
         initialValues[FIELD_SAFE_THRESHOLD] = threshold
         initialValues[FIELD_ALLOW_IS_LOADING_SAFE_ADDRESS] = false
 
+        setSafeConfirm(mSafeInfo?.confirms)
         setInitialFormValues(initialValues)
       })
       .catch((error) => {
-        console.log('error AllowSafeFormValues', error)
         dispatch(
           enqueueSnackbar(
             enhanceSnackbarForAction({
@@ -239,8 +240,6 @@ function Allow(): ReactElement {
     }
   }
 
-  console.log('initialFormValues', initialFormValues)
-
   return (
     <>
       <Page>
@@ -303,10 +302,11 @@ function Allow(): ReactElement {
             </Paragraph>
             <>
               {initialFormValues &&
-              initialFormValues?.[FIELD_SAFE_THRESHOLD] < initialFormValues?.[FIELD_SAFE_OWNER_LIST].length ? (
-                <Paragraph>All other owner must give their permission in order for the Safe to be created.</Paragraph>
-              ) : (
+              safeConfirm &&
+              initialFormValues?.safeOwnerList?.length - safeConfirm?.length === 1 ? (
                 <Paragraph>All owners has accepted to create this Safe. This Safe is now ready to use.</Paragraph>
+              ) : (
+                <Paragraph>All other owner must give their permission in order for the Safe to be created.</Paragraph>
               )}
             </>
           </div>

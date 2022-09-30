@@ -41,7 +41,7 @@ export const TransactionFees = ({
     <>
       {gasCostFormatted != null &&
         (isExecution ? (
-          <Paragraph color="white">
+          <Paragraph color="white" align="center">
             You&apos;re about to execute a transaction and will have to confirm it with your currently connected wallet.
             {!isOffChainSignature && (
               <>
@@ -51,7 +51,7 @@ export const TransactionFees = ({
             )}
           </Paragraph>
         ) : (
-          <Paragraph color="white">
+          <Paragraph color="white" align="center">
             You&apos;re about to confirm a transaction and will have to sign it using your currently connected wallet.
           </Paragraph>
         ))}
