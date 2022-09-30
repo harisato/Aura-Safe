@@ -52,13 +52,11 @@ const useStyles = makeStyles((theme) => ({
 const CaretDownIcon = (props) => <img src={CaretDown} />
 
 export default function CustomizedSelects(props) {
-  const { handleButtonDelegate } = props
+  const { handlValueDelegate, setHandleValueDelegate } = props
   const classes = useStyles()
-  const [age, setAge] = React.useState(1)
 
   const handleChange = (event) => {
-    setAge(event.target.value)
-    handleButtonDelegate(event.target.value)
+    setHandleValueDelegate(event.target.value)
   }
 
   return (
@@ -67,14 +65,15 @@ export default function CustomizedSelects(props) {
         <Select
           IconComponent={CaretDownIcon}
           native
-          value={age}
+          value={handlValueDelegate}
           onChange={handleChange}
           variant="standard"
           className={classes.boxSelect}
           input={<Input id="demo-dialog-native" />}
         >
           <option value={1}>Delegate</option>
-          <option value={2}>Redelegate</option>
+          <option value={2}>Undelegate</option>
+          <option value={3}>Redelegate</option>
         </Select>
       </FormControl>
     </div>

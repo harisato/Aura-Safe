@@ -12,7 +12,11 @@ import ModalStaking from './ModalStaking/index'
 function Staking(props): ReactElement {
   const [modalIsOpen, setOpenModal] = useState(false)
   const handleModal = () => {
-    setOpenModal(!modalIsOpen)
+    setOpenModal(true)
+  }
+
+  const handleClose = () => {
+    setOpenModal(false)
   }
 
   return (
@@ -52,7 +56,7 @@ function Staking(props): ReactElement {
         </BoxCard>
       </Block>
 
-      <ModalStaking modalIsOpen={modalIsOpen} />
+      <ModalStaking modalIsOpen={modalIsOpen} handleClose={handleClose} />
     </>
   )
 }

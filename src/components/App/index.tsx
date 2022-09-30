@@ -33,10 +33,6 @@ import loadSafesFromStorage from 'src/logic/safe/store/actions/loadSafesFromStor
 import loadCurrentSessionFromStorage from 'src/logic/currentSession/store/actions/loadCurrentSessionFromStorage'
 import { ConnectWalletModal } from 'src/components/ConnectWalletModal'
 
-import { TermSelector } from 'src/logic/checkTerm/store/selector'
-import { store } from 'src/store'
-import { setTerm } from 'src/logic/checkTerm/store/actions/setTerm'
-import { truncate } from 'lodash'
 import TermContext from 'src/logic/TermContext'
 
 const notificationStyles = {

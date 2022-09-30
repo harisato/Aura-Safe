@@ -48,6 +48,7 @@ const useStyles = makeStyles((theme) => ({
     color: 'white',
     marginTop: 10,
     backgroundColor: '#363843',
+    borderRadius: 5,
   },
 
   optionSelect: {
