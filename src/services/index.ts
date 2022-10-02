@@ -217,3 +217,19 @@ export async function getAddress(safeAddress: string): Promise<IResponse<any>> {
 export function auth(payload: any): Promise<IResponse<any>> {
   return axios.post(`${baseUrl}/auth`, payload).then((res) => res.data)
 }
+
+//STAKING
+
+export function getAllValidator(internalChainId: any): Promise<IResponse<any>> {
+  return axios.get(`${baseUrl}/distribution/${internalChainId}/validators`).then((res) => res.data)
+}
+
+export function getAllDelegateOfUser(internalChainId: any, delegatorAddress: any): Promise<IResponse<any>> {
+  return axios.get(`${baseUrl}/distribution/${internalChainId}/${delegatorAddress}/delegations`).then((res) => res.data)
+}
+
+export function getAllUnDelegateOfUser(internalChainId: any, delegatorAddress: any): Promise<IResponse<any>> {
+  return axios
+    .get(`${baseUrl}/distribution/${internalChainId}/${delegatorAddress}/undelegations`)
+    .then((res) => res.data)
+}
