@@ -53,7 +53,7 @@ import { Dispatch } from 'redux'
 import useConnectWallet from 'src/logic/hooks/useConnectWallet'
 import ArrowBack from './assets/arrow-left.svg'
 import { BackIcon, EmphasisLabel, LoaderContainer, StyledBorder, StyledButtonBorder, StyledButtonLabel } from './styles'
-import { getKeplrKey } from 'src/logic/keplr/keplr'
+import { getKeplrKey } from 'src/logic/providers'
 
 type ModalDataType = {
   safeAddress: string
