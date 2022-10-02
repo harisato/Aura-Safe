@@ -1,14 +1,15 @@
+import { Button, Text } from '@aura/safe-react-components'
 import { ReactElement } from 'react'
-import BoxCard from '../BoxCard'
+import { generatePath, useHistory } from 'react-router-dom'
 import Col from 'src/components/layout/Col'
-import styled from 'styled-components'
-import StatusCard from '../StatusCard'
-import { Text, Button, Divider } from '@aura/safe-react-components'
+import { getPrefixedSafeAddressSlug, SAFE_ADDRESS_SLUG, SAFE_ROUTES, VOTING_ID_NUMBER } from 'src/routes/routes'
 import { borderLinear } from 'src/theme/variables'
-import { useHistory } from 'react-router-dom'
-import Vote from '../Vote'
-import { SAFE_ROUTES, extractSafeAddress, generateSafeRoute } from 'src/routes/routes'
-import { getShortName } from 'src/config'
+import { IProposal, VoteMapping } from 'src/types/proposal'
+import { formatDateTimeDivider } from 'src/utils/date'
+import styled from 'styled-components'
+import BoxCard from '../BoxCard'
+import StatusCard from '../StatusCard'
+import VoteBar from '../Vote'
 
 const TitleNumberStyled = styled.div`
   font-weight: 510;
@@ -73,17 +74,22 @@ const DotVoteStyled = styled.div`
   margin-right: 10px;
 `
 
-function CardVoting(props): ReactElement {
-  const history = useHistory()
-  const safeAddress = extractSafeAddress()
+interface Props {
+  handleVote?: () => void
+  proposal: IProposal
+}
 
-  const handleDetail = () => {
-    history.push(
-      generateSafeRoute(SAFE_ROUTES.VOTING_DETAIL, {
-        shortName: getShortName(),
-        safeAddress,
-      }),
-    )
+const formatTime = (time) => formatDateTimeDivider(new Date(time).getTime())
+
+function CardVoting({ handleVote, proposal }: Props): ReactElement {
+  const history = useHistory()
+
+  const handleDetail = (proposalId) => {
+    const proposalDetailsPathname = generatePath(SAFE_ROUTES.VOTING_DETAIL, {
+      [SAFE_ADDRESS_SLUG]: getPrefixedSafeAddressSlug(),
+      [VOTING_ID_NUMBER]: proposalId,
+    })
+    history.push(proposalDetailsPathname)
   }
 
   return (
@@ -91,11 +97,11 @@ function CardVoting(props): ReactElement {
       <Col layout="column">
         <div style={{ display: 'flex', justifyContent: 'space-between' }}>
           <div>
-            <TitleNumberStyled>#60</TitleNumberStyled>
-            <TitleStyled>Increase MaxValidator value</TitleStyled>
+            <TitleNumberStyled>#{proposal.id}</TitleNumberStyled>
+            <TitleStyled>{proposal.title}</TitleStyled>
           </div>
           <div style={{ alignSelf: 'center' }}>
-            <StatusCard status="deposit" />
+            <StatusCard status={proposal.status} />
           </div>
         </div>
 
@@ -103,28 +109,28 @@ function CardVoting(props): ReactElement {
           <ContentCard>
             <TitleContentCard>Proposer</TitleContentCard>
             <Text size="lg" color="linkAura">
-              aura1k...awuen817n
+              {proposal.proposer || '-'}
             </Text>
           </ContentCard>
 
           <ContentCard>
             <TitleContentCard>Voting Start</TitleContentCard>
             <Text size="lg" color="white">
-              2022-01-09 | 07:55:02
+              {formatTime(proposal.votingStart)}
             </Text>
           </ContentCard>
 
           <ContentCard>
             <TitleContentCard>Voting End</TitleContentCard>
             <Text size="lg" color="white">
-              2022-01-09 | 07:55:02
+              {formatTime(proposal.votingEnd)}
             </Text>
           </ContentCard>
         </Col>
 
         <Col sm={12} xs={12} style={{ display: 'flex', justifyContent: 'space-between' }}>
           <Col sm={8} xs={12}>
-            <Vote perNo="40%" perYes="60%" />
+            <VoteBar vote={proposal.tally} />
           </Col>
           <Col sm={3} xs={12} style={{ display: 'flex', flexDirection: 'column', alignSelf: 'center' }}>
             <div>
@@ -135,12 +141,12 @@ function CardVoting(props): ReactElement {
               <div style={{ display: 'flex' }}>
                 <DotVoteStyled />
                 <Text size="xl" color="white">
-                  Yes
+                  {VoteMapping[proposal.tally.mostVotedOn.name || 'yes']}
                 </Text>
               </div>
               <div>
                 <Text size="xl" color="white">
-                  89.76%
+                  {proposal.tally.mostVotedOn.percent}%
                 </Text>
               </div>
             </ContainDotVot>
@@ -151,19 +157,18 @@ function CardVoting(props): ReactElement {
           style={{ display: 'flex', justifyContent: 'space-between', borderTop: '1px solid #363843', paddingTop: 10 }}
         >
           <div style={{ alignSelf: 'center' }}>
-            {' '}
             <TextStyled size="lg" color="linkAura">
               Voting ended
             </TextStyled>
           </div>
           <div>
-            <StyledButtonDetail size="md" disabled={false} onClick={handleDetail}>
+            <StyledButtonDetail size="md" disabled={false} onClick={() => handleDetail(proposal.id)}>
               <Text size="lg" color="white">
                 Details
               </Text>
             </StyledButtonDetail>
 
-            <StyledButton size="md" disabled={true} onClick={() => {}}>
+            <StyledButton size="md" disabled={false} onClick={handleVote}>
               <Text size="lg" color="white">
                 Vote
               </Text>

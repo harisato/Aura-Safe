@@ -1,7 +1,11 @@
 import React, { ReactElement } from 'react'
 import Col from 'src/components/layout/Col'
 import StatusCard from 'src/components/StatusCard'
-import Vote from 'src/components/Vote'
+import VoteBar from 'src/components/Vote'
+import { getChainInfo, getCoinDecimal } from 'src/config'
+import { MChainInfo } from 'src/services'
+import { IProposal } from 'src/types/proposal'
+import { calcBalance } from 'src/utils/calc'
 import {
   ContainTextVote,
   DotNot,
@@ -20,7 +24,15 @@ import {
   ContainerCurrent,
 } from './styles'
 
-function Current(props): ReactElement {
+interface Props {
+  turnout: IProposal['turnout']
+  tally: IProposal['tally']
+}
+
+function CurrentTurnout({ turnout, tally }: Props): ReactElement {
+  const decimals = getCoinDecimal()
+  const calValue = (value) => calcBalance(value, decimals)
+
   return (
     <>
       <Col sm={6} xs={12}>
@@ -44,7 +56,7 @@ function Current(props): ReactElement {
               </TextVote>
             </ContainerTextVote>
           </Col>
-          <Vote perNo="40%" perYes="60%" notVote />
+          <VoteBar vote={tally} />
           <Col end="sm" sm={12} xs={12}>
             <ContainVote>
               <Col start="sm" sm={4} xs={12} layout="column">
@@ -53,14 +65,14 @@ function Current(props): ReactElement {
                 <TextHover>Did not vote</TextHover>
               </Col>
               <Col sm={4} xs={12} layout="column">
-                <TextVoteWhite>44.76%</TextVoteWhite>
-                <TextVoteWhite>0.38%</TextVoteWhite>
-                <TextVoteWhite>55.62%</TextVoteWhite>
+                <TextVoteWhite>{turnout.voted.percent}%</TextVoteWhite>
+                <TextVoteWhite>{turnout.votedAbstain.percent}%</TextVoteWhite>
+                <TextVoteWhite>{turnout.didNotVote.percent}%</TextVoteWhite>
               </Col>
               <Col sm={4} xs={12} layout="column">
-                <TextHover>132.392000</TextHover>
-                <TextHover>132.392000</TextHover>
-                <TextHover>132.392000</TextHover>
+                <TextHover>{calValue(turnout.voted.number)}</TextHover>
+                <TextHover>{calValue(turnout.votedAbstain.number)}</TextHover>
+                <TextHover>{calValue(turnout.didNotVote.number)}</TextHover>
               </Col>
             </ContainVote>
           </Col>
@@ -85,7 +97,7 @@ function Current(props): ReactElement {
               <TextVote>50%</TextVote>
             </ContainerTextVote>
           </Col>
-          <Vote perNo="40%" perYes="60%" />
+          <VoteBar vote={tally} />
           <Col end="sm" sm={12} xs={12}>
             <ContainVote>
               <Col start="sm" sm={4} xs={12} layout="column">
@@ -103,14 +115,14 @@ function Current(props): ReactElement {
                 </ContainTextVote>
               </Col>
               <Col sm={4} xs={12} layout="column">
-                <TextVoteWhite>44.76%</TextVoteWhite>
-                <TextVoteWhite>0.38%</TextVoteWhite>
-                <TextVoteWhite>55.62%</TextVoteWhite>
+                <TextVoteWhite>{tally.yes.percent}%</TextVoteWhite>
+                <TextVoteWhite>{tally.no.percent}%</TextVoteWhite>
+                <TextVoteWhite>{tally.noWithVeto.percent}%</TextVoteWhite>
               </Col>
               <Col sm={4} xs={12} layout="column">
-                <TextHover>132.392000</TextHover>
-                <TextHover>132.392000</TextHover>
-                <TextHover>132.392000</TextHover>
+                <TextHover>{calValue(tally.yes.number)}</TextHover>
+                <TextHover>{calValue(tally.yes.number)}</TextHover>
+                <TextHover>{calValue(tally.yes.number)}</TextHover>
               </Col>
             </ContainVote>
           </Col>
@@ -120,4 +132,4 @@ function Current(props): ReactElement {
   )
 }
 
-export default Current
+export default CurrentTurnout

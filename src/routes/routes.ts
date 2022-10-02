@@ -25,13 +25,17 @@ export const ADDRESSED_ROUTE = `/:${SAFE_ADDRESS_SLUG}(${chainSpecificSafeAddres
 const SAFE_SECTION_SLUG = 'safeSection'
 export const SAFE_SECTION_ROUTE = `${ADDRESSED_ROUTE}/:${SAFE_SECTION_SLUG}`
 
+// Safe section routes, i.e. /:prefixedSafeAddress/settings
+const VOTING_SECTION_SLUG = 'proposalId'
+export const VOTING_SECTION_ROUTE = `${ADDRESSED_ROUTE}/voting/detail/:${VOTING_SECTION_SLUG}`
+
 // Safe subsection routes, i.e. /:prefixedSafeAddress/settings/advanced
 export const SAFE_SUBSECTION_SLUG = 'safeSubsection'
 export const SAFE_SUBSECTION_ROUTE = `${SAFE_SECTION_ROUTE}/:${SAFE_SUBSECTION_SLUG}`
 
 export const TRANSACTION_ID_SLUG = `safeTxHash`
 export const TRANSACTION_ID_NUMBER = `id`
-export const VOTING_ID_NUMBER = `idVoting`
+export const VOTING_ID_NUMBER = `proposalId`
 
 // URL: gnosis-safe.io/app/:[SAFE_ADDRESS_SLUG]/:[SAFE_SECTION_SLUG]/:[SAFE_SUBSECTION_SLUG]
 export type SafeRouteSlugs = {
@@ -40,6 +44,7 @@ export type SafeRouteSlugs = {
   [SAFE_SUBSECTION_SLUG]?: string
   [TRANSACTION_ID_SLUG]?: string
   [TRANSACTION_ID_NUMBER]?: string
+  [VOTING_ID_NUMBER]?: string
 }
 
 export const LOAD_SPECIFIC_SAFE_ROUTE = `/load/:${SAFE_ADDRESS_SLUG}?` // ? = optional slug
@@ -65,8 +70,8 @@ export const SAFE_ROUTES = {
   TRANSACTIONS_SINGULAR: `${ADDRESSED_ROUTE}/transactions/:${TRANSACTION_ID_NUMBER}${singularExp}`, // [TRANSACTION_HASH_SLUG] === 'safeTxHash'
   ADDRESS_BOOK: `${ADDRESSED_ROUTE}/address-book`,
   STAKING: `${ADDRESSED_ROUTE}/staking`,
-  VOTING: `${ADDRESSED_ROUTE}/voting`,
-  VOTING_DETAIL: `${ADDRESSED_ROUTE}/voting/detail`,
+  VOTING: `${ADDRESSED_ROUTE}/voting/`,
+  VOTING_DETAIL: `${ADDRESSED_ROUTE}/voting/detail/:${VOTING_SECTION_SLUG}`,
   APPS: `${ADDRESSED_ROUTE}/apps`,
   SETTINGS: `${ADDRESSED_ROUTE}/settings`,
   SETTINGS_APPEARANCE: `${ADDRESSED_ROUTE}/settings/appearance`,
@@ -83,7 +88,7 @@ export const getNetworkRootRoutes = (): Array<{ chainId: ChainId; route: string 
     route: `/${chainName.replaceAll(' ', '-').toLowerCase()}`,
   }))
 
-export type SafeRouteParams = { shortName: ShortName; safeAddress: string; safeId?: number }
+export type SafeRouteParams = { shortName: ShortName; safeAddress: string; safeId?: number; proposalId?: number }
 
 export const isValidShortChainName = (shortName: ShortName): boolean => {
   return getChains().some((chain) => chain.shortName === shortName)
@@ -107,6 +112,14 @@ export const extractPrefixedSafeAddress = (
     shortName: prefix,
   }
 }
+// export const extractVoting = (path = history.location.pathname, route = VOTING_SECTION_ROUTE): string | undefined => {
+//   const match = matchPath<SafeRouteSlugs>(path, {
+//     path: route,
+//   })
+//   const proposalId = match?.params?.[VOTING_SECTION_SLUG]
+
+//   return proposalId
+// }
 
 export const hasPrefixedSafeAddressInUrl = (): boolean => {
   const match = matchPath<SafeRouteSlugs>(history.location.pathname, {
@@ -119,14 +132,13 @@ export const hasPrefixedSafeAddressInUrl = (): boolean => {
 export const extractShortChainName = (): ShortName => extractPrefixedSafeAddress().shortName
 export const extractSafeAddress = (): string => extractPrefixedSafeAddress().safeAddress
 export const extractSafeId = (): number | undefined => extractPrefixedSafeAddress().safeId
-// export const extractVotingId = (): number | undefined => extractPrefixedSafeAddress().votingId
+// export const extractVotingId = (): string | undefined => extractVoting()
 
 export const getPrefixedSafeAddressSlug = (
   { safeAddress = extractSafeAddress(), shortName = extractShortChainName(), safeId = extractSafeId() } = {
     safeAddress: extractSafeAddress(),
     shortName: extractShortChainName(),
     safeId: extractSafeId(),
-    // votingId: extractVotingId(),
   },
 ): string => `${safeId}:${safeAddress}`
 
@@ -141,7 +153,7 @@ export const generateSafeRoute = (
 
 // Singular tx route is excluded as it has a required safeTxHash slug
 // This is to give stricter routing, instead of making the slug optional
-const { TRANSACTIONS_SINGULAR: _hasRequiredSlug, ...STANDARD_SAFE_ROUTES } = SAFE_ROUTES
+const { TRANSACTIONS_SINGULAR: _hasRequiredSlug, VOTING_DETAIL: _proposalIdSlug, ...STANDARD_SAFE_ROUTES } = SAFE_ROUTES
 
 export const generatePrefixedAddressRoutes = (params: SafeRouteParams): typeof STANDARD_SAFE_ROUTES => {
   return Object.entries(STANDARD_SAFE_ROUTES).reduce<typeof STANDARD_SAFE_ROUTES>(

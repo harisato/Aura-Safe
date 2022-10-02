@@ -1,4 +1,5 @@
-import React, { ReactElement } from 'react'
+import { ReactElement, useEffect, useState } from 'react'
+import { IProposal } from 'src/types/proposal'
 import styled from 'styled-components'
 
 const VoteStyled = styled.div`
@@ -7,32 +8,71 @@ const VoteStyled = styled.div`
   margin-top: 20px;
   margin-bottom: 20px;
   display: flex;
+  background-color: #494c58;
+  border-radius: 5px;
+  overflow: hidden;
 `
 
-const YesStyled = styled.div<{ perYes: string; notVote: boolean }>`
-  background-color: ${({ notVote }) => (notVote ? '#9DA8FF' : '#5ee6d0')};
-  width: ${({ perYes }) => perYes};
-  height: 100%;
-  border-top-left-radius: 5px;
-  border-bottom-left-radius: 5px;
-`
-
-const NoStyled = styled.div<{ perNo: string; notVote: boolean }>`
-  background-color: ${({ notVote }) => (notVote ? '#494C58' : '#FA8684')};
-  width: ${({ perNo }) => perNo};
-  border-top-right-radius: 5px;
-  border-bottom-right-radius: 5px;
+const YesStyled = styled.div<{ percent: string }>`
+  background-color: #5ee6d0;
+  width: ${({ percent: per }) => per};
   height: 100%;
 `
-function Vote(props): ReactElement {
-  const { perYes, perNo, notVote } = props
 
-  return (
+const NoStyled = styled.div<{ percent: string }>`
+  background-color: #fa8684;
+  width: ${({ percent: per }) => per};
+  height: 100%;
+`
+
+const AbstainStyled = styled.div<{ percent: string }>`
+  background-color: #494c58;
+  width: ${({ percent: per }) => per};
+  height: 100%;
+`
+
+const NoWithVetoStyled = styled.div<{ percent: string }>`
+  background-color: #9da8ff;
+  width: ${({ percent: per }) => per};
+  height: 100%;
+`
+interface Props {
+  vote: IProposal['tally']
+}
+
+interface IVotePercent {
+  yes: string
+  no: string
+  abstain: string
+  no_with_veto: string
+}
+
+function VoteBar({ vote }: Props): ReactElement {
+  const [percent, setPercent] = useState<IVotePercent | null>(null)
+
+  useEffect(() => {
+    const { yes, no, abstain, no_with_veto } = ((): IVotePercent => {
+      return {
+        yes: `${vote.yes.percent}%`,
+        no: `${vote.no.percent}%`,
+        abstain: `${vote.abstain.percent}%`,
+        no_with_veto: `${vote.noWithVeto.percent}%`,
+      }
+    })()
+
+    setPercent({ yes, no, abstain, no_with_veto })
+  }, [vote, setPercent])
+
+  return percent ? (
     <VoteStyled>
-      <YesStyled perYes={perYes} notVote={notVote} />
-      <NoStyled perNo={perNo} notVote={notVote} />
+      <YesStyled percent={percent.yes} />
+      <NoStyled percent={percent.no} />
+      <NoWithVetoStyled percent={percent.no_with_veto} />
+      <AbstainStyled percent={percent.abstain} />
     </VoteStyled>
+  ) : (
+    <></>
   )
 }
 
-export default Vote
+export default VoteBar

@@ -63,42 +63,52 @@ const StyledButton = styled(Button)`
   min-width: 130px !important;
 `
 
-const TableVotingDetailInside = () => {
+const TableVotingDetailInside = (props) => {
+  const { data } = props
+
   return (
     <TableVoting RowHead={RowHead}>
-      {RowData.map((row) => (
-        <StyledTableRow key={row.id}>
-          <StyledTableCell component="th" scope="row">
-            {row.id}
-          </StyledTableCell>
-          <StyledTableCell align="left">
-            <Text size="lg" color="linkAura">
-              {row.title}
-            </Text>
-          </StyledTableCell>
-          <StyledTableCell align="left">{row.status}</StyledTableCell>
-          <StyledTableCell align="left">{row.status}</StyledTableCell>
-          <StyledTableCell align="left">{row.status}</StyledTableCell>
-          <StyledTableCell align="left">{row.status}</StyledTableCell>
-          <StyledTableCell align="right">
-            <StyledButton size="md" onClick={() => {}}>
-              <Text size="lg" color="white">
-                Manage
+      {data &&
+        data.map((row, index) => (
+          <StyledTableRow key={row.id}>
+            <StyledTableCell component="th" scope="row">
+              {index + 1}
+            </StyledTableCell>
+            <StyledTableCell align="left">
+              <Text size="lg" color="linkAura">
+                {row.validator}
               </Text>
-            </StyledButton>
-          </StyledTableCell>
-        </StyledTableRow>
-      ))}
+            </StyledTableCell>
+            <StyledTableCell align="left">
+              <div>{row.votingPower.number}</div>
+              <div style={{ color: 'rgba(134, 138, 151, 1)' }}>{row.votingPower.percentage} %</div>
+            </StyledTableCell>
+            <StyledTableCell align="left">
+              {parseFloat(row.commission.commission_rates.rate).toFixed(2)} %
+            </StyledTableCell>
+            <StyledTableCell align="left"></StyledTableCell>
+            <StyledTableCell align="left">{row.uptime} %</StyledTableCell>
+            <StyledTableCell align="right">
+              <StyledButton size="md" onClick={() => {}}>
+                <Text size="lg" color="white">
+                  Manage
+                </Text>
+              </StyledButton>
+            </StyledTableCell>
+          </StyledTableRow>
+        ))}
     </TableVoting>
   )
 }
 
 function Validators(props): ReactElement {
+  const { allValidator } = props
   const [value, setValue] = React.useState(0)
   const classes = useStyles()
   const handleChange = (event, newValue) => {
     setValue(newValue)
   }
+
   return (
     <>
       <Col start="sm" sm={12} xs={12}>
@@ -119,13 +129,16 @@ function Validators(props): ReactElement {
           <Tab label="INACTIVE" {...a11yProps(1)} />
         </Tabs>
       </AppBar>
-
-      <TabPanel value={value} index={0}>
-        <TableVotingDetailInside />
-      </TabPanel>
-      <TabPanel value={value} index={1}>
-        <TableVotingDetailInside />
-      </TabPanel>
+      {allValidator && allValidator.length > 1 && (
+        <>
+          <TabPanel value={value} index={0}>
+            <TableVotingDetailInside data={allValidator} />
+          </TabPanel>
+          <TabPanel value={value} index={1}>
+            <TableVotingDetailInside />
+          </TabPanel>
+        </>
+      )}
     </>
   )
 }

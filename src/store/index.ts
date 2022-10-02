@@ -52,6 +52,8 @@ import { SafeReducerMap } from 'src/logic/safe/store/reducer/types/safe'
 import { LS_NAMESPACE, LS_SEPARATOR } from 'src/utils/constants'
 import { ConfigState } from 'src/logic/config/store/reducer/reducer'
 import { localTransactionsMiddleware } from 'src/logic/safe/store/middleware/localTransactionsMiddleware'
+import { proposalsReducer, PROPOSALS_REDUCER_ID } from 'src/logic/proposal/store/reducer/proposals'
+import { IProposal } from 'src/types/proposal'
 
 const CURRENCY_KEY = `${CURRENCY_REDUCER_ID}.selectedCurrency`
 
@@ -100,6 +102,7 @@ const reducers = {
   [CONFIG_REDUCER_ID]: configReducer,
   [APPEARANCE_REDUCER_ID]: appearanceReducer,
   [TERM_ID]: termReducer,
+  [PROPOSALS_REDUCER_ID]: proposalsReducer,
 }
 
 const rootReducer = combineReducers(reducers)
@@ -123,6 +126,7 @@ export type AppReduxState = CombinedState<{
   [CONFIG_REDUCER_ID]: ConfigState
   [APPEARANCE_REDUCER_ID]: AppearanceState
   [TERM_ID]: TermState
+  [PROPOSALS_REDUCER_ID]: IProposal[]
 }>
 
 export const store: any = createStore(rootReducer, load(LS_CONFIG), enhancer)

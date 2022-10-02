@@ -3,6 +3,7 @@ import axios from 'axios'
 import { WalletKey } from 'src/logic/keplr/keplr'
 import { CHAIN_THEMES, THEME_DF } from 'src/services/constant/chainThemes'
 import { getExplorerUrl } from 'src/services/data/environment'
+import { IProposal, IProposalRes } from 'src/types/proposal'
 import {
   ICreateSafeTransaction,
   ISignSafeTransaction,
@@ -216,4 +217,31 @@ export async function getAddress(safeAddress: string): Promise<IResponse<any>> {
 
 export function auth(payload: any): Promise<IResponse<any>> {
   return axios.post(`${baseUrl}/auth`, payload).then((res) => res.data)
+}
+
+//STAKING
+
+export function getAllValidator(internalChainId: any): Promise<IResponse<any>> {
+  return axios.get(`${baseUrl}/distribution/${internalChainId}/validators`).then((res) => res.data)
+}
+
+export function getAllDelegateOfUser(internalChainId: any, delegatorAddress: any): Promise<IResponse<any>> {
+  return axios.get(`${baseUrl}/distribution/${internalChainId}/${delegatorAddress}/delegations`).then((res) => res.data)
+}
+
+export function getAllUnDelegateOfUser(internalChainId: any, delegatorAddress: any): Promise<IResponse<any>> {
+  return axios
+    .get(`${baseUrl}/distribution/${internalChainId}/${delegatorAddress}/undelegations`)
+    .then((res) => res.data)
+}
+
+export async function getProposals(internalChainId: number | string): Promise<IResponse<IProposalRes>> {
+  return axios.get(`${baseUrl}/gov/${internalChainId}/proposals`).then((res) => res.data)
+}
+
+export async function getProposalDetail(
+  internalChainId: number | string,
+  proposalId: number | string,
+): Promise<IResponse<IProposal>> {
+  return axios.get(`${baseUrl}/gov/${internalChainId}/proposals/${proposalId}`).then((res) => res.data)
 }

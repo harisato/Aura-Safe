@@ -15,9 +15,9 @@ export interface ITransactionInfoResponse {
 }
 
 export interface ICreateSafeTransaction {
-  from: string
-  to: string
-  amount: string
+  from?: string
+  to?: string
+  amount?: string
   gasLimit?: number
   internalChainId: number
   fee?: number
