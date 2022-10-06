@@ -8,26 +8,48 @@ import Validators from './Validators'
 import BoxCard from 'src/components/BoxCard'
 import ModalStaking from './ModalStaking/index'
 import { getChainInfo, getInternalChainId, _getChainId } from 'src/config'
-import { getAllValidator, getAllDelegateOfUser, getAllUnDelegateOfUser } from 'src/services/index'
+import { getAllValidator, getAllDelegateOfUser, getAllUnDelegateOfUser, clamRewards } from 'src/services/index'
+import SendModal from '../Balances/SendModal'
+import { extractSafeAddress, extractSafeId } from 'src/routes/routes'
 
 function Staking(props): ReactElement {
-  const [modalIsOpen, setOpenModal] = useState(false)
+  const [isOpenRerawd, setIsOpenRerawd] = useState(false)
+  const [isOpenDelagate, setIsOpenDelagate] = useState(false)
+  const [isRedelegate, setIsRedelegate] = useState(false)
+
   const internalChainId = getInternalChainId()
+
   const [allValidator, setAllValidator] = useState([])
+  const [validatorOfUser, setValidatorOfUser] = useState([])
+  const [unValidatorOfUser, setUnValidatorOfUser] = useState([])
+  const [listReward, setListReward] = useState([])
 
-  const handleModal = () => {
-    setOpenModal(true)
-  }
-
-  const handleClose = () => {
-    setOpenModal(false)
-  }
+  const SafeAddress = extractSafeAddress()
 
   useEffect(() => {
     getAllValidator(internalChainId).then((res) => {
       setAllValidator(res.Data.validators)
     })
-  }, [internalChainId])
+    getAllDelegateOfUser(internalChainId, SafeAddress).then((res) => {
+      setValidatorOfUser(res.Data.delegations)
+    })
+    getAllUnDelegateOfUser(internalChainId, SafeAddress).then((res) => {
+      setUnValidatorOfUser(res.Data.undelegations)
+    })
+    clamRewards(internalChainId, SafeAddress).then((res) => {
+      setListReward(res.Data.rewards)
+    })
+  }, [internalChainId, SafeAddress])
+
+  const handleManageDelegate = (item) => {
+    console.log('item', item)
+    setIsOpenDelagate(true)
+  }
+
+  const handleReward = (item) => {
+    console.log('item', item)
+    setIsOpenRerawd(true)
+  }
 
   return (
     <>
@@ -46,7 +68,7 @@ function Staking(props): ReactElement {
       <Block>
         {' '}
         <Col start="sm" sm={12} xs={12}>
-          <CardStaking handleModal={handleModal} />
+          <CardStaking handleModal={handleReward} />
         </Col>
       </Block>
 
@@ -61,12 +83,32 @@ function Staking(props): ReactElement {
         {' '}
         <BoxCard>
           <Col layout="column" sm={12} xs={12}>
-            <Validators allValidator={allValidator} />
+            <Validators allValidator={allValidator} dandleManageDelegate={handleManageDelegate} />
           </Col>
         </BoxCard>
       </Block>
 
-      <ModalStaking modalIsOpen={modalIsOpen} handleClose={handleClose} />
+      <ModalStaking
+        modalIsOpen={isOpenDelagate}
+        handleClose={() => {
+          setIsOpenDelagate(false)
+        }}
+        typeValidator="delegate"
+      />
+      <ModalStaking
+        modalIsOpen={isRedelegate}
+        handleClose={() => {
+          setIsRedelegate(false)
+        }}
+        typeValidator="redelegate"
+      />
+      <ModalStaking
+        modalIsOpen={isOpenRerawd}
+        handleClose={() => {
+          setIsOpenRerawd(false)
+        }}
+        typeValidator="reward"
+      />
     </>
   )
 }

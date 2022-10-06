@@ -235,6 +235,12 @@ export function getAllUnDelegateOfUser(internalChainId: any, delegatorAddress: a
     .then((res) => res.data)
 }
 
+export function clamRewards(internalChainId: any, delegatorAddress: any): Promise<IResponse<any>> {
+  return axios.get(`${baseUrl}/general/${internalChainId}/${delegatorAddress}/rewards`).then((res) => res.data)
+}
+
+//VOTING
+
 export async function getProposals(internalChainId: number | string): Promise<IResponse<IProposalRes>> {
   return axios.get(`${baseUrl}/gov/${internalChainId}/proposals`).then((res) => res.data)
 }

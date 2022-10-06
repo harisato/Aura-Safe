@@ -1,10 +1,12 @@
+import styled from 'styled-components'
+import { useState } from 'react'
+import { Button } from '@aura/safe-react-components'
 import ModalNew from 'src/components/ModalNew'
 import StakeFish from '../assets/StakeFish.svg'
 import Inotel from '../assets/Inotel.png'
-import NotificationPopup from 'src/components/NotificationPopup'
 import CloseButton from 'src/components/CloseButton'
 import ButtonSelect from 'src/components/ButtonSelect'
-import SelectValidator from '../SelectValidator'
+
 import {
   ImgStyled,
   HeaderPopup,
@@ -15,26 +17,31 @@ import {
   TextDelegators,
   Commission,
   StyleDivider,
-  TextNotiStyled,
   TextGreen,
-  TextDelegateNoti,
-  BoxDelegate,
   FotterModal,
-  TextTitleStaking,
-  PaddingPopup,
-  InputAura,
-  StyledInputModal,
-  StyledButtonModal,
-  BorderInput,
-  BorderAura,
-  TextDisable,
 } from './styles'
-import { Text } from '@aura/safe-react-components'
-import Col from 'src/components/layout/Col'
-import { useState } from 'react'
+
+import { borderLinear } from 'src/theme/variables'
+
+import ModalDelegate from './delegate'
+import ModalRedelegate from './redelegate'
+import ModalReward from './reward'
+
+const StyledButtonSubmit = styled(Button)`
+  border: 2px solid transparent;
+  background-image: ${borderLinear};
+  background-origin: border-box;
+  background-clip: content-box, border-box;
+  border-radius: 50px !important;
+  padding: 0 !important;
+  background-color: transparent !important;
+  min-width: 130px !important;
+  height: 32px !important;
+  margin-left: 10px;
+`
 
 export default function ModalStaking(props) {
-  const { modalIsOpen, handleClose } = props
+  const { modalIsOpen, handleClose, typeValidator } = props
   const [handlValueDelegate, setHandleValueDelegate] = useState(1)
 
   return (
@@ -56,181 +63,31 @@ export default function ModalStaking(props) {
       </HeaderContainer>
 
       <StyleDivider />
-      {handlValueDelegate && handlValueDelegate == 1 && (
-        <NotificationPopup>
-          <div>
-            <TextNotiStyled>
-              You can <TextDelegateNoti>“Delegate”</TextDelegateNoti> more to this validator{' '}
-            </TextNotiStyled>
-            <TextNotiStyled>
-              Or use <TextDelegateNoti>“Redelegate”</TextDelegateNoti> to switch your assets to another validator
-            </TextNotiStyled>
-            <TextNotiStyled>
-              Or use <TextDelegateNoti>“Undelegate”</TextDelegateNoti> to start the unbonding
-            </TextNotiStyled>
-          </div>
-        </NotificationPopup>
-      )}
 
-      {handlValueDelegate && handlValueDelegate == 2 && (
-        <NotificationPopup>
-          <div>
-            <TextTitleStaking>Staking will lock your funds for 1+ day(s)</TextTitleStaking>
-            <TextNotiStyled>
-              You will need to undetegate in order for your staked assets to be liquid again. This process will take 14
-              day(s) to complete.
-            </TextNotiStyled>
-          </div>
-        </NotificationPopup>
-      )}
-
-      <div style={{ display: 'flex', marginTop: 10 }}>
-        {handlValueDelegate && handlValueDelegate == 1 && (
-          <>
-            <Col sm={6} xs={12} layout="column">
-              <BoxDelegate>
-                <Col sm={7} xs={12}>
-                  <Text size="lg" color="white">
-                    My delegation
-                  </Text>
-                </Col>
-                <Text size="lg" color="numberAura">
-                  5.000000 <TextGreen>AURA</TextGreen>
-                </Text>
-              </BoxDelegate>
-              <BoxDelegate>
-                <Col sm={7} xs={12}>
-                  <Text size="lg" color="white">
-                    Pending Reward
-                  </Text>
-                </Col>
-                <Text size="lg" color="numberAura">
-                  0.632315 <TextGreen>AURA</TextGreen>
-                </Text>
-              </BoxDelegate>
-            </Col>
-            <Col sm={6} xs={12} layout="column">
-              <BoxDelegate>
-                <Col sm={7} xs={12}>
-                  <Text size="lg" color="white">
-                    Delegatable Balance
-                  </Text>
-                </Col>
-
-                <Text size="lg" color="numberAura">
-                  17.641376 <TextGreen>AURA</TextGreen>
-                </Text>
-              </BoxDelegate>
-              <BoxDelegate>
-                <Col sm={7} xs={12}>
-                  <Text size="lg" color="white">
-                    Total Reward
-                  </Text>
-                </Col>
-
-                <Text size="lg" color="numberAura">
-                  2.239288 <TextGreen>AURA</TextGreen>
-                </Text>
-              </BoxDelegate>
-            </Col>
-          </>
-        )}
-
-        {handlValueDelegate && handlValueDelegate == 2 && (
-          <>
-            <Col sm={12} xs={12} layout="column">
-              <BoxDelegate>
-                <PaddingPopup>
-                  <Col sm={7} xs={12}>
-                    <Text size="lg" color="disableAura">
-                      My Delegation
-                    </Text>
-                  </Col>
-                  <Text size="xl" color="numberAura">
-                    5.000000 <TextGreen>AURA</TextGreen>
-                  </Text>
-                </PaddingPopup>
-              </BoxDelegate>
-
-              <BoxDelegate>
-                <PaddingPopup>
-                  <Col sm={7} xs={12}>
-                    <Text size="lg" color="disableAura">
-                      Delegatable Balance
-                    </Text>
-                  </Col>
-                  <Text size="xl" color="numberAura">
-                    0.632315 <TextGreen>AURA</TextGreen>
-                  </Text>
-                </PaddingPopup>
-              </BoxDelegate>
-
-              <BoxDelegate>
-                <PaddingPopup>
-                  <Col sm={7} xs={12}>
-                    <Text size="lg" color="white">
-                      Available to delegate
-                    </Text>
-                  </Col>
-                  <InputAura>
-                    <BorderInput>
-                      <StyledInputModal />
-                      <StyledButtonModal>Max</StyledButtonModal>
-                    </BorderInput>
-                    <BorderAura>
-                      <Text size="xl" color="linkAura">
-                        AURA
-                      </Text>
-                    </BorderAura>
-                  </InputAura>
-                </PaddingPopup>
-              </BoxDelegate>
-            </Col>
-          </>
-        )}
-
-        {handlValueDelegate && handlValueDelegate == 3 && (
-          <>
-            <Col sm={12} xs={12} layout="column">
-              <BoxDelegate>
-                <PaddingPopup>
-                  <Col sm={7} xs={12}>
-                    <Text size="lg" color="white">
-                      Redelegate to:
-                    </Text>
-                  </Col>
-                  <SelectValidator />
-                </PaddingPopup>
-              </BoxDelegate>
-
-              <BoxDelegate>
-                <PaddingPopup>
-                  <Col sm={7} xs={12}>
-                    <Text size="lg" color="white">
-                      Available for redelegation <TextDisable>5.000000</TextDisable> <TextGreen>AURA</TextGreen>
-                    </Text>
-                  </Col>
-                  <InputAura>
-                    <BorderInput>
-                      <StyledInputModal />
-                      <StyledButtonModal>Max</StyledButtonModal>
-                    </BorderInput>
-                    <BorderAura>
-                      <Text size="xl" color="linkAura">
-                        AURA
-                      </Text>
-                    </BorderAura>
-                  </InputAura>
-                </PaddingPopup>
-              </BoxDelegate>
-            </Col>
-          </>
-        )}
-      </div>
+      {typeValidator === 'delegate' && <ModalDelegate />}
+      {typeValidator === 'redelegate' && <ModalRedelegate />}
+      {typeValidator === 'reward' && <ModalReward />}
 
       <FotterModal>
         <CloseButton title="Close" onClick={handleClose} />
-        <ButtonSelect handlValueDelegate={handlValueDelegate} setHandleValueDelegate={setHandleValueDelegate} />
+        {typeValidator === 'delegate' && (
+          <StyledButtonSubmit size="md" onClick={() => {}}>
+            Delegate
+          </StyledButtonSubmit>
+        )}
+        {typeValidator === 'redelegate' && (
+          <StyledButtonSubmit size="md" onClick={() => {}}>
+            Redelegate
+          </StyledButtonSubmit>
+        )}
+        {typeValidator === 'reward' && (
+          <>
+            <ButtonSelect handlValueDelegate={handlValueDelegate} setHandleValueDelegate={setHandleValueDelegate} />
+            <StyledButtonSubmit size="md" onClick={() => {}}>
+              Delegate
+            </StyledButtonSubmit>
+          </>
+        )}
       </FotterModal>
     </ModalNew>
   )

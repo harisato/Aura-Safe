@@ -64,7 +64,7 @@ const StyledButton = styled(Button)`
 `
 
 const TableVotingDetailInside = (props) => {
-  const { data } = props
+  const { data, dandleManageDelegate } = props
 
   return (
     <TableVoting RowHead={RowHead}>
@@ -89,7 +89,7 @@ const TableVotingDetailInside = (props) => {
             <StyledTableCell align="left"></StyledTableCell>
             <StyledTableCell align="left">{row.uptime} %</StyledTableCell>
             <StyledTableCell align="right">
-              <StyledButton size="md" onClick={() => {}}>
+              <StyledButton size="md" onClick={() => dandleManageDelegate(row)}>
                 <Text size="lg" color="white">
                   Manage
                 </Text>
@@ -102,7 +102,7 @@ const TableVotingDetailInside = (props) => {
 }
 
 function Validators(props): ReactElement {
-  const { allValidator } = props
+  const { allValidator, dandleManageDelegate } = props
   const [value, setValue] = React.useState(0)
   const classes = useStyles()
   const handleChange = (event, newValue) => {
@@ -132,7 +132,7 @@ function Validators(props): ReactElement {
       {allValidator && allValidator.length > 1 && (
         <>
           <TabPanel value={value} index={0}>
-            <TableVotingDetailInside data={allValidator} />
+            <TableVotingDetailInside data={allValidator} dandleManageDelegate={dandleManageDelegate} />
           </TabPanel>
           <TabPanel value={value} index={1}>
             <TableVotingDetailInside />

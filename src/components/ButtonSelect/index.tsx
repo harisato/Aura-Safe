@@ -71,7 +71,6 @@ export default function CustomizedSelects(props) {
           className={classes.boxSelect}
           input={<Input id="demo-dialog-native" />}
         >
-          <option value={1}>Delegate</option>
           <option value={2}>Undelegate</option>
           <option value={3}>Redelegate</option>
         </Select>
