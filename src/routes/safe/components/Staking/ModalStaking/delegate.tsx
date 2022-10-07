@@ -16,6 +16,7 @@ import { Text } from '@aura/safe-react-components'
 import Col from 'src/components/layout/Col'
 
 export default function ModalDelegate(props) {
+  const { handleAmout, amount } = props
   return (
     <>
       <NotificationPopup>
@@ -66,7 +67,7 @@ export default function ModalDelegate(props) {
                 </Col>
                 <InputAura>
                   <BorderInput>
-                    <StyledInputModal />
+                    <StyledInputModal onChange={handleAmout} value={amount} />
                     <StyledButtonModal>Max</StyledButtonModal>
                   </BorderInput>
                   <BorderAura>

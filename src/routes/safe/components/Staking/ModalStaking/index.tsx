@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Button } from '@aura/safe-react-components'
 import ModalNew from 'src/components/ModalNew'
 import StakeFish from '../assets/StakeFish.svg'
@@ -41,8 +41,16 @@ const StyledButtonSubmit = styled(Button)`
 `
 
 export default function ModalStaking(props) {
-  const { modalIsOpen, handleClose, typeValidator } = props
-  const [handlValueDelegate, setHandleValueDelegate] = useState(1)
+  const { modalIsOpen, handleClose, typeValidator, handleSubmit, handleAmout, amount } = props
+  const [handlValueDelegate, setHandleValueDelegate] = useState('')
+
+  useEffect(() => {
+    setHandleValueDelegate(typeValidator)
+  }, [typeValidator])
+
+  const handleChange = (event) => {
+    setHandleValueDelegate(event.target.value)
+  }
 
   return (
     <ModalNew modalIsOpen={modalIsOpen}>
@@ -64,25 +72,25 @@ export default function ModalStaking(props) {
 
       <StyleDivider />
 
-      {typeValidator === 'delegate' && <ModalDelegate />}
-      {typeValidator === 'redelegate' && <ModalRedelegate />}
-      {typeValidator === 'reward' && <ModalReward />}
+      {handlValueDelegate === 'delegate' && <ModalDelegate handleAmout={handleAmout} amount={amount} />}
+      {handlValueDelegate === 'redelegate' && <ModalRedelegate />}
+      {handlValueDelegate === 'reward' && <ModalReward />}
 
       <FotterModal>
         <CloseButton title="Close" onClick={handleClose} />
-        {typeValidator === 'delegate' && (
-          <StyledButtonSubmit size="md" onClick={() => {}}>
+        {handlValueDelegate === 'delegate' && (
+          <StyledButtonSubmit size="md" onClick={handleSubmit}>
             Delegate
           </StyledButtonSubmit>
         )}
-        {typeValidator === 'redelegate' && (
-          <StyledButtonSubmit size="md" onClick={() => {}}>
+        {handlValueDelegate === 'redelegate' && (
+          <StyledButtonSubmit size="md" onClick={handleSubmit}>
             Redelegate
           </StyledButtonSubmit>
         )}
-        {typeValidator === 'reward' && (
+        {handlValueDelegate === 'reward' && (
           <>
-            <ButtonSelect handlValueDelegate={handlValueDelegate} setHandleValueDelegate={setHandleValueDelegate} />
+            <ButtonSelect handlValueDelegate={handlValueDelegate} handleChange={handleChange} />
             <StyledButtonSubmit size="md" onClick={() => {}}>
               Delegate
             </StyledButtonSubmit>

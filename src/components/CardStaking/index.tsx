@@ -16,7 +16,7 @@ const RowHead = [
   { name: 'NAME' },
   { name: 'AMOUNT STAKED' },
   { name: 'PENDING REWARD' },
-  { name: 'TIME' },
+  // { name: 'TIME' },
   { name: '' },
 ]
 
@@ -36,24 +36,25 @@ const RowData = [
 ]
 
 const TableVotingDetailInside = (props) => {
-  const { handleModal } = props
+  const { handleModal, data } = props
+  console.log('data', data)
   return (
     <TableVoting RowHead={RowHead}>
-      {RowData.map((row) => (
+      {data.map((row) => (
         <StyledTableRow key={row.id}>
           <StyledTableCell component="th" scope="row">
-            {row.id}
+            {row.operatorAddress}
           </StyledTableCell>
           <StyledTableCell align="left">
             <Text size="lg" color="linkAura">
-              {row.title}
+              {row.balance.amount}
             </Text>
           </StyledTableCell>
           <StyledTableCell align="left">{row.status}</StyledTableCell>
-          <StyledTableCell align="left">
+          {/* <StyledTableCell align="left">
             <div>2 months ago</div>
             <div style={{ color: 'rgba(134, 138, 151, 1)' }}>{row.voting}</div>
-          </StyledTableCell>
+          </StyledTableCell> */}
           <StyledTableCell align="right">
             <StyledButtonManage size="md" onClick={() => handleModal(row)}>
               <Text size="lg" color="white">
@@ -70,7 +71,7 @@ const TableVotingDetailInside = (props) => {
 const useStyles = makeStyles(styles)
 
 function CardStaking(props): ReactElement {
-  const { handleModal } = props
+  const { handleModal, availableBalance, totalStake, rewardAmount, validatorOfUser } = props
   const classes = useStyles()
 
   return (
@@ -82,7 +83,7 @@ function CardStaking(props): ReactElement {
               Available Balance:
             </Text>
             <Text size="lg" color="inputDefault" strong>
-              64.000000 AURA
+              {availableBalance?.amount / 10 ** 6} AURA
             </Text>
           </div>
           <div className={classes.stakingOverviewTextContainer}>
@@ -90,16 +91,18 @@ function CardStaking(props): ReactElement {
               Total Staked:
             </Text>
             <Text size="lg" color="inputDefault" strong>
-              123.092822 AURA
+              {totalStake?.amount ? totalStake?.amount / 10 ** 6 : 0} AURA
             </Text>
           </div>
         </div>
         <StyledButton>
-          <span style={{ fontSize: 14, fontWeight: 590 }}>Claim Reward: 0.012672 AURA</span>
+          <span style={{ fontSize: 14, fontWeight: 590 }}>
+            Claim Reward: {rewardAmount[0] ? rewardAmount[0]?.amount / 10 ** 6 : 0} AURA
+          </span>
         </StyledButton>
       </BoxCardStakingOverview>
       <BoxCardStakingList>
-        <TableVotingDetailInside handleModal={handleModal} />
+        <TableVotingDetailInside handleModal={handleModal} data={validatorOfUser} />
       </BoxCardStakingList>
     </BoxCardStaking>
   )
