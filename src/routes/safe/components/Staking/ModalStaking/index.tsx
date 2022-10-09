@@ -27,6 +27,8 @@ import ModalDelegate from './delegate'
 import ModalRedelegate from './redelegate'
 import ModalReward from './reward'
 
+import * as _ from 'lodash'
+
 const StyledButtonSubmit = styled(Button)`
   border: 2px solid transparent;
   background-image: ${borderLinear};
@@ -41,16 +43,42 @@ const StyledButtonSubmit = styled(Button)`
 `
 
 export default function ModalStaking(props) {
-  const { modalIsOpen, handleClose, typeValidator, handleSubmit, handleAmout, amount } = props
-  const [handlValueDelegate, setHandleValueDelegate] = useState('')
+  const {
+    modalIsOpen,
+    handleClose,
+    handleSubmit,
+    handleAmout,
+    amount,
+    handlValueDelegate,
+    handleChange,
+    allValidator,
+    itemValidator,
+    handleChangeRedelegate,
+    valueDelegate,
+    handleAmoutRedelegate,
+    nativeCurrency,
+  } = props
+
+  const [arrRedelegate, setArrDelegate] = useState([])
 
   useEffect(() => {
-    setHandleValueDelegate(typeValidator)
-  }, [typeValidator])
-
-  const handleChange = (event) => {
-    setHandleValueDelegate(event.target.value)
-  }
+    allValidator.map((item: any) => {
+      const dataTemp: any = [
+        {
+          name: 'Select Actions',
+          value: 'actions',
+        },
+      ]
+      if (item?.operatorAddress !== itemValidator?.operatorAddress) {
+        const itemTemp = {
+          name: item.validator,
+          value: item.operatorAddress,
+        }
+        dataTemp.push(itemTemp)
+      }
+      setArrDelegate(dataTemp)
+    })
+  }, [allValidator])
 
   return (
     <ModalNew modalIsOpen={modalIsOpen}>
@@ -64,7 +92,7 @@ export default function ModalStaking(props) {
         </HeaderPopup>
         <BoxVotingPower>
           <TextPower>
-            Voting power - 5.58% (64.000000 <TextGreen>AURA</TextGreen> )
+            Voting power - 5.58% (64.000000 <TextGreen>{nativeCurrency}</TextGreen> )
           </TextPower>
           <TextDelegators>Delegators - 27,733</TextDelegators>
         </BoxVotingPower>
@@ -72,26 +100,52 @@ export default function ModalStaking(props) {
 
       <StyleDivider />
 
-      {handlValueDelegate === 'delegate' && <ModalDelegate handleAmout={handleAmout} amount={amount} />}
-      {handlValueDelegate === 'redelegate' && <ModalRedelegate />}
-      {handlValueDelegate === 'reward' && <ModalReward />}
+      {handlValueDelegate === 'delegate' && (
+        <ModalDelegate handleAmout={handleAmout} amount={amount} nativeCurrency={nativeCurrency} />
+      )}
+      {handlValueDelegate === 'redelegate' && (
+        <ModalRedelegate
+          handlValueDelegate={handlValueDelegate}
+          arrRedelegate={arrRedelegate}
+          handleChangeRedelegate={handleChangeRedelegate}
+          valueDelegate={valueDelegate}
+          handleAmoutRedelegate={handleAmoutRedelegate}
+          nativeCurrency={nativeCurrency}
+        />
+      )}
+      {handlValueDelegate === 'undelegate' && (
+        <ModalRedelegate
+          handlValueDelegate={handlValueDelegate}
+          arrRedelegate={arrRedelegate}
+          handleChangeRedelegate={handleChangeRedelegate}
+          valueDelegate={valueDelegate}
+          handleAmoutRedelegate={handleAmoutRedelegate}
+          nativeCurrency={nativeCurrency}
+        />
+      )}
+      {handlValueDelegate === 'reward' && <ModalReward nativeCurrency={nativeCurrency} />}
 
       <FotterModal>
         <CloseButton title="Close" onClick={handleClose} />
         {handlValueDelegate === 'delegate' && (
-          <StyledButtonSubmit size="md" onClick={handleSubmit}>
+          <StyledButtonSubmit size="md" onClick={() => handleSubmit(handlValueDelegate)}>
             Delegate
           </StyledButtonSubmit>
         )}
         {handlValueDelegate === 'redelegate' && (
-          <StyledButtonSubmit size="md" onClick={handleSubmit}>
+          <StyledButtonSubmit size="md" onClick={() => handleSubmit(handlValueDelegate)}>
             Redelegate
+          </StyledButtonSubmit>
+        )}
+        {handlValueDelegate === 'undelegate' && (
+          <StyledButtonSubmit size="md" onClick={() => handleSubmit(handlValueDelegate)}>
+            Undelegate
           </StyledButtonSubmit>
         )}
         {handlValueDelegate === 'reward' && (
           <>
             <ButtonSelect handlValueDelegate={handlValueDelegate} handleChange={handleChange} />
-            <StyledButtonSubmit size="md" onClick={() => {}}>
+            <StyledButtonSubmit size="md" onClick={() => handleSubmit('delegate')}>
               Delegate
             </StyledButtonSubmit>
           </>

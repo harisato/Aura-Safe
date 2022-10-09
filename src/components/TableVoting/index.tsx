@@ -22,9 +22,9 @@ export const StyledTableCell = withStyles((theme) => ({
     lineHeight: 1,
   },
   body: {
-    fontSize: 14,
+    fontSize: '14px !important',
     padding: 5,
-    color: '#E5E7EA',
+    color: '#E5E7EA !important',
     borderTop: '1px solid #363843',
   },
 }))(TableCell)

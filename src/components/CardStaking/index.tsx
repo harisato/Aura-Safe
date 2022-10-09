@@ -11,6 +11,7 @@ import {
 import { makeStyles } from '@material-ui/core'
 import TableVoting from 'src/components/TableVoting'
 import { StyledTableCell, StyledTableRow } from 'src/components/TableVoting'
+import PrefixedEthHashInfo from 'src/components/PrefixedEthHashInfo'
 
 const RowHead = [
   { name: 'NAME' },
@@ -20,34 +21,19 @@ const RowHead = [
   { name: '' },
 ]
 
-const RowData = [
-  {
-    id: 'aura81...818hsbcasc',
-    title: '1782GSAW...DHF1HG13',
-    status: 'Yes',
-    voting: '2022-01-09 | 07:55:02',
-  },
-  {
-    id: 'aura81...818hsbcasc',
-    title: '1782GSAW...DHF1HG13',
-    status: 'Yes',
-    voting: '2022-01-09 | 07:55:02',
-  },
-]
-
 const TableVotingDetailInside = (props) => {
   const { handleModal, data } = props
-  console.log('data', data)
+
   return (
     <TableVoting RowHead={RowHead}>
       {data.map((row) => (
         <StyledTableRow key={row.id}>
           <StyledTableCell component="th" scope="row">
-            {row.operatorAddress}
+            <PrefixedEthHashInfo hash={row.operatorAddress} shortenHash={5} />
           </StyledTableCell>
           <StyledTableCell align="left">
             <Text size="lg" color="linkAura">
-              {row.balance.amount}
+              {row.balance.amount / 10 ** 6}
             </Text>
           </StyledTableCell>
           <StyledTableCell align="left">{row.status}</StyledTableCell>
@@ -71,7 +57,8 @@ const TableVotingDetailInside = (props) => {
 const useStyles = makeStyles(styles)
 
 function CardStaking(props): ReactElement {
-  const { handleModal, availableBalance, totalStake, rewardAmount, validatorOfUser } = props
+  const { handleModal, availableBalance, totalStake, rewardAmount, validatorOfUser, ClaimReward, nativeCurrency } =
+    props
   const classes = useStyles()
 
   return (
@@ -83,7 +70,7 @@ function CardStaking(props): ReactElement {
               Available Balance:
             </Text>
             <Text size="lg" color="inputDefault" strong>
-              {availableBalance?.amount / 10 ** 6} AURA
+              {availableBalance?.amount / 10 ** 6} {nativeCurrency}
             </Text>
           </div>
           <div className={classes.stakingOverviewTextContainer}>
@@ -91,13 +78,13 @@ function CardStaking(props): ReactElement {
               Total Staked:
             </Text>
             <Text size="lg" color="inputDefault" strong>
-              {totalStake?.amount ? totalStake?.amount / 10 ** 6 : 0} AURA
+              {totalStake?.amount ? totalStake?.amount / 10 ** 6 : 0} {nativeCurrency}
             </Text>
           </div>
         </div>
-        <StyledButton>
+        <StyledButton onClick={ClaimReward}>
           <span style={{ fontSize: 14, fontWeight: 590 }}>
-            Claim Reward: {rewardAmount[0] ? rewardAmount[0]?.amount / 10 ** 6 : 0} AURA
+            Claim Reward: {rewardAmount[0] ? (rewardAmount[0]?.amount / 10 ** 6).toFixed(6) : 0} {nativeCurrency}
           </span>
         </StyledButton>
       </BoxCardStakingOverview>

@@ -65,32 +65,28 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 export default function SelectValidator(props) {
-  const {} = props
+  const { arrRedelegate, handleChangeRedelegate, valueDelegate } = props
   const classes = useStyles()
-  const [age, setAge] = React.useState(1)
-
-  const handleChange = (event) => {
-    setAge(event.target.value)
-    // handleButtonDelegate(event.target.value)
-  }
 
   return (
     <div className={classes.selectMenu}>
       <FormControl className={classes.formControl}>
         <Select
           native
-          value={age}
-          onChange={handleChange}
+          value={valueDelegate}
+          onChange={handleChangeRedelegate}
           variant="standard"
           className={classes.boxSelect}
           input={<Input id="demo-dialog-native" />}
         >
-          <option className={classes.selectStyled} value={1}>
-            Delegate
-          </option>
-          <option className={classes.selectStyled} value={2}>
-            Redelegate
-          </option>
+          {arrRedelegate &&
+            arrRedelegate.map((item, key) => {
+              return (
+                <option className={classes.selectStyled} value={item.value} key={key}>
+                  {item.name}
+                </option>
+              )
+            })}
         </Select>
       </FormControl>
     </div>

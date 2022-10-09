@@ -59,6 +59,8 @@ const StyleDivider = styled(Divider)`
 `
 
 function Undelegating(props): ReactElement {
+  const { unValidatorOfUser } = props
+
   return (
     <BoxCardStaking>
       <BoxCardStakingOverview>
@@ -67,61 +69,37 @@ function Undelegating(props): ReactElement {
         </Text>
       </BoxCardStakingOverview>
       <BoxCardStakingList>
-        <DelegateRow>
-          <Col end="lg" sm={2} xs={12}>
-            <BoxImg>
-              <ImgStyled src={cryto} alt="DokiaCapital" />
-              <TextImg size="lg" color="linkAura">
-                DokiaCapital
-              </TextImg>
-            </BoxImg>
-          </Col>
-          <Col end="lg" sm={2} xs={12}>
-            <div>
-              <TotalDelegate>
-                <Text size="lg" color="white">
-                  1.000000
-                </Text>
-                <Text size="lg" color="linkAura">
-                  AURA
-                </Text>
-              </TotalDelegate>
+        {unValidatorOfUser.map((item, key) => {
+          return (
+            <>
+              <DelegateRow>
+                <Col end="lg" sm={2} xs={12}>
+                  <BoxImg>
+                    <ImgStyled src={cryto} alt="DokiaCapital" />
+                    <TextImg size="lg" color="linkAura">
+                      {/* {item.operatorAddress} */}132
+                    </TextImg>
+                  </BoxImg>
+                </Col>
+                <Col end="lg" sm={2} xs={12}>
+                  <div>
+                    <TotalDelegate>
+                      <Text size="lg" color="white">
+                        {item.balance / 10 ** 6}
+                      </Text>
+                    </TotalDelegate>
 
-              <Text size="lg" color="disableAura">
-                14 days remaining
-              </Text>
-            </div>
-          </Col>
-        </DelegateRow>
+                    <Text size="lg" color="disableAura">
+                      14 days remaining
+                    </Text>
+                  </div>
+                </Col>
+              </DelegateRow>
 
-        <StyleDivider />
-
-        <DelegateRow>
-          <Col end="lg" sm={2} xs={12}>
-            <BoxImg>
-              <ImgStyled src={cryto} alt="DokiaCapital" />
-              <TextImg size="lg" color="linkAura">
-                DokiaCapital
-              </TextImg>
-            </BoxImg>
-          </Col>
-          <Col end="lg" sm={2} xs={12}>
-            <div>
-              <TotalDelegate>
-                <Text size="lg" color="white">
-                  1.000000
-                </Text>
-                <Text size="lg" color="linkAura">
-                  AURA
-                </Text>
-              </TotalDelegate>
-
-              <Text size="lg" color="disableAura">
-                14 days remaining
-              </Text>
-            </div>
-          </Col>
-        </DelegateRow>
+              {item.length > 1 && <StyleDivider />}
+            </>
+          )
+        })}
       </BoxCardStakingList>
     </BoxCardStaking>
   )

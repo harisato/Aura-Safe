@@ -67,7 +67,8 @@ export default function CustomizedSelects(props) {
           className={classes.boxSelect}
           input={<Input id="demo-dialog-native" />}
         >
-          <option value={'reward'}>Undelegate</option>
+          <option value={'reward'}>Select Acions</option>
+          <option value={'undelegate'}>Undelegate</option>
           <option value={'redelegate'}>Redelegate</option>
         </Select>
       </FormControl>

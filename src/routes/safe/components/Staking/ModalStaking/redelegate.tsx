@@ -14,6 +14,14 @@ import { Text } from '@aura/safe-react-components'
 import Col from 'src/components/layout/Col'
 
 export default function ModalRedelegate(props) {
+  const {
+    arrRedelegate,
+    handleChangeRedelegate,
+    valueDelegate,
+    handleAmoutRedelegate,
+    handlValueDelegate,
+    nativeCurrency,
+  } = props
   return (
     <>
       <Col sm={12} xs={12} layout="column">
@@ -21,10 +29,14 @@ export default function ModalRedelegate(props) {
           <PaddingPopup>
             <Col sm={7} xs={12}>
               <Text size="lg" color="white">
-                Redelegate to:
+                {handlValueDelegate} to:
               </Text>
             </Col>
-            <SelectValidator />
+            <SelectValidator
+              arrRedelegate={arrRedelegate}
+              handleChangeRedelegate={handleChangeRedelegate}
+              valueDelegate={valueDelegate}
+            />
           </PaddingPopup>
         </BoxDelegate>
 
@@ -32,17 +44,18 @@ export default function ModalRedelegate(props) {
           <PaddingPopup>
             <Col sm={7} xs={12}>
               <Text size="lg" color="white">
-                Available for redelegation <TextDisable>5.000000</TextDisable> <TextGreen>AURA</TextGreen>
+                Available for {handlValueDelegate} <TextDisable>5.000000</TextDisable>{' '}
+                <TextGreen>{nativeCurrency}</TextGreen>
               </Text>
             </Col>
             <InputAura>
               <BorderInput>
-                <StyledInputModal />
+                <StyledInputModal onChange={handleAmoutRedelegate} />
                 <StyledButtonModal>Max</StyledButtonModal>
               </BorderInput>
               <BorderAura>
                 <Text size="xl" color="linkAura">
-                  AURA
+                  {nativeCurrency}
                 </Text>
               </BorderAura>
             </InputAura>
