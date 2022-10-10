@@ -15,7 +15,7 @@ export type TxTypeProps = {
   text?: string
 }
 
-export const useTransactionType = (tx: Transaction): TxTypeProps => {
+export const useTransactionType = (tx: any): TxTypeProps => {
   const [type, setType] = useState<TxTypeProps>({ icon: CustomTxIcon, text: 'Contract interaction' })
   const safeAddress = extractSafeAddress()
   const toAddress = getTxTo(tx)
@@ -29,11 +29,37 @@ export const useTransactionType = (tx: Transaction): TxTypeProps => {
       }
       case 'Transfer': {
         const isSendTx = tx.txInfo.direction === 'OUTGOING'
+        if (tx.txInfo.typeUrl === '/cosmos.staking.v1beta1.MsgDelegate') {
+          setType({
+            icon: OutgoingTxIcon,
+            text: 'Delegate',
+          })
+        }
+        if (tx.txInfo.typeUrl === '/cosmos.staking.v1beta1.MsgUndelegate') {
+          setType({
+            icon: OutgoingTxIcon,
+            text: 'Undelegate',
+          })
+        }
+        if (tx.txInfo.typeUrl === '/cosmos.staking.v1beta1.MsgBeginRedelegate') {
+          setType({
+            icon: IncomingTxIcon,
+            text: 'Redelegate',
+          })
+        }
+        if (tx.txInfo.typeUrl === '/cosmos.distribution.v1beta1.MsgWithdrawDelegatorReward') {
+          setType({
+            icon: IncomingTxIcon,
+            text: 'Reward',
+          })
+        }
+        if (tx.txInfo.typeUrl === '/cosmos.bank.v1beta1.MsgSend') {
+          setType({
+            icon: isSendTx ? OutgoingTxIcon : IncomingTxIcon,
+            text: isSendTx ? 'Send' : 'Receive',
+          })
+        }
 
-        setType({
-          icon: isSendTx ? OutgoingTxIcon : IncomingTxIcon,
-          text: isSendTx ? 'Send' : 'Receive',
-        })
         break
       }
       case 'SettingsChange': {

@@ -4,7 +4,8 @@ import { Text } from '@aura/safe-react-components'
 import Col from 'src/components/layout/Col'
 
 export default function ModalReward(props) {
-  const { nativeCurrency } = props
+  const { nativeCurrency, itemDelegate, availableBalance } = props
+
   return (
     <>
       <NotificationPopup>
@@ -30,7 +31,7 @@ export default function ModalReward(props) {
               </Text>
             </Col>
             <Text size="lg" color="numberAura">
-              5.000000 <TextGreen>{nativeCurrency}</TextGreen>
+              {itemDelegate?.balance?.amount / 10 ** 6 || 0} <TextGreen>{nativeCurrency}</TextGreen>
             </Text>
           </BoxDelegate>
           <BoxDelegate>
@@ -40,7 +41,7 @@ export default function ModalReward(props) {
               </Text>
             </Col>
             <Text size="lg" color="numberAura">
-              0.632315 <TextGreen>{nativeCurrency}</TextGreen>
+              0 <TextGreen>{nativeCurrency}</TextGreen>
             </Text>
           </BoxDelegate>
         </Col>
@@ -53,7 +54,7 @@ export default function ModalReward(props) {
             </Col>
 
             <Text size="lg" color="numberAura">
-              17.641376 <TextGreen>{nativeCurrency}</TextGreen>
+              {availableBalance.amount / 10 ** 6 || 0} <TextGreen>{nativeCurrency}</TextGreen>
             </Text>
           </BoxDelegate>
           <BoxDelegate>
@@ -64,7 +65,7 @@ export default function ModalReward(props) {
             </Col>
 
             <Text size="lg" color="numberAura">
-              2.239288 <TextGreen>{nativeCurrency}</TextGreen>
+              0 <TextGreen>{nativeCurrency}</TextGreen>
             </Text>
           </BoxDelegate>
         </Col>

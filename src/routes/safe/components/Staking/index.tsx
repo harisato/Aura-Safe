@@ -48,10 +48,9 @@ function Staking(props): ReactElement {
   const [listReward, setListReward] = useState([])
 
   const [valueDelegate, setValueDelegate] = React.useState()
-
   const [itemValidator, setItemValidator] = useState<any>()
-
   const [handlValueDelegate, setHandleValueDelegate] = useState('')
+  const [itemDelegate, setItemDelegate] = useState<any>()
 
   const handleChange = (event) => {
     setHandleValueDelegate(event.target.value)
@@ -86,9 +85,6 @@ function Staking(props): ReactElement {
     getAllUnDelegateOfUser(internalChainId, SafeAddress).then((res) => {
       setUnValidatorOfUser(res.Data.undelegations)
     })
-    // clamRewards(internalChainId, SafeAddress).then((res) => {
-    //   setListReward(res.Data.rewards)
-    // })
   }, [internalChainId, SafeAddress])
 
   const handleAmout = (event) => {
@@ -100,6 +96,7 @@ function Staking(props): ReactElement {
       safeStaking: item.operatorAddress,
     }
     setItemValidator(dataTemp)
+    setItemDelegate(item)
     setIsOpenDelagate(true)
     setHandleValueDelegate('reward')
   }
@@ -148,13 +145,20 @@ function Staking(props): ReactElement {
 
   ///
   const temp = {
-    amount: '0.01',
-    recipientAddress: 'aura1jymu52u74ggf75fw2nrktmelslstrns94v433m',
-    recipientName: '',
     token: '0000000000000000000000000000000000000000',
     tokenSpendingLimit: 0,
   }
-  console.log('{nativeCurrency}', { nativeCurrency })
+
+  const handleMax = (item) => {
+    setAmount(item)
+  }
+
+  const HandleClose = () => {
+    setIsOpenDelagate(false)
+    setItemValidator(null)
+    setAmount(0)
+  }
+
   return (
     <>
       <Menu>
@@ -184,12 +188,14 @@ function Staking(props): ReactElement {
         </Col>
       </Block>
 
-      <Block margin="mdTop">
-        {' '}
-        <Col start="sm" sm={12} xs={12}>
-          <Undelegating unValidatorOfUser={unValidatorOfUser} />
-        </Col>
-      </Block>
+      {unValidatorOfUser && unValidatorOfUser.length > 0 && (
+        <Block margin="mdTop">
+          {' '}
+          <Col start="sm" sm={12} xs={12}>
+            <Undelegating unValidatorOfUser={unValidatorOfUser} />
+          </Col>
+        </Block>
+      )}
 
       <Block margin="mdTop" style={{ marginBottom: 10 }}>
         {' '}
@@ -202,9 +208,7 @@ function Staking(props): ReactElement {
 
       <ModalStaking
         modalIsOpen={isOpenDelagate}
-        handleClose={() => {
-          setIsOpenDelagate(false)
-        }}
+        handleClose={HandleClose}
         handlValueDelegate={handlValueDelegate}
         handleChange={handleChange}
         handleSubmit={handleSubmitDelegate}
@@ -216,6 +220,9 @@ function Staking(props): ReactElement {
         valueDelegate={valueDelegate}
         handleAmoutRedelegate={handleAmoutRedelegate}
         nativeCurrency={nativeCurrency}
+        itemDelegate={itemDelegate}
+        availableBalance={availableBalance}
+        handleMax={handleMax}
       />
 
       <Modal

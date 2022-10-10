@@ -4,6 +4,9 @@ import Col from 'src/components/layout/Col'
 import styled from 'styled-components'
 import cryto from '../assets/cryto.svg'
 import { Divider } from '@material-ui/core'
+import { getDisplayAddress } from '../constant'
+import { getUTCStartOfDate, formatTimeInWords } from 'src/utils/date'
+
 const BoxCardStakingOverview = styled.div`
   padding: 24px;
   background: #363843;
@@ -77,7 +80,7 @@ function Undelegating(props): ReactElement {
                   <BoxImg>
                     <ImgStyled src={cryto} alt="DokiaCapital" />
                     <TextImg size="lg" color="linkAura">
-                      {/* {item.operatorAddress} */}132
+                      {getDisplayAddress(item.operatorAddress)}
                     </TextImg>
                   </BoxImg>
                 </Col>
@@ -88,9 +91,8 @@ function Undelegating(props): ReactElement {
                         {item.balance / 10 ** 6}
                       </Text>
                     </TotalDelegate>
-
                     <Text size="lg" color="disableAura">
-                      14 days remaining
+                      {formatTimeInWords(getUTCStartOfDate(item.completionTime))}
                     </Text>
                   </div>
                 </Col>

@@ -57,31 +57,45 @@ export default function ModalStaking(props) {
     valueDelegate,
     handleAmoutRedelegate,
     nativeCurrency,
+    itemDelegate,
+    availableBalance,
+    handleMax,
   } = props
 
   const [arrRedelegate, setArrDelegate] = useState([])
-
+  console.log('allValidator', allValidator)
   useEffect(() => {
-    allValidator.map((item: any) => {
-      const dataTemp: any = [
-        {
-          name: 'Select Actions',
-          value: 'actions',
-        },
-      ]
-      if (item?.operatorAddress !== itemValidator?.operatorAddress) {
-        const itemTemp = {
-          name: item.validator,
-          value: item.operatorAddress,
+    const dataTemp: any = [
+      {
+        name: 'Select Actions',
+        value: 'actions',
+      },
+    ]
+    if (handlValueDelegate === 'redelegate') {
+      allValidator.map((item) => {
+        if (item.operatorAddress !== itemValidator?.safeStaking) {
+          dataTemp.push({
+            name: item.validator,
+            value: item.operatorAddress,
+          })
         }
-        dataTemp.push(itemTemp)
-      }
-      setArrDelegate(dataTemp)
-    })
-  }, [allValidator])
+      })
+    }
+    if (handlValueDelegate === 'undelegate') {
+      allValidator.map((item) => {
+        if (item.operatorAddress === itemValidator?.safeStaking) {
+          dataTemp.push({
+            name: item.validator,
+            value: item.operatorAddress,
+          })
+        }
+      })
+    }
+    setArrDelegate(dataTemp)
+  }, [handlValueDelegate || itemValidator?.safeStaking])
 
   return (
-    <ModalNew modalIsOpen={modalIsOpen}>
+    <ModalNew modalIsOpen={modalIsOpen} closeModal={handleClose}>
       <HeaderContainer>
         <HeaderPopup>
           <ImgStyled src={StakeFish} alt="StakeFish" />
@@ -110,7 +124,10 @@ export default function ModalStaking(props) {
           handleChangeRedelegate={handleChangeRedelegate}
           valueDelegate={valueDelegate}
           handleAmoutRedelegate={handleAmoutRedelegate}
+          amount={amount}
+          itemDelegate={itemDelegate}
           nativeCurrency={nativeCurrency}
+          handleMax={handleMax}
         />
       )}
       {handlValueDelegate === 'undelegate' && (
@@ -121,9 +138,14 @@ export default function ModalStaking(props) {
           valueDelegate={valueDelegate}
           handleAmoutRedelegate={handleAmoutRedelegate}
           nativeCurrency={nativeCurrency}
+          itemDelegate={itemDelegate}
+          amount={amount}
+          handleMax={handleMax}
         />
       )}
-      {handlValueDelegate === 'reward' && <ModalReward nativeCurrency={nativeCurrency} />}
+      {handlValueDelegate === 'reward' && (
+        <ModalReward nativeCurrency={nativeCurrency} itemDelegate={itemDelegate} availableBalance={availableBalance} />
+      )}
 
       <FotterModal>
         <CloseButton title="Close" onClick={handleClose} />

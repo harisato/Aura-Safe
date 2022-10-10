@@ -325,6 +325,7 @@ export const makeTransactionDetail = (txDetail: any): any => {
         type: TokenType.NATIVE_COIN,
         value: txDetail?.Amount,
       },
+      typeUrl: txDetail?.TypeUrl,
       type: 'Transfer',
     },
     txStatus: txDetail.Status,
@@ -391,6 +392,7 @@ const makeTransactions = (list: ITransactionListItem[]): MTransactionListItem[] 
       txStatus: tx?.Status as TransactionStatus,
       txInfo: {
         type: 'Transfer',
+        typeUrl: tx?.TypeUrl,
         sender: {
           value: tx?.FromAddress,
           name: null,

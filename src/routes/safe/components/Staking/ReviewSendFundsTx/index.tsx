@@ -192,18 +192,18 @@ const ReviewSendFundsTx = ({
         }
       })()
 
-      let msg
+      const msg: any = []
 
-      if (typeStaking === TypeStaking?.delegate || TypeStaking?.undelegate) {
+      if (typeStaking === TypeStaking?.delegate || typeStaking === TypeStaking?.undelegate) {
         const msgSend: any = {
           delegatorAddress: safeAddress,
           validatorAddress: itemValidator?.safeStaking,
           amount: coin(amountFinal, denom),
         }
-        msg = {
+        msg.push({
           typeUrl: typeStaking,
           value: msgSend,
-        }
+        })
       }
 
       if (typeStaking === TypeStaking?.redelegate) {
@@ -213,17 +213,22 @@ const ReviewSendFundsTx = ({
           validatorDstAddress: valueDelegate,
           amount: coin(amountFinal, denom),
         }
-        msg = {
+        msg.push({
           typeUrl: typeStaking,
           value: msgSend,
-        }
+        })
       }
 
       if (typeStaking === TypeStaking?.reward) {
-        msg = {
-          typeUrl: typeStaking,
-          value: listReward[0],
-        }
+        listReward.map((item) => {
+          msg.push({
+            typeUrl: typeStaking,
+            value: {
+              delegatorAddress: item.delegatorAddress,
+              validatorAddress: item.validatorAddress,
+            },
+          })
+        })
       }
 
       const gasPrice = GasPrice.fromString(String(chainDefaultGasPrice || gasPriceFormatted).concat(denom))
@@ -240,7 +245,7 @@ const ReviewSendFundsTx = ({
         // Sign On Wallet
         dispatch(enqueueSnackbar(enhanceSnackbarForAction(NOTIFICATIONS.SIGN_TX_MSG)))
 
-        const signResult = await client.sign(accounts[0]?.address, [msg], sendFee, '', signerData)
+        const signResult = await client.sign(accounts[0]?.address, msg, sendFee, '', signerData)
 
         const signatures = toBase64(signResult.signatures[0])
         const bodyBytes = toBase64(signResult.bodyBytes)
@@ -249,7 +254,7 @@ const ReviewSendFundsTx = ({
         // call api to create transaction
         const data: ICreateSafeTransaction = {
           from: safeAddress,
-          to: txRecipient,
+          to: typeStaking === TypeStaking?.reward ? '' : txRecipient,
           amount: amountFinal,
           internalChainId: getInternalChainId(),
           creatorAddress: userWalletAddress,
@@ -360,11 +365,11 @@ const ReviewSendFundsTx = ({
                 <Row align="center" margin="md" data-testid="recipient-review-step">
                   <Col xs={12}>
                     <PrefixedEthHashInfo
-                      hash={tx.recipientAddress}
+                      hash={txRecipient}
                       name={title}
                       showCopyBtn
                       showAvatar
-                      explorerUrl={getExplorerInfo(tx.recipientAddress)}
+                      explorerUrl={getExplorerInfo(txRecipient)}
                     />
                   </Col>
                 </Row>

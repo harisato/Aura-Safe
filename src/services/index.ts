@@ -32,7 +32,7 @@ export interface ISafeAllow {
 
 export interface IResponse<T> {
   AdditionalData: any[]
-  Data: T
+  Data: any
   ErrorCode: string
   Message: string
 }

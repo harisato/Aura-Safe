@@ -21,7 +21,11 @@ export default function ModalRedelegate(props) {
     handleAmoutRedelegate,
     handlValueDelegate,
     nativeCurrency,
+    itemDelegate,
+    handleMax,
+    amount,
   } = props
+
   return (
     <>
       <Col sm={12} xs={12} layout="column">
@@ -44,14 +48,15 @@ export default function ModalRedelegate(props) {
           <PaddingPopup>
             <Col sm={7} xs={12}>
               <Text size="lg" color="white">
-                Available for {handlValueDelegate} <TextDisable>5.000000</TextDisable>{' '}
+                Available for {handlValueDelegate}{' '}
+                <TextDisable>{itemDelegate?.balance?.amount / 10 ** 6 || 0}</TextDisable>{' '}
                 <TextGreen>{nativeCurrency}</TextGreen>
               </Text>
             </Col>
             <InputAura>
               <BorderInput>
-                <StyledInputModal onChange={handleAmoutRedelegate} />
-                <StyledButtonModal>Max</StyledButtonModal>
+                <StyledInputModal onChange={handleAmoutRedelegate} value={amount} />
+                <StyledButtonModal onClick={handleMax(itemDelegate?.balance?.amount / 10 ** 6)}>Max</StyledButtonModal>
               </BorderInput>
               <BorderAura>
                 <Text size="xl" color="linkAura">

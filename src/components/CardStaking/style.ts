@@ -38,8 +38,7 @@ const BoxCardStakingOverview = styled.div`
   align-items: center;
   padding: 24px;
   background: #363843;
-  border-top-right-radius: 25px;
-  border-top-left-radius: 25px;
+  border-radius: 25px;
 `
 const BoxCardStaking = styled.div`
   display: flex;

@@ -12,6 +12,7 @@ import { makeStyles } from '@material-ui/core'
 import TableVoting from 'src/components/TableVoting'
 import { StyledTableCell, StyledTableRow } from 'src/components/TableVoting'
 import PrefixedEthHashInfo from 'src/components/PrefixedEthHashInfo'
+import { getDisplayAddress } from 'src/routes/safe/components/Staking/constant'
 
 const RowHead = [
   { name: 'NAME' },
@@ -29,14 +30,14 @@ const TableVotingDetailInside = (props) => {
       {data.map((row) => (
         <StyledTableRow key={row.id}>
           <StyledTableCell component="th" scope="row">
-            <PrefixedEthHashInfo hash={row.operatorAddress} shortenHash={5} />
+            {getDisplayAddress(row.operatorAddress)}
           </StyledTableCell>
           <StyledTableCell align="left">
             <Text size="lg" color="linkAura">
               {row.balance.amount / 10 ** 6}
             </Text>
           </StyledTableCell>
-          <StyledTableCell align="left">{row.status}</StyledTableCell>
+          <StyledTableCell align="left">{row.reward.length > 0 ? 'Yes' : 'No'}</StyledTableCell>
           {/* <StyledTableCell align="left">
             <div>2 months ago</div>
             <div style={{ color: 'rgba(134, 138, 151, 1)' }}>{row.voting}</div>
@@ -60,7 +61,6 @@ function CardStaking(props): ReactElement {
   const { handleModal, availableBalance, totalStake, rewardAmount, validatorOfUser, ClaimReward, nativeCurrency } =
     props
   const classes = useStyles()
-
   return (
     <BoxCardStaking>
       <BoxCardStakingOverview>
@@ -70,7 +70,7 @@ function CardStaking(props): ReactElement {
               Available Balance:
             </Text>
             <Text size="lg" color="inputDefault" strong>
-              {availableBalance?.amount / 10 ** 6} {nativeCurrency}
+              {availableBalance?.amount / 10 ** 6 || 0} {nativeCurrency}
             </Text>
           </div>
           <div className={classes.stakingOverviewTextContainer}>
@@ -82,15 +82,19 @@ function CardStaking(props): ReactElement {
             </Text>
           </div>
         </div>
-        <StyledButton onClick={ClaimReward}>
-          <span style={{ fontSize: 14, fontWeight: 590 }}>
-            Claim Reward: {rewardAmount[0] ? (rewardAmount[0]?.amount / 10 ** 6).toFixed(6) : 0} {nativeCurrency}
-          </span>
-        </StyledButton>
+        {rewardAmount[0]?.amount / 10 ** 6 > 0 && (
+          <StyledButton onClick={ClaimReward}>
+            <span style={{ fontSize: 14, fontWeight: 590 }}>
+              Claim Reward: {rewardAmount[0] ? (rewardAmount[0]?.amount / 10 ** 6).toFixed(6) : 0} {nativeCurrency}
+            </span>
+          </StyledButton>
+        )}
       </BoxCardStakingOverview>
-      <BoxCardStakingList>
-        <TableVotingDetailInside handleModal={handleModal} data={validatorOfUser} />
-      </BoxCardStakingList>
+      {validatorOfUser && validatorOfUser?.length > 1 && (
+        <BoxCardStakingList>
+          <TableVotingDetailInside handleModal={handleModal} data={validatorOfUser} />
+        </BoxCardStakingList>
+      )}
     </BoxCardStaking>
   )
 }
