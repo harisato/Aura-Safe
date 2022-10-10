@@ -166,11 +166,12 @@ export const fetchTransactionDetailsByHash =
         }
       }
 
-      const transactionDetails: TransactionDetails = {
+      const transactionDetails: any = {
         txId: Data.Id.toString(),
         executedAt: Data.TxHash ? new Date(Data.UpdatedAt).getTime() : null,
         txStatus: (Data.Status == '0' ? TransactionStatus.SUCCESS : Data.Status) as TransactionStatus,
         txInfo: {
+          typeUrl: Data?.TypeUrl,
           type: 'Transfer',
           sender: {
             value: Data.FromAddress,

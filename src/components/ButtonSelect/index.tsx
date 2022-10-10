@@ -52,12 +52,8 @@ const useStyles = makeStyles((theme) => ({
 const CaretDownIcon = (props) => <img src={CaretDown} />
 
 export default function CustomizedSelects(props) {
-  const { handlValueDelegate, setHandleValueDelegate } = props
+  const { handlValueDelegate, handleChange } = props
   const classes = useStyles()
-
-  const handleChange = (event) => {
-    setHandleValueDelegate(event.target.value)
-  }
 
   return (
     <div className={classes.selectMenu}>
@@ -71,9 +67,9 @@ export default function CustomizedSelects(props) {
           className={classes.boxSelect}
           input={<Input id="demo-dialog-native" />}
         >
-          <option value={1}>Delegate</option>
-          <option value={2}>Undelegate</option>
-          <option value={3}>Redelegate</option>
+          <option value={'reward'}>Select Acions</option>
+          <option value={'undelegate'}>Undelegate</option>
+          <option value={'redelegate'}>Redelegate</option>
         </Select>
       </FormControl>
     </div>

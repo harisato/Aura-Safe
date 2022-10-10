@@ -32,7 +32,6 @@ const RowHead = [
   { name: 'VALIDATOR' },
   { name: 'VOTING POWER' },
   { name: 'COMMISION' },
-  { name: 'PARTICIPATION' },
   { name: 'UPTIME' },
   { name: ' ' },
 ]
@@ -64,7 +63,7 @@ const StyledButton = styled(Button)`
 `
 
 const TableVotingDetailInside = (props) => {
-  const { data } = props
+  const { data, dandleManageDelegate } = props
 
   return (
     <TableVoting RowHead={RowHead}>
@@ -86,10 +85,10 @@ const TableVotingDetailInside = (props) => {
             <StyledTableCell align="left">
               {parseFloat(row.commission.commission_rates.rate).toFixed(2)} %
             </StyledTableCell>
-            <StyledTableCell align="left"></StyledTableCell>
+
             <StyledTableCell align="left">{row.uptime} %</StyledTableCell>
             <StyledTableCell align="right">
-              <StyledButton size="md" onClick={() => {}}>
+              <StyledButton size="md" onClick={() => dandleManageDelegate(row)}>
                 <Text size="lg" color="white">
                   Manage
                 </Text>
@@ -102,12 +101,28 @@ const TableVotingDetailInside = (props) => {
 }
 
 function Validators(props): ReactElement {
-  const { allValidator } = props
+  const { allValidator, dandleManageDelegate } = props
   const [value, setValue] = React.useState(0)
   const classes = useStyles()
   const handleChange = (event, newValue) => {
     setValue(newValue)
   }
+  const [dataActive, setDataActive] = React.useState([])
+  const [dataInActive, setDataInActive] = React.useState([])
+
+  React.useEffect(() => {
+    const dataTempActive: any = []
+    const dataTempInActive: any = []
+    allValidator.map((item) => {
+      if (item.status === 'BOND_STATUS_BONDED') {
+        dataTempActive.push(item)
+      } else {
+        dataTempInActive.push(item)
+      }
+    })
+    setDataActive(dataTempActive)
+    setDataInActive(dataTempInActive)
+  }, [allValidator])
 
   return (
     <>
@@ -115,27 +130,30 @@ function Validators(props): ReactElement {
         <TitleStyled>Validators</TitleStyled>
       </Col>
 
-      <AppBar position="static" className={classes.root}>
-        <Tabs
-          value={value}
-          onChange={handleChange}
-          indicatorColor="primary"
-          textColor="primary"
-          variant="fullWidth"
-          aria-label="scrollable auto tabs example"
-          centered
-        >
-          <Tab label="ACTIVE" {...a11yProps(0)} />
-          <Tab label="INACTIVE" {...a11yProps(1)} />
-        </Tabs>
-      </AppBar>
+      {dataActive && (
+        <AppBar position="static" className={classes.root}>
+          <Tabs
+            value={value}
+            onChange={handleChange}
+            indicatorColor="primary"
+            textColor="primary"
+            variant="fullWidth"
+            aria-label="scrollable auto tabs example"
+            centered
+          >
+            <Tab label="ACTIVE" {...a11yProps(0)} disabled={dataActive?.length > 0 ? false : true} />
+            <Tab label="INACTIVE" {...a11yProps(1)} disabled={dataInActive?.length > 0 ? false : true} />
+          </Tabs>
+        </AppBar>
+      )}
+
       {allValidator && allValidator.length > 1 && (
         <>
           <TabPanel value={value} index={0}>
-            <TableVotingDetailInside data={allValidator} />
+            <TableVotingDetailInside data={dataActive} dandleManageDelegate={dandleManageDelegate} />
           </TabPanel>
           <TabPanel value={value} index={1}>
-            <TableVotingDetailInside />
+            <TableVotingDetailInside data={dataInActive} dandleManageDelegate={dandleManageDelegate} />
           </TabPanel>
         </>
       )}

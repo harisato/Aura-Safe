@@ -22,6 +22,7 @@ type PagedQueuedTransactions = {
 
 export const usePagedQueuedTransactions = (): PagedQueuedTransactions => {
   const transactions = useQueueTransactions()
+
   const chainId = useSelector(currentChainId)
 
   const dispatch = useDispatch()

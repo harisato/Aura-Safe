@@ -1,84 +1,53 @@
 import { ReactElement } from 'react'
 import { Text } from '@aura/safe-react-components'
-import styled from 'styled-components'
-import { styles } from './style'
+import {
+  styles,
+  StyledButton,
+  BoxCardStakingOverview,
+  BoxCardStaking,
+  BoxCardStakingList,
+  StyledButtonManage,
+} from './style'
 import { makeStyles } from '@material-ui/core'
 import TableVoting from 'src/components/TableVoting'
 import { StyledTableCell, StyledTableRow } from 'src/components/TableVoting'
+import PrefixedEthHashInfo from 'src/components/PrefixedEthHashInfo'
+import { getDisplayAddress } from 'src/routes/safe/components/Staking/constant'
 
-const StyledButton = styled.div`
-  display: flex;
-  border-radius: 24px;
-  justify-content: center;
-  align-items: center;
-  padding: 8px 20px;
-  gap: 6px;
-  background: linear-gradient(108.46deg, #5ee6d0 12.51%, #bfc6ff 51.13%, #ffba69 87.49%);
-  cursor: pointer;
-  color: rgba(19, 20, 25, 1);
-`
-const BoxCardStakingOverview = styled.div`
-  display: flex;
-  justify-content: space-between;
-  flex-direction: row;
-  align-self: stretch;
-  align-items: center;
-  padding: 24px;
-  background: #363843;
-  border-top-right-radius: 25px;
-  border-top-left-radius: 25px;
-`
-const BoxCardStaking = styled.div`
-  display: flex;
-  flex-direction: column;
-  border-radius: 25px;
-  background: #363843;
-  align-items: flex-start;
-`
-const BoxCardStakingList = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-self: stretch;
-  align-items: flex-start;
-  padding: 24px;
-  background: #24262e;
-  border-radius: 25px;
-`
-
-const RowHead = [{ name: 'NAME' }, { name: 'AMOUNT STAKED' }, { name: 'PENDING REWARD' }, { name: 'TIME' }]
-
-const RowData = [
-  {
-    id: 'aura81...818hsbcasc',
-    title: '1782GSAW...DHF1HG13',
-    status: 'Yes',
-    voting: '2022-01-09 | 07:55:02',
-  },
-  {
-    id: 'aura81...818hsbcasc',
-    title: '1782GSAW...DHF1HG13',
-    status: 'Yes',
-    voting: '2022-01-09 | 07:55:02',
-  },
+const RowHead = [
+  { name: 'NAME' },
+  { name: 'AMOUNT STAKED' },
+  { name: 'PENDING REWARD' },
+  // { name: 'TIME' },
+  { name: '' },
 ]
 
-const TableVotingDetailInside = () => {
+const TableVotingDetailInside = (props) => {
+  const { handleModal, data } = props
+
   return (
     <TableVoting RowHead={RowHead}>
-      {RowData.map((row) => (
+      {data.map((row) => (
         <StyledTableRow key={row.id}>
           <StyledTableCell component="th" scope="row">
-            {row.id}
+            {getDisplayAddress(row.operatorAddress)}
           </StyledTableCell>
           <StyledTableCell align="left">
             <Text size="lg" color="linkAura">
-              {row.title}
+              {row.balance.amount / 10 ** 6}
             </Text>
           </StyledTableCell>
-          <StyledTableCell align="left">{row.status}</StyledTableCell>
-          <StyledTableCell align="left">
+          <StyledTableCell align="left">{row.reward.length > 0 ? 'Yes' : 'No'}</StyledTableCell>
+          {/* <StyledTableCell align="left">
             <div>2 months ago</div>
             <div style={{ color: 'rgba(134, 138, 151, 1)' }}>{row.voting}</div>
+          </StyledTableCell> */}
+          <StyledTableCell align="right">
+            <StyledButtonManage size="md" onClick={() => handleModal(row)}>
+              <Text size="lg" color="white">
+                Manage
+              </Text>
+            </StyledButtonManage>
           </StyledTableCell>
         </StyledTableRow>
       ))}
@@ -89,7 +58,8 @@ const TableVotingDetailInside = () => {
 const useStyles = makeStyles(styles)
 
 function CardStaking(props): ReactElement {
-  const { handleModal } = props
+  const { handleModal, availableBalance, totalStake, rewardAmount, validatorOfUser, ClaimReward, nativeCurrency } =
+    props
   const classes = useStyles()
   return (
     <BoxCardStaking>
@@ -100,7 +70,7 @@ function CardStaking(props): ReactElement {
               Available Balance:
             </Text>
             <Text size="lg" color="inputDefault" strong>
-              64.000000 AURA
+              {availableBalance?.amount / 10 ** 6 || 0} {nativeCurrency}
             </Text>
           </div>
           <div className={classes.stakingOverviewTextContainer}>
@@ -108,19 +78,23 @@ function CardStaking(props): ReactElement {
               Total Staked:
             </Text>
             <Text size="lg" color="inputDefault" strong>
-              123.092822 AURA
+              {totalStake?.amount ? totalStake?.amount / 10 ** 6 : 0} {nativeCurrency}
             </Text>
           </div>
         </div>
-        <StyledButton>
-          <span style={{ fontSize: 14, fontWeight: 590 }} onClick={handleModal}>
-            Claim Reward: 0.012672 AURA
-          </span>
-        </StyledButton>
+        {rewardAmount[0]?.amount / 10 ** 6 > 0 && (
+          <StyledButton onClick={ClaimReward}>
+            <span style={{ fontSize: 14, fontWeight: 590 }}>
+              Claim Reward: {rewardAmount[0] ? (rewardAmount[0]?.amount / 10 ** 6).toFixed(6) : 0} {nativeCurrency}
+            </span>
+          </StyledButton>
+        )}
       </BoxCardStakingOverview>
-      <BoxCardStakingList>
-        <TableVotingDetailInside />
-      </BoxCardStakingList>
+      {validatorOfUser && validatorOfUser?.length > 1 && (
+        <BoxCardStakingList>
+          <TableVotingDetailInside handleModal={handleModal} data={validatorOfUser} />
+        </BoxCardStakingList>
+      )}
     </BoxCardStaking>
   )
 }

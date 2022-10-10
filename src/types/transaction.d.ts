@@ -50,6 +50,7 @@ export interface ITransactionListItem {
   ConfirmationsRequired: number
   Confirmations: number
   Rejections: number
+  TypeUrl?: string
 }
 
 export interface ISignature {

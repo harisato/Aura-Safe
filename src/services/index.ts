@@ -32,7 +32,7 @@ export interface ISafeAllow {
 
 export interface IResponse<T> {
   AdditionalData: any[]
-  Data: T
+  Data: any
   ErrorCode: string
   Message: string
 }
@@ -234,6 +234,12 @@ export function getAllUnDelegateOfUser(internalChainId: any, delegatorAddress: a
     .get(`${baseUrl}/distribution/${internalChainId}/${delegatorAddress}/undelegations`)
     .then((res) => res.data)
 }
+
+export function clamRewards(internalChainId: any, delegatorAddress: any): Promise<IResponse<any>> {
+  return axios.get(`${baseUrl}/general/${internalChainId}/${delegatorAddress}/rewards`).then((res) => res.data)
+}
+
+//VOTING
 
 export async function getProposals(internalChainId: number | string): Promise<IResponse<IProposalRes>> {
   return axios.get(`${baseUrl}/gov/${internalChainId}/proposals`).then((res) => res.data)
