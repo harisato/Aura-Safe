@@ -56,7 +56,9 @@ export default function ModalRedelegate(props) {
             <InputAura>
               <BorderInput>
                 <StyledInputModal onChange={handleAmoutRedelegate} value={amount} />
-                <StyledButtonModal onClick={handleMax(itemDelegate?.balance?.amount / 10 ** 6)}>Max</StyledButtonModal>
+                <StyledButtonModal onClick={() => handleMax(itemDelegate?.balance?.amount / 10 ** 6)}>
+                  Max
+                </StyledButtonModal>
               </BorderInput>
               <BorderAura>
                 <Text size="xl" color="linkAura">

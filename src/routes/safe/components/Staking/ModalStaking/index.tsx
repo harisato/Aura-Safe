@@ -63,7 +63,7 @@ export default function ModalStaking(props) {
   } = props
 
   const [arrRedelegate, setArrDelegate] = useState([])
-  console.log('allValidator', allValidator)
+
   useEffect(() => {
     const dataTemp: any = [
       {
