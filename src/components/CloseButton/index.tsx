@@ -10,6 +10,9 @@ const CloseButtonStyled = styled.button`
   color: white;
   height: 32px;
   cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `
 
 function CloseButton(props): ReactElement {

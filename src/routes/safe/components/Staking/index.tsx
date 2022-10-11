@@ -141,7 +141,9 @@ function Staking(props): ReactElement {
     setIsOpenReview(false)
   }
 
-  const handlePrevSendFund = () => {}
+  const handlePrevSendFund = () => {
+    setIsOpenReview(false)
+  }
 
   ///
   const temp = {

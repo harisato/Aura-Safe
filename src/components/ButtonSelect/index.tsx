@@ -8,6 +8,10 @@ import CaretDown from './CaretDown.svg'
 
 const useStyles = makeStyles((theme) => ({
   formControl: {
+    '& .MuiInput-input': {
+      color: 'white',
+    },
+
     '& .MuiInput-underline': {
       '&::after': {
         borderBottomColor: 'transparent',
