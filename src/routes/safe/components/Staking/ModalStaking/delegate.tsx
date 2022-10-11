@@ -54,7 +54,7 @@ export default function ModalDelegate(props) {
                   </Text>
                 </Col>
                 <Text size="xl" color="numberAura">
-                  0.632315 <TextGreen>{nativeCurrency}</TextGreen>
+                  0 <TextGreen>{nativeCurrency}</TextGreen>
                 </Text>
               </PaddingPopup>
             </BoxDelegate>
