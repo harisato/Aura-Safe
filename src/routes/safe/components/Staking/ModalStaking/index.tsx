@@ -115,7 +115,12 @@ export default function ModalStaking(props) {
       <StyleDivider />
 
       {handlValueDelegate === 'delegate' && (
-        <ModalDelegate handleAmout={handleAmout} amount={amount} nativeCurrency={nativeCurrency} />
+        <ModalDelegate
+          handleAmout={handleAmout}
+          amount={amount}
+          nativeCurrency={nativeCurrency}
+          availableBalance={availableBalance}
+        />
       )}
       {handlValueDelegate === 'redelegate' && (
         <ModalRedelegate

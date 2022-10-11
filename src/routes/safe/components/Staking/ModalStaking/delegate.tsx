@@ -16,7 +16,8 @@ import { Text } from '@aura/safe-react-components'
 import Col from 'src/components/layout/Col'
 
 export default function ModalDelegate(props) {
-  const { handleAmout, amount, nativeCurrency } = props
+  const { handleAmout, amount, nativeCurrency, availableBalance } = props
+
   return (
     <>
       <NotificationPopup>
@@ -40,7 +41,7 @@ export default function ModalDelegate(props) {
                   </Text>
                 </Col>
                 <Text size="xl" color="numberAura">
-                  5.000000 <TextGreen>{nativeCurrency}</TextGreen>
+                  {availableBalance?.amount / 10 ** 6} <TextGreen>{nativeCurrency}</TextGreen>
                 </Text>
               </PaddingPopup>
             </BoxDelegate>
