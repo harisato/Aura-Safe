@@ -101,14 +101,14 @@ export default function ModalStaking(props) {
           <ImgStyled src={StakeFish} alt="StakeFish" />
           <BoxImgStyled>
             <img src={Inotel} alt="StakeFish" />
-            <Commission>Commission - 6%</Commission>
+            <Commission>Commission - 0%</Commission>
           </BoxImgStyled>
         </HeaderPopup>
         <BoxVotingPower>
           <TextPower>
-            Voting power - 5.58% (64.000000 <TextGreen>{nativeCurrency}</TextGreen> )
+            Voting power - 0% (0 <TextGreen>{nativeCurrency}</TextGreen> )
           </TextPower>
-          <TextDelegators>Delegators - 27,733</TextDelegators>
+          <TextDelegators>Delegators -0</TextDelegators>
         </BoxVotingPower>
       </HeaderContainer>
 
