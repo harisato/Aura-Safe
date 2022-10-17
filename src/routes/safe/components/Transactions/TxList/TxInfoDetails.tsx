@@ -80,6 +80,8 @@ export const TxInfoDetails = ({
     }
   }, [txInfo])
 
+  console.log(title)
+
   return (
     <InfoDetails title={title} quanlity={quanlity}>
       <SingleRow>

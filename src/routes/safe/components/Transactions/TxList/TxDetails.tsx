@@ -33,8 +33,9 @@ const NormalBreakingText = styled(Text)`
 `
 
 const TxDataGroup = ({ txDetails }: { txDetails: ExpandedTxDetails }): ReactElement | null => {
+  console.log('txDetails1', txDetails)
   if (isTransferTxInfo(txDetails.txInfo) || isSettingsChangeTxInfo(txDetails.txInfo)) {
-    return <TxInfo txInfo={txDetails.txInfo} />
+    return <TxInfo txInfo={txDetails.txInfo} typeUrl={txDetails} />
   }
 
   if (isCancelTxDetails(txDetails.txInfo) && isMultiSigExecutionDetails(txDetails.detailedExecutionInfo)) {
@@ -86,14 +87,14 @@ type TxDetailsProps = {
   transaction: Transaction
 }
 
-export const TxDetails = ({ transaction }: TxDetailsProps): ReactElement => {
+export const TxDetails = ({ transaction }: any): ReactElement => {
   const { txLocation } = useContext(TxLocationContext)
-
   const { data, loading } = useTransactionDetails(
     transaction.id,
     transaction.txHash,
     (transaction.txInfo as any)?.direction,
   )
+
   const txStatus = useLocalTxStatus(transaction)
   const willBeReplaced = txStatus === LocalTransactionStatus.WILL_BE_REPLACED
   const isPending = txStatus === LocalTransactionStatus.PENDING

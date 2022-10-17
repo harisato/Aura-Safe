@@ -8,7 +8,7 @@ import { AppReduxState } from 'src/store'
 import { TransferDirection } from '@gnosis.pm/safe-react-gateway-sdk'
 
 export type LoadTransactionDetails = {
-  data?: ExpandedTxDetails
+  data?: any
   loading: boolean
 }
 
@@ -27,8 +27,13 @@ export const useTransactionDetails = (
   )
 
   useEffect(() => {
+    const dataTemp = {
+      ...data?.txDetails,
+      TypeURL: data?.txInfo,
+    }
+
     if (data?.txDetails) {
-      setTxDetails({ loading: false, data: data?.txDetails })
+      setTxDetails({ loading: false, data: dataTemp })
     } else {
       // lookup tx details
       // dispatch.current(fetchTransactionDetails({ transactionId }))

@@ -5,13 +5,13 @@ import { isSettingsChangeTxInfo, isTransferTxInfo } from 'src/logic/safe/store/m
 import { TxInfoSettings } from './TxInfoSettings'
 import { TxInfoTransfer } from './TxInfoTransfer'
 
-export const TxInfo = ({ txInfo }: { txInfo: TransactionInfo }): ReactElement | null => {
+export const TxInfo = ({ txInfo, typeUrl }: { txInfo: TransactionInfo; typeUrl: any }): ReactElement | null => {
   if (isSettingsChangeTxInfo(txInfo)) {
     return <TxInfoSettings settingsInfo={(txInfo as SettingsChange).settingsInfo} />
   }
 
   if (isTransferTxInfo(txInfo)) {
-    return <TxInfoTransfer txInfo={txInfo} />
+    return <TxInfoTransfer txInfo={txInfo} typeUrl={typeUrl} />
   }
 
   return null
