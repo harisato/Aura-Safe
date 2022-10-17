@@ -4,8 +4,9 @@ import { Text } from '@aura/safe-react-components'
 import Col from 'src/components/layout/Col'
 
 export default function ModalReward(props) {
-  const { nativeCurrency, itemDelegate, availableBalance } = props
-
+  const { nativeCurrency, itemDelegate, availableBalance, dataDelegateOfUser } = props
+  const pendingReward: any = dataDelegateOfUser?.delegation?.pendingReward?.amount / 10 ** 6
+  console.log('dataDelegateOfUser', dataDelegateOfUser)
   return (
     <>
       <NotificationPopup>
@@ -31,7 +32,8 @@ export default function ModalReward(props) {
               </Text>
             </Col>
             <Text size="lg" color="numberAura">
-              {itemDelegate?.balance?.amount / 10 ** 6 || 0} <TextGreen>{nativeCurrency}</TextGreen>
+              {dataDelegateOfUser?.delegation?.delegationBalance?.amount / 10 ** 6 || 0}{' '}
+              <TextGreen>{nativeCurrency}</TextGreen>
             </Text>
           </BoxDelegate>
           <BoxDelegate>
@@ -41,7 +43,7 @@ export default function ModalReward(props) {
               </Text>
             </Col>
             <Text size="lg" color="numberAura">
-              0 <TextGreen>{nativeCurrency}</TextGreen>
+              {parseFloat(pendingReward).toFixed(6) || 0} <TextGreen>{nativeCurrency}</TextGreen>
             </Text>
           </BoxDelegate>
         </Col>
@@ -54,7 +56,8 @@ export default function ModalReward(props) {
             </Col>
 
             <Text size="lg" color="numberAura">
-              {availableBalance.amount / 10 ** 6 || 0} <TextGreen>{nativeCurrency}</TextGreen>
+              {dataDelegateOfUser?.delegation?.delegatableBalance?.amount / 10 ** 6 || 0}{' '}
+              <TextGreen>{nativeCurrency}</TextGreen>
             </Text>
           </BoxDelegate>
           <BoxDelegate>
@@ -65,7 +68,8 @@ export default function ModalReward(props) {
             </Col>
 
             <Text size="lg" color="numberAura">
-              0 <TextGreen>{nativeCurrency}</TextGreen>
+              {dataDelegateOfUser?.delegation?.claimedReward?.amount / 10 ** 6 || 0}{' '}
+              <TextGreen>{nativeCurrency}</TextGreen>
             </Text>
           </BoxDelegate>
         </Col>

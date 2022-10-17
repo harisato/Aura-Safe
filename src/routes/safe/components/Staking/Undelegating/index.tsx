@@ -1,4 +1,4 @@
-import { ReactElement } from 'react'
+import { ReactElement, useEffect, useState } from 'react'
 import { Text } from '@aura/safe-react-components'
 import Col from 'src/components/layout/Col'
 import styled from 'styled-components'
@@ -62,7 +62,24 @@ const StyleDivider = styled(Divider)`
 `
 
 function Undelegating(props): ReactElement {
-  const { unValidatorOfUser } = props
+  const { unValidatorOfUser, allValidator } = props
+  const [data, setData] = useState([])
+
+  useEffect(() => {
+    const dataTemp: any = []
+    allValidator?.map((item) => {
+      unValidatorOfUser?.map((i) => {
+        if (item.operatorAddress === i.operatorAddress) {
+          dataTemp.push({
+            ...item,
+            completionTime: i.completionTime,
+            balance: i.balance,
+          })
+        }
+      })
+    })
+    setData(dataTemp)
+  }, [allValidator])
 
   return (
     <BoxCardStaking>
@@ -72,15 +89,15 @@ function Undelegating(props): ReactElement {
         </Text>
       </BoxCardStakingOverview>
       <BoxCardStakingList>
-        {unValidatorOfUser.map((item, key) => {
+        {data?.map((item: any, key) => {
           return (
             <>
               <DelegateRow>
                 <Col end="lg" sm={2} xs={12}>
                   <BoxImg>
-                    <ImgStyled src={cryto} alt="DokiaCapital" />
+                    <ImgStyled src={item?.description?.picture} alt="DokiaCapital" />
                     <TextImg size="lg" color="linkAura">
-                      {getDisplayAddress(item.operatorAddress)}
+                      {item.validator}
                     </TextImg>
                   </BoxImg>
                 </Col>
@@ -88,11 +105,11 @@ function Undelegating(props): ReactElement {
                   <div>
                     <TotalDelegate>
                       <Text size="lg" color="white">
-                        {item.balance / 10 ** 6}
+                        {item?.balance / 10 ** 6 || 0}
                       </Text>
                     </TotalDelegate>
                     <Text size="lg" color="disableAura">
-                      {formatTimeInWords(getUTCStartOfDate(item.completionTime))}
+                      {formatTimeInWords(getUTCStartOfDate(item?.completionTime))}
                     </Text>
                   </div>
                 </Col>

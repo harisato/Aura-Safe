@@ -60,6 +60,7 @@ export default function ModalStaking(props) {
     itemDelegate,
     availableBalance,
     handleMax,
+    dataDelegateOfUser,
   } = props
 
   const [arrRedelegate, setArrDelegate] = useState([])
@@ -101,14 +102,18 @@ export default function ModalStaking(props) {
           <ImgStyled src={StakeFish} alt="StakeFish" />
           <BoxImgStyled>
             <img src={Inotel} alt="StakeFish" />
-            <Commission>Commission - 0%</Commission>
+            <Commission>
+              Commission - {parseFloat(dataDelegateOfUser?.validator?.commission).toFixed(2) || 0}%
+            </Commission>
           </BoxImgStyled>
         </HeaderPopup>
         <BoxVotingPower>
           <TextPower>
-            Voting power - 0% (0 <TextGreen>{nativeCurrency}</TextGreen> )
+            Voting power -{' '}
+            {parseFloat(dataDelegateOfUser?.validator?.votingPower?.percent_voting_power).toFixed(2) || 0}% (0{' '}
+            <TextGreen>{nativeCurrency}</TextGreen> )
           </TextPower>
-          <TextDelegators>Delegators -0</TextDelegators>
+          <TextDelegators>Delegators - {dataDelegateOfUser?.validator?.delegators || 0}</TextDelegators>
         </BoxVotingPower>
       </HeaderContainer>
 
@@ -120,10 +125,13 @@ export default function ModalStaking(props) {
           amount={amount}
           nativeCurrency={nativeCurrency}
           availableBalance={availableBalance}
+          dataDelegateOfUser={dataDelegateOfUser}
+          handleMax={handleMax}
         />
       )}
       {handlValueDelegate === 'redelegate' && (
         <ModalRedelegate
+          dataDelegateOfUser={dataDelegateOfUser}
           handlValueDelegate={handlValueDelegate}
           arrRedelegate={arrRedelegate}
           handleChangeRedelegate={handleChangeRedelegate}
@@ -137,6 +145,7 @@ export default function ModalStaking(props) {
       )}
       {handlValueDelegate === 'undelegate' && (
         <ModalRedelegate
+          dataDelegateOfUser={dataDelegateOfUser}
           handlValueDelegate={handlValueDelegate}
           arrRedelegate={arrRedelegate}
           handleChangeRedelegate={handleChangeRedelegate}
@@ -149,7 +158,12 @@ export default function ModalStaking(props) {
         />
       )}
       {handlValueDelegate === 'reward' && (
-        <ModalReward nativeCurrency={nativeCurrency} itemDelegate={itemDelegate} availableBalance={availableBalance} />
+        <ModalReward
+          dataDelegateOfUser={dataDelegateOfUser}
+          nativeCurrency={nativeCurrency}
+          itemDelegate={itemDelegate}
+          availableBalance={availableBalance}
+        />
       )}
 
       <FotterModal>

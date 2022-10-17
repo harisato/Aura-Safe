@@ -16,8 +16,8 @@ import { Text } from '@aura/safe-react-components'
 import Col from 'src/components/layout/Col'
 
 export default function ModalDelegate(props) {
-  const { handleAmout, amount, nativeCurrency, availableBalance } = props
-
+  const { handleAmout, amount, nativeCurrency, availableBalance, dataDelegateOfUser, handleMax } = props
+  console.log('dataDelegateOfUser', dataDelegateOfUser)
   return (
     <>
       <NotificationPopup>
@@ -41,7 +41,7 @@ export default function ModalDelegate(props) {
                   </Text>
                 </Col>
                 <Text size="xl" color="numberAura">
-                  {availableBalance?.amount / 10 ** 6} <TextGreen>{nativeCurrency}</TextGreen>
+                  {availableBalance?.amount / 10 ** 6 || 0} <TextGreen>{nativeCurrency}</TextGreen>
                 </Text>
               </PaddingPopup>
             </BoxDelegate>
@@ -54,7 +54,8 @@ export default function ModalDelegate(props) {
                   </Text>
                 </Col>
                 <Text size="xl" color="numberAura">
-                  0 <TextGreen>{nativeCurrency}</TextGreen>
+                  {dataDelegateOfUser?.delegation?.delegatableBalance?.amount / 10 ** 6 || 0}{' '}
+                  <TextGreen>{nativeCurrency}</TextGreen>
                 </Text>
               </PaddingPopup>
             </BoxDelegate>
@@ -68,8 +69,10 @@ export default function ModalDelegate(props) {
                 </Col>
                 <InputAura>
                   <BorderInput>
-                    <StyledInputModal onChange={handleAmout} value={amount} />
-                    <StyledButtonModal>Max</StyledButtonModal>
+                    <StyledInputModal onChange={handleAmout} value={amount} type="number" step="0.1" min="0" max="20" />
+                    <StyledButtonModal onClick={() => handleMax(availableBalance?.amount / 10 ** 6 || 0)}>
+                      Max
+                    </StyledButtonModal>
                   </BorderInput>
                   <BorderAura>
                     <Text size="xl" color="linkAura">
