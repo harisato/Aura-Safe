@@ -95,7 +95,7 @@ function Staking(props): ReactElement {
       setListReward(dataTemp)
     })
     getAllUnDelegateOfUser(internalChainId, SafeAddress).then((res) => {
-      setUnValidatorOfUser(res.Data.undelegations)
+      setUnValidatorOfUser(res.Data?.undelegations)
     })
   }, [internalChainId, SafeAddress])
 
