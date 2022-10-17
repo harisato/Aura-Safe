@@ -11,7 +11,7 @@ import { TxLocationContext } from './TxLocationProvider'
 
 export const QueueTransactions = (): ReactElement => {
   const { count, isLoading, hasMore, next, transactions } = usePagedQueuedTransactions()
-  console.log('transactions', transactions)
+
   if (count === 0 && isLoading) {
     return (
       <Centered>

@@ -235,6 +235,10 @@ export function getAllUnDelegateOfUser(internalChainId: any, delegatorAddress: a
     .then((res) => res.data)
 }
 
+export function getDelegateOfUser(dataSend: any): Promise<IResponse<any>> {
+  return axios.get(`${baseUrl}/distribution/delegation?${dataSend}`).then((res) => res.data)
+}
+
 export function clamRewards(internalChainId: any, delegatorAddress: any): Promise<IResponse<any>> {
   return axios.get(`${baseUrl}/general/${internalChainId}/${delegatorAddress}/rewards`).then((res) => res.data)
 }

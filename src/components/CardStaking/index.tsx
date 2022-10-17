@@ -1,4 +1,4 @@
-import { ReactElement } from 'react'
+import { ReactElement, useEffect, useState } from 'react'
 import { Text } from '@aura/safe-react-components'
 import {
   styles,
@@ -7,6 +7,8 @@ import {
   BoxCardStaking,
   BoxCardStakingList,
   StyledButtonManage,
+  HeaderValidator,
+  ImgRow,
 } from './style'
 import { makeStyles } from '@material-ui/core'
 import TableVoting from 'src/components/TableVoting'
@@ -30,7 +32,12 @@ const TableVotingDetailInside = (props) => {
       {data.map((row) => (
         <StyledTableRow key={row.id}>
           <StyledTableCell component="th" scope="row">
-            {getDisplayAddress(row.operatorAddress)}
+            <ImgRow>
+              <img style={{ marginRight: 5 }} src={row.description.picture} />
+              <Text size="lg" color="linkAura">
+                {row.validator}
+              </Text>
+            </ImgRow>
           </StyledTableCell>
           <StyledTableCell align="left">
             <Text size="lg" color="linkAura">
@@ -58,9 +65,35 @@ const TableVotingDetailInside = (props) => {
 const useStyles = makeStyles(styles)
 
 function CardStaking(props): ReactElement {
-  const { handleModal, availableBalance, totalStake, rewardAmount, validatorOfUser, ClaimReward, nativeCurrency } =
-    props
+  const {
+    handleModal,
+    availableBalance,
+    totalStake,
+    rewardAmount,
+    validatorOfUser,
+    allValidator,
+    ClaimReward,
+    nativeCurrency,
+  } = props
   const classes = useStyles()
+  const [data, setData] = useState()
+
+  useEffect(() => {
+    const dataTemp: any = []
+    allValidator?.map((item) => {
+      validatorOfUser?.map((i) => {
+        if (item.operatorAddress === i.operatorAddress) {
+          dataTemp.push({
+            ...item,
+            balance: i.balance,
+            reward: i.reward,
+          })
+        }
+      })
+    })
+    setData(dataTemp)
+  }, [validatorOfUser])
+
   return (
     <BoxCardStaking>
       <BoxCardStakingOverview>
@@ -70,7 +103,7 @@ function CardStaking(props): ReactElement {
               Available Balance:
             </Text>
             <Text size="lg" color="inputDefault" strong>
-              {availableBalance?.amount / 10 ** 6 || 0} {nativeCurrency}
+              {availableBalance?.amount / 10 ** 6 || 0} <span style={{ color: '#5EE6D0' }}>{nativeCurrency}</span>
             </Text>
           </div>
           <div className={classes.stakingOverviewTextContainer}>
@@ -78,7 +111,8 @@ function CardStaking(props): ReactElement {
               Total Staked:
             </Text>
             <Text size="lg" color="inputDefault" strong>
-              {totalStake?.amount ? totalStake?.amount / 10 ** 6 : 0} {nativeCurrency}
+              {totalStake?.amount ? totalStake?.amount / 10 ** 6 : 0}{' '}
+              <span style={{ color: '#5EE6D0' }}>{nativeCurrency}</span>
             </Text>
           </div>
         </div>
@@ -90,9 +124,9 @@ function CardStaking(props): ReactElement {
           </StyledButton>
         )}
       </BoxCardStakingOverview>
-      {validatorOfUser && validatorOfUser?.length > 1 && (
+      {validatorOfUser && validatorOfUser?.length > 0 && (
         <BoxCardStakingList>
-          <TableVotingDetailInside handleModal={handleModal} data={validatorOfUser} />
+          <TableVotingDetailInside handleModal={handleModal} data={data} />
         </BoxCardStakingList>
       )}
     </BoxCardStaking>

@@ -9,10 +9,17 @@ import BoxCard from 'src/components/BoxCard'
 import ModalStaking from './ModalStaking/index'
 
 import { getInternalChainId } from 'src/config'
-import { getAllValidator, getAllDelegateOfUser, getAllUnDelegateOfUser, clamRewards } from 'src/services/index'
+import {
+  getAllValidator,
+  getAllDelegateOfUser,
+  getAllUnDelegateOfUser,
+  clamRewards,
+  getDelegateOfUser,
+} from 'src/services/index'
 import { getExplorerInfo, getNativeCurrency } from 'src/config'
 
 import { extractSafeAddress } from 'src/routes/routes'
+import queryString from 'query-string'
 
 import ReviewSendFundsTx from './ReviewSendFundsTx'
 import Modal from 'src/components/Modal'
@@ -51,6 +58,7 @@ function Staking(props): ReactElement {
   const [itemValidator, setItemValidator] = useState<any>()
   const [handlValueDelegate, setHandleValueDelegate] = useState('')
   const [itemDelegate, setItemDelegate] = useState<any>()
+  const [dataDelegateOfUser, setDataDelegateOfUser] = useState<any>()
 
   const handleChange = (event) => {
     setHandleValueDelegate(event.target.value)
@@ -64,17 +72,21 @@ function Staking(props): ReactElement {
     setAmount(event.target.value)
   }
 
+  const handleListValidator = async (internalChainId) => {
+    const listValidator: any = (await getAllValidator(internalChainId)) || []
+    setAllValidator(listValidator?.Data?.validators)
+  }
+
   useEffect(() => {
     const dataTemp: any = []
-    getAllValidator(internalChainId).then((res) => {
-      setAllValidator(res.Data.validators)
-    })
+    handleListValidator(internalChainId)
+    //
     getAllDelegateOfUser(internalChainId, SafeAddress).then((res) => {
       setValidatorOfUser(res.Data?.delegations)
       setAvailableBalance(res.Data?.availableBalance)
       setTotalStake(res.Data.total?.staked)
       setRewardAmount(res.Data.total?.reward)
-      res.Data.delegations?.map((item) => {
+      res.Data?.delegations?.map((item) => {
         dataTemp.push({
           delegatorAddress: SafeAddress,
           validatorAddress: item?.operatorAddress,
@@ -91,10 +103,24 @@ function Staking(props): ReactElement {
     setAmount(event.target.value)
   }
 
+  const handleCallDataValidator = (address) => {
+    const dataSend: any = {
+      internalChainId: internalChainId,
+      operatorAddress: address,
+      delegatorAddress: SafeAddress,
+    }
+    getDelegateOfUser(queryString.stringify(dataSend)).then((res) => {
+      console.log('res', res)
+      setDataDelegateOfUser(res.Data)
+    })
+  }
+
   const handleReward = (item) => {
     const dataTemp = {
       safeStaking: item.operatorAddress,
     }
+
+    handleCallDataValidator(item.operatorAddress)
     setItemValidator(dataTemp)
     setItemDelegate(item)
     setIsOpenDelagate(true)
@@ -105,6 +131,7 @@ function Staking(props): ReactElement {
     const dataTemp = {
       safeStaking: item.operatorAddress,
     }
+    handleCallDataValidator(item.operatorAddress)
     setIsOpenDelagate(true)
     setItemValidator(dataTemp)
     setHandleValueDelegate('delegate')
@@ -186,6 +213,7 @@ function Staking(props): ReactElement {
             validatorOfUser={validatorOfUser}
             ClaimReward={ClaimReward}
             nativeCurrency={nativeCurrency}
+            allValidator={allValidator}
           />
         </Col>
       </Block>
@@ -194,7 +222,7 @@ function Staking(props): ReactElement {
         <Block margin="mdTop">
           {' '}
           <Col start="sm" sm={12} xs={12}>
-            <Undelegating unValidatorOfUser={unValidatorOfUser} />
+            <Undelegating unValidatorOfUser={unValidatorOfUser} allValidator={allValidator} />
           </Col>
         </Block>
       )}
@@ -225,6 +253,7 @@ function Staking(props): ReactElement {
         itemDelegate={itemDelegate}
         availableBalance={availableBalance}
         handleMax={handleMax}
+        dataDelegateOfUser={dataDelegateOfUser}
       />
 
       <Modal

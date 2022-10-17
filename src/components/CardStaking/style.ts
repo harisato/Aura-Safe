@@ -67,4 +67,21 @@ const StyledButtonManage = styled(Button)`
   background-color: transparent !important;
   min-width: 130px !important;
 `
-export { StyledButton, BoxCardStakingOverview, BoxCardStaking, BoxCardStakingList, StyledButtonManage }
+
+const HeaderValidator = styled.div`
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+`
+const ImgRow = styled.div`
+  display: flex;
+`
+export {
+  StyledButton,
+  BoxCardStakingOverview,
+  BoxCardStaking,
+  BoxCardStakingList,
+  StyledButtonManage,
+  HeaderValidator,
+  ImgRow,
+}

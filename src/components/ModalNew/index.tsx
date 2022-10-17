@@ -8,7 +8,7 @@ const customStyles = {
     backgroundColor: '#131419',
     borderRadius: '12px',
     border: 'none',
-    top: '30%',
+    top: '45%',
     left: '50%',
     right: 'auto',
     bottom: 'auto',
