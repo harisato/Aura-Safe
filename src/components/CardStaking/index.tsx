@@ -29,11 +29,11 @@ const TableVotingDetailInside = (props) => {
 
   return (
     <TableVoting RowHead={RowHead}>
-      {data.map((row) => (
+      {data?.map((row) => (
         <StyledTableRow key={row.id}>
           <StyledTableCell component="th" scope="row">
             <ImgRow>
-              <img style={{ marginRight: 5 }} src={row.description.picture} />
+              <img style={{ marginRight: 5 }} src={row?.description?.picture} />
               <Text size="lg" color="linkAura">
                 {row.validator}
               </Text>
@@ -41,10 +41,10 @@ const TableVotingDetailInside = (props) => {
           </StyledTableCell>
           <StyledTableCell align="left">
             <Text size="lg" color="linkAura">
-              {row.balance.amount / 10 ** 6}
+              {row?.balance?.amount / 10 ** 6}
             </Text>
           </StyledTableCell>
-          <StyledTableCell align="left">{row.reward.length > 0 ? 'Yes' : 'No'}</StyledTableCell>
+          <StyledTableCell align="left">{row?.reward?.length > 0 ? 'Yes' : 'No'}</StyledTableCell>
           {/* <StyledTableCell align="left">
             <div>2 months ago</div>
             <div style={{ color: 'rgba(134, 138, 151, 1)' }}>{row.voting}</div>
