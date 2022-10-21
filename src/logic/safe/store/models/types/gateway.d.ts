@@ -33,7 +33,7 @@ export const LocalTransactionStatus: Record<string, TransactionStatus> = {
 }
 
 export type Transaction = TransactionSummary & {
-  txDetails?: ExpandedTxDetails,
+  txDetails?: any
   txHash?: string
 }
 

@@ -192,7 +192,7 @@ export async function getAllTx(payload: ITransactionListQuery): Promise<IRespons
 export async function getTxDetailByHash(
   txHash: string,
   safeAddress: string,
-  direction: TransferDirection = TransferDirection.OUTGOING,
+  direction: any,
 ): Promise<IResponse<ITransactionDetail>> {
   return axios
     .get(`${baseUrl}/transaction/transaction-details/${txHash}/${safeAddress}/?direction=${direction}`)
