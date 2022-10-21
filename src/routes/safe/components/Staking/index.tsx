@@ -83,9 +83,9 @@ function Staking(props): ReactElement {
     //
     getAllDelegateOfUser(internalChainId, SafeAddress).then((res) => {
       setValidatorOfUser(res.Data?.delegations)
-      setAvailableBalance(res.Data?.availableBalance)
+      setAvailableBalance(res.Data?.availableBalance || 0)
       setTotalStake(res.Data.total?.staked)
-      setRewardAmount(res.Data.total?.reward)
+      setRewardAmount(res.Data.total?.reward || 0)
       res.Data?.delegations?.map((item) => {
         dataTemp.push({
           delegatorAddress: SafeAddress,
@@ -110,7 +110,6 @@ function Staking(props): ReactElement {
       delegatorAddress: SafeAddress,
     }
     getDelegateOfUser(queryString.stringify(dataSend)).then((res) => {
-      console.log('res', res)
       setDataDelegateOfUser(res.Data)
     })
   }
