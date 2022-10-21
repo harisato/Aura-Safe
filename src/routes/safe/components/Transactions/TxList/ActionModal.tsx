@@ -10,6 +10,8 @@ import { RejectTxModal } from './modals/RejectTxModal'
 import { TransactionActionStateContext } from './TxActionProvider'
 import { Overwrite } from 'src/types/helpers'
 
+import { extractSafeAddress } from 'src/routes/routes'
+
 export const ActionModal = (): ReactElement | null => {
   const { selectedAction, selectAction } = useContext(TransactionActionStateContext)
   const txParameters = useTransactionParameters()

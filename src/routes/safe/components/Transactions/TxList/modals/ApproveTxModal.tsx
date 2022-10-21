@@ -13,7 +13,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { useStyles } from './style'
 
 import { toBase64 } from '@cosmjs/encoding'
-import { coins, GasPrice, MsgSendEncodeObject, SignerData, SigningStargateClient } from '@cosmjs/stargate'
+import { coins, coin, GasPrice, MsgSendEncodeObject, SignerData, SigningStargateClient } from '@cosmjs/stargate'
 import ExecuteCheckbox from 'src/components/ExecuteCheckbox'
 import Block from 'src/components/layout/Block'
 import Hairline from 'src/components/layout/Hairline'
@@ -40,7 +40,7 @@ import { isThresholdReached } from 'src/routes/safe/components/Transactions/TxLi
 import { TxParameters } from 'src/routes/safe/container/hooks/useTransactionParameters'
 import { confirmSafeTransaction, getAccountOnChain, getMChainsConfig, sendSafeTransaction } from 'src/services'
 import { Overwrite } from 'src/types/helpers'
-
+import { getTxDetailByHash } from 'src/services'
 import { loadLastUsedProvider } from 'src/logic/wallets/store/middlewares/providerWatcher'
 
 export const APPROVE_TX_MODAL_SUBMIT_BTN_TEST_ID = 'approve-tx-modal-submit-btn'
@@ -395,14 +395,62 @@ export const ApproveTxModal = ({
         }
       })()
 
-      const msgSend: any = {
-        fromAddress: safeAddress,
-        toAddress: to,
-        amount: coins(amountFinal, denom),
+      const msg: any = []
+
+      const txTemp: any = transaction
+
+      const res = await getTxDetailByHash(transaction.id, safeAddress, 'OUTGOING')
+
+      if (
+        txTemp?.txInfo?.typeUrl === '/cosmos.staking.v1beta1.MsgDelegate' ||
+        txTemp?.txInfo?.typeUrl === '/cosmos.staking.v1beta1.MsgUndelegate'
+      ) {
+        const msgSend: any = {
+          delegatorAddress: safeAddress,
+          validatorAddress: to,
+          amount: coin(amountFinal, denom),
+        }
+        msg.push({
+          typeUrl: txTemp.txInfo?.typeUrl,
+          value: msgSend,
+        })
       }
-      const msg: MsgSendEncodeObject = {
-        typeUrl: '/cosmos.bank.v1beta1.MsgSend',
-        value: msgSend,
+
+      if (txTemp?.txInfo?.typeUrl === '/cosmos.staking.v1beta1.MsgBeginRedelegate') {
+        const msgSend: any = {
+          delegatorAddress: safeAddress,
+          validatorSrcAddress: res.Data.Messages[0].validatorSrcAddress,
+          validatorDstAddress: res.Data.Messages[0].validatorDstAddress,
+          amount: coin(amountFinal, denom),
+        }
+        msg.push({
+          typeUrl: txTemp.txInfo?.typeUrl,
+          value: msgSend,
+        })
+      }
+
+      if (txTemp?.txInfo?.typeUrl === '/cosmos.distribution.v1beta1.MsgWithdrawDelegatorReward') {
+        res.Data.Messages.map((item) => {
+          msg.push({
+            typeUrl: txTemp?.txInfo?.typeUrl,
+            value: {
+              delegatorAddress: item.delegatorAddress,
+              validatorAddress: item.validatorAddress,
+            },
+          })
+        })
+      }
+
+      if (txTemp?.txInfo?.typeUrl === '/cosmos.bank.v1beta1.MsgSend') {
+        const msgSend: any = {
+          fromAddress: safeAddress,
+          toAddress: to,
+          amount: coins(amountFinal, denom),
+        }
+        msg.push({
+          typeUrl: txTemp?.txInfo?.typeUrl,
+          value: msgSend,
+        })
       }
 
       // calculate fee
@@ -423,7 +471,7 @@ export const ApproveTxModal = ({
         // Sign On Wallet
         dispatch(enqueueSnackbar(enhanceSnackbarForAction(NOTIFICATIONS.SIGN_TX_MSG)))
 
-        const signResult = await client.sign(accounts[0]?.address, [msg], sendFee, '', signerData)
+        const signResult = await client.sign(accounts[0]?.address, msg, sendFee, '', signerData)
 
         const signatures = toBase64(signResult.signatures[0])
         const bodyBytes = toBase64(signResult.bodyBytes)

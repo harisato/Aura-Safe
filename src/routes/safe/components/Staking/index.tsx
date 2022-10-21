@@ -39,7 +39,7 @@ function Staking(props): ReactElement {
 
   const nativeCurrency = getNativeCurrency().symbol
 
-  const [amount, setAmount] = useState(0)
+  const [amount, setAmount] = useState<any>('')
 
   const [availableBalance, setAvailableBalance] = useState(0)
   const [totalStake, setTotalStake] = useState(0)
@@ -184,7 +184,7 @@ function Staking(props): ReactElement {
   const HandleClose = () => {
     setIsOpenDelagate(false)
     setItemValidator(null)
-    setAmount(0)
+    setAmount('')
   }
 
   return (

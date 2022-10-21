@@ -158,7 +158,7 @@ export const useEstimateTransactionGas = ({
 
       try {
         let safeTxGasEstimation = safeTxGas || '0'
-        let ethGasLimitEstimation = 0
+        const ethGasLimitEstimation = 0
         let transactionCallSuccess = true
         let txEstimationExecutionStatus = EstimationStatus.LOADING
 
@@ -176,20 +176,20 @@ export const useEstimateTransactionGas = ({
         }
 
         if (isExecution || approvalAndExecution) {
-        //   ethGasLimitEstimation = await estimateTransactionGasLimit({
-        //     safeAddress,
-        //     safeVersion,
-        //     txRecipient,
-        //     txData,
-        //     txAmount: txAmount || '0',
-        //     txConfirmations,
-        //     isExecution,
-        //     isOffChainSignature,
-        //     operation: operation || Operation.CALL,
-        //     from,
-        //     safeTxGas: safeTxGasEstimation,
-        //     approvalAndExecution,
-        //   })
+          //   ethGasLimitEstimation = await estimateTransactionGasLimit({
+          //     safeAddress,
+          //     safeVersion,
+          //     txRecipient,
+          //     txData,
+          //     txAmount: txAmount || '0',
+          //     txConfirmations,
+          //     isExecution,
+          //     isOffChainSignature,
+          //     operation: operation || Operation.CALL,
+          //     from,
+          //     safeTxGas: safeTxGasEstimation,
+          //     approvalAndExecution,
+          //   })
         }
 
         const gasPrice = manualGasPrice || '1' // ? toWei(manualGasPrice, 'gwei') : await calculateGasPrice()
@@ -225,7 +225,7 @@ export const useEstimateTransactionGas = ({
           gasEstimation: safeTxGasEstimation,
           gasCost,
           gasCostFormatted,
-          gasPrice: gasPrice  as any,
+          gasPrice: gasPrice as any,
           gasPriceFormatted,
           gasLimit,
           isExecution,
