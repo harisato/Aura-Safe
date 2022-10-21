@@ -103,7 +103,8 @@ function CardStaking(props): ReactElement {
               Available Balance:
             </Text>
             <Text size="lg" color="inputDefault" strong>
-              {availableBalance?.amount / 10 ** 6 || 0} <span style={{ color: '#5EE6D0' }}>{nativeCurrency}</span>
+              {availableBalance?.amount ? availableBalance?.amount / 10 ** 6 : 0}{' '}
+              <span style={{ color: '#5EE6D0' }}>{nativeCurrency}</span>
             </Text>
           </div>
           <div className={classes.stakingOverviewTextContainer}>
