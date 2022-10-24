@@ -47,7 +47,6 @@ function NameNewSafeStep(): ReactElement {
           <Field
             component={TextField}
             name={FIELD_CREATE_CUSTOM_SAFE_NAME}
-            placeholder={formValues[FIELD_CREATE_SUGGESTED_SAFE_NAME]}
             text="Safe name"
             type="text"
             testId="create-safe-name-field"

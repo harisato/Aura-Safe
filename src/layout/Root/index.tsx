@@ -1,32 +1,35 @@
+import { Loader } from '@aura/safe-react-components'
 import * as Sentry from '@sentry/react'
-import { theme as styledTheme, Loader } from '@aura/safe-react-components'
 import { useEffect, useState } from 'react'
 
-import { LoadingContainer } from 'src/components/LoaderContainer'
+import { MuiThemeProvider } from '@material-ui/core/styles'
+import { Provider } from 'react-redux'
+import { Router } from 'react-router'
 import App from 'src/components/App'
 import GlobalErrorBoundary from 'src/components/GlobalErrorBoundary'
-import AppRoutes from 'src/routes'
-import { store } from 'src/store'
-import { history, WELCOME_ROUTE } from 'src/routes/routes'
-import theme from 'src/theme/mui'
-import { wrapInSuspense } from 'src/utils/wrapInSuspense'
-import Providers from '../Providers'
-import './index.module.scss'
-import './OnboardCustom.module.scss'
-import './KeystoneCustom.module.scss'
+import { LoadingContainer } from 'src/components/LoaderContainer'
 import StoreMigrator from 'src/components/StoreMigrator'
-import LegacyRouteRedirection from './LegacyRouteRedirection'
-import { logError, Errors, CodedException } from 'src/logic/exceptions/CodedException'
-import { loadChains } from 'src/config/cache/chains'
 import { isValidChainId, LOCAL_CONFIG_KEY, _getChainId, _setChainId } from 'src/config'
-import { DEFAULT_CHAIN_ID } from 'src/utils/constants'
-import { setChainId } from 'src/logic/config/utils'
-import { getGatewayUrl } from 'src/services/data/environment'
-import { setBaseUrl } from 'src/services'
-import local from 'src/utils/storage/local'
+import { loadChains } from 'src/config/cache/chains'
 import { ConfigState } from 'src/logic/config/store/reducer/reducer'
+import { setChainId } from 'src/logic/config/utils'
+import { CodedException, Errors, logError } from 'src/logic/exceptions/CodedException'
 import { TermProvider } from 'src/logic/TermContext/index'
-
+import AppRoutes from 'src/routes'
+import { history, WELCOME_ROUTE } from 'src/routes/routes'
+import { setBaseUrl } from 'src/services'
+import { getGatewayUrl } from 'src/services/data/environment'
+import { store } from 'src/store'
+import theme from 'src/theme/mui'
+import { DEFAULT_CHAIN_ID } from 'src/utils/constants'
+import local from 'src/utils/storage/local'
+import { wrapInSuspense } from 'src/utils/wrapInSuspense'
+import { ThemeProvider } from 'styled-components'
+import './index.module.scss'
+import './KeystoneCustom.module.scss'
+import LegacyRouteRedirection from './LegacyRouteRedirection'
+import './OnboardCustom.module.scss'
+import { pyxisTheme } from 'src/theme/styledComponentsTheme'
 // Preloader is rendered outside of '#root' and acts as a loading spinner
 // for the app and then chains loading
 const removePreloader = () => {
@@ -122,13 +125,19 @@ const RootConsumer = (): React.ReactElement | null => {
 const Root = (): React.ReactElement => (
   <>
     <LegacyRouteRedirection history={history} />
-    <Providers store={store} history={history} styledTheme={styledTheme} muiTheme={theme}>
-      <Sentry.ErrorBoundary fallback={GlobalErrorBoundary}>
-        <TermProvider>
-          <RootConsumer />
-        </TermProvider>
-      </Sentry.ErrorBoundary>
-    </Providers>
+    <ThemeProvider theme={pyxisTheme}>
+      <Provider store={store}>
+        <MuiThemeProvider theme={theme}>
+          <Router history={history}>
+            <Sentry.ErrorBoundary fallback={GlobalErrorBoundary}>
+              <TermProvider>
+                <RootConsumer />
+              </TermProvider>
+            </Sentry.ErrorBoundary>
+          </Router>
+        </MuiThemeProvider>
+      </Provider>
+    </ThemeProvider>
   </>
 )
 

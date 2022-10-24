@@ -25,7 +25,7 @@ const Balances = lazy(() => import('src/routes/safe/components/Balances'))
 const TxList = lazy(() => import('src/routes/safe/components/Transactions/TxList'))
 const AddressBookTable = lazy(() => import('src/routes/safe/components/AddressBook'))
 const Staking = lazy(() => import('src/routes/safe/components/Staking'))
-const Voting = lazy(() => import('src/routes/safe/components/Voting'))
+const Voting = lazy(() => import('src/pages/Voting'))
 const VotingDetail = lazy(() => import('src/routes/safe/components/VotingDetail'))
 
 const Container = (): React.ReactElement => {

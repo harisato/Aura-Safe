@@ -1,10 +1,7 @@
-import { Breadcrumb, BreadcrumbElement, Loader, Menu, Text } from '@aura/safe-react-components'
+import { Breadcrumb, BreadcrumbElement, Loader, Text } from '@aura/safe-react-components'
 import { ReactElement, useEffect, useState } from 'react'
 import { useDispatch } from 'react-redux'
-
 import BoxCard from 'src/components/BoxCard'
-import CardVoting from 'src/components/CardVoting'
-import Block from 'src/components/layout/Block'
 import Col from 'src/components/layout/Col'
 import { LoadingContainer } from 'src/components/LoaderContainer'
 import StatusCard from 'src/components/StatusCard'
@@ -12,12 +9,13 @@ import TableVoting, { StyledTableCell, StyledTableRow } from 'src/components/Tab
 import { getChainInfo, getInternalChainId, _getChainId } from 'src/config'
 import addProposals from 'src/logic/proposal/store/actions/addProposal'
 import { extractSafeAddress } from 'src/routes/routes'
-import SendModal from 'src/routes/safe/components/Balances/SendModal'
 import { getProposals, MChainInfo } from 'src/services'
 import { IProposal } from 'src/types/proposal'
 import { calcBalance } from 'src/utils/calc'
 import { formatDateTimeDivider } from 'src/utils/date'
-import { StyleCard, TitleNumberStyled } from './styles'
+import ProposalsCard from './ProposalsCard'
+import { ProposalsSection, StyledBlock, StyledColumn, TitleNumberStyled } from './styledComponents'
+import VotingModal from './VotingPopup'
 
 const RowHead = [
   { name: '#ID' },
@@ -79,28 +77,14 @@ function Voting(): ReactElement {
 
   return (
     <>
-      <Menu>
-        <Col start="sm" sm={12} xs={12}>
-          <Breadcrumb>
-            <BreadcrumbElement color="white" iconType="votingAura" text="Voting" />
-          </Breadcrumb>
-        </Col>
-      </Menu>
-      <Block>
-        {' '}
-        <Col
-          sm={12}
-          xs={12}
-          style={{
-            display: 'flex',
-            flexWrap: 'wrap',
-            justifyContent: 'space-between',
-            marginLeft: -10,
-          }}
-        >
+      <Breadcrumb>
+        <BreadcrumbElement color="white" iconType="votingAura" text="Voting" />
+      </Breadcrumb>
+      <StyledBlock>
+        <StyledColumn sm={12} xs={12}>
           {proposals.slice(0, 4).map((proposal) => (
             <Col sm={6} xs={12} key={proposal.id}>
-              <CardVoting
+              <ProposalsCard
                 proposal={proposal}
                 handleVote={() => {
                   setOpenVotingModal(true)
@@ -108,10 +92,9 @@ function Voting(): ReactElement {
               />
             </Col>
           ))}
-        </Col>
-      </Block>
-      <StyleCard>
-        {' '}
+        </StyledColumn>
+      </StyledBlock>
+      <ProposalsSection>
         <Col start="sm" sm={12} xs={12}>
           <BoxCard justify="flex-start" column>
             <TitleNumberStyled>Proposals</TitleNumberStyled>
@@ -144,14 +127,13 @@ function Voting(): ReactElement {
             </TableVoting>
           </BoxCard>
         </Col>
-      </StyleCard>
+      </ProposalsSection>
 
-      <SendModal
+      <VotingModal
         isOpen={openVotingModal}
         onClose={() => {
           setOpenVotingModal(false)
         }}
-        activeScreenType={'voting'}
       />
     </>
   )

@@ -2,15 +2,23 @@ import { Button, Text } from '@aura/safe-react-components'
 import { ReactElement } from 'react'
 import { generatePath, useHistory } from 'react-router-dom'
 import Col from 'src/components/layout/Col'
+import StatusCard from 'src/components/StatusCard'
+import VoteBar from 'src/components/Vote'
 import { getPrefixedSafeAddressSlug, SAFE_ADDRESS_SLUG, SAFE_ROUTES, VOTING_ID_NUMBER } from 'src/routes/routes'
 import { borderLinear } from 'src/theme/variables'
 import { IProposal, VoteMapping } from 'src/types/proposal'
 import { formatDateTimeDivider } from 'src/utils/date'
 import styled from 'styled-components'
-import BoxCard from '../BoxCard'
-import StatusCard from '../StatusCard'
-import VoteBar from '../Vote'
 
+const Box = styled.div`
+  width: 100%;
+  margin: 10px;
+  background-color: #24262e;
+  padding: 24px;
+  display: flex;
+  align-items: center;
+  border-radius: 12px;
+`
 const TitleNumberStyled = styled.div`
   font-weight: 510;
   font-size: 20px;
@@ -87,7 +95,7 @@ interface Props {
 
 const formatTime = (time) => formatDateTimeDivider(new Date(time).getTime())
 
-function CardVoting({ handleVote, proposal }: Props): ReactElement {
+function ProposalsCard({ handleVote, proposal }: Props): ReactElement {
   const history = useHistory()
 
   const handleDetail = (proposalId) => {
@@ -102,7 +110,7 @@ function CardVoting({ handleVote, proposal }: Props): ReactElement {
   const isEnded = new Date(proposal.votingEnd).getTime() < Date.now()
 
   return (
-    <BoxCard width={'100%'} top={'10px'} left={'10px'}>
+    <Box>
       <Col layout="column">
         <div style={{ display: 'flex', justifyContent: 'space-between' }}>
           <div>
@@ -197,8 +205,8 @@ function CardVoting({ handleVote, proposal }: Props): ReactElement {
           </div>
         </div>
       </Col>
-    </BoxCard>
+    </Box>
   )
 }
 
-export default CardVoting
+export default ProposalsCard
