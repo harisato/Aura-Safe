@@ -80,6 +80,7 @@ const ImgRow = styled.div`
 const TableVotingDetailInside = (props) => {
   const { data, dandleManageDelegate, value } = props
   const obj1 = new Intl.NumberFormat('en-US')
+
   return (
     <TableVoting RowHead={RowHead}>
       {data?.map((row, index) => (
