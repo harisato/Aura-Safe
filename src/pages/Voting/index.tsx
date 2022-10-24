@@ -5,7 +5,7 @@ import BoxCard from 'src/components/BoxCard'
 import Col from 'src/components/layout/Col'
 import { LoadingContainer } from 'src/components/LoaderContainer'
 import StatusCard from 'src/components/StatusCard'
-import TableVoting, { StyledTableCell, StyledTableRow } from 'src/components/TableVoting'
+import DenseTable, { StyledTableCell, StyledTableRow } from 'src/components/Table/DenseTable'
 import { getChainInfo, getInternalChainId, _getChainId } from 'src/config'
 import addProposals from 'src/logic/proposal/store/actions/addProposal'
 import { extractSafeAddress } from 'src/routes/routes'
@@ -14,17 +14,8 @@ import { IProposal } from 'src/types/proposal'
 import { calcBalance } from 'src/utils/calc'
 import { formatDateTimeDivider } from 'src/utils/date'
 import ProposalsCard from './ProposalsCard'
-import { ProposalsSection, StyledBlock, StyledColumn, TitleNumberStyled } from './styledComponents'
+import { ProposalsSection, StyledBlock, StyledColumn, TitleNumberStyled } from './StyledComponents'
 import VotingModal from './VotingPopup'
-
-const RowHead = [
-  { name: '#ID' },
-  { name: 'TITLE' },
-  { name: 'STATUS' },
-  { name: 'VOTING START' },
-  { name: 'SUBMIT TIME' },
-  { name: 'TOTAL DEPOSIT' },
-]
 
 const parseBalance = (balance: IProposal['totalDeposit'], chainInfo: MChainInfo) => {
   const symbol = chainInfo.nativeCurrency.symbol
@@ -65,8 +56,6 @@ function Voting(): ReactElement {
     })
   }, [chainId, dispatch, safeAddress])
 
-  const formatTime = (time) => formatDateTimeDivider(new Date(time).getTime())
-
   if (proposals.length <= 0) {
     return (
       <LoadingContainer>
@@ -98,7 +87,7 @@ function Voting(): ReactElement {
         <Col start="sm" sm={12} xs={12}>
           <BoxCard justify="flex-start" column>
             <TitleNumberStyled>Proposals</TitleNumberStyled>
-            <TableVoting RowHead={RowHead}>
+            <DenseTable headers={['#ID', 'TITLE', 'STATUS', 'VOTING START', 'SUBMIT TIME', 'TOTAL DEPOSIT']}>
               {proposals.map((row) => (
                 <StyledTableRow key={row.id}>
                   <StyledTableCell component="th" scope="row">
@@ -112,8 +101,8 @@ function Voting(): ReactElement {
                   <StyledTableCell align="left">
                     <StatusCard status={row.status} showDot />
                   </StyledTableCell>
-                  <StyledTableCell align="left">{formatTime(row.votingStart)}</StyledTableCell>
-                  <StyledTableCell align="left">{formatTime(row.votingEnd)}</StyledTableCell>
+                  <StyledTableCell align="left">{formatDateTimeDivider(row.votingStart)}</StyledTableCell>
+                  <StyledTableCell align="left">{formatDateTimeDivider(row.votingEnd)}</StyledTableCell>
                   <StyledTableCell align="left">
                     <div style={{ display: 'flex' }}>
                       {parseBalance(row.totalDeposit, chainInfo).amount}&ensp;
@@ -124,7 +113,7 @@ function Voting(): ReactElement {
                   </StyledTableCell>
                 </StyledTableRow>
               ))}
-            </TableVoting>
+            </DenseTable>
           </BoxCard>
         </Col>
       </ProposalsSection>

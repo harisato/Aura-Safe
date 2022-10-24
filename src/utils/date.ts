@@ -32,6 +32,8 @@ export const formatTime = (timestamp: number): string => formatWithSchema(timest
 
 export const formatDateTime = (timestamp: number): string => formatWithSchema(timestamp, 'MMM d, yyyy - h:mm:ss a')
 
-export const formatDateTimeDivider = (timestamp: number): string => formatWithSchema(timestamp, 'yyyy-MM-dd | HH:mm:ss')
+export const formatDateTimeDivider = (timestamp: string | Date | number): string => {
+  return formatWithSchema(new Date(timestamp).getTime(), 'yyyy-MM-dd | HH:mm:ss')
+}
 
 export const formatTimeInWords = (timestamp: number): string => formatDistanceToNow(timestamp, { addSuffix: true })

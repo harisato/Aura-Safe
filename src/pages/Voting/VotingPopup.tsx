@@ -2,7 +2,7 @@ import RadioButtons from 'src/components/RadioGroup'
 import { useState } from 'react'
 import { OutlinedButton, OutlinedNeutralButton } from 'src/components/Button'
 import Modal from 'src/components/Modal'
-import { VotingPopupWrapper } from './styledComponents'
+import { VotingPopupWrapper } from './StyledComponents'
 
 type Props = {
   isOpen: boolean

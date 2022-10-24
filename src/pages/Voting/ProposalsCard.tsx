@@ -93,8 +93,6 @@ interface Props {
   proposal: IProposal
 }
 
-const formatTime = (time) => formatDateTimeDivider(new Date(time).getTime())
-
 function ProposalsCard({ handleVote, proposal }: Props): ReactElement {
   const history = useHistory()
 
@@ -133,14 +131,14 @@ function ProposalsCard({ handleVote, proposal }: Props): ReactElement {
           <ContentCard>
             <TitleContentCard>Voting Start</TitleContentCard>
             <Text size="lg" color="white">
-              {formatTime(proposal.votingStart)}
+              {formatDateTimeDivider(proposal.votingStart)}
             </Text>
           </ContentCard>
 
           <ContentCard>
             <TitleContentCard>Voting End</TitleContentCard>
             <Text size="lg" color="white">
-              {formatTime(proposal.votingEnd)}
+              {formatDateTimeDivider(proposal.votingEnd)}
             </Text>
           </ContentCard>
         </Col>

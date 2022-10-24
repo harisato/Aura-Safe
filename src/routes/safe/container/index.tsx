@@ -26,7 +26,7 @@ const TxList = lazy(() => import('src/routes/safe/components/Transactions/TxList
 const AddressBookTable = lazy(() => import('src/routes/safe/components/AddressBook'))
 const Staking = lazy(() => import('src/routes/safe/components/Staking'))
 const Voting = lazy(() => import('src/pages/Voting'))
-const VotingDetail = lazy(() => import('src/routes/safe/components/VotingDetail'))
+const VotingDetail = lazy(() => import('src/pages/Voting/detail'))
 
 const Container = (): React.ReactElement => {
   const featuresEnabled = useSelector(currentSafeFeaturesEnabled)
