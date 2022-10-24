@@ -61,6 +61,7 @@ export default function ModalStaking(props) {
     availableBalance,
     handleMax,
     dataDelegateOfUser,
+    validateMsg,
   } = props
 
   const [arrRedelegate, setArrDelegate] = useState([])
@@ -127,6 +128,7 @@ export default function ModalStaking(props) {
           availableBalance={availableBalance}
           dataDelegateOfUser={dataDelegateOfUser}
           handleMax={handleMax}
+          validateMsg={validateMsg}
         />
       )}
       {handlValueDelegate === 'redelegate' && (
