@@ -23,6 +23,10 @@ import queryString from 'query-string'
 
 import ReviewSendFundsTx from './ReviewSendFundsTx'
 import Modal from 'src/components/Modal'
+import { formatNumber, validateFloatNumber } from 'src/utils'
+import enqueueSnackbar from 'src/logic/notifications/store/actions/enqueueSnackbar'
+import { enhanceSnackbarForAction, NOTIFICATIONS } from 'src/logic/notifications'
+import { useDispatch } from 'react-redux'
 
 export const TypeStaking = {
   delegate: '/cosmos.staking.v1beta1.MsgDelegate',
@@ -32,6 +36,8 @@ export const TypeStaking = {
 }
 
 function Staking(props): ReactElement {
+  const dispatch = useDispatch()
+
   const [isOpenDelagate, setIsOpenDelagate] = useState(false)
   const [isOpenReview, setIsOpenReview] = useState(false)
   const [typeStaking, setTypeStaking] = useState('')
@@ -41,7 +47,7 @@ function Staking(props): ReactElement {
 
   const [amount, setAmount] = useState<any>('')
 
-  const [availableBalance, setAvailableBalance] = useState(0)
+  const [availableBalance, setAvailableBalance] = useState({ _id: '', amount: '', denom: '' })
   const [totalStake, setTotalStake] = useState(0)
   const [rewardAmount, setRewardAmount] = useState(0)
 
@@ -59,6 +65,7 @@ function Staking(props): ReactElement {
   const [handlValueDelegate, setHandleValueDelegate] = useState('')
   const [itemDelegate, setItemDelegate] = useState<any>()
   const [dataDelegateOfUser, setDataDelegateOfUser] = useState<any>()
+  const [validateMsg, setValidateMsg] = useState<string | undefined>()
 
   const handleChange = (event) => {
     setHandleValueDelegate(event.target.value)
@@ -83,7 +90,7 @@ function Staking(props): ReactElement {
     //
     getAllDelegateOfUser(internalChainId, SafeAddress).then((res) => {
       setValidatorOfUser(res.Data?.delegations)
-      setAvailableBalance(res.Data?.availableBalance || 0)
+      res.Data?.availableBalance && setAvailableBalance(res.Data?.availableBalance)
       setTotalStake(res.Data.total?.staked)
       setRewardAmount(res.Data.total?.reward || 0)
       res.Data?.delegations?.map((item) => {
@@ -99,8 +106,10 @@ function Staking(props): ReactElement {
     })
   }, [internalChainId, SafeAddress])
 
-  const handleAmout = (event) => {
-    setAmount(event.target.value)
+  const handleAmout = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setValidateMsg(undefined)
+    const value = formatNumber(event.target.value)
+    setAmount(value)
   }
 
   const handleCallDataValidator = (address) => {
@@ -137,12 +146,14 @@ function Staking(props): ReactElement {
   }
 
   const handleSubmitDelegate = (item) => {
-    setIsOpenReview(true)
-    setIsOpenDelagate(false)
-
     if (item === 'delegate') {
       setTypeStaking(TypeStaking.delegate)
       setTitle('Delegate')
+      console.log(amount, availableBalance)
+      if (amount > +availableBalance.amount / 1e6) {
+        setValidateMsg('Invalid amount!')
+        return
+      }
     }
 
     if (item === 'redelegate') {
@@ -154,6 +165,8 @@ function Staking(props): ReactElement {
       setTypeStaking(TypeStaking.undelegate)
       setTitle('UnDedelegate')
     }
+    setIsOpenReview(true)
+    setIsOpenDelagate(false)
   }
 
   const ClaimReward = () => {
@@ -253,6 +266,7 @@ function Staking(props): ReactElement {
         availableBalance={availableBalance}
         handleMax={handleMax}
         dataDelegateOfUser={dataDelegateOfUser}
+        validateMsg={validateMsg}
       />
 
       <Modal
