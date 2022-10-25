@@ -14,7 +14,7 @@ import {
 import { JWT_TOKEN_KEY } from 'src/services/constant/common'
 import { removeFromStorage } from 'src/utils/storage'
 import session from 'src/utils/storage/session'
-import { WALLETS_NAME } from '../../../logic/wallets/constant/wallets'
+import { WALLETS_NAME } from '../../logic/wallets/constant/wallets'
 import Layout from './components/Layout/Layout'
 import ConnectDetails from './components/ProviderDetails/ConnectDetails/ConnectDetails'
 import { UserDetails } from './components/ProviderDetails/UserDetails/UserDetails'

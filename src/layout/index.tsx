@@ -3,10 +3,10 @@ import { useLocation, matchPath } from 'react-router-dom'
 import { ListItemType } from 'src/components/List'
 import Header from './Header'
 import Footer from './Footer'
-import Sidebar from './Sidebar'
-import { MobileNotSupported } from './MobileNotSupported'
+import { MobileNotSupported } from 'src/layout/MobileNotSupported'
 import { SAFE_ROUTES, WELCOME_ROUTE } from 'src/routes/routes'
 import { Container, HeaderWrapper, BodyWrapper, SidebarWrapper, ContentWrapper } from './styles'
+import Sidebar from 'src/layout/Sidebar'
 
 type Props = {
   sidebarItems: ListItemType[]
@@ -32,12 +32,14 @@ const Layout: React.FC<Props> = ({
   sidebarItems,
   onConnectClick,
 }): React.ReactElement => {
-  const [mobileNotSupportedClosed, setMobileNotSupportedClosed] = useState(false)
   const { pathname } = useLocation()
-  const closeMobileNotSupported = () => setMobileNotSupportedClosed(true)
   const hasFooter = !!matchPath(pathname, {
     path: [SAFE_ROUTES.SETTINGS, WELCOME_ROUTE],
   })
+
+  if (window.innerWidth <= 720) {
+    return <MobileNotSupported />
+  }
 
   return (
     <Container>
@@ -62,8 +64,6 @@ const Layout: React.FC<Props> = ({
           {hasFooter && <Footer />}
         </ContentWrapper>
       </BodyWrapper>
-
-      {!mobileNotSupportedClosed && <MobileNotSupported onClose={closeMobileNotSupported} />}
     </Container>
   )
 }

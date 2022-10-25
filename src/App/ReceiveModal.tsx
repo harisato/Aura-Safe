@@ -14,7 +14,7 @@ import Paragraph from 'src/components/layout/Paragraph'
 import Row from 'src/components/layout/Row'
 import { getChainInfo, getExplorerInfo } from 'src/config'
 import { fontColor, lg, md, screenSm, secondaryText } from 'src/theme/variables'
-import PrefixedEthHashInfo from '../PrefixedEthHashInfo'
+import PrefixedEthHashInfo from '../components/PrefixedEthHashInfo'
 import { borderLinear } from 'src/theme/variables'
 const useStyles = (chainInfo: ChainInfo) =>
   makeStyles(

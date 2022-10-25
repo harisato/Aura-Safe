@@ -4,7 +4,7 @@ import ConnectButton from 'src/components/ConnectButton'
 import Block from 'src/components/layout/Block'
 import Paragraph from 'src/components/layout/Paragraph'
 import Row from 'src/components/layout/Row'
-import { KeyRing } from 'src/components/AppLayout/Header/components/KeyRing/KeyRing'
+import { KeyRing } from 'src/layout/Header/components/KeyRing/KeyRing'
 import { StyledCard, styles } from './styles'
 
 const ConnectDetails = ({
