@@ -79,6 +79,11 @@ const TextTitleStaking = styled.div`
 
 const PaddingPopup = styled.div`
   margin-top: 10px;
+  > .validate-msg {
+    color: #ff3535;
+    font-size: 12px;
+    margin: 6px 0px;
+  }
 `
 
 const StyledInputModal = styled.input`

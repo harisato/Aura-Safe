@@ -14,10 +14,10 @@ import {
 } from './styles'
 import { Text } from '@aura/safe-react-components'
 import Col from 'src/components/layout/Col'
+import { isNumberKeyPress } from 'src/utils'
 
 export default function ModalDelegate(props) {
-  const { handleAmout, amount, nativeCurrency, availableBalance, dataDelegateOfUser, handleMax } = props
-  console.log('dataDelegateOfUser', dataDelegateOfUser)
+  const { handleAmout, amount, nativeCurrency, availableBalance, dataDelegateOfUser, handleMax, validateMsg } = props
   return (
     <>
       <NotificationPopup>
@@ -69,7 +69,15 @@ export default function ModalDelegate(props) {
                 </Col>
                 <InputAura>
                   <BorderInput>
-                    <StyledInputModal onChange={handleAmout} value={amount} type="number" step="0.1" min="0" max="20" />
+                    <StyledInputModal
+                      onChange={handleAmout}
+                      onKeyPress={isNumberKeyPress}
+                      value={amount}
+                      type="number"
+                      step="0.1"
+                      min="0"
+                      max="20"
+                    />
                     <StyledButtonModal onClick={() => handleMax(availableBalance?.amount / 10 ** 6 || 0)}>
                       Max
                     </StyledButtonModal>
@@ -80,6 +88,7 @@ export default function ModalDelegate(props) {
                     </Text>
                   </BorderAura>
                 </InputAura>
+                {validateMsg && <p className="validate-msg">{validateMsg}</p>}
               </PaddingPopup>
             </BoxDelegate>
           </Col>
