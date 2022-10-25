@@ -14,7 +14,7 @@ import { IProposal } from 'src/types/proposal'
 import { calcBalance } from 'src/utils/calc'
 import { formatDateTimeDivider } from 'src/utils/date'
 import ProposalsCard from './ProposalsCard'
-import { ProposalsSection, StyledBlock, StyledColumn, TitleNumberStyled } from './StyledComponents'
+import { ProposalsSection, StyledBlock, StyledColumn, TitleNumberStyled } from './styledComponents'
 import VotingModal from './VotingPopup'
 
 const parseBalance = (balance: IProposal['totalDeposit'], chainInfo: MChainInfo) => {

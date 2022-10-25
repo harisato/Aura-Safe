@@ -55,19 +55,15 @@ function StyledRadio(props: RadioProps) {
 type Props = {
   name: string
   value: any
-  onRadioChange: (value: string) => void
   options: Array<{
     label: string
     value: any
   }>
 } & RadioGroupProps
 
-const MuiRadioButtons = ({ name, value, onRadioChange, options, ...rest }: Props): React.ReactElement => {
-  const onChangeInternal = (event: React.ChangeEvent<HTMLInputElement>) =>
-    onRadioChange((event.target as HTMLInputElement).value)
-
+const MuiRadioButtons = ({ name, value, onChange, options, ...rest }: Props): React.ReactElement => {
   return (
-    <RadioGroup aria-label={name} name={name} value={value} onChange={onChangeInternal} {...rest}>
+    <RadioGroup aria-label={name} name={name} value={value} onChange={onChange} {...rest}>
       {options.map((o) => (
         <FormControlLabel key={o.value} label={o.label} value={o.value} control={<StyledRadio />} />
       ))}

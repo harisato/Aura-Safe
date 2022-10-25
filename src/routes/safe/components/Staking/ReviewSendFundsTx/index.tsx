@@ -244,7 +244,10 @@ const ReviewSendFundsTx = ({
       try {
         // Sign On Wallet
         dispatch(enqueueSnackbar(enhanceSnackbarForAction(NOTIFICATIONS.SIGN_TX_MSG)))
-
+        console.log(accounts[0]?.address)
+        console.log(msg)
+        console.log(sendFee)
+        console.log(signerData)
         const signResult = await client.sign(accounts[0]?.address, msg, sendFee, '', signerData)
 
         const signatures = toBase64(signResult.signatures[0])

@@ -1,8 +1,8 @@
-import RadioButtons from 'src/components/RadioGroup'
 import { useState } from 'react'
 import { OutlinedButton, OutlinedNeutralButton } from 'src/components/Button'
-import Modal from 'src/components/Modal'
-import { VotingPopupWrapper } from './StyledComponents'
+import Popup from 'src/components/Popup'
+import RadioButtons from 'src/components/RadioGroup'
+import { VotingPopupWrapper } from './styledComponents'
 
 type Props = {
   isOpen: boolean
@@ -12,13 +12,7 @@ type Props = {
 const VotingPopup = ({ isOpen, onClose }: Props): React.ReactElement => {
   const [selectedOptionValue, setSelectedOptionValue] = useState<string>('yes')
   return (
-    <Modal
-      description="Send Tokens Form"
-      handleClose={onClose}
-      open={isOpen}
-      paperClassName="smaller-modal-window"
-      title="Send Tokens"
-    >
+    <Popup handleClose={onClose} open={isOpen} title="Voting Popup">
       <VotingPopupWrapper>
         <p className="title-h3_20m popup-title">Your vote</p>
         <p className="proposal-name">#169 Match External Incentives for CMDX/OSMO and CMDX/ATOM pairs</p>
@@ -28,9 +22,6 @@ const VotingPopup = ({ isOpen, onClose }: Props): React.ReactElement => {
             value={selectedOptionValue}
             onChange={(e) => {
               setSelectedOptionValue(e.target.value)
-            }}
-            onRadioChange={() => {
-              console.log('onRadioChange')
             }}
             options={[
               {
@@ -59,7 +50,7 @@ const VotingPopup = ({ isOpen, onClose }: Props): React.ReactElement => {
           <OutlinedButton size="md">Vote</OutlinedButton>
         </div>
       </VotingPopupWrapper>
-    </Modal>
+    </Popup>
   )
 }
 
