@@ -1,6 +1,10 @@
 import { CopyToClipboardBtn, ExplorerButton, FixedIcon, Icon, Identicon, Text } from '@aura/safe-react-components'
+import { useState } from 'react'
 import ButtonHelper from 'src/components/ButtonHelper'
 import FlexSpacer from 'src/components/FlexSpacer'
+import MultiSendPopup from 'src/components/Popup/MultiSendPopup'
+import SendPopup from 'src/components/Popup/SendPopup'
+import SendTxTypePopup from 'src/components/Popup/SendTxTypePopup'
 import { getChainInfo, getExplorerInfo } from 'src/config'
 import { THEME_DF } from 'src/services/constant/chainThemes'
 import LockIcon from './assets/Lockicon.svg'
@@ -22,16 +26,11 @@ import {
 import { Props } from './type'
 
 export const TOGGLE_SIDEBAR_BTN_TESTID = 'TOGGLE_SIDEBAR_BTN'
-const SafeHeader = ({
-  address,
-  safeName,
-  balance,
-  granted,
-  onToggleSafeList,
-  onReceiveClick,
-  onNewTransactionClick,
-}: Props): React.ReactElement => {
+const SafeHeader = ({ address, safeName, granted, onToggleSafeList, onReceiveClick }: Props): React.ReactElement => {
   const chainInfo = getChainInfo()
+
+  const [sendTxTypePopupOpen, setSendTxTypePopupOpen] = useState<boolean>(false)
+  const [sendTxType, setSendTxType] = useState<string | undefined>(undefined)
 
   const { backgroundColor } = chainInfo?.theme || THEME_DF
 
@@ -51,17 +50,14 @@ const SafeHeader = ({
 
   return (
     <>
-      {/* Network */}
       <StyledTextLabel size="lg" chainInfo={chainInfo}>
         <StyledDotChainName color={backgroundColor}></StyledDotChainName>
         <span style={{ color: 'white' }}> {chainInfo.chainName}</span>
       </StyledTextLabel>
       <Container>
-        {/* Identicon */}
         <IdenticonContainer>
           <StyledIdenticonContainer>
             <Identicon address={address} size="lg" />
-            {/* SafeInfo */}
             <StyledTextSafeNameWrapper>
               <StyledTextSafeName size="lg" center>
                 {safeName}
@@ -73,7 +69,6 @@ const SafeHeader = ({
             <StyledIcon size="md" type="circleDropdown" />
           </ButtonHelper>
         </IdenticonContainer>
-
         <ContainerButton>
           <IconContainer>
             <ButtonHelper onClick={onReceiveClick}>
@@ -82,16 +77,13 @@ const SafeHeader = ({
             <CopyToClipboardBtn textToCopy={address} />
             {address && <ExplorerButton explorerUrl={getExplorerInfo(address)} />}
           </IconContainer>
-
-          {/* <StyledText size="xl">balance</StyledText> */}
-          <StyledButton size="md" disabled={!granted} onClick={onNewTransactionClick}>
+          <StyledButton size="md" disabled={!granted} onClick={() => setSendTxTypePopupOpen(true)}>
             <FixedIcon type="arrowSentWhite" />
             <Text size="lg" color="white">
               New transaction
             </Text>
           </StyledButton>
         </ContainerButton>
-
         {!granted && (
           <StyledLabel>
             <Text size="sm" color="white">
@@ -100,6 +92,15 @@ const SafeHeader = ({
           </StyledLabel>
         )}
       </Container>
+      <SendTxTypePopup
+        open={sendTxTypePopupOpen}
+        onClose={() => setSendTxTypePopupOpen(false)}
+        onTypeButtonClick={(type: string) => {
+          setSendTxType(type)
+        }}
+      />
+      <SendPopup open={sendTxType == 'single-send'} onClose={() => setSendTxType(undefined)} />
+      <MultiSendPopup open={sendTxType == 'multi-send'} onClose={() => setSendTxType(undefined)} />
     </>
   )
 }

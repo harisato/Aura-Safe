@@ -16,7 +16,6 @@ type Props = {
   granted: boolean
   onToggleSafeList: () => void
   onReceiveClick: () => void
-  onNewTransactionClick: () => void
   items: ListItemType[]
 }
 
@@ -28,7 +27,6 @@ const Sidebar = ({
   granted,
   onToggleSafeList,
   onReceiveClick,
-  onNewTransactionClick,
 }: Props): React.ReactElement => (
   <>
     <SafeHeader
@@ -38,7 +36,6 @@ const Sidebar = ({
       balance={balance}
       onToggleSafeList={onToggleSafeList}
       onReceiveClick={onReceiveClick}
-      onNewTransactionClick={onNewTransactionClick}
     />
 
     {items.length ? (

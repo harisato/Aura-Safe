@@ -116,7 +116,6 @@ const App: React.FC = ({ children }) => {
       >
         <>
           <Notifier />
-
           <AppLayout
             sidebarItems={sidebarItems}
             safeAddress={addressFromUrl}
@@ -125,7 +124,6 @@ const App: React.FC = ({ children }) => {
             granted={granted}
             onToggleSafeList={toggleSidebar}
             onReceiveClick={onReceiveShow}
-            onNewTransactionClick={() => showSendFunds('')}
             onConnectClick={onConnectWalletShow}
           >
             {children}

@@ -26,7 +26,7 @@ export const TitleNumberStyled = styled.div`
 
 export const VotingPopupWrapper = styled.div`
   padding: 24px;
-  background-color: '#131419';
+  width: 482px;
   > .proposal-name,
   .buttons,
   .voting-options {

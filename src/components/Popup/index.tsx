@@ -1,8 +1,7 @@
-import cn from 'classnames'
-import { ReactElement, ReactNode } from 'react'
-import styled from 'styled-components'
 import { Modal } from '@material-ui/core'
+import { ReactElement, ReactNode } from 'react'
 import { bgBox } from 'src/theme/variables'
+import styled from 'styled-components'
 
 const PopupWrapper = styled(Modal)`
   & {
@@ -17,24 +16,12 @@ const PopupWrapper = styled(Modal)`
   .paper {
     position: relative;
     top: 68px;
-    width: 600px;
     border-radius: 12px;
     background-color: ${bgBox};
     display: flex;
     flex-direction: column;
     &:focus {
       outline: none;
-    }
-    &.bigger-modal-window {
-      width: 775px;
-      height: auto;
-    }
-    &.smaller-modal-window {
-      height: auto;
-    }
-    &.modal {
-      height: auto;
-      max-width: calc(100% - 130px);
     }
   }
 `
@@ -57,9 +44,14 @@ const Popup = ({ children, description, handleClose, open, paperClassName, title
       onClose={handleClose}
       open={open}
     >
-      <div className={cn('paper', paperClassName)}>{children}</div>
+      <div className={`paper ${paperClassName}`}>{children}</div>
     </PopupWrapper>
   )
 }
 
-export default Popup
+const HeaderWrapper = styled.div``
+const Header = ({ children }: { children: ReactNode }): ReactElement => {
+  return <HeaderWrapper>{children}</HeaderWrapper>
+}
+
+export { Popup, Header }

@@ -24,5 +24,12 @@ const OutlinedNeutralButton = styled(Button)`
   min-width: 130px !important;
   background-color: transparent !important;
 `
+const TextButton = styled(Button)`
+  border: none;
+  padding: 0 !important;
+  min-width: 130px !important;
+  background-color: transparent !important;
+  box-shadow: none !important;
+`
 
-export { OutlinedButton, OutlinedNeutralButton }
+export { OutlinedButton, OutlinedNeutralButton, TextButton }

@@ -16,7 +16,6 @@ type Props = {
   granted: boolean
   onToggleSafeList: () => void
   onReceiveClick: () => void
-  onNewTransactionClick: () => void
   onConnectClick: () => void
 }
 
@@ -27,7 +26,6 @@ const Layout: React.FC<Props> = ({
   granted,
   onToggleSafeList,
   onReceiveClick,
-  onNewTransactionClick,
   children,
   sidebarItems,
   onConnectClick,
@@ -56,7 +54,6 @@ const Layout: React.FC<Props> = ({
             granted={granted}
             onToggleSafeList={onToggleSafeList}
             onReceiveClick={onReceiveClick}
-            onNewTransactionClick={onNewTransactionClick}
           />
         </SidebarWrapper>
         <ContentWrapper>

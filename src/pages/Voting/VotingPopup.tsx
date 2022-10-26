@@ -3,7 +3,7 @@ import { useState } from 'react'
 import { toBase64 } from '@cosmjs/encoding'
 import { useDispatch, useSelector } from 'react-redux'
 import { OutlinedButton, OutlinedNeutralButton } from 'src/components/Button'
-import Popup from 'src/components/Popup'
+import { Popup } from 'src/components/Popup'
 import RadioButtons from 'src/components/RadioGroup'
 import {
   getChainDefaultGas,
