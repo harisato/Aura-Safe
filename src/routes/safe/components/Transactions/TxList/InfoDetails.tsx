@@ -9,6 +9,7 @@ type InfoDetailsProps = {
 
 const TextStyled = styled(Text)`
   font-weight: 600;
+  margin-bottom: 10px;
 `
 
 export const InfoDetails = ({ children, title, quanlity }: InfoDetailsProps): ReactElement => {
@@ -27,7 +28,7 @@ export const InfoDetails = ({ children, title, quanlity }: InfoDetailsProps): Re
         )}
         {title === 'Redelegate' && (
           <>
-            Redelegate <span style={{ color: 'rgba(94, 230, 208, 1)' }}>{quanlity}</span> to:
+            Redelegate <span style={{ color: 'rgba(94, 230, 208, 1)' }}>{quanlity}</span> from:
           </>
         )}
         {title === 'Reward' && (

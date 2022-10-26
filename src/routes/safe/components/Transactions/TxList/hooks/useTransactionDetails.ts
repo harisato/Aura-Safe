@@ -25,7 +25,6 @@ export const useTransactionDetails = (
   const data = useSelector((state: AppReduxState) =>
     getTransactionByAttribute(state, { attributeValue: transactionId, attributeName: 'id' }),
   )
-
   useEffect(() => {
     const dataTemp = {
       ...data?.txDetails,

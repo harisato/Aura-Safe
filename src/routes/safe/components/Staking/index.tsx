@@ -110,6 +110,9 @@ function Staking(props): ReactElement {
     setValidateMsg(undefined)
     const value = formatNumber(event.target.value)
     setAmount(value)
+    if (+value > +availableBalance.amount / 1e6) {
+      setValidateMsg('Given amount is greater than available balance!')
+    }
   }
 
   const handleCallDataValidator = (address) => {
@@ -126,6 +129,8 @@ function Staking(props): ReactElement {
   const handleReward = (item) => {
     const dataTemp = {
       safeStaking: item.operatorAddress,
+      name: item.validator,
+      avatar: item.description.picture,
     }
 
     handleCallDataValidator(item.operatorAddress)
@@ -136,8 +141,11 @@ function Staking(props): ReactElement {
   }
 
   const handleManageDelegate = (item) => {
+    console.log(item)
     const dataTemp = {
       safeStaking: item.operatorAddress,
+      name: item.validator,
+      avatar: item.description.picture,
     }
     handleCallDataValidator(item.operatorAddress)
     setIsOpenDelagate(true)

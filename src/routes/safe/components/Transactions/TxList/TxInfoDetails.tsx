@@ -10,10 +10,16 @@ import { AddressInfo } from './AddressInfo'
 import { InfoDetails } from './InfoDetails'
 import { TxLocationContext, TxLocationProps } from './TxLocationProvider'
 import { getTxTokenData } from './utils'
+import { Text } from '@aura/safe-react-components'
 
 const SingleRow = styled.div`
   display: flex;
   align-items: flex-end;
+`
+const TextStyled = styled(Text)`
+  font-weight: 600;
+  margin-top: 10px;
+  margin-bottom: 10px;
 `
 
 type TxInfoDetailsProps = {
@@ -21,6 +27,9 @@ type TxInfoDetailsProps = {
   address: string
   name?: string | undefined
   avatarUrl?: string | undefined
+  toAddress?: string
+  toName?: string | undefined
+  toAvatarUrl?: string | undefined
   isTransferType?: boolean
   txInfo?: Transfer
   quanlity?: string
@@ -34,6 +43,9 @@ export const TxInfoDetails = ({
   txInfo,
   name,
   avatarUrl,
+  toAddress,
+  toName,
+  toAvatarUrl,
 }: TxInfoDetailsProps): ReactElement => {
   const { txLocation } = useContext<TxLocationProps>(TxLocationContext)
   const canRepeatTransaction =
@@ -79,19 +91,26 @@ export const TxInfoDetails = ({
       }))
     }
   }, [txInfo])
-
-  console.log(title)
-
   return (
-    <InfoDetails title={title} quanlity={quanlity}>
-      <SingleRow>
-        <AddressInfo address={address} name={name} avatarUrl={avatarUrl} />
-        <EllipsisTransactionDetails
+    <>
+      <InfoDetails title={title} quanlity={quanlity}>
+        <SingleRow>
+          <AddressInfo address={address} name={name} avatarUrl={avatarUrl} />
+          {/* <EllipsisTransactionDetails
           address={address}
           sendModalOpenHandler={canRepeatTransaction ? sendModalOpenHandler : undefined}
-        />
-      </SingleRow>
-      {canRepeatTransaction && <SendModal isOpen={sendModalOpen} onClose={onClose} {...sendModalParams} />}
-    </InfoDetails>
+        /> */}
+        </SingleRow>
+        {canRepeatTransaction && <SendModal isOpen={sendModalOpen} onClose={onClose} {...sendModalParams} />}
+      </InfoDetails>
+      {toAddress && (
+        <>
+          <TextStyled strong color="white" size="lg">
+            To:
+          </TextStyled>
+          <AddressInfo address={toAddress} name={name} avatarUrl={toAvatarUrl} />
+        </>
+      )}
+    </>
   )
 }

@@ -7,11 +7,22 @@ import { TxInfoDetails } from './TxInfoDetails'
 type Details = {
   title: string
   address: string
-  name: string | undefined // AddressEx returns null if unknown
+  name?: string | undefined // AddressEx returns null if unknown
   quanlity: string
+  toAddress?: string | undefined
+  toName?: string | undefined
+  toAvatarUrl?: string | undefined
 }
 
-export const TxInfoTransfer = ({ txInfo, typeUrl }: { txInfo: Transfer; typeUrl: any }): ReactElement | null => {
+export const TxInfoTransfer = ({
+  txInfo,
+  typeUrl,
+  txDetails,
+}: {
+  txInfo: Transfer
+  typeUrl: any
+  txDetails: any
+}): ReactElement | null => {
   const assetInfo = useAssetInfo(txInfo)
   const [details, setDetails] = useState<Details | undefined>()
 
@@ -21,24 +32,24 @@ export const TxInfoTransfer = ({ txInfo, typeUrl }: { txInfo: Transfer; typeUrl:
         setDetails({
           title: 'Delegate',
           quanlity: assetInfo.amountWithSymbol,
-          address: txInfo.sender.value,
-          name: txInfo.sender.name || undefined,
+          address: txInfo.recipient.value,
+          name: txInfo.recipient.name || undefined,
         })
       }
       if (typeUrl.TypeURL.typeUrl === '/cosmos.staking.v1beta1.MsgUndelegate') {
         setDetails({
           title: 'Undelegate',
           quanlity: assetInfo.amountWithSymbol,
-          address: txInfo.sender.value,
-          name: txInfo.sender.name || undefined,
+          address: txInfo.recipient.value,
+          name: txInfo.recipient.name || undefined,
         })
       }
       if (typeUrl.TypeURL.typeUrl === '/cosmos.staking.v1beta1.MsgBeginRedelegate') {
         setDetails({
           title: 'Redelegate',
           quanlity: assetInfo.amountWithSymbol,
-          address: txInfo.sender.value,
-          name: txInfo.sender.name || undefined,
+          address: txDetails?.txMessage?.[0]?.validatorSrcAddress,
+          toAddress: txDetails?.txMessage?.[0]?.validatorDstAddress,
         })
       }
       if (typeUrl.TypeURL.typeUrl === '/cosmos.distribution.v1beta1.MsgWithdrawDelegatorReward') {
