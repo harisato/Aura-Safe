@@ -66,7 +66,7 @@ export const TxSummary = ({ txDetails }: Props): ReactElement => {
         </div>
       )} */}
       {created && (
-        <div className="tx-created">
+        <div className="tx-created" style={{ margin: '6px 0px' }}>
           <StyledText>Created: </StyledText>
           <Text size="lg" color="textAura" as="span">
             {formatDateTime(created)}

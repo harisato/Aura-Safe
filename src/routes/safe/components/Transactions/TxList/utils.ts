@@ -247,7 +247,6 @@ export const makeTransactionDetail = (txDetail: any): any => {
       signerList.push(item)
     })
   }
-
   return {
     executionInfo: {
       confirmationsRequired: txDetail?.ConfirmationsRequired,
@@ -374,40 +373,43 @@ export const makeQueueTransactionsFromService = (
 }
 
 const makeTransactions = (list: ITransactionListItem[]): MTransactionListItem[] =>
-  list.map((tx: ITransactionListItem) => ({
-    conflictType: 'None',
-    type: 'TRANSACTION',
-    transaction: {
-      executionInfo: {
-        confirmationsRequired: tx?.ConfirmationsRequired || 0,
-        confirmationsSubmitted: tx?.Confirmations || 0,
-        rejections: tx?.Rejections || 0,
-        nonce: tx?.Id,
-        type: 'MULTISIG',
-        missingSigners: null,
+  list.map((tx: ITransactionListItem) => {
+    console.log(tx)
+    return {
+      conflictType: 'None',
+      type: 'TRANSACTION',
+      transaction: {
+        executionInfo: {
+          confirmationsRequired: tx?.ConfirmationsRequired || 0,
+          confirmationsSubmitted: tx?.Confirmations || 0,
+          rejections: tx?.Rejections || 0,
+          nonce: tx?.Id,
+          type: 'MULTISIG',
+          missingSigners: null,
+        },
+        id: tx?.Id.toString(),
+        txHash: tx?.TxHash,
+        timestamp: new Date(tx?.UpdatedAt).getTime(),
+        txStatus: tx?.Status as TransactionStatus,
+        txInfo: {
+          type: 'Transfer',
+          typeUrl: tx?.TypeUrl,
+          sender: {
+            value: tx?.FromAddress,
+            name: null,
+            logoUri: null,
+          },
+          recipient: {
+            value: tx?.ToAddress,
+            name: null,
+            logoUri: null,
+          },
+          direction: tx?.Direction as TransferDirection,
+          transferInfo: {
+            type: TokenType.NATIVE_COIN,
+            value: tx?.Amount.toString(),
+          },
+        },
       },
-      id: tx?.Id.toString(),
-      txHash: tx?.TxHash,
-      timestamp: new Date(tx?.UpdatedAt).getTime(),
-      txStatus: tx?.Status as TransactionStatus,
-      txInfo: {
-        type: 'Transfer',
-        typeUrl: tx?.TypeUrl,
-        sender: {
-          value: tx?.FromAddress,
-          name: null,
-          logoUri: null,
-        },
-        recipient: {
-          value: tx?.ToAddress,
-          name: null,
-          logoUri: null,
-        },
-        direction: tx?.Direction as TransferDirection,
-        transferInfo: {
-          type: TokenType.NATIVE_COIN,
-          value: tx?.Amount.toString(),
-        },
-      },
-    },
-  }))
+    }
+  })

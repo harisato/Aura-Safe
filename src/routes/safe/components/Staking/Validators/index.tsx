@@ -75,6 +75,12 @@ const HeaderValidator = styled.div`
 `
 const ImgRow = styled.div`
   display: flex;
+  > img {
+    margin-right: 5px;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+  }
 `
 
 const TableVotingDetailInside = (props) => {
@@ -90,7 +96,7 @@ const TableVotingDetailInside = (props) => {
           </StyledTableCell>
           <StyledTableCell align="left">
             <ImgRow>
-              <img style={{ marginRight: 5 }} src={row.description.picture} />
+              <img src={row.description.picture} />
               <Text size="lg" color="linkAura">
                 {row.validator}
               </Text>

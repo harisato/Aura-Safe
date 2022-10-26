@@ -1,4 +1,4 @@
-import { Text, Icon } from '@aura/safe-react-components'
+import { Text as AuraText, Icon } from '@aura/safe-react-components'
 import { ReactElement } from 'react'
 import styled from 'styled-components'
 
@@ -18,6 +18,10 @@ import ExecuteIcon from '../TxList/assets/execute.svg'
 const StyledImg = styled(Img)`
   background-color: transparent;
   border-radius: 50%;
+`
+
+const Text = styled(AuraText)`
+  margin-bottom: 6px;
 `
 
 export const TxOwners = ({

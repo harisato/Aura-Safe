@@ -366,7 +366,8 @@ const ReviewSendFundsTx = ({
                   <Col xs={12}>
                     <PrefixedEthHashInfo
                       hash={txRecipient}
-                      name={title}
+                      name={itemValidator.name}
+                      customAvatar={itemValidator.avatar}
                       showCopyBtn
                       showAvatar
                       explorerUrl={getExplorerInfo(txRecipient)}
