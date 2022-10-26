@@ -149,8 +149,7 @@ function Staking(props): ReactElement {
     if (item === 'delegate') {
       setTypeStaking(TypeStaking.delegate)
       setTitle('Delegate')
-      console.log(amount, availableBalance)
-      if (amount > +availableBalance.amount / 1e6) {
+      if (amount > +availableBalance.amount / 1e6 || amount == 0) {
         setValidateMsg('Invalid amount!')
         return
       }
