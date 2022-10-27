@@ -374,7 +374,6 @@ export const makeQueueTransactionsFromService = (
 
 const makeTransactions = (list: ITransactionListItem[]): MTransactionListItem[] =>
   list.map((tx: ITransactionListItem) => {
-    console.log(tx)
     return {
       conflictType: 'None',
       type: 'TRANSACTION',

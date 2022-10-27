@@ -43,8 +43,7 @@ function Staking(props): ReactElement {
   const [typeStaking, setTypeStaking] = useState('')
   const [title, setTitle] = useState('')
 
-  const nativeCurrency = getNativeCurrency().symbol
-
+  const nativeCurrency = getNativeCurrency()
   const [amount, setAmount] = useState<any>('')
 
   const [availableBalance, setAvailableBalance] = useState({ _id: '', amount: '', denom: '' })
