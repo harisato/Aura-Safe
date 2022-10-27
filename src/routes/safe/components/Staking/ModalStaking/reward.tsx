@@ -5,8 +5,7 @@ import Col from 'src/components/layout/Col'
 
 export default function ModalReward(props) {
   const { nativeCurrency, itemDelegate, availableBalance, dataDelegateOfUser } = props
-  const pendingReward: any = dataDelegateOfUser?.delegation?.pendingReward?.amount / 10 ** 6
-  console.log('dataDelegateOfUser', dataDelegateOfUser)
+  const pendingReward: any = dataDelegateOfUser?.delegation?.pendingReward?.amount / 10 ** nativeCurrency.decimals
   return (
     <>
       <NotificationPopup>
@@ -32,8 +31,8 @@ export default function ModalReward(props) {
               </Text>
             </Col>
             <Text size="lg" color="numberAura">
-              {dataDelegateOfUser?.delegation?.delegationBalance?.amount / 10 ** 6 || 0}{' '}
-              <TextGreen>{nativeCurrency}</TextGreen>
+              {dataDelegateOfUser?.delegation?.delegationBalance?.amount / 10 ** nativeCurrency.decimals || 0}{' '}
+              <TextGreen>{nativeCurrency.symbol}</TextGreen>
             </Text>
           </BoxDelegate>
           <BoxDelegate>
@@ -43,7 +42,7 @@ export default function ModalReward(props) {
               </Text>
             </Col>
             <Text size="lg" color="numberAura">
-              {parseFloat(pendingReward).toFixed(6) || 0} <TextGreen>{nativeCurrency}</TextGreen>
+              {parseFloat(pendingReward) || 0} <TextGreen>{nativeCurrency.symbol}</TextGreen>
             </Text>
           </BoxDelegate>
         </Col>
@@ -56,8 +55,8 @@ export default function ModalReward(props) {
             </Col>
 
             <Text size="lg" color="numberAura">
-              {dataDelegateOfUser?.delegation?.delegatableBalance?.amount / 10 ** 6 || 0}{' '}
-              <TextGreen>{nativeCurrency}</TextGreen>
+              {dataDelegateOfUser?.delegation?.delegatableBalance?.amount / 10 ** nativeCurrency.decimals || 0}{' '}
+              <TextGreen>{nativeCurrency.symbol}</TextGreen>
             </Text>
           </BoxDelegate>
           <BoxDelegate>
@@ -68,8 +67,8 @@ export default function ModalReward(props) {
             </Col>
 
             <Text size="lg" color="numberAura">
-              {dataDelegateOfUser?.delegation?.claimedReward?.amount / 10 ** 6 || 0}{' '}
-              <TextGreen>{nativeCurrency}</TextGreen>
+              {dataDelegateOfUser?.delegation?.claimedReward?.amount / 10 ** nativeCurrency.decimals || 0}{' '}
+              <TextGreen>{nativeCurrency.symbol}</TextGreen>
             </Text>
           </BoxDelegate>
         </Col>

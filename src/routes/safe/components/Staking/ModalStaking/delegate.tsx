@@ -41,7 +41,8 @@ export default function ModalDelegate(props) {
                   </Text>
                 </Col>
                 <Text size="xl" color="numberAura">
-                  {availableBalance?.amount / 10 ** 6 || 0} <TextGreen>{nativeCurrency}</TextGreen>
+                  {availableBalance?.amount / 10 ** nativeCurrency.decimals || 0}{' '}
+                  <TextGreen>{nativeCurrency.symbol}</TextGreen>
                 </Text>
               </PaddingPopup>
             </BoxDelegate>
@@ -54,8 +55,8 @@ export default function ModalDelegate(props) {
                   </Text>
                 </Col>
                 <Text size="xl" color="numberAura">
-                  {dataDelegateOfUser?.delegation?.delegatableBalance?.amount / 10 ** 6 || 0}{' '}
-                  <TextGreen>{nativeCurrency}</TextGreen>
+                  {dataDelegateOfUser?.delegation?.delegatableBalance?.amount / 10 ** nativeCurrency.decimals || 0}{' '}
+                  <TextGreen>{nativeCurrency.symbol}</TextGreen>
                 </Text>
               </PaddingPopup>
             </BoxDelegate>
@@ -78,13 +79,15 @@ export default function ModalDelegate(props) {
                       min="0"
                       max="20"
                     />
-                    <StyledButtonModal onClick={() => handleMax(availableBalance?.amount / 10 ** 6 || 0)}>
+                    <StyledButtonModal
+                      onClick={() => handleMax(availableBalance?.amount / 10 ** nativeCurrency.decimals || 0)}
+                    >
                       Max
                     </StyledButtonModal>
                   </BorderInput>
                   <BorderAura>
                     <Text size="xl" color="linkAura">
-                      {nativeCurrency}
+                      {nativeCurrency.symbol}
                     </Text>
                   </BorderAura>
                 </InputAura>
