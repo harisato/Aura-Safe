@@ -90,7 +90,7 @@ const TableVotingDetailInside = (props) => {
   return (
     <TableVoting RowHead={RowHead}>
       {data?.map((row, index) => (
-        <StyledTableRow key={row.id}>
+        <StyledTableRow key={index}>
           <StyledTableCell component="th" scope="row">
             {index + 1}
           </StyledTableCell>

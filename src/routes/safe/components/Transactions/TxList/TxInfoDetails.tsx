@@ -108,7 +108,7 @@ export const TxInfoDetails = ({
           <TextStyled strong color="white" size="lg">
             To:
           </TextStyled>
-          <AddressInfo address={toAddress} name={name} avatarUrl={toAvatarUrl} />
+          <AddressInfo address={toAddress} name={toName} avatarUrl={toAvatarUrl} />
         </>
       )}
     </>

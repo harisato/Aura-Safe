@@ -29,13 +29,7 @@ export const StyledTableCell = withStyles((theme) => ({
   },
 }))(TableCell)
 
-export const StyledTableRow = withStyles((theme) => ({
-  root: {
-    '&:nth-of-type(odd)': {
-      //   borderTop: '1px solid #363843',
-    },
-  },
-}))(TableRow)
+export const StyledTableRow = styled(TableRow)``
 
 const useStyles = makeStyles({
   table: {
