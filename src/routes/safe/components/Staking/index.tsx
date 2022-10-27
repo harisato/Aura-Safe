@@ -169,7 +169,7 @@ function Staking(props): ReactElement {
 
     if (item === 'undelegate') {
       setTypeStaking(TypeStaking.undelegate)
-      setTitle('UnDedelegate')
+      setTitle('Undelegate')
     }
     setIsOpenReview(true)
     setIsOpenDelagate(false)

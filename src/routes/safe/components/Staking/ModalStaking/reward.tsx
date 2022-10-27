@@ -42,7 +42,7 @@ export default function ModalReward(props) {
               </Text>
             </Col>
             <Text size="lg" color="numberAura">
-              {parseFloat(pendingReward) || 0} <TextGreen>{nativeCurrency.symbol}</TextGreen>
+              {pendingReward ? parseFloat(pendingReward).toFixed(6) : 0} <TextGreen>{nativeCurrency.symbol}</TextGreen>
             </Text>
           </BoxDelegate>
         </Col>

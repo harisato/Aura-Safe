@@ -34,7 +34,7 @@ export default function ModalRedelegate(props) {
           <PaddingPopup>
             <Col sm={7} xs={12}>
               <Text size="lg" color="white">
-                {handlValueDelegate} to:
+                {`${String(handlValueDelegate).at(0)?.toUpperCase()}${String(handlValueDelegate).slice(1)} to:`}
               </Text>
             </Col>
             <SelectValidator
