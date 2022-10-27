@@ -50,8 +50,10 @@ export default function ModalRedelegate(props) {
             <Col sm={7} xs={12}>
               <Text size="lg" color="white">
                 Available for {handlValueDelegate}{' '}
-                <TextDisable>{dataDelegateOfUser?.delegation?.delegationBalance?.amount / 10 ** 6 || 0}</TextDisable>{' '}
-                <TextGreen>{nativeCurrency}</TextGreen>
+                <TextDisable>
+                  {dataDelegateOfUser?.delegation?.delegationBalance?.amount / 10 ** nativeCurrency.decimals || 0}
+                </TextDisable>{' '}
+                <TextGreen>{nativeCurrency.symbol}</TextGreen>
               </Text>
             </Col>
             <InputAura>
@@ -65,14 +67,18 @@ export default function ModalRedelegate(props) {
                   value={amount}
                 />
                 <StyledButtonModal
-                  onClick={() => handleMax(dataDelegateOfUser?.delegation?.delegationBalance?.amount / 10 ** 6 || 0)}
+                  onClick={() =>
+                    handleMax(
+                      dataDelegateOfUser?.delegation?.delegationBalance?.amount / 10 ** nativeCurrency.decimals || 0,
+                    )
+                  }
                 >
                   Max
                 </StyledButtonModal>
               </BorderInput>
               <BorderAura>
                 <Text size="xl" color="linkAura">
-                  {nativeCurrency}
+                  {nativeCurrency.symbol}
                 </Text>
               </BorderAura>
             </InputAura>
