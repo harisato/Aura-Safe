@@ -51,6 +51,7 @@ const TextNotiStyled = styled.div`
   color: #868a97;
   font-weight: 400;
   font-size: 14px;
+  margin-bottom: 6px;
 `
 
 const TextGreen = styled.span`
@@ -61,8 +62,8 @@ const TextDelegateNoti = styled.span`
   color: #e5e7ea;
 `
 
-const BoxDelegate = styled.div`<Halong9t className="1234567"></Halong9t>
-  display: flex;
+const BoxDelegate = styled.div`
+  margin-bottom: 6px;
 `
 
 const FotterModal = styled.div`

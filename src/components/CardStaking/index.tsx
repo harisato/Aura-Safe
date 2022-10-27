@@ -1,20 +1,16 @@
-import { ReactElement, useEffect, useState } from 'react'
 import { Text } from '@aura/safe-react-components'
+import { makeStyles } from '@material-ui/core'
+import { ReactElement, useEffect, useState } from 'react'
+import TableVoting, { StyledTableCell, StyledTableRow } from 'src/components/TableVoting'
 import {
-  styles,
-  StyledButton,
-  BoxCardStakingOverview,
   BoxCardStaking,
   BoxCardStakingList,
-  StyledButtonManage,
-  HeaderValidator,
+  BoxCardStakingOverview,
   ImgRow,
+  StyledButton,
+  StyledButtonManage,
+  styles,
 } from './style'
-import { makeStyles } from '@material-ui/core'
-import TableVoting from 'src/components/TableVoting'
-import { StyledTableCell, StyledTableRow } from 'src/components/TableVoting'
-import PrefixedEthHashInfo from 'src/components/PrefixedEthHashInfo'
-import { getDisplayAddress } from 'src/routes/safe/components/Staking/constant'
 
 const RowHead = [
   { name: 'NAME' },
@@ -29,8 +25,8 @@ const TableVotingDetailInside = (props) => {
 
   return (
     <TableVoting RowHead={RowHead}>
-      {data?.map((row) => (
-        <StyledTableRow key={row.id}>
+      {data?.map((row, index) => (
+        <StyledTableRow key={index}>
           <StyledTableCell component="th" scope="row">
             <ImgRow>
               <img style={{ marginRight: 5 }} src={row?.description?.picture} />

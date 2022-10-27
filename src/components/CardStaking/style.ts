@@ -75,6 +75,12 @@ const HeaderValidator = styled.div`
 `
 const ImgRow = styled.div`
   display: flex;
+  > img {
+    margin-right: 5px;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+  }
 `
 export {
   StyledButton,
