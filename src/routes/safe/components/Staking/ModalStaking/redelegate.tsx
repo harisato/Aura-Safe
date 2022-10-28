@@ -33,7 +33,7 @@ export default function ModalRedelegate(props) {
   return (
     <>
       <Col sm={12} xs={12} layout="column">
-        <BoxDelegate>
+        <BoxDelegate style={{ marginBottom: 24 }}>
           <PaddingPopup>
             <Col sm={7} xs={12}>
               <Text size="lg" color="white">

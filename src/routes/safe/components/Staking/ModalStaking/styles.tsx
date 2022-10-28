@@ -12,6 +12,7 @@ const HeaderPopup = styled.div`
 
 const HeaderContainer = styled.div`
   display: flex;
+  align-items: end;
 `
 
 const BoxImgStyled = styled.div`
@@ -29,8 +30,7 @@ const BoxImgStyled = styled.div`
 `
 
 const BoxVotingPower = styled.div`
-  margin-left: 20px;
-  align-self: center;
+  margin-left: 40px;
 `
 
 const TextPower = styled.div`
@@ -50,18 +50,19 @@ const Commission = styled.div`
   font-size: 16px;
 `
 
-const StyleDivider = styled(Divider)`
+const StyleDivider = styled.hr`
   background-color: #363843 !important;
-  margin-top: 10px;
-  margin-bottom: 10px;
+  margin-top: 24px;
+  margin-bottom: 24px;
   width: 100%;
+  height: 1px;
+  border: none;
 `
 
 const TextNotiStyled = styled.div`
   color: #868a97;
   font-weight: 400;
   font-size: 14px;
-  margin-bottom: 6px;
 `
 
 const TextGreen = styled.span`
@@ -73,7 +74,9 @@ const TextDelegateNoti = styled.span`
 `
 
 const BoxDelegate = styled.div`
-  margin-bottom: 6px;
+  margin-bottom: 4px;
+  display: flex;
+  justify-content: space-between;
 `
 
 const FotterModal = styled.div`
@@ -89,7 +92,7 @@ const TextTitleStaking = styled.div`
 `
 
 const PaddingPopup = styled.div`
-  margin-top: 10px;
+  width: 100%;
   > .validate-msg {
     color: #ff3535;
     font-size: 12px;
@@ -102,8 +105,8 @@ const StyledInputModal = styled.input`
   border: none;
   color: white;
   outline: none;
-  width: 85%;
   border: none;
+  flex: 1;
 `
 
 const StyledButtonModal = styled.button`
@@ -114,14 +117,17 @@ const StyledButtonModal = styled.button`
   font-size: 14px;
   color: white;
   cursor: pointer;
+  border: none;
 `
 
 const BorderInput = styled.div`
   border: 1px solid #363843;
   width: 100%;
   padding: 10px;
+  display: flex;
   border-top-left-radius: 8px;
   border-bottom-left-radius: 8px;
+  border-right: none;
 `
 
 const BorderAura = styled.div`

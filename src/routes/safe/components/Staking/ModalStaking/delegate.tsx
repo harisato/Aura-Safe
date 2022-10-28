@@ -34,7 +34,7 @@ export default function ModalDelegate(props) {
         </div>
       </NotificationPopup>
 
-      <div style={{ display: 'flex', marginTop: 10 }}>
+      <div style={{ display: 'flex', marginTop: 12 }}>
         <>
           <Col sm={12} xs={12} layout="column">
             <BoxDelegate>
