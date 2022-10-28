@@ -22,6 +22,7 @@ const useStyles = makeStyles((theme) => ({
     '& .MuiSelect-select': {
       border: 'none',
       textAlign: 'center',
+      padding: '0px 42px 0px 16px',
       '& option': {},
     },
     '& .MuiSelect-select:not([multiple]) option, .MuiSelect-select:not([multiple]) optgroup': {
@@ -36,8 +37,14 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: 'transparent',
     color: 'white !important',
     height: 27,
+    padding: 0,
     '&. Mui-focused': {
       border: 'none',
+    },
+    '& img': {
+      right: 16,
+      position: 'absolute',
+      pointerEvents: 'none',
     },
   },
   selectMenu: {
@@ -72,7 +79,8 @@ export default function CustomizedSelects(props) {
           value={selectedAction}
           onChange={handleChangeAction}
           className={classes.boxSelect}
-          inputProps={{ 'aria-label': 'Without label' }}
+          inputProps={{ 'aria-label': 'without label' }}
+          autoWidth
         >
           <MenuItem className={classes.optionSelect} value="manage" disabled>
             Select Acions
