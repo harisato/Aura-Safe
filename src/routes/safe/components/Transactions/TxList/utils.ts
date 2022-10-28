@@ -53,7 +53,7 @@ const getAmountWithSymbol = (
   const finalValue = formatted ? formatAmount(nonFormattedValue).toString() : nonFormattedValue
   const txAmount = finalValue === 'NaN' ? NOT_AVAILABLE : finalValue
 
-  return `${txAmount} ${symbol}`
+  return `${parseFloat(txAmount)} ${symbol}`
 }
 
 export const getTxAmount = (txInfo?: TransactionInfo, formatted = true): string => {

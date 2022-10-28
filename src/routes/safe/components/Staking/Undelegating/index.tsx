@@ -28,6 +28,11 @@ const BoxCardStakingList = styled.div`
   padding: 24px;
   background: #24262e;
   border-radius: 25px;
+  max-height: 200px;
+  overflow: auto;
+  > div {
+    width: 100%;
+  }
 `
 
 const DelegateRow = styled.div`
@@ -89,9 +94,9 @@ function Undelegating(props): ReactElement {
         </Text>
       </BoxCardStakingOverview>
       <BoxCardStakingList>
-        {data?.map((item: any, key) => {
+        {data?.map((item: any, index) => {
           return (
-            <>
+            <div key={index}>
               <DelegateRow>
                 <Col end="lg" sm={2} xs={12}>
                   <BoxImg>
@@ -115,8 +120,8 @@ function Undelegating(props): ReactElement {
                 </Col>
               </DelegateRow>
 
-              {item.length > 1 && <StyleDivider />}
-            </>
+              {data.length > 1 && <StyleDivider />}
+            </div>
           )
         })}
       </BoxCardStakingList>

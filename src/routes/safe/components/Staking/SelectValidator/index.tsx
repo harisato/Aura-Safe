@@ -4,6 +4,7 @@ import FormControl from '@material-ui/core/FormControl'
 import Select from '@material-ui/core/Select'
 import Input from '@material-ui/core/Input'
 import { borderLinear } from 'src/theme/variables'
+import { MenuItem } from '@material-ui/core'
 
 const useStyles = makeStyles((theme) => ({
   formControl: {
@@ -52,15 +53,15 @@ const useStyles = makeStyles((theme) => ({
   },
 
   optionSelect: {
-    backgroundColor: 'red',
+    fontSize: '14px',
+    '&:hover': {
+      backgroundColor: '#363843',
+    },
   },
 
   selectStyled: {
-    // backgroundColor: 'white !important',
-    backgroundColor: '#131419 !important',
     outline: 'none',
-    borderRadius: '10px important',
-    fontSize: 16,
+    fontSize: 14,
   },
 }))
 
@@ -72,19 +73,22 @@ export default function SelectValidator(props) {
     <div className={classes.selectMenu}>
       <FormControl className={classes.formControl}>
         <Select
-          native
+          displayEmpty
           value={valueDelegate}
           onChange={handleChangeRedelegate}
           variant="standard"
           className={classes.boxSelect}
-          input={<Input id="demo-dialog-native" />}
+          inputProps={{ 'aria-label': 'Without label' }}
         >
+          <MenuItem className={classes.optionSelect} value="none" disabled>
+            Select validator
+          </MenuItem>
           {arrRedelegate &&
             arrRedelegate.map((item, key) => {
               return (
-                <option className={classes.selectStyled} value={item.value} key={key}>
+                <MenuItem className={classes.optionSelect} value={item.value} key={key}>
                   {item.name}
-                </option>
+                </MenuItem>
               )
             })}
         </Select>

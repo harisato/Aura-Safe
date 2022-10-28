@@ -55,8 +55,14 @@ export const useTransactionType = (tx: any): TxTypeProps => {
         }
         if (tx.txInfo.typeUrl === '/cosmos.bank.v1beta1.MsgSend') {
           setType({
-            icon: isSendTx ? OutgoingTxIcon : IncomingTxIcon,
-            text: isSendTx ? 'Send' : 'Receive',
+            icon: OutgoingTxIcon,
+            text: 'Send',
+          })
+        }
+        if (tx.txInfo.typeUrl === 'Receive') {
+          setType({
+            icon: IncomingTxIcon,
+            text: 'Receive',
           })
         }
 

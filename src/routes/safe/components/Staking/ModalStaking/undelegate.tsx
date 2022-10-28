@@ -1,31 +1,21 @@
-import { Text } from '@aura/safe-react-components'
-import { useEffect, useRef } from 'react'
-import Col from 'src/components/layout/Col'
 import SelectValidator from '../SelectValidator'
 import {
-  BorderAura,
-  BorderInput,
-  BoxDelegate,
-  InputAura,
-  PaddingPopup,
-  StyledButtonModal,
-  StyledInputModal,
-  TextDisable,
   TextGreen,
+  BoxDelegate,
+  PaddingPopup,
+  InputAura,
+  StyledInputModal,
+  StyledButtonModal,
+  BorderInput,
+  BorderAura,
+  TextDisable,
 } from './styles'
+import { Text } from '@aura/safe-react-components'
+import Col from 'src/components/layout/Col'
+import { useEffect, useRef } from 'react'
 
-export default function ModalRedelegate(props) {
-  const {
-    arrRedelegate,
-    handleChangeRedelegate,
-    valueDelegate,
-    handleDelegatedAmount,
-    nativeCurrency,
-    handleMax,
-    amount,
-    dataDelegateOfUser,
-    validateMsg,
-  } = props
+export default function ModalUndelegate(props) {
+  const { handleDelegatedAmount, nativeCurrency, handleMax, amount, dataDelegateOfUser, validateMsg } = props
   const inputRef = useRef<HTMLInputElement | null>(null)
   useEffect(() => {
     inputRef?.current?.focus()
@@ -37,22 +27,7 @@ export default function ModalRedelegate(props) {
           <PaddingPopup>
             <Col sm={7} xs={12}>
               <Text size="lg" color="white">
-                Redelegate to:
-              </Text>
-            </Col>
-            <SelectValidator
-              arrRedelegate={arrRedelegate}
-              handleChangeRedelegate={handleChangeRedelegate}
-              valueDelegate={valueDelegate}
-            />
-          </PaddingPopup>
-        </BoxDelegate>
-
-        <BoxDelegate>
-          <PaddingPopup>
-            <Col sm={7} xs={12}>
-              <Text size="lg" color="white">
-                Available for redelegation{'  '}
+                Available for undelegation{'  '}
                 <TextDisable>
                   {dataDelegateOfUser?.delegation?.delegationBalance?.amount / 10 ** nativeCurrency.decimals || 0}
                 </TextDisable>{' '}

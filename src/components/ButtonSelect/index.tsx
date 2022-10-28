@@ -5,6 +5,7 @@ import Select from '@material-ui/core/Select'
 import Input from '@material-ui/core/Input'
 import { borderLinear } from 'src/theme/variables'
 import CaretDown from './CaretDown.svg'
+import { MenuItem } from '@material-ui/core'
 
 const useStyles = makeStyles((theme) => ({
   formControl: {
@@ -49,31 +50,42 @@ const useStyles = makeStyles((theme) => ({
     backgroundClip: 'content-box, border-box',
   },
   optionSelect: {
-    backgroundColor: 'red',
+    fontSize: '14px',
+    '&:hover': {
+      backgroundColor: '#363843',
+    },
   },
 }))
 
 const CaretDownIcon = (props) => <img src={CaretDown} />
 
 export default function CustomizedSelects(props) {
-  const { handlValueDelegate, handleChange } = props
+  const { selectedAction, handleChangeAction } = props
   const classes = useStyles()
 
   return (
     <div className={classes.selectMenu}>
       <FormControl className={classes.formControl}>
         <Select
+          displayEmpty
           IconComponent={CaretDownIcon}
-          native
-          value={handlValueDelegate}
-          onChange={handleChange}
-          variant="standard"
+          value={selectedAction}
+          onChange={handleChangeAction}
           className={classes.boxSelect}
-          input={<Input id="demo-dialog-native" />}
+          inputProps={{ 'aria-label': 'Without label' }}
         >
-          <option value={'reward'}>Select Acions</option>
-          <option value={'undelegate'}>Undelegate</option>
-          <option value={'redelegate'}>Redelegate</option>
+          <MenuItem className={classes.optionSelect} value="manage" disabled>
+            Select Acions
+          </MenuItem>
+          <MenuItem className={classes.optionSelect} value="delegate">
+            Delegate
+          </MenuItem>
+          <MenuItem className={classes.optionSelect} value="undelegate">
+            Undelegate
+          </MenuItem>
+          <MenuItem className={classes.optionSelect} value="redelegate">
+            Redelegate
+          </MenuItem>
         </Select>
       </FormControl>
     </div>

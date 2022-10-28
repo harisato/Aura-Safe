@@ -1,5 +1,5 @@
 import Modal from 'react-modal'
-
+import { useEffect } from 'react'
 const customStyles = {
   overlay: {
     backgroundColor: 'rgba(35, 38, 47, 0.3)',
@@ -20,6 +20,10 @@ const customStyles = {
 
 export default function ModalNew(props) {
   const { title, closeModal, modalIsOpen, children } = props
+
+  useEffect(() => {
+    Modal.setAppElement('body')
+  }, [])
 
   return (
     <Modal isOpen={modalIsOpen} onRequestClose={closeModal} style={customStyles}>
