@@ -1,23 +1,27 @@
-import NotificationPopup from 'src/components/NotificationPopup'
-import {
-  TextNotiStyled,
-  TextGreen,
-  BoxDelegate,
-  FotterModal,
-  TextTitleStaking,
-  PaddingPopup,
-  InputAura,
-  StyledInputModal,
-  StyledButtonModal,
-  BorderInput,
-  BorderAura,
-} from './styles'
 import { Text } from '@aura/safe-react-components'
+import { useEffect, useRef } from 'react'
 import Col from 'src/components/layout/Col'
+import NotificationPopup from 'src/components/NotificationPopup'
 import { isNumberKeyPress } from 'src/utils'
+import {
+  BorderAura,
+  BorderInput,
+  BoxDelegate,
+  InputAura,
+  PaddingPopup,
+  StyledButtonModal,
+  StyledInputModal,
+  TextGreen,
+  TextNotiStyled,
+  TextTitleStaking,
+} from './styles'
 
 export default function ModalDelegate(props) {
   const { handleAmout, amount, nativeCurrency, availableBalance, dataDelegateOfUser, handleMax, validateMsg } = props
+  const inputRef = useRef<HTMLInputElement | null>(null)
+  useEffect(() => {
+    inputRef?.current?.focus()
+  }, [inputRef])
   return (
     <>
       <NotificationPopup>
@@ -41,7 +45,7 @@ export default function ModalDelegate(props) {
                   </Text>
                 </Col>
                 <Text size="xl" color="numberAura">
-                  {availableBalance?.amount / 10 ** nativeCurrency.decimals || 0}{' '}
+                  {dataDelegateOfUser.delegation?.delegationBalance?.amount / 10 ** nativeCurrency.decimals || 0}{' '}
                   <TextGreen>{nativeCurrency.symbol}</TextGreen>
                 </Text>
               </PaddingPopup>
@@ -78,6 +82,7 @@ export default function ModalDelegate(props) {
                       step="0.1"
                       min="0"
                       max="20"
+                      ref={inputRef}
                     />
                     <StyledButtonModal
                       onClick={() => handleMax(availableBalance?.amount / 10 ** nativeCurrency.decimals || 0)}

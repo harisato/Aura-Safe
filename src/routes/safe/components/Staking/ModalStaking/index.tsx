@@ -1,6 +1,6 @@
 import styled from 'styled-components'
 import { useState, useEffect } from 'react'
-import { Button } from '@aura/safe-react-components'
+import { Button, Loader } from '@aura/safe-react-components'
 import ModalNew from 'src/components/ModalNew'
 import StakeFish from '../assets/StakeFish.svg'
 import Inotel from '../assets/Inotel.png'
@@ -25,10 +25,14 @@ import { borderLinear } from 'src/theme/variables'
 
 import ModalDelegate from './delegate'
 import ModalRedelegate from './redelegate'
-import ModalReward from './reward'
+import ManageModal from './manage'
 
 import * as _ from 'lodash'
-
+import { useSelector } from 'react-redux'
+import { allValidator as allValidatorSelector } from 'src/logic/validator/store/selectors'
+import { ValidatorType } from 'src/logic/validator/store/reducer'
+import { LoadingContainer } from 'src/components/LoaderContainer'
+import ModalUndelegate from './undelegate'
 const StyledButtonSubmit = styled(Button)`
   border: 2px solid transparent;
   background-image: ${borderLinear};
@@ -40,6 +44,10 @@ const StyledButtonSubmit = styled(Button)`
   min-width: 130px !important;
   height: 32px !important;
   margin-left: 10px;
+  &:disabled {
+    cursor: not-allowed;
+    pointer-events: unset;
+  }
 `
 
 export default function ModalStaking(props) {
@@ -49,13 +57,13 @@ export default function ModalStaking(props) {
     handleSubmit,
     handleAmout,
     amount,
-    handlValueDelegate,
-    handleChange,
+    selectedAction,
+    handleChangeAction,
     allValidator,
     itemValidator,
     handleChangeRedelegate,
     valueDelegate,
-    handleAmoutRedelegate,
+    handleDelegatedAmount,
     nativeCurrency,
     itemDelegate,
     availableBalance,
@@ -65,15 +73,11 @@ export default function ModalStaking(props) {
   } = props
 
   const [arrRedelegate, setArrDelegate] = useState([])
+  const allValidatorData = useSelector(allValidatorSelector)
 
   useEffect(() => {
-    const dataTemp: any = [
-      {
-        name: 'Select Actions',
-        value: 'actions',
-      },
-    ]
-    if (handlValueDelegate === 'redelegate') {
+    const dataTemp: any = []
+    if (selectedAction === 'redelegate') {
       allValidator.map((item) => {
         if (item.operatorAddress !== itemValidator?.safeStaking) {
           dataTemp.push({
@@ -83,26 +87,30 @@ export default function ModalStaking(props) {
         }
       })
     }
-    if (handlValueDelegate === 'undelegate') {
-      allValidator.map((item) => {
-        if (item.operatorAddress === itemValidator?.safeStaking) {
-          dataTemp.push({
-            name: item.validator,
-            value: item.operatorAddress,
-          })
-        }
-      })
-    }
     setArrDelegate(dataTemp)
-  }, [handlValueDelegate || itemValidator?.safeStaking])
+  }, [selectedAction || itemValidator?.safeStaking])
+
+  const stakedValidator = allValidatorData.find(
+    (validator: ValidatorType) => validator.operatorAddress == dataDelegateOfUser?.validator.operatorAddress,
+  )
+
+  if (!dataDelegateOfUser) {
+    return (
+      <ModalNew modalIsOpen={modalIsOpen} closeModal={handleClose}>
+        <LoadingContainer>
+          <Loader size="md" />
+        </LoadingContainer>
+      </ModalNew>
+    )
+  }
 
   return (
     <ModalNew modalIsOpen={modalIsOpen} closeModal={handleClose}>
       <HeaderContainer>
         <HeaderPopup>
-          <ImgStyled src={StakeFish} alt="StakeFish" />
+          <ImgStyled src={stakedValidator?.picture || StakeFish} alt="StakeFish" />
           <BoxImgStyled>
-            <img src={Inotel} alt="StakeFish" />
+            <p>{stakedValidator?.name}</p>
             <Commission>
               Commission - {parseFloat(dataDelegateOfUser?.validator?.commission).toFixed(2) || 0}%
             </Commission>
@@ -120,7 +128,7 @@ export default function ModalStaking(props) {
 
       <StyleDivider />
 
-      {handlValueDelegate === 'delegate' && (
+      {selectedAction === 'delegate' && (
         <ModalDelegate
           handleAmout={handleAmout}
           amount={amount}
@@ -131,36 +139,36 @@ export default function ModalStaking(props) {
           validateMsg={validateMsg}
         />
       )}
-      {handlValueDelegate === 'redelegate' && (
+      {selectedAction === 'redelegate' && (
         <ModalRedelegate
           dataDelegateOfUser={dataDelegateOfUser}
-          handlValueDelegate={handlValueDelegate}
+          selectedAction={selectedAction}
           arrRedelegate={arrRedelegate}
           handleChangeRedelegate={handleChangeRedelegate}
           valueDelegate={valueDelegate}
-          handleAmoutRedelegate={handleAmoutRedelegate}
+          handleDelegatedAmount={handleDelegatedAmount}
           amount={amount}
           itemDelegate={itemDelegate}
           nativeCurrency={nativeCurrency}
           handleMax={handleMax}
+          validateMsg={validateMsg}
         />
       )}
-      {handlValueDelegate === 'undelegate' && (
-        <ModalRedelegate
+      {selectedAction === 'undelegate' && (
+        <ModalUndelegate
           dataDelegateOfUser={dataDelegateOfUser}
-          handlValueDelegate={handlValueDelegate}
-          arrRedelegate={arrRedelegate}
+          selectedAction={selectedAction}
           handleChangeRedelegate={handleChangeRedelegate}
           valueDelegate={valueDelegate}
-          handleAmoutRedelegate={handleAmoutRedelegate}
+          handleDelegatedAmount={handleDelegatedAmount}
           nativeCurrency={nativeCurrency}
-          itemDelegate={itemDelegate}
           amount={amount}
           handleMax={handleMax}
+          validateMsg={validateMsg}
         />
       )}
-      {handlValueDelegate === 'reward' && (
-        <ModalReward
+      {selectedAction === 'manage' && (
+        <ManageModal
           dataDelegateOfUser={dataDelegateOfUser}
           nativeCurrency={nativeCurrency}
           itemDelegate={itemDelegate}
@@ -170,27 +178,28 @@ export default function ModalStaking(props) {
 
       <FotterModal>
         <CloseButton title="Close" onClick={handleClose} />
-        {handlValueDelegate === 'delegate' && (
-          <StyledButtonSubmit size="md" onClick={() => handleSubmit(handlValueDelegate)}>
+        {selectedAction === 'delegate' && (
+          <StyledButtonSubmit disabled={validateMsg} size="md" onClick={() => handleSubmit(selectedAction)}>
             Delegate
           </StyledButtonSubmit>
         )}
-        {handlValueDelegate === 'redelegate' && (
-          <StyledButtonSubmit size="md" onClick={() => handleSubmit(handlValueDelegate)}>
+        {selectedAction === 'redelegate' && (
+          <StyledButtonSubmit
+            disabled={validateMsg || valueDelegate == 'none'}
+            size="md"
+            onClick={() => handleSubmit(selectedAction)}
+          >
             Redelegate
           </StyledButtonSubmit>
         )}
-        {handlValueDelegate === 'undelegate' && (
-          <StyledButtonSubmit size="md" onClick={() => handleSubmit(handlValueDelegate)}>
+        {selectedAction === 'undelegate' && (
+          <StyledButtonSubmit disabled={validateMsg} size="md" onClick={() => handleSubmit(selectedAction)}>
             Undelegate
           </StyledButtonSubmit>
         )}
-        {handlValueDelegate === 'reward' && (
+        {selectedAction === 'manage' && (
           <>
-            <ButtonSelect handlValueDelegate={handlValueDelegate} handleChange={handleChange} />
-            <StyledButtonSubmit size="md" onClick={() => handleSubmit('delegate')}>
-              Delegate
-            </StyledButtonSubmit>
+            <ButtonSelect selectedAction={selectedAction} handleChangeAction={handleChangeAction} />
           </>
         )}
       </FotterModal>

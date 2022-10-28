@@ -4,6 +4,7 @@ import { Divider } from '@material-ui/core'
 const ImgStyled = styled.img`
   width: 56px;
   height: 56px;
+  border-radius: 50%50%;
 `
 const HeaderPopup = styled.div`
   display: flex;
@@ -16,6 +17,15 @@ const HeaderContainer = styled.div`
 const BoxImgStyled = styled.div`
   align-self: center;
   margin-left: 10px;
+  > p {
+    font-size: 32px;
+    font-weight: 700;
+    background: linear-gradient(108.46deg, #5ee6d0 12.51%, #bfc6ff 51.13%, #ffba69 87.49%);
+    margin: 0px;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
 `
 
 const BoxVotingPower = styled.div`
@@ -103,6 +113,7 @@ const StyledButtonModal = styled.button`
   font-weight: 510;
   font-size: 14px;
   color: white;
+  cursor: pointer;
 `
 
 const BorderInput = styled.div`
@@ -130,7 +141,7 @@ const InputAura = styled.div`
 `
 
 const TextDisable = styled.span`
-  color: #868a97;
+  color: #e5e7ea;
 `
 
 export {

@@ -3,7 +3,7 @@ import { TextNotiStyled, TextGreen, TextDelegateNoti, BoxDelegate } from './styl
 import { Text } from '@aura/safe-react-components'
 import Col from 'src/components/layout/Col'
 
-export default function ModalReward(props) {
+export default function ManageModal(props) {
   const { nativeCurrency, itemDelegate, availableBalance, dataDelegateOfUser } = props
   const pendingReward: any = dataDelegateOfUser?.delegation?.pendingReward?.amount / 10 ** nativeCurrency.decimals
   return (
