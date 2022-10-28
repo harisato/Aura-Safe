@@ -32,14 +32,14 @@ type TxInfoDetailsProps = {
   toAvatarUrl?: string | undefined
   isTransferType?: boolean
   txInfo?: Transfer
-  quanlity?: string
+  quantity?: string
 }
 
 export const TxInfoDetails = ({
   title,
   address,
   isTransferType,
-  quanlity,
+  quantity,
   txInfo,
   name,
   avatarUrl,
@@ -93,7 +93,7 @@ export const TxInfoDetails = ({
   }, [txInfo])
   return (
     <>
-      <InfoDetails title={title} quanlity={quanlity}>
+      <InfoDetails title={title} quantity={quantity}>
         <SingleRow>
           <AddressInfo address={address} name={name} avatarUrl={avatarUrl} />
           {/* <EllipsisTransactionDetails
