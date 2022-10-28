@@ -112,14 +112,14 @@ export default function ModalStaking(props) {
           <BoxImgStyled>
             <p>{stakedValidator?.name}</p>
             <Commission>
-              Commission - {parseFloat(dataDelegateOfUser?.validator?.commission).toFixed(2) || 0}%
+              Commission - {parseFloat(Number(dataDelegateOfUser?.validator?.commission).toFixed(2)) || 0}%
             </Commission>
           </BoxImgStyled>
         </HeaderPopup>
         <BoxVotingPower>
           <TextPower>
             Voting power -{' '}
-            {parseFloat(dataDelegateOfUser?.validator?.votingPower?.percent_voting_power).toFixed(2) || 0}% (0{' '}
+            {parseFloat(Number(dataDelegateOfUser?.validator?.votingPower?.percent_voting_power).toFixed(2)) || 0}% (0{' '}
             <TextGreen>{nativeCurrency.symbol}</TextGreen> )
           </TextPower>
           <TextDelegators>Delegators - {dataDelegateOfUser?.validator?.delegators || 0}</TextDelegators>
