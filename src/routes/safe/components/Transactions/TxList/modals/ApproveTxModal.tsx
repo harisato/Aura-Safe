@@ -475,7 +475,7 @@ export const ApproveTxModal = ({
 
         const signatures = toBase64(signResult.signatures[0])
         const bodyBytes = toBase64(signResult.bodyBytes)
-
+        const authInfoBytes = toBase64(signResult.authInfoBytes)
         // call api to confirm transaction
 
         const data = {
@@ -484,6 +484,7 @@ export const ApproveTxModal = ({
           internalChainId: getInternalChainId(),
           bodyBytes: bodyBytes,
           signature: signatures,
+          authInfoBytes: authInfoBytes,
         }
 
         confirmTxFromApi(data, chainId)

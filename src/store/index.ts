@@ -1,3 +1,4 @@
+import { ValidatorStateType } from './../logic/validator/store/reducer/index'
 import { applyMiddleware, CombinedState, combineReducers, compose, createStore, PreloadedState } from 'redux'
 import { save, load, LoadOptions, RLSOptions } from 'redux-localstorage-simple'
 import thunk from 'redux-thunk'
@@ -54,6 +55,7 @@ import { ConfigState } from 'src/logic/config/store/reducer/reducer'
 import { localTransactionsMiddleware } from 'src/logic/safe/store/middleware/localTransactionsMiddleware'
 import { proposalsReducer, PROPOSALS_REDUCER_ID } from 'src/logic/proposal/store/reducer/proposals'
 import { IProposal } from 'src/types/proposal'
+import validatorReducer, { VALIDATOR_REDUCER_ID } from 'src/logic/validator/store/reducer'
 
 const CURRENCY_KEY = `${CURRENCY_REDUCER_ID}.selectedCurrency`
 
@@ -103,6 +105,7 @@ const reducers = {
   [APPEARANCE_REDUCER_ID]: appearanceReducer,
   [TERM_ID]: termReducer,
   [PROPOSALS_REDUCER_ID]: proposalsReducer,
+  [VALIDATOR_REDUCER_ID]: validatorReducer,
 }
 
 const rootReducer = combineReducers(reducers)
@@ -127,6 +130,7 @@ export type AppReduxState = CombinedState<{
   [APPEARANCE_REDUCER_ID]: AppearanceState
   [TERM_ID]: TermState
   [PROPOSALS_REDUCER_ID]: IProposal[]
+  [VALIDATOR_REDUCER_ID]: ValidatorStateType
 }>
 
 export const store: any = createStore(rootReducer, load(LS_CONFIG), enhancer)

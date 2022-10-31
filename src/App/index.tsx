@@ -34,6 +34,7 @@ import loadCurrentSessionFromStorage from 'src/logic/currentSession/store/action
 import { ConnectWalletModal } from 'src/components/ConnectWalletModal'
 
 import TermContext from 'src/logic/TermContext'
+import { fetchAllValidator } from 'src/logic/validator/store/actions'
 
 const notificationStyles = {
   success: {
@@ -94,6 +95,7 @@ const App: React.FC = ({ children }) => {
   useEffect(() => {
     dispatch(loadSafesFromStorage())
     dispatch(loadCurrentSessionFromStorage())
+    dispatch(fetchAllValidator())
   }, [dispatch])
 
   return (

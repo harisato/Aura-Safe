@@ -5,6 +5,7 @@ import Select from '@material-ui/core/Select'
 import Input from '@material-ui/core/Input'
 import { borderLinear } from 'src/theme/variables'
 import CaretDown from './CaretDown.svg'
+import { MenuItem } from '@material-ui/core'
 
 const useStyles = makeStyles((theme) => ({
   formControl: {
@@ -21,6 +22,7 @@ const useStyles = makeStyles((theme) => ({
     '& .MuiSelect-select': {
       border: 'none',
       textAlign: 'center',
+      padding: '0px 42px 0px 16px',
       '& option': {},
     },
     '& .MuiSelect-select:not([multiple]) option, .MuiSelect-select:not([multiple]) optgroup': {
@@ -35,8 +37,14 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: 'transparent',
     color: 'white !important',
     height: 27,
+    padding: 0,
     '&. Mui-focused': {
       border: 'none',
+    },
+    '& img': {
+      right: 16,
+      position: 'absolute',
+      pointerEvents: 'none',
     },
   },
   selectMenu: {
@@ -49,31 +57,43 @@ const useStyles = makeStyles((theme) => ({
     backgroundClip: 'content-box, border-box',
   },
   optionSelect: {
-    backgroundColor: 'red',
+    fontSize: '14px',
+    '&:hover': {
+      backgroundColor: '#363843',
+    },
   },
 }))
 
 const CaretDownIcon = (props) => <img src={CaretDown} />
 
 export default function CustomizedSelects(props) {
-  const { handlValueDelegate, handleChange } = props
+  const { selectedAction, handleChangeAction } = props
   const classes = useStyles()
 
   return (
     <div className={classes.selectMenu}>
       <FormControl className={classes.formControl}>
         <Select
+          displayEmpty
           IconComponent={CaretDownIcon}
-          native
-          value={handlValueDelegate}
-          onChange={handleChange}
-          variant="standard"
+          value={selectedAction}
+          onChange={handleChangeAction}
           className={classes.boxSelect}
-          input={<Input id="demo-dialog-native" />}
+          inputProps={{ 'aria-label': 'without label' }}
+          autoWidth
         >
-          <option value={'reward'}>Select Acions</option>
-          <option value={'undelegate'}>Undelegate</option>
-          <option value={'redelegate'}>Redelegate</option>
+          <MenuItem className={classes.optionSelect} value="manage" disabled>
+            Select Acions
+          </MenuItem>
+          <MenuItem className={classes.optionSelect} value="delegate">
+            Delegate
+          </MenuItem>
+          <MenuItem className={classes.optionSelect} value="undelegate">
+            Undelegate
+          </MenuItem>
+          <MenuItem className={classes.optionSelect} value="redelegate">
+            Redelegate
+          </MenuItem>
         </Select>
       </FormControl>
     </div>

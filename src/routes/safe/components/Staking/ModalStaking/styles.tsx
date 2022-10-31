@@ -4,6 +4,7 @@ import { Divider } from '@material-ui/core'
 const ImgStyled = styled.img`
   width: 56px;
   height: 56px;
+  border-radius: 50%50%;
 `
 const HeaderPopup = styled.div`
   display: flex;
@@ -11,16 +12,25 @@ const HeaderPopup = styled.div`
 
 const HeaderContainer = styled.div`
   display: flex;
+  align-items: end;
 `
 
 const BoxImgStyled = styled.div`
   align-self: center;
   margin-left: 10px;
+  > p {
+    font-size: 32px;
+    font-weight: 700;
+    background: linear-gradient(108.46deg, #5ee6d0 12.51%, #bfc6ff 51.13%, #ffba69 87.49%);
+    margin: 0px;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
 `
 
 const BoxVotingPower = styled.div`
-  margin-left: 20px;
-  align-self: center;
+  margin-left: 40px;
 `
 
 const TextPower = styled.div`
@@ -40,11 +50,13 @@ const Commission = styled.div`
   font-size: 16px;
 `
 
-const StyleDivider = styled(Divider)`
+const StyleDivider = styled.hr`
   background-color: #363843 !important;
-  margin-top: 10px;
-  margin-bottom: 10px;
+  margin-top: 24px;
+  margin-bottom: 24px;
   width: 100%;
+  height: 1px;
+  border: none;
 `
 
 const TextNotiStyled = styled.div`
@@ -61,8 +73,10 @@ const TextDelegateNoti = styled.span`
   color: #e5e7ea;
 `
 
-const BoxDelegate = styled.div`<Halong9t className="1234567"></Halong9t>
+const BoxDelegate = styled.div`
+  margin-bottom: 4px;
   display: flex;
+  justify-content: space-between;
 `
 
 const FotterModal = styled.div`
@@ -78,7 +92,7 @@ const TextTitleStaking = styled.div`
 `
 
 const PaddingPopup = styled.div`
-  margin-top: 10px;
+  width: 100%;
   > .validate-msg {
     color: #ff3535;
     font-size: 12px;
@@ -91,8 +105,8 @@ const StyledInputModal = styled.input`
   border: none;
   color: white;
   outline: none;
-  width: 85%;
   border: none;
+  flex: 1;
 `
 
 const StyledButtonModal = styled.button`
@@ -102,14 +116,18 @@ const StyledButtonModal = styled.button`
   font-weight: 510;
   font-size: 14px;
   color: white;
+  cursor: pointer;
+  border: none;
 `
 
 const BorderInput = styled.div`
   border: 1px solid #363843;
   width: 100%;
   padding: 10px;
+  display: flex;
   border-top-left-radius: 8px;
   border-bottom-left-radius: 8px;
+  border-right: none;
 `
 
 const BorderAura = styled.div`
@@ -129,7 +147,7 @@ const InputAura = styled.div`
 `
 
 const TextDisable = styled.span`
-  color: #868a97;
+  color: #e5e7ea;
 `
 
 export {

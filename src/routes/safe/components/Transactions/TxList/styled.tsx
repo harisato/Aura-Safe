@@ -252,7 +252,7 @@ export const StyledGroupedTransactions = styled(StyledTransaction)`
 export const GroupedTransactions = styled(StyledTransaction)`
   // add a bottom division line for all elements but the last
   &:not(:last-of-type) {
-    border-bottom: none};
+    border-bottom: none;
   }
 
   // builds the tree-view layout
@@ -404,10 +404,9 @@ export const TxDetailsContainer = styled.div<{ ownerRows?: number }>`
       color: ${({ theme }) => theme.colors.white};
       margin: 0 8px;
 
-    
-
       &.error {
         background-color: ${({ theme }) => theme.colors.error};
+      }
 
       &.primary {
         background-color: ${({ theme }) => theme.colors.primary};
@@ -478,29 +477,12 @@ export const InlineEthHashInfo = styled(EthHashInfo)`
 `
 
 export const StyledScrollableBar = styled.div`
-  &::-webkit-scrollbar {
-    width: 0.7em;
-    scroll-behavior: smooth;
-  }
-
-  &::-webkit-scrollbar-track {
-    box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
-    border-radius: 20px;
-  }
-
-  &::-webkit-scrollbar-thumb {
-    background-color: darkgrey;
-    outline: 1px solid #dadada;
-    border-radius: 20px;
-  }
-
-  // firefox experimental
   scrollbar-color: darkgrey #dadada;
   scrollbar-width: thin;
 `
 
 export const ScrollableTransactionsContainer = styled(StyledScrollableBar)`
-  height: calc(100vh - 170px);
+  height: calc(100vh - 190px);
   overflow-x: hidden;
   overflow-y: auto;
   width: 100%;

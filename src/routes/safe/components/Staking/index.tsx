@@ -43,8 +43,7 @@ function Staking(props): ReactElement {
   const [typeStaking, setTypeStaking] = useState('')
   const [title, setTitle] = useState('')
 
-  const nativeCurrency = getNativeCurrency().symbol
-
+  const nativeCurrency = getNativeCurrency()
   const [amount, setAmount] = useState<any>('')
 
   const [availableBalance, setAvailableBalance] = useState({ _id: '', amount: '', denom: '' })
@@ -60,23 +59,31 @@ function Staking(props): ReactElement {
   const [unValidatorOfUser, setUnValidatorOfUser] = useState([])
   const [listReward, setListReward] = useState([])
 
-  const [valueDelegate, setValueDelegate] = React.useState()
+  const [valueDelegate, setValueDelegate] = React.useState('none')
   const [itemValidator, setItemValidator] = useState<any>()
-  const [handlValueDelegate, setHandleValueDelegate] = useState('')
+  const [selectedAction, setSelectedAction] = useState('')
   const [itemDelegate, setItemDelegate] = useState<any>()
   const [dataDelegateOfUser, setDataDelegateOfUser] = useState<any>()
   const [validateMsg, setValidateMsg] = useState<string | undefined>()
 
-  const handleChange = (event) => {
-    setHandleValueDelegate(event.target.value)
+  const handleChangeAction = (event) => {
+    setSelectedAction(event.target.value)
+    setAmount('')
+    setValidateMsg('')
   }
 
   const handleChangeRedelegate = (event) => {
+    console.log(event.target.value)
     setValueDelegate(event.target.value)
   }
 
-  const handleAmoutRedelegate = (event) => {
-    setAmount(event.target.value)
+  const handleDelegatedAmount = (event) => {
+    setValidateMsg(undefined)
+    const value = formatNumber(event.target.value)
+    setAmount(value)
+    if (+value > dataDelegateOfUser?.delegation?.delegationBalance?.amount / 10 ** nativeCurrency.decimals) {
+      setValidateMsg('Given amount is greater than available balance!')
+    }
   }
 
   const handleListValidator = async (internalChainId) => {
@@ -110,60 +117,80 @@ function Staking(props): ReactElement {
     setValidateMsg(undefined)
     const value = formatNumber(event.target.value)
     setAmount(value)
+    if (+value > +availableBalance.amount / 10 ** nativeCurrency.decimals) {
+      setValidateMsg('Given amount is greater than available balance!')
+    }
   }
 
-  const handleCallDataValidator = (address) => {
+  const handleCallDataValidator = async (address) => {
+    setDataDelegateOfUser(null)
     const dataSend: any = {
       internalChainId: internalChainId,
       operatorAddress: address,
       delegatorAddress: SafeAddress,
     }
-    getDelegateOfUser(queryString.stringify(dataSend)).then((res) => {
-      setDataDelegateOfUser(res.Data)
-    })
+    const res = await getDelegateOfUser(queryString.stringify(dataSend))
+    setDataDelegateOfUser(res.Data)
   }
 
-  const handleReward = (item) => {
+  const handleManage = async (item) => {
+    setSelectedAction('manage')
+    setIsOpenDelagate(true)
     const dataTemp = {
       safeStaking: item.operatorAddress,
+      name: item.validator,
+      avatar: item.description.picture,
     }
 
-    handleCallDataValidator(item.operatorAddress)
+    await handleCallDataValidator(item.operatorAddress)
     setItemValidator(dataTemp)
     setItemDelegate(item)
-    setIsOpenDelagate(true)
-    setHandleValueDelegate('reward')
   }
 
-  const handleManageDelegate = (item) => {
+  const handleManageDelegate = async (item) => {
+    setIsOpenDelagate(true)
+    setSelectedAction('delegate')
     const dataTemp = {
       safeStaking: item.operatorAddress,
+      name: item.validator,
+      avatar: item.description.picture,
     }
-    handleCallDataValidator(item.operatorAddress)
-    setIsOpenDelagate(true)
+    await handleCallDataValidator(item.operatorAddress)
     setItemValidator(dataTemp)
-    setHandleValueDelegate('delegate')
   }
 
-  const handleSubmitDelegate = (item) => {
-    if (item === 'delegate') {
-      setTypeStaking(TypeStaking.delegate)
-      setTitle('Delegate')
-      console.log(amount, availableBalance)
-      if (amount > +availableBalance.amount / 1e6) {
-        setValidateMsg('Invalid amount!')
+  const handleSubmit = (action) => {
+    if (action === 'delegate') {
+      if (amount > +availableBalance.amount / 10 ** nativeCurrency.decimals || amount == 0) {
+        setValidateMsg('Invalid amount! Please check and try again.')
         return
       }
+      setTypeStaking(TypeStaking.delegate)
+      setTitle('Delegate')
     }
 
-    if (item === 'redelegate') {
+    if (action === 'redelegate') {
+      if (
+        amount > dataDelegateOfUser?.delegation?.delegationBalance?.amount / 10 ** nativeCurrency.decimals ||
+        amount == 0
+      ) {
+        setValidateMsg('Invalid amount! Please check and try again.')
+        return
+      }
       setTypeStaking(TypeStaking.redelegate)
       setTitle('Redelegate')
     }
 
-    if (item === 'undelegate') {
+    if (action === 'undelegate') {
+      if (
+        amount > dataDelegateOfUser?.delegation?.delegationBalance?.amount / 10 ** nativeCurrency.decimals ||
+        amount == 0
+      ) {
+        setValidateMsg('Invalid amount! Please check and try again.')
+        return
+      }
       setTypeStaking(TypeStaking.undelegate)
-      setTitle('UnDedelegate')
+      setTitle('Undelegate')
     }
     setIsOpenReview(true)
     setIsOpenDelagate(false)
@@ -218,7 +245,7 @@ function Staking(props): ReactElement {
         {' '}
         <Col start="sm" sm={12} xs={12}>
           <CardStaking
-            handleModal={handleReward}
+            handleModal={handleManage}
             availableBalance={availableBalance}
             totalStake={totalStake}
             rewardAmount={rewardAmount}
@@ -251,16 +278,16 @@ function Staking(props): ReactElement {
       <ModalStaking
         modalIsOpen={isOpenDelagate}
         handleClose={HandleClose}
-        handlValueDelegate={handlValueDelegate}
-        handleChange={handleChange}
-        handleSubmit={handleSubmitDelegate}
+        selectedAction={selectedAction}
+        handleChangeAction={handleChangeAction}
+        handleSubmit={handleSubmit}
         handleAmout={handleAmout}
         amount={amount}
         allValidator={allValidator}
         itemValidator={itemValidator}
         handleChangeRedelegate={handleChangeRedelegate}
         valueDelegate={valueDelegate}
-        handleAmoutRedelegate={handleAmoutRedelegate}
+        handleDelegatedAmount={handleDelegatedAmount}
         nativeCurrency={nativeCurrency}
         itemDelegate={itemDelegate}
         availableBalance={availableBalance}

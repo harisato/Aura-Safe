@@ -189,6 +189,7 @@ export const fetchTransactionDetailsByHash =
             value: Data.Amount.toString(),
           },
         },
+        txMessage: Data?.Messages?.length ? Data?.Messages : [],
         txHash: Data?.TxHash || null,
         safeAppInfo,
         detailedExecutionInfo,

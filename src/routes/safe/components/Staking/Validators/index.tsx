@@ -75,21 +75,28 @@ const HeaderValidator = styled.div`
 `
 const ImgRow = styled.div`
   display: flex;
+  > img {
+    margin-right: 5px;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+  }
 `
 
 const TableVotingDetailInside = (props) => {
   const { data, dandleManageDelegate, value } = props
   const obj1 = new Intl.NumberFormat('en-US')
+
   return (
     <TableVoting RowHead={RowHead}>
       {data?.map((row, index) => (
-        <StyledTableRow key={row.id}>
+        <StyledTableRow key={index}>
           <StyledTableCell component="th" scope="row">
             {index + 1}
           </StyledTableCell>
           <StyledTableCell align="left">
             <ImgRow>
-              <img style={{ marginRight: 5 }} src={row.description.picture} />
+              <img src={row.description.picture} />
               <Text size="lg" color="linkAura">
                 {row.validator}
               </Text>

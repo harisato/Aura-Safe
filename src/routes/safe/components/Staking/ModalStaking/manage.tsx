@@ -3,10 +3,9 @@ import { TextNotiStyled, TextGreen, TextDelegateNoti, BoxDelegate } from './styl
 import { Text } from '@aura/safe-react-components'
 import Col from 'src/components/layout/Col'
 
-export default function ModalReward(props) {
+export default function ManageModal(props) {
   const { nativeCurrency, itemDelegate, availableBalance, dataDelegateOfUser } = props
-  const pendingReward: any = dataDelegateOfUser?.delegation?.pendingReward?.amount / 10 ** 6
-  console.log('dataDelegateOfUser', dataDelegateOfUser)
+  const pendingReward: any = dataDelegateOfUser?.delegation?.pendingReward?.amount / 10 ** nativeCurrency.decimals
   return (
     <>
       <NotificationPopup>
@@ -14,7 +13,7 @@ export default function ModalReward(props) {
           <TextNotiStyled>
             You can <TextDelegateNoti>“Delegate”</TextDelegateNoti> more to this validator{' '}
           </TextNotiStyled>
-          <TextNotiStyled>
+          <TextNotiStyled style={{ margin: '6px 0px' }}>
             Or use <TextDelegateNoti>“Redelegate”</TextDelegateNoti> to switch your assets to another validator
           </TextNotiStyled>
           <TextNotiStyled>
@@ -23,8 +22,8 @@ export default function ModalReward(props) {
         </div>
       </NotificationPopup>
 
-      <div style={{ display: 'flex', marginTop: 10 }}>
-        <Col sm={6} xs={12} layout="column">
+      <div style={{ display: 'flex', marginTop: 24 }}>
+        <Col sm={5} xs={12} layout="column">
           <BoxDelegate>
             <Col sm={7} xs={12}>
               <Text size="lg" color="white">
@@ -32,8 +31,8 @@ export default function ModalReward(props) {
               </Text>
             </Col>
             <Text size="lg" color="numberAura">
-              {dataDelegateOfUser?.delegation?.delegationBalance?.amount / 10 ** 6 || 0}{' '}
-              <TextGreen>{nativeCurrency}</TextGreen>
+              {dataDelegateOfUser?.delegation?.delegationBalance?.amount / 10 ** nativeCurrency.decimals || 0}{' '}
+              <TextGreen>{nativeCurrency.symbol}</TextGreen>
             </Text>
           </BoxDelegate>
           <BoxDelegate>
@@ -43,11 +42,12 @@ export default function ModalReward(props) {
               </Text>
             </Col>
             <Text size="lg" color="numberAura">
-              {parseFloat(pendingReward).toFixed(6) || 0} <TextGreen>{nativeCurrency}</TextGreen>
+              {pendingReward ? parseFloat(pendingReward).toFixed(6) : 0} <TextGreen>{nativeCurrency.symbol}</TextGreen>
             </Text>
           </BoxDelegate>
         </Col>
-        <Col sm={6} xs={12} layout="column">
+        <Col sm={2} />
+        <Col sm={5} xs={12} layout="column">
           <BoxDelegate>
             <Col sm={7} xs={12}>
               <Text size="lg" color="white">
@@ -56,8 +56,8 @@ export default function ModalReward(props) {
             </Col>
 
             <Text size="lg" color="numberAura">
-              {dataDelegateOfUser?.delegation?.delegatableBalance?.amount / 10 ** 6 || 0}{' '}
-              <TextGreen>{nativeCurrency}</TextGreen>
+              {dataDelegateOfUser?.delegation?.delegatableBalance?.amount / 10 ** nativeCurrency.decimals || 0}{' '}
+              <TextGreen>{nativeCurrency.symbol}</TextGreen>
             </Text>
           </BoxDelegate>
           <BoxDelegate>
@@ -68,8 +68,8 @@ export default function ModalReward(props) {
             </Col>
 
             <Text size="lg" color="numberAura">
-              {dataDelegateOfUser?.delegation?.claimedReward?.amount / 10 ** 6 || 0}{' '}
-              <TextGreen>{nativeCurrency}</TextGreen>
+              {dataDelegateOfUser?.delegation?.claimedReward?.amount / 10 ** nativeCurrency.decimals || 0}{' '}
+              <TextGreen>{nativeCurrency.symbol}</TextGreen>
             </Text>
           </BoxDelegate>
         </Col>

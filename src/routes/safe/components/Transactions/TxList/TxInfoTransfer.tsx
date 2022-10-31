@@ -7,11 +7,22 @@ import { TxInfoDetails } from './TxInfoDetails'
 type Details = {
   title: string
   address: string
-  name: string | undefined // AddressEx returns null if unknown
-  quanlity: string
+  name?: string | undefined // AddressEx returns null if unknown
+  quantity: string
+  toAddress?: string | undefined
+  toName?: string | undefined
+  toAvatarUrl?: string | undefined
 }
 
-export const TxInfoTransfer = ({ txInfo, typeUrl }: { txInfo: Transfer; typeUrl: any }): ReactElement | null => {
+export const TxInfoTransfer = ({
+  txInfo,
+  typeUrl,
+  txDetails,
+}: {
+  txInfo: Transfer
+  typeUrl: any
+  txDetails: any
+}): ReactElement | null => {
   const assetInfo = useAssetInfo(txInfo)
   const [details, setDetails] = useState<Details | undefined>()
 
@@ -20,31 +31,31 @@ export const TxInfoTransfer = ({ txInfo, typeUrl }: { txInfo: Transfer; typeUrl:
       if (typeUrl.TypeURL.typeUrl === '/cosmos.staking.v1beta1.MsgDelegate') {
         setDetails({
           title: 'Delegate',
-          quanlity: assetInfo.amountWithSymbol,
-          address: txInfo.sender.value,
-          name: txInfo.sender.name || undefined,
+          quantity: assetInfo.amountWithSymbol,
+          address: txInfo.recipient.value,
+          name: txInfo.recipient.name || undefined,
         })
       }
       if (typeUrl.TypeURL.typeUrl === '/cosmos.staking.v1beta1.MsgUndelegate') {
         setDetails({
           title: 'Undelegate',
-          quanlity: assetInfo.amountWithSymbol,
-          address: txInfo.sender.value,
-          name: txInfo.sender.name || undefined,
+          quantity: assetInfo.amountWithSymbol,
+          address: txInfo.recipient.value,
+          name: txInfo.recipient.name || undefined,
         })
       }
       if (typeUrl.TypeURL.typeUrl === '/cosmos.staking.v1beta1.MsgBeginRedelegate') {
         setDetails({
           title: 'Redelegate',
-          quanlity: assetInfo.amountWithSymbol,
-          address: txInfo.sender.value,
-          name: txInfo.sender.name || undefined,
+          quantity: assetInfo.amountWithSymbol,
+          address: txDetails?.txMessage?.[0]?.validatorSrcAddress,
+          toAddress: txDetails?.txMessage?.[0]?.validatorDstAddress,
         })
       }
       if (typeUrl.TypeURL.typeUrl === '/cosmos.distribution.v1beta1.MsgWithdrawDelegatorReward') {
         setDetails({
           title: 'Reward',
-          quanlity: assetInfo.amountWithSymbol,
+          quantity: assetInfo.amountWithSymbol,
           address: txInfo.sender.value,
           name: txInfo.sender.name || undefined,
         })
@@ -53,7 +64,7 @@ export const TxInfoTransfer = ({ txInfo, typeUrl }: { txInfo: Transfer; typeUrl:
       if (txInfo?.direction?.toUpperCase() === 'INCOMING') {
         setDetails({
           title: 'Received',
-          quanlity: assetInfo.amountWithSymbol,
+          quantity: assetInfo.amountWithSymbol,
           address: txInfo.sender.value,
           name: txInfo.sender.name || undefined,
         })
@@ -62,7 +73,7 @@ export const TxInfoTransfer = ({ txInfo, typeUrl }: { txInfo: Transfer; typeUrl:
       if (typeUrl.TypeURL.typeUrl === '/cosmos.bank.v1beta1.MsgSend') {
         setDetails({
           title: 'Send',
-          quanlity: assetInfo.amountWithSymbol,
+          quantity: assetInfo.amountWithSymbol,
           address: txInfo.recipient.value,
           name: txInfo.recipient.name || undefined,
         })
