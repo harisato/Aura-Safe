@@ -49,9 +49,4 @@ const Popup = ({ children, description, handleClose, open, paperClassName, title
   )
 }
 
-const HeaderWrapper = styled.div``
-const Header = ({ children }: { children: ReactNode }): ReactElement => {
-  return <HeaderWrapper>{children}</HeaderWrapper>
-}
-
-export { Popup, Header }
+export { Popup }

@@ -177,8 +177,16 @@ export function signSafeTransaction(transactionInfo: ISignSafeTransaction): Prom
   return axios.post(`${baseUrl}/transaction/sign`, transactionInfo).then((res) => res.data)
 }
 
-export const fetchSafeTransactionById = async (txId: string, safeAddress: string): Promise<IResponse<any>> => {
-  return axios.get(`${baseUrl}/transaction/transaction-details/${txId}/${safeAddress}`).then((res) => res.data)
+export const getTxDetailById = async (
+  txId: string,
+  safeAddress: string,
+  auraTxId?: string,
+): Promise<IResponse<any>> => {
+  let url = `${baseUrl}/transaction/transaction-details?safeAddress=${safeAddress}&multisigTxId=${txId}`
+  if (auraTxId) {
+    url += `&auraTxId=${auraTxId}`
+  }
+  return axios.get(url).then((res) => res.data)
 }
 
 export const rejectTransactionById = async (payload: any): Promise<IResponse<any>> => {
@@ -187,16 +195,6 @@ export const rejectTransactionById = async (payload: any): Promise<IResponse<any
 
 export async function getAllTx(payload: ITransactionListQuery): Promise<IResponse<Array<ITransactionListItem>>> {
   return axios.post(`${baseUrl}/transaction/get-all-txs`, payload).then((res) => res.data)
-}
-
-export async function getTxDetailByHash(
-  txHash: string,
-  safeAddress: string,
-  direction: any,
-): Promise<IResponse<ITransactionDetail>> {
-  return axios
-    .get(`${baseUrl}/transaction/transaction-details/${txHash}/${safeAddress}/?direction=${direction}`)
-    .then((res) => res.data)
 }
 
 export function sendSafeTransaction(payload: any): Promise<IResponse<any>> {

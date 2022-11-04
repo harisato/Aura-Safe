@@ -31,5 +31,14 @@ const TextButton = styled(Button)`
   background-color: transparent !important;
   box-shadow: none !important;
 `
+const LinkButton = styled.button`
+  border: none;
+  padding: 0 !important;
+  background-color: transparent !important;
+  box-shadow: none !important;
+  color: #5ee6d0;
+  text-decoration: underline;
+  cursor: pointer;
+`
 
-export { OutlinedButton, OutlinedNeutralButton, TextButton }
+export { OutlinedButton, OutlinedNeutralButton, TextButton, LinkButton }

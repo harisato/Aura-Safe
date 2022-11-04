@@ -9,7 +9,7 @@ import { LoadingContainer } from 'src/components/LoaderContainer'
 import { generateSafeRoute, extractPrefixedSafeAddress, SAFE_ROUTES } from 'src/routes/routes'
 import { FEATURES } from '@gnosis.pm/safe-react-gateway-sdk'
 import { SAFE_POLLING_INTERVAL } from 'src/utils/constants'
-import SafeLoadError from '../components/SafeLoadError'
+import SafeLoadError from './components/SafeLoadError'
 
 export const BALANCES_TAB_BTN_TEST_ID = 'balances-tab-btn'
 export const SETTINGS_TAB_BTN_TEST_ID = 'settings-tab-btn'
@@ -22,7 +22,7 @@ export const TRANSACTIONS_TAB_NEW_BTN_TEST_ID = 'transactions-tab-new-btn'
 const Apps = lazy(() => import('src/routes/safe/components/Apps'))
 const Settings = lazy(() => import('src/routes/safe/components/Settings'))
 const Balances = lazy(() => import('src/routes/safe/components/Balances'))
-const TxList = lazy(() => import('src/routes/safe/components/Transactions/TxList'))
+const Transaction = lazy(() => import('src/pages/Transactions'))
 const AddressBookTable = lazy(() => import('src/routes/safe/components/AddressBook'))
 const Staking = lazy(() => import('src/routes/safe/components/Staking'))
 const Voting = lazy(() => import('src/pages/Voting'))
@@ -97,7 +97,7 @@ const Container = (): React.ReactElement => {
             SAFE_ROUTES.TRANSACTIONS_QUEUE,
             SAFE_ROUTES.TRANSACTIONS_SINGULAR,
           ]}
-          render={() => wrapInSuspense(<TxList />, null)}
+          render={() => wrapInSuspense(<Transaction />, null)}
         />
         <Route exact path={SAFE_ROUTES.STAKING} render={() => wrapInSuspense(<Staking />, null)} />
         <Route exact path={SAFE_ROUTES.VOTING} render={() => wrapInSuspense(<Voting />, null)} />

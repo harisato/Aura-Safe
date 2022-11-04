@@ -56,6 +56,7 @@ import { localTransactionsMiddleware } from 'src/logic/safe/store/middleware/loc
 import { proposalsReducer, PROPOSALS_REDUCER_ID } from 'src/logic/proposal/store/reducer/proposals'
 import { IProposal } from 'src/types/proposal'
 import validatorReducer, { VALIDATOR_REDUCER_ID } from 'src/logic/validator/store/reducer'
+import delegationReducer, { DelegationStateType, DELEGATION_REDUCER_ID } from 'src/logic/delegation/store/reducer'
 
 const CURRENCY_KEY = `${CURRENCY_REDUCER_ID}.selectedCurrency`
 
@@ -106,6 +107,7 @@ const reducers = {
   [TERM_ID]: termReducer,
   [PROPOSALS_REDUCER_ID]: proposalsReducer,
   [VALIDATOR_REDUCER_ID]: validatorReducer,
+  [DELEGATION_REDUCER_ID]: delegationReducer,
 }
 
 const rootReducer = combineReducers(reducers)
@@ -131,6 +133,7 @@ export type AppReduxState = CombinedState<{
   [TERM_ID]: TermState
   [PROPOSALS_REDUCER_ID]: IProposal[]
   [VALIDATOR_REDUCER_ID]: ValidatorStateType
+  [DELEGATION_REDUCER_ID]: DelegationStateType
 }>
 
 export const store: any = createStore(rootReducer, load(LS_CONFIG), enhancer)

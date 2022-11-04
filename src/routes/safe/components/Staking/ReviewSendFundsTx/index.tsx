@@ -174,13 +174,14 @@ const ReviewSendFundsTx = ({
       const accounts = await offlineSigner.getAccounts()
 
       const client = await SigningStargateClient.offline(offlineSigner)
-
+      const onlineClient = await SigningStargateClient.connectWithSigner(chainInfo.rpcUri.value, offlineSigner)
+      const onlineData = await onlineClient.getSequence(safeAddress)
       const amountFinal =
         chainInfo.shortName === 'evmos'
           ? Math.floor(Number(amount) * Math.pow(10, 18)).toString() || ''
           : Math.floor(Number(amount) * Math.pow(10, 6)).toString() || ''
 
-      const signingInstruction = await (async () => {
+      const signingInstruction = await(async () => {
         // get account on chain from API
         const { Data: accountOnChainResult } = await getAccountOnChain(safeAddress, getInternalChainId())
         // const accountOnChain = await client.getAccount(safeAddress)
@@ -244,10 +245,6 @@ const ReviewSendFundsTx = ({
       try {
         // Sign On Wallet
         dispatch(enqueueSnackbar(enhanceSnackbarForAction(NOTIFICATIONS.SIGN_TX_MSG)))
-        console.log(accounts[0]?.address)
-        console.log(msg)
-        console.log(sendFee)
-        console.log(signerData)
         const signResult = await client.sign(accounts[0]?.address, msg, sendFee, '', signerData)
 
         const signatures = toBase64(signResult.signatures[0])
@@ -264,6 +261,8 @@ const ReviewSendFundsTx = ({
           signature: signatures,
           bodyBytes: bodyBytes,
           authInfoBytes: authInfoBytes,
+          accountNumber: onlineData.accountNumber,
+          sequence: onlineData.sequence,
         }
 
         createTxFromApi(data)

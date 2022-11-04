@@ -111,3 +111,12 @@ body > div:first-child {
   font-size: 20px;
   line-height: 26px;
 }
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type='number'] {
+  -moz-appearance: textfield;
+}

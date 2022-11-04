@@ -156,13 +156,14 @@ const ReviewSendFundsTx = ({ onClose, onPrev, tx }: ReviewTxProps): React.ReactE
       const accounts = await offlineSigner.getAccounts()
 
       const client = await SigningStargateClient.offline(offlineSigner)
-
+      const onlineClient = await SigningStargateClient.connectWithSigner(chainInfo.rpcUri.value, offlineSigner)
+      const onlineData = await onlineClient.getSequence(safeAddress)
       const amountFinal =
         chainInfo.shortName === 'evmos'
           ? Math.floor(Number(tx?.amount) * Math.pow(10, 18)).toString() || ''
           : Math.floor(Number(tx?.amount) * Math.pow(10, 6)).toString() || ''
 
-      const signingInstruction = await (async () => {
+      const signingInstruction = await(async () => {
         // get account on chain from API
         const { Data: accountOnChainResult } = await getAccountOnChain(safeAddress, getInternalChainId())
         // const accountOnChain = await client.getAccount(safeAddress)
@@ -221,6 +222,8 @@ const ReviewSendFundsTx = ({ onClose, onPrev, tx }: ReviewTxProps): React.ReactE
           signature: signatures,
           bodyBytes: bodyBytes,
           authInfoBytes: authInfoBytes,
+          accountNumber: onlineData.accountNumber,
+          sequence: onlineData.sequence,
         }
 
         createTxFromApi(data)

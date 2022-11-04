@@ -6,6 +6,7 @@ export type Props = {
   balance: string | undefined
   onToggleSafeList: () => void
   onReceiveClick: () => void
+  onNewTransactionClick: () => void
 }
 
 export type StyledTextLabelProps = {

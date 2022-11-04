@@ -4,7 +4,7 @@ import ButtonHelper from 'src/components/ButtonHelper'
 import FlexSpacer from 'src/components/FlexSpacer'
 import MultiSendPopup from 'src/components/Popup/MultiSendPopup'
 import SendPopup from 'src/components/Popup/SendPopup'
-import SendTxTypePopup from 'src/components/Popup/SendTxTypePopup'
+import SendTxTypePopup from 'src/components/Popup/SendTypePopup'
 import { getChainInfo, getExplorerInfo } from 'src/config'
 import { THEME_DF } from 'src/services/constant/chainThemes'
 import LockIcon from './assets/Lockicon.svg'
@@ -26,7 +26,14 @@ import {
 import { Props } from './type'
 
 export const TOGGLE_SIDEBAR_BTN_TESTID = 'TOGGLE_SIDEBAR_BTN'
-const SafeHeader = ({ address, safeName, granted, onToggleSafeList, onReceiveClick }: Props): React.ReactElement => {
+const SafeHeader = ({
+  address,
+  safeName,
+  granted,
+  onToggleSafeList,
+  onReceiveClick,
+  onNewTransactionClick,
+}: Props): React.ReactElement => {
   const chainInfo = getChainInfo()
 
   const [sendTxTypePopupOpen, setSendTxTypePopupOpen] = useState<boolean>(false)
@@ -77,7 +84,7 @@ const SafeHeader = ({ address, safeName, granted, onToggleSafeList, onReceiveCli
             <CopyToClipboardBtn textToCopy={address} />
             {address && <ExplorerButton explorerUrl={getExplorerInfo(address)} />}
           </IconContainer>
-          <StyledButton size="md" disabled={!granted} onClick={() => setSendTxTypePopupOpen(true)}>
+          <StyledButton size="md" disabled={!granted} onClick={() => onNewTransactionClick()}>
             <FixedIcon type="arrowSentWhite" />
             <Text size="lg" color="white">
               New transaction
@@ -97,6 +104,7 @@ const SafeHeader = ({ address, safeName, granted, onToggleSafeList, onReceiveCli
         onClose={() => setSendTxTypePopupOpen(false)}
         onTypeButtonClick={(type: string) => {
           setSendTxType(type)
+          setSendTxTypePopupOpen(false)
         }}
       />
       <SendPopup open={sendTxType == 'single-send'} onClose={() => setSendTxType(undefined)} />

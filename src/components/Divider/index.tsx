@@ -2,13 +2,14 @@ import { ReactElement } from 'react'
 import styled from 'styled-components'
 import { Icon, Divider as DividerSRC } from '@aura/safe-react-components'
 
-const Wrapper = styled.div`
+const Wrapper = styled.div<{ rotateArrow?: boolean }>`
   display: flex;
   align-items: center;
   margin: 8px 0;
 
   svg {
     margin: 0 12px 0 4px;
+    transform: ${(props) => (props.rotateArrow ? 'rotate(180deg)' : 'unset')};
   }
 `
 const StyledDivider = styled(DividerSRC)`
@@ -18,10 +19,11 @@ const StyledDivider = styled(DividerSRC)`
 
 type Props = {
   withArrow?: boolean
+  rotateArrow?: boolean
 }
 
-const Divider = ({ withArrow }: Props): ReactElement => (
-  <Wrapper>
+const Divider = ({ withArrow, rotateArrow }: Props): ReactElement => (
+  <Wrapper rotateArrow={rotateArrow}>
     {withArrow && <Icon type="arrowDown" size="md" />}
     <StyledDivider />
   </Wrapper>

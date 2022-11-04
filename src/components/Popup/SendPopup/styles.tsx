@@ -1,6 +1,8 @@
 import styled from 'styled-components'
 
-export const PopupWrapper = styled.div``
+export const PopupWrapper = styled.div`
+  width: 640px;
+`
 export const HeaderWrapper = styled.div`
   padding: 14px 24px;
   display: flex;

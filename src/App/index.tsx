@@ -35,6 +35,7 @@ import { ConnectWalletModal } from 'src/components/ConnectWalletModal'
 
 import TermContext from 'src/logic/TermContext'
 import { fetchAllValidator } from 'src/logic/validator/store/actions'
+import { fetchAllDelegations } from 'src/logic/delegation/store/actions'
 
 const notificationStyles = {
   success: {
@@ -96,6 +97,7 @@ const App: React.FC = ({ children }) => {
     dispatch(loadSafesFromStorage())
     dispatch(loadCurrentSessionFromStorage())
     dispatch(fetchAllValidator())
+    dispatch(fetchAllDelegations())
   }, [dispatch])
 
   return (
@@ -127,6 +129,7 @@ const App: React.FC = ({ children }) => {
             onToggleSafeList={toggleSidebar}
             onReceiveClick={onReceiveShow}
             onConnectClick={onConnectWalletShow}
+            onNewTransactionClick={() => showSendFunds('')}
           >
             {children}
           </AppLayout>

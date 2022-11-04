@@ -3,8 +3,8 @@ import Close from '@material-ui/icons/Close'
 import Hairline from 'src/components/layout/Hairline'
 import Row from 'src/components/layout/Row'
 import styled from 'styled-components'
-import { Popup } from '.'
-import { OutlinedButton } from '../Button'
+import { Popup } from '../'
+import { OutlinedButton } from '../../Button'
 
 const Wrapper = styled.div`
   width: 356px;
@@ -27,24 +27,29 @@ const StyledCloseIcon = styled(Close)`
   width: 28px;
   color: #777e91;
 `
-interface MultiSendPopupProps {
+interface SendTxTypePopupProps {
   onClose: () => void
   open: boolean
+  onTypeButtonClick: (string) => void
 }
 
-const MultiSendPopup = ({ onClose, open }: MultiSendPopupProps): React.ReactElement => {
+const SendTxTypePopup = ({ onClose, open, onTypeButtonClick }: SendTxTypePopupProps): React.ReactElement => {
   return (
-    <Popup open={open} title="Multi send popup">
+    <Popup open={open} title="Choose Sending Type">
       <StyledRow grow>
         <StyledCloseIcon onClick={onClose} />
       </StyledRow>
       <Hairline />
       <Wrapper>
-        <StyledButton size="lg">Send</StyledButton>
-        <StyledButton size="lg">Multi-send</StyledButton>
+        <StyledButton size="lg" onClick={() => onTypeButtonClick('single-send')}>
+          Send
+        </StyledButton>
+        <StyledButton size="lg" onClick={() => onTypeButtonClick('multi-send')}>
+          Multi-send
+        </StyledButton>
       </Wrapper>
     </Popup>
   )
 }
 
-export default MultiSendPopup
+export default SendTxTypePopup

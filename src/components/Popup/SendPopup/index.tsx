@@ -39,12 +39,10 @@ import { sameString } from 'src/utils/strings'
 import Divider from 'src/components/Divider'
 import { getSpendingLimitByTokenAddress, spendingLimitAllowedBalance } from 'src/logic/safe/utils/spendingLimits'
 import { getBalanceAndDecimalsFromToken } from 'src/logic/tokens/utils/tokenHelpers'
-// import { ModalHeader } from '../ModalHeader'
-// import { styles } from './style'
 import { OutlinedButton, TextButton } from 'src/components/Button'
 import { Popup } from '..'
 import CurrentSafe from './CurrentSafe'
-import { Header } from './Header'
+import Header from '../Header'
 import { BodyWrapper, Footer, PopupWrapper } from './styles'
 
 const formMutators = {

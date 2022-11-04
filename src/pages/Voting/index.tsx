@@ -38,6 +38,7 @@ function Voting(): ReactElement {
   const chainId = _getChainId()
 
   const [proposals, setProposals] = useState<IProposal[]>([])
+  const [selectedProposal, setSelectedProposal] = useState<IProposal | undefined>(undefined)
 
   useEffect(() => {
     getProposals(getInternalChainId()).then((response) => {
@@ -76,6 +77,7 @@ function Voting(): ReactElement {
               <ProposalsCard
                 proposal={proposal}
                 handleVote={() => {
+                  setSelectedProposal(proposal)
                   setOpenVotingModal(true)
                 }}
               />
@@ -119,10 +121,9 @@ function Voting(): ReactElement {
       </ProposalsSection>
 
       <VotingModal
-        isOpen={openVotingModal}
-        onClose={() => {
-          setOpenVotingModal(false)
-        }}
+        proposal={selectedProposal}
+        openVotingModal={openVotingModal}
+        setOpenVotingModal={setOpenVotingModal}
       />
     </>
   )

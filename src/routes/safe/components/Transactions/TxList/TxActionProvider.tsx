@@ -3,7 +3,7 @@ import { useDispatch } from 'react-redux'
 
 import {
   fetchTransactionDetails,
-  fetchTransactionDetailsByHash,
+  fetchTransactionDetailsById,
 } from 'src/logic/safe/store/actions/fetchTransactionDetails'
 
 export type ActionType = 'cancel' | 'confirm' | 'execute' | 'none'
@@ -33,7 +33,7 @@ export const TxActionProvider = ({ children }: { children: ReactNode }): ReactEl
 
   const selectAction = useCallback(({ actionSelected, transactionId }: SelectedAction['selectedAction']) => {
     if (transactionId) {
-      dispatch.current(fetchTransactionDetailsByHash({ transactionId }))
+      dispatch.current(fetchTransactionDetailsById({ transactionId }))
     }
 
     setSelectedAction({ actionSelected, transactionId })

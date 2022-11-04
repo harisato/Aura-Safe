@@ -20,7 +20,7 @@ import { TransactionDetailsPayload } from 'src/logic/safe/store/reducer/gatewayT
 import { getTransactionByAttribute } from 'src/logic/safe/store/selectors/gatewayTransactions'
 import { fetchSafeTransaction } from 'src/logic/safe/transactions/api/fetchSafeTransaction'
 import { extractSafeAddress } from 'src/routes/routes'
-import { getTxDetailByHash } from 'src/services'
+import { getTxDetailById } from 'src/services'
 import { MESSAGES_CODE } from 'src/services/constant/message'
 import { AppReduxState } from 'src/store'
 
@@ -54,16 +54,8 @@ type DetailedExecutionInfoExtended = {
   gasPrice: string
 }
 
-export const fetchTransactionDetailsByHash =
-  ({
-    transactionId,
-    txHash,
-    direction: _direction,
-  }: {
-    transactionId: string
-    txHash?: string | null
-    direction?: TransferDirection
-  }) =>
+export const fetchTransactionDetailsById =
+  ({ transactionId, txHash, auraTxId }: { transactionId: string; txHash?: string | null; auraTxId?: string }) =>
   async (dispatch: Dispatch, getState: () => AppReduxState): Promise<Transaction['txDetails']> => {
     const transaction = getTransactionByAttribute(getState(), {
       attributeValue: transactionId,
@@ -72,14 +64,12 @@ export const fetchTransactionDetailsByHash =
     const safeAddress = extractSafeAddress()
     const chainId = currentChainId(getState())
 
-    const txQuery = txHash || transactionId
-
-    if (transaction?.txDetails || !safeAddress || !txQuery) {
+    if (transaction?.txDetails || !safeAddress || !transactionId) {
       return
     }
 
     try {
-      const { Data, ErrorCode } = await getTxDetailByHash(txQuery, safeAddress, _direction)
+      const { Data, ErrorCode } = await getTxDetailById(transactionId, safeAddress, auraTxId)
       if (ErrorCode !== MESSAGES_CODE.SUCCESSFUL.ErrorCode) {
         return
       }
@@ -92,7 +82,9 @@ export const fetchTransactionDetailsByHash =
       const coinDecimal = getCoinDecimal()
       const symbol = getCoinSymbol()
 
-      if (direction == TransferDirection.OUTGOING) {
+      console.log(Data)
+
+      if (direction == TransferDirection.OUTGOING && false) {
         safeAppInfo = {
           name: '',
           url: '',
@@ -102,7 +94,7 @@ export const fetchTransactionDetailsByHash =
         detailedExecutionInfo = {
           type: 'MULTISIG',
           submittedAt: new Date(Data.CreatedAt).getTime(),
-          nonce: Data.Id,
+          nonce: Data?.MultisigTxId,
           safeTxGas: (Data?.GasUsed || 0)?.toString(),
           baseGas: (Data?.GasWanted || 0)?.toString(),
           gasPrice: (Data?.GasPrice || 0)?.toString(),
@@ -160,40 +152,41 @@ export const fetchTransactionDetailsByHash =
             name: null,
             value: Data.ToAddress,
           },
-          value: Data.Amount.toString(),
+          value: Data.Amount?.toString(),
           operation: Operation.CALL,
           addressInfoIndex: null,
         }
       }
 
       const transactionDetails: any = {
-        txId: Data.Id.toString(),
-        executedAt: Data.TxHash ? new Date(Data.UpdatedAt).getTime() : null,
+        txId: Data?.MultisigTxId?.toString() || null,
+        auraTxId: Data?.AuraTxId?.toString() || null,
+        executedAt: Data.Executor ? new Date(Data.Executor.updatedAt).getTime() : null,
+        createAt: Data.CreatedAt ? new Date(Data.CreatedAt).getTime() : null,
         txStatus: (Data.Status == '0' ? TransactionStatus.SUCCESS : Data.Status) as TransactionStatus,
-        txInfo: {
-          typeUrl: Data?.TypeUrl,
-          type: 'Transfer',
-          sender: {
-            value: Data.FromAddress,
-            name: null,
-            logoUri: null,
-          },
-          recipient: {
-            value: Data.ToAddress,
-            name: null,
-            logoUri: null,
-          },
-          direction,
-          transferInfo: {
-            type: TokenType.NATIVE_COIN,
-            value: Data.Amount.toString(),
-          },
-        },
         txMessage: Data?.Messages?.length ? Data?.Messages : [],
         txHash: Data?.TxHash || null,
-        safeAppInfo,
-        detailedExecutionInfo,
-        txData,
+        confirmationsRequired: Data.ConfirmationsRequired,
+        confirmations: Data?.Confirmations.map(
+          (cf) =>
+            ({
+              signature: cf.signature,
+              signer: {
+                logoUri: null,
+                name: null,
+                value: cf.ownerAddress,
+              },
+              submittedAt: new Date(cf.createdAt).getTime(),
+            } as MultisigConfirmation),
+        ),
+        executor: !Data?.Executor
+          ? null
+          : {
+              logoUri: null,
+              name: null,
+              value: Data.Executor.ownerAddress,
+            },
+        rejectors: Data?.Rejectors.map((re) => ({ logoUri: null, name: null, value: re.ownerAddress } as AddressEx)),
       }
 
       dispatch(
