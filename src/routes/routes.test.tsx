@@ -13,7 +13,6 @@ import {
 import { Route, Switch } from 'react-router'
 import { render } from 'src/utils/test-utils'
 import { ZERO_ADDRESS } from 'src/logic/wallets/ethAddresses'
-import Root from 'src/components/Root'
 
 const validSafeAddress = '0xF5A2915982BC8b0dEDda9cEF79297A83081Fe88f'
 

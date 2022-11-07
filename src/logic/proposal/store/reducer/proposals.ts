@@ -22,9 +22,6 @@ const proposalsReducer = handleActions<ProposalsState, Payloads>(
   {
     [ADD_PROPOSALS]: (state, action: Action<IProposalState>) => {
       const { chainId, proposals, safeAddress } = action.payload
-      console.log({ chainId, proposals, safeAddress })
-
-      console.log({ state })
 
       return {
         ...state,

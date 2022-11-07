@@ -26,7 +26,7 @@ import {
   SAFE_ROUTES,
   TRANSACTION_ID_NUMBER,
 } from 'src/routes/routes'
-import { fetchSafeTransactionById } from 'src/services'
+import { getTxDetailById } from 'src/services'
 import { MESSAGES_CODE } from 'src/services/constant/message'
 import { AppReduxState } from 'src/store'
 import { HistoryTxList } from './HistoryTxList'
@@ -80,7 +80,7 @@ const TxSingularDetails = (): ReactElement => {
       let txDetails: any
       try {
         // txDetails = await fetchSafeTransaction(safeTxHash)
-        const res = await fetchSafeTransactionById(txId, safeAddress)
+        const res = await getTxDetailById(txId, safeAddress, '')
 
         const { ErrorCode, Data } = res
         if (ErrorCode !== MESSAGES_CODE.SUCCESSFUL.ErrorCode) {

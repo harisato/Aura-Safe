@@ -36,7 +36,7 @@ const CreateSafePage = React.lazy(() => import('./CreateSafePage/CreateSafePage'
 const LoadSafePage = React.lazy(() => import('./LoadSafePage/LoadSafePage'))
 const AllowSafePage = React.lazy(() => import('./AllowSafePage/AllowSafePage'))
 const CanCelSafePage = React.lazy(() => import('./CancelSafePage/CancelSafePage'))
-const SafeContainer = React.lazy(() => import('./safe/container'))
+const SafeContainer = React.lazy(() => import('./safe'))
 
 const Routes = (): React.ReactElement => {
   const location = useLocation()

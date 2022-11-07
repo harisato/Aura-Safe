@@ -128,6 +128,8 @@ const ReviewVoteTx = ({ onClose, votingTx }: ReviewVotingTxProps): React.ReactEl
           signature: signatures,
           bodyBytes: bodyBytes,
           authInfoBytes: authInfoBytes,
+          accountNumber: signResult.accountNumber,
+          sequence: signResult.sequence,
         }
 
         createTxFromApi(data)
@@ -139,84 +141,6 @@ const ReviewVoteTx = ({ onClose, votingTx }: ReviewVotingTxProps): React.ReactEl
         onClose()
       })
 
-    // if (window.keplr) {
-    //   await window.keplr.enable(chainId)
-    //   window.keplr.defaultOptions = {
-    //     sign: {
-    //       preferNoSetMemo: true,
-    //       preferNoSetFee: true,
-    //       disableBalanceCheck: true,
-    //     },
-    //   }
-    // }
-
-    // if (window.getOfflineSignerOnlyAmino) {
-    //   const offlineSigner = window.getOfflineSignerOnlyAmino(chainId)
-    //   const accounts = await offlineSigner.getAccounts()
-
-    //   const client = await SigningStargateClient.offline(offlineSigner)
-
-    //   const amountFinal = ''
-
-    //   const signingInstruction = await (async () => {
-    //     // get account on chain from API
-    //     const { Data: accountOnChainResult } = await getAccountOnChain(safeAddress, getInternalChainId())
-
-    //     return {
-    //       accountNumber: accountOnChainResult?.accountNumber,
-    //       sequence: accountOnChainResult?.sequence,
-    //       memo: '',
-    //     }
-    //   })()
-
-    //   const msgSend: any = {
-    //     fromAddress: safeAddress,
-    //     amount: coins(amountFinal, denom),
-    //   }
-
-    //   const msg: MsgSendEncodeObject = {
-    //     typeUrl: '/cosmos.bank.v1beta1.MsgSend',
-    //     value: msgSend,
-    //   }
-
-    //   const gasPrice = GasPrice.fromString(String(chainDefaultGasPrice || gasPriceFormatted).concat(denom))
-
-    //   const sendFee = calculateFee(Number(manualGasLimit || defaultGas || DEFAULT_GAS_LIMIT), gasPrice)
-
-    //   const signerData: SignerData = {
-    //     accountNumber: signingInstruction.accountNumber || 0,
-    //     sequence: signingInstruction.sequence || 0,
-    //     chainId: chainId,
-    //   }
-
-    //   try {
-    //     // Sign On Wallet
-    //     dispatch(enqueueSnackbar(enhanceSnackbarForAction(NOTIFICATIONS.SIGN_TX_MSG)))
-
-    //     const signResult = await client.sign(accounts[0]?.address, [msg], sendFee, '', signerData)
-
-    //     const signatures = toBase64(signResult.signatures[0])
-    //     const bodyBytes = toBase64(signResult.bodyBytes)
-    //     const authInfoBytes = toBase64(signResult.authInfoBytes)
-
-    //     // call api to create transaction
-    //     const data: ICreateSafeTransaction = {
-    //       from: safeAddress,
-    //       to: '',
-    //       amount: amountFinal,
-    //       internalChainId: getInternalChainId(),
-    //       creatorAddress: userWalletAddress,
-    //       signature: signatures,
-    //       bodyBytes: bodyBytes,
-    //       authInfoBytes: authInfoBytes,
-    //     }
-
-    //     createTxFromApi(data)
-    //   } catch (error) {
-    //     dispatch(enqueueSnackbar(enhanceSnackbarForAction(NOTIFICATIONS.TX_REJECTED_MSG)))
-    //     onClose()
-    //   }
-    // }
   }
 
   const createTxFromApi = async (data: any) => {

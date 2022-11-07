@@ -25,6 +25,8 @@ export interface ICreateSafeTransaction {
   signature: string
   bodyBytes: string
   authInfoBytes: string
+  accountNumber: number
+  sequence: number
 }
 
 export interface ITransactionListQuery {
@@ -36,7 +38,8 @@ export interface ITransactionListQuery {
 }
 
 export interface ITransactionListItem {
-  Id: number
+  MultisigTxId: number
+  AuraTxId?: number
   CreatedAt: string
   UpdatedAt: string
   FromAddress: string
@@ -51,6 +54,7 @@ export interface ITransactionListItem {
   Confirmations: number
   Rejections: number
   TypeUrl?: string
+  FinalAmount?: number
 }
 
 export interface ISignature {

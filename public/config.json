@@ -1,5 +1,5 @@
 {
-  "api-gateway": "https://safe.dev.aura.network/api",
+  "api-gateway": "https://safe-api.dev.aura.network",
   "chain_id": "aura-testnet",
   "chain_info": [
     {

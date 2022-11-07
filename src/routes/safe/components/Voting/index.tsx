@@ -53,7 +53,7 @@ function Voting(): ReactElement {
   useEffect(() => {
     getProposals(getInternalChainId()).then((response) => {
       const { Data } = response
-      if (Data) {
+      if (Data?.proposals) {
         setProposals(Data.proposals)
 
         dispatch(

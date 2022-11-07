@@ -124,7 +124,6 @@ ${timeStamp}`
       }),
     )
     .then((response) => {
-      console.log('response', response)
       if (response?.Data) {
         const token: any = session.getItem(JWT_TOKEN_KEY) || []
         token.push({
