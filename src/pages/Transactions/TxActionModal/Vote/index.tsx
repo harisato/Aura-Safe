@@ -16,10 +16,18 @@ import { extractSafeAddress } from 'src/routes/routes'
 import { DEFAULT_GAS_LIMIT } from 'src/services/constant/common'
 import { ICreateSafeTransaction } from 'src/types/transaction'
 import { calcFee } from 'src/utils'
+import { formatWithSchema } from 'src/utils/date'
 
 import { TxSignModalContext } from '../../Queue'
 import { ReviewTxPopupWrapper } from '../../styled'
 import TotalAllocationAmount from '../TotalAllocationAmount'
+
+const voteMapping = {
+  1: 'Yes',
+  2: 'Abstain',
+  3: 'No',
+  4: 'Nowithveto',
+}
 
 export default function Execute({ open, onClose, data, sendTx, rejectTx, disabled, setDisabled, confirmTxFromApi }) {
   const { action } = useContext(TxSignModalContext)
@@ -41,13 +49,9 @@ export default function Execute({ open, onClose, data, sendTx, rejectTx, disable
     const safeAddress = extractSafeAddress()
     const chainId = chainInfo.chainId
     const _sendFee = calcFee(DEFAULT_GAS_LIMIT)
-    const votingTxParam = {
-      option: 1,
-      proposalId: 23,
-    }
     const voteData: MsgVoteEncodeObject['value'] = {
-      option: votingTxParam?.option,
-      proposalId: votingTxParam?.proposalId as any,
+      option: data.txDetails?.txMessage[0]?.voteOption,
+      proposalId: data.txDetails?.extraDetails?.proposalDetail?.id,
       voter: safeAddress,
     }
     try {
@@ -56,7 +60,7 @@ export default function Execute({ open, onClose, data, sendTx, rejectTx, disable
       const signatures = toBase64(signResult.signatures[0])
       const bodyBytes = toBase64(signResult.bodyBytes)
       const authInfoBytes = toBase64(signResult.authInfoBytes)
-      const data: ICreateSafeTransaction = {
+      const payload: ICreateSafeTransaction = {
         internalChainId: getInternalChainId(),
         creatorAddress: userWalletAddress,
         signature: signatures,
@@ -65,8 +69,9 @@ export default function Execute({ open, onClose, data, sendTx, rejectTx, disable
         from: safeAddress,
         accountNumber: signResult.accountNumber,
         sequence: signResult.sequence,
+        transactionId: data?.id,
       }
-      confirmTxFromApi(data, chainId, safeAddress)
+      confirmTxFromApi(payload, chainId, safeAddress)
     } catch (error) {
       setDisabled(false)
       console.error(error)
@@ -74,12 +79,30 @@ export default function Execute({ open, onClose, data, sendTx, rejectTx, disable
       onClose()
     }
   }
+
   return (
     <>
       <Popup open={open} handleClose={onClose} title="">
         <Header onClose={onClose} title={title} />
         <ReviewTxPopupWrapper>
-          <TotalAllocationAmount amount={0} />
+          <div className="tx-detail">
+            <p className="proposal-title">{`Proposal #${data.txDetails?.extraDetails?.proposalDetail?.id} ${data.txDetails?.extraDetails?.proposalDetail?.title}`}</p>
+            <div className="voting-detail">
+              <p>Vote value</p>
+              <p>{voteMapping[data.txDetails?.txMessage[0]?.voteOption]}</p>
+            </div>
+            <div className="voting-detail">
+              <p>Execute before</p>
+              <p>
+                {data.txDetails?.extraDetails?.proposalDetail &&
+                  formatWithSchema(
+                    new Date(data.txDetails?.extraDetails?.proposalDetail.votingEnd).getTime(),
+                    'dd/MM/yyyy',
+                  )}
+              </p>
+            </div>
+          </div>
+          <TotalAllocationAmount data={data} />
           <div className="notice">{noti}</div>
         </ReviewTxPopupWrapper>
         <Footer>

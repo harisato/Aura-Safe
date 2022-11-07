@@ -27,6 +27,7 @@ export interface ICreateSafeTransaction {
   authInfoBytes: string
   accountNumber: number
   sequence: number
+  transactionId?: string
 }
 
 export interface ITransactionListQuery {

@@ -573,6 +573,12 @@ export const NoTransactions = styled.div`
 export const ReviewTxPopupWrapper = styled.div`
   padding: 24px;
   width: 482px;
+  .proposal-title {
+    font-weight: 600;
+    margin: 0;
+    line-height: 150%;
+    letter-spacing: 0.05em;
+  }
   .label {
     font-weight: 510;
     font-size: 12px;

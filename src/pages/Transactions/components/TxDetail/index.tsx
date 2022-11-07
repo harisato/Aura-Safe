@@ -9,7 +9,7 @@ import { TxActions } from './Action'
 import TxMsg from './Message'
 import { TxOwners } from './Owner'
 
-export default function TxDetail({ transaction }) {
+export default function TxDetail({ transaction, isHistoryTx }) {
   const isOwner = useSelector(grantedSelector)
   const { data, loading } = useTransactionDetails(transaction.id, transaction.txHash, transaction.auraTxId)
   if (loading) {
@@ -63,7 +63,7 @@ export default function TxDetail({ transaction }) {
 
       <div className="tx-exe">
         <TxOwners txDetails={data} />
-        {!data.executor && isOwner && (
+        {!data.executor && isOwner && !isHistoryTx && (
           <div className="tx-action">
             <TxActions transaction={data} />
           </div>

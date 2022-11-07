@@ -58,7 +58,7 @@ export default function Execute({ open, onClose, data, sendTx, rejectTx, disable
       const signatures = toBase64(signResult.signatures[0])
       const bodyBytes = toBase64(signResult.bodyBytes)
       const authInfoBytes = toBase64(signResult.authInfoBytes)
-      const data: ICreateSafeTransaction = {
+      const payload: ICreateSafeTransaction = {
         internalChainId: getInternalChainId(),
         creatorAddress: userWalletAddress,
         signature: signatures,
@@ -67,8 +67,9 @@ export default function Execute({ open, onClose, data, sendTx, rejectTx, disable
         from: safeAddress,
         accountNumber: signResult.accountNumber,
         sequence: signResult.sequence,
+        transactionId: data?.id,
       }
-      confirmTxFromApi(data, chainId, safeAddress)
+      confirmTxFromApi(payload, chainId, safeAddress)
     } catch (error) {
       setDisabled(false)
       console.error(error)
@@ -107,7 +108,7 @@ export default function Execute({ open, onClose, data, sendTx, rejectTx, disable
           <Gap height={24} />
           <Amount amount={data?.txDetails?.txMessage[0]?.amount} />
           <Divider />
-          <TotalAllocationAmount amount={data.txInfo.amount} />
+          <TotalAllocationAmount data={data} />
           <div className="notice">{noti}</div>
         </ReviewTxPopupWrapper>
         <Footer>

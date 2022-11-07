@@ -2,6 +2,24 @@ import { MsgTypeUrl } from 'src/logic/providers/constants/constant'
 import { formatNativeToken } from 'src/utils'
 import { AddressInfo } from '../AddressInfo'
 import { Fragment } from 'react'
+import { formatDateTime, formatWithSchema } from 'src/utils/date'
+import StatusCard from 'src/components/StatusCard'
+import styled from 'styled-components'
+
+const voteMapping = {
+  1: 'Yes',
+  2: 'Abstain',
+  3: 'No',
+  4: 'Nowithveto',
+}
+
+const StyledStatus = styled.div`
+  > div {
+    background: transparent;
+    font-size: 14px;
+    padding: 0;
+  }
+`
 export default function TxMsg({ tx, txDetail }) {
   const type = tx.txInfo.typeUrl
   const amount = formatNativeToken(txDetail.txMessage[0]?.amount || 0)
@@ -23,6 +41,11 @@ export default function TxMsg({ tx, txDetail }) {
           Undelegate <span className="token">{amount}</span> from:
         </strong>
         <AddressInfo address={txDetail?.txMessage[0]?.validatorAddress} />
+        {txDetail.autoClaimAmount && (
+          <strong>
+            Auto Claim Reward: <span className="token">{txDetail.autoClaimAmount}</span>
+          </strong>
+        )}
       </div>
     )
   }
@@ -54,6 +77,11 @@ export default function TxMsg({ tx, txDetail }) {
         <AddressInfo address={txDetail?.txMessage[0]?.validatorSrcAddress} />
         <strong>To:</strong>
         <AddressInfo address={txDetail?.txMessage[0]?.validatorDstAddress} />
+        {txDetail.autoClaimAmount && (
+          <strong>
+            Auto Claim Reward: <span className="token">{txDetail.autoClaimAmount}</span>
+          </strong>
+        )}
       </div>
     )
   }
@@ -61,8 +89,16 @@ export default function TxMsg({ tx, txDetail }) {
     return (
       <div className="tx-msg">
         <strong>
-          Vote <span>Unknown</span> on Proposal <span className="token">#23</span>:
+          Vote <span>{voteMapping[txDetail?.txMessage[0]?.voteOption]}</span> on Proposal{' '}
+          <span className="token">{`#${txDetail?.txMessage[0]?.proposalId}`}</span>:
         </strong>
+        <p>{txDetail?.extraDetails?.proposalDetail?.title}</p>
+        <strong>Voting end date:</strong>
+        <p>{formatWithSchema(new Date(txDetail?.extraDetails?.proposalDetail?.votingEnd).getTime(), 'dd/MM/yyyy')}</p>
+        <strong>Proposal result:</strong>
+        <StyledStatus>
+          <StatusCard status={txDetail?.extraDetails?.proposalDetail?.status} />
+        </StyledStatus>
       </div>
     )
   }

@@ -1,4 +1,4 @@
-import { MsgVoteEncodeObject } from '@cosmjs/stargate'
+import { MsgVoteEncodeObject, MsgWithdrawDelegatorRewardEncodeObject } from '@cosmjs/stargate'
 import { useContext } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { OutlinedButton, OutlinedNeutralButton } from 'src/components/Button'
@@ -34,14 +34,9 @@ export default function Execute({ open, onClose, data, sendTx, rejectTx, disable
     const safeAddress = extractSafeAddress()
     const chainId = chainInfo.chainId
     const _sendFee = calcFee(DEFAULT_GAS_LIMIT)
-    const votingTxParam = {
-      option: 1,
-      proposalId: 23,
-    }
-    const Data: MsgVoteEncodeObject['value'] = {
-      option: votingTxParam?.option,
-      proposalId: votingTxParam?.proposalId as any,
-      voter: safeAddress,
+    const Data: MsgWithdrawDelegatorRewardEncodeObject['value'] = {
+      delegatorAddress: data?.txDetails?.txMessage?.[0]?.delegatorAddress,
+      validatorAddress: data?.txDetails?.txMessage?.[0]?.validatorAddress,
     }
     try {
       const signResult = await createMessage(chainId, safeAddress, MsgTypeUrl.GetReward, Data, _sendFee)
@@ -49,7 +44,7 @@ export default function Execute({ open, onClose, data, sendTx, rejectTx, disable
       const signatures = toBase64(signResult.signatures[0])
       const bodyBytes = toBase64(signResult.bodyBytes)
       const authInfoBytes = toBase64(signResult.authInfoBytes)
-      const data: ICreateSafeTransaction = {
+      const payload: ICreateSafeTransaction = {
         internalChainId: getInternalChainId(),
         creatorAddress: userWalletAddress,
         signature: signatures,
@@ -58,8 +53,9 @@ export default function Execute({ open, onClose, data, sendTx, rejectTx, disable
         from: safeAddress,
         accountNumber: signResult.accountNumber,
         sequence: signResult.sequence,
+        transactionId: data?.id,
       }
-      confirmTxFromApi(data, chainId, safeAddress)
+      confirmTxFromApi(payload, chainId, safeAddress)
     } catch (error) {
       setDisabled(false)
       console.error(error)
@@ -87,7 +83,7 @@ export default function Execute({ open, onClose, data, sendTx, rejectTx, disable
               return <AddressInfo key={index} address={msg?.validatorAddress} />
             })}
           <Gap height={24} />
-          <TotalAllocationAmount amount={data.txInfo.amount} />
+          <TotalAllocationAmount data={data} />
           <div className="notice">{noti}</div>
         </ReviewTxPopupWrapper>
         <Footer>

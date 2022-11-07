@@ -30,7 +30,7 @@ export const useTransactionDetails = (
     if (data?.txDetails) {
       setTxDetails({ loading: false, data: dataTemp })
     } else {
-      dispatch.current(fetchTransactionDetailsById({ transactionId, txHash: txHash || null, auraTxId }))
+      dispatch.current(fetchTransactionDetailsById({ transactionId, auraTxId }))
     }
   }, [data?.txDetails, transactionId, txHash, auraTxId])
 

@@ -38,8 +38,10 @@ export default function TxActionModal() {
       )
 
       dispatch(fetchTransactions(chainId, safeAddress, true))
+      setIsDisabled(false)
       // window.location.reload()
     } else {
+      setIsDisabled(false)
       dispatch(enqueueSnackbar(enhanceSnackbarForAction(NOTIFICATIONS.TX_FAILED_MSG)))
     }
   }
