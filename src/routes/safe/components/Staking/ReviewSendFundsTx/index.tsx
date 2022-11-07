@@ -237,8 +237,8 @@ const ReviewSendFundsTx = ({
       const sendFee = calculateFee(Number(manualGasLimit || defaultGas || DEFAULT_GAS_LIMIT), gasPrice)
 
       const signerData: SignerData = {
-        accountNumber: signingInstruction.accountNumber || 0,
-        sequence: signingInstruction.sequence || 0,
+        accountNumber: onlineData.accountNumber || 0,
+        sequence: onlineData.sequence || 0,
         chainId: chainId,
       }
 
