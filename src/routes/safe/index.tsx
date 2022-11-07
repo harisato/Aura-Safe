@@ -1,6 +1,6 @@
 import { GenericModal, Loader } from '@aura/safe-react-components'
 import { useState, lazy, useEffect } from 'react'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { Redirect, Route, Switch } from 'react-router-dom'
 
 import { currentSafeFeaturesEnabled, currentSafeOwners } from 'src/logic/safe/store/selectors'
@@ -10,6 +10,7 @@ import { generateSafeRoute, extractPrefixedSafeAddress, SAFE_ROUTES } from 'src/
 import { FEATURES } from '@gnosis.pm/safe-react-gateway-sdk'
 import { SAFE_POLLING_INTERVAL } from 'src/utils/constants'
 import SafeLoadError from './components/SafeLoadError'
+import { fetchAllDelegations } from 'src/logic/delegation/store/actions'
 
 export const BALANCES_TAB_BTN_TEST_ID = 'balances-tab-btn'
 export const SETTINGS_TAB_BTN_TEST_ID = 'settings-tab-btn'
@@ -33,9 +34,10 @@ const Container = (): React.ReactElement => {
   const owners = useSelector(currentSafeOwners)
   const isSafeLoaded = owners.length > 0
   const [hasLoadFailed, setHasLoadFailed] = useState<boolean>(false)
-
+  const dispatch = useDispatch()
   useEffect(() => {
     if (isSafeLoaded) {
+      dispatch(fetchAllDelegations())
       return
     }
 

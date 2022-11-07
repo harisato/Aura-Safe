@@ -1,12 +1,14 @@
 import { Breadcrumb, BreadcrumbElement, Loader, Text } from '@aura/safe-react-components'
 import { ReactElement, useEffect, useState } from 'react'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import BoxCard from 'src/components/BoxCard'
 import Col from 'src/components/layout/Col'
 import { LoadingContainer } from 'src/components/LoaderContainer'
+import WarningPopup from 'src/components/Popup/WarningPopup'
 import StatusCard from 'src/components/StatusCard'
 import DenseTable, { StyledTableCell, StyledTableRow } from 'src/components/Table/DenseTable'
 import { getChainInfo, getInternalChainId, _getChainId } from 'src/config'
+import { allDelegation } from 'src/logic/delegation/store/selectors'
 import addProposals from 'src/logic/proposal/store/actions/addProposal'
 import { extractSafeAddress } from 'src/routes/routes'
 import { getProposals, MChainInfo } from 'src/services'
@@ -32,9 +34,9 @@ function Voting(): ReactElement {
   const chainInfo = getChainInfo() as MChainInfo
 
   const safeAddress = extractSafeAddress()
-
+  const allDelegations = useSelector(allDelegation)
   const [openVotingModal, setOpenVotingModal] = useState<boolean>(false)
-
+  const [openWarningPopup, setOpenWarningPopup] = useState<boolean>(false)
   const chainId = _getChainId()
 
   const [proposals, setProposals] = useState<IProposal[]>([])
@@ -65,6 +67,15 @@ function Voting(): ReactElement {
     )
   }
 
+  const onVoteButtonClick = (proposal) => {
+    if (allDelegations.length > 0) {
+      setSelectedProposal(proposal)
+      setOpenVotingModal(true)
+    } else {
+      setOpenWarningPopup(true)
+    }
+  }
+
   return (
     <>
       <Breadcrumb>
@@ -74,13 +85,7 @@ function Voting(): ReactElement {
         <StyledColumn sm={12} xs={12}>
           {proposals.slice(0, 4).map((proposal) => (
             <Col sm={6} xs={12} key={proposal.id}>
-              <ProposalsCard
-                proposal={proposal}
-                handleVote={() => {
-                  setSelectedProposal(proposal)
-                  setOpenVotingModal(true)
-                }}
-              />
+              <ProposalsCard proposal={proposal} handleVote={() => onVoteButtonClick(proposal)} />
             </Col>
           ))}
         </StyledColumn>
@@ -125,6 +130,11 @@ function Voting(): ReactElement {
         openVotingModal={openVotingModal}
         setOpenVotingModal={setOpenVotingModal}
       />
+
+      <WarningPopup open={openWarningPopup} onClose={() => setOpenWarningPopup(false)}>
+        You don't have the right to vote on this proposal because the voting period of this proposal started before you
+        staked Aura.
+      </WarningPopup>
     </>
   )
 }

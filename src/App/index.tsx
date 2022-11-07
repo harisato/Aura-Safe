@@ -97,7 +97,6 @@ const App: React.FC = ({ children }) => {
     dispatch(loadSafesFromStorage())
     dispatch(loadCurrentSessionFromStorage())
     dispatch(fetchAllValidator())
-    dispatch(fetchAllDelegations())
   }, [dispatch])
 
   return (
