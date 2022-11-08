@@ -1,4 +1,4 @@
-import { AminoMsgBeginRedelegate, coin, MsgVoteEncodeObject } from '@cosmjs/stargate'
+import { AminoMsgBeginRedelegate, coin, coins, MsgVoteEncodeObject } from '@cosmjs/stargate'
 import { useContext } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { OutlinedButton, OutlinedNeutralButton } from 'src/components/Button'
@@ -43,8 +43,11 @@ export default function Execute({ open, onClose, data, sendTx, rejectTx, disable
     const chainInfo = getChainInfo()
     const safeAddress = extractSafeAddress()
     const chainId = chainInfo.chainId
-    const _sendFee = calcFee(DEFAULT_GAS_LIMIT)
     const denom = getCoinMinimalDenom()
+    const sendFee = {
+      amount: coins(data?.txDetails?.fee, denom),
+      gas: data?.txDetails?.gas,
+    }
 
     const Data: any = {
       delegatorAddress: data?.txDetails?.txMessage[0]?.delegatorAddress,
@@ -54,7 +57,7 @@ export default function Execute({ open, onClose, data, sendTx, rejectTx, disable
     }
     try {
       dispatch(enqueueSnackbar(enhanceSnackbarForAction(NOTIFICATIONS.SIGN_TX_MSG)))
-      const signResult = await createMessage(chainId, safeAddress, MsgTypeUrl.Redelegate, Data, _sendFee)
+      const signResult = await createMessage(chainId, safeAddress, MsgTypeUrl.Redelegate, Data, sendFee)
       if (!signResult) throw new Error()
       const signatures = toBase64(signResult.signatures[0])
       const bodyBytes = toBase64(signResult.bodyBytes)

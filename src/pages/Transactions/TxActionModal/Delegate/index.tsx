@@ -1,4 +1,4 @@
-import { coin, MsgDelegateEncodeObject, MsgVoteEncodeObject } from '@cosmjs/stargate'
+import { coin, coins, MsgDelegateEncodeObject, MsgVoteEncodeObject } from '@cosmjs/stargate'
 import { useContext } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { OutlinedButton, OutlinedNeutralButton } from 'src/components/Button'
@@ -7,7 +7,13 @@ import Gap from 'src/components/Gap'
 import { Popup } from 'src/components/Popup'
 import Footer from 'src/components/Popup/Footer'
 import Header from 'src/components/Popup/Header'
-import { getChainInfo, getCoinMinimalDenom, getInternalChainId, getNativeCurrency } from 'src/config'
+import {
+  getChainDefaultGasPrice,
+  getChainInfo,
+  getCoinMinimalDenom,
+  getInternalChainId,
+  getNativeCurrency,
+} from 'src/config'
 import { allDelegation } from 'src/logic/delegation/store/selectors'
 import { createMessage } from 'src/logic/providers/signing'
 import { currentSafeWithNames } from 'src/logic/safe/store/selectors'
@@ -35,14 +41,17 @@ export default function Execute({ open, onClose, data, sendTx, rejectTx, disable
   )?.staked
   const userWalletAddress = useSelector(userAccountSelector)
   const dispatch = useDispatch()
-
+  const chainDefaultGasPrice = getChainDefaultGasPrice()
   const confirmTx = async () => {
-    const denom = getCoinMinimalDenom()
     setDisabled(true)
     const chainInfo = getChainInfo()
     const safeAddress = extractSafeAddress()
     const chainId = chainInfo.chainId
-    const _sendFee = calcFee(DEFAULT_GAS_LIMIT)
+    const denom = getCoinMinimalDenom()
+    const sendFee = {
+      amount: coins(data?.txDetails?.fee, denom),
+      gas: data?.txDetails?.gas,
+    }
     const Data: MsgDelegateEncodeObject['value'] = {
       amount: coin(data?.txDetails?.txMessage[0]?.amount, denom),
       delegatorAddress: data?.txDetails?.txMessage[0]?.delegatorAddress,
@@ -50,7 +59,7 @@ export default function Execute({ open, onClose, data, sendTx, rejectTx, disable
     }
     try {
       dispatch(enqueueSnackbar(enhanceSnackbarForAction(NOTIFICATIONS.SIGN_TX_MSG)))
-      const signResult = await createMessage(chainId, safeAddress, MsgTypeUrl.Delegate, Data, _sendFee)
+      const signResult = await createMessage(chainId, safeAddress, MsgTypeUrl.Delegate, Data, sendFee)
       if (!signResult) throw new Error()
       const signatures = toBase64(signResult.signatures[0])
       const bodyBytes = toBase64(signResult.bodyBytes)

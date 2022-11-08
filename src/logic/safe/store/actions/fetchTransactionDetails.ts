@@ -96,6 +96,7 @@ export const fetchTransactionDetailsById =
         txStatus: (Data.Status == '0' ? TransactionStatus.SUCCESS : Data.Status) as TransactionStatus,
         txMessage: Data?.Messages?.length ? Data?.Messages : [],
         fee: Data?.Fee || 0,
+        gas: Data?.Gas || 0,
         txHash: Data?.TxHash || null,
         confirmationsRequired: Data.ConfirmationsRequired,
         confirmations: Data?.Confirmations.map(

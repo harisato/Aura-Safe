@@ -1,4 +1,4 @@
-import { MsgVoteEncodeObject, MsgWithdrawDelegatorRewardEncodeObject } from '@cosmjs/stargate'
+import { coins, MsgVoteEncodeObject, MsgWithdrawDelegatorRewardEncodeObject } from '@cosmjs/stargate'
 import { useContext } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { OutlinedButton, OutlinedNeutralButton } from 'src/components/Button'
@@ -6,7 +6,7 @@ import Gap from 'src/components/Gap'
 import { Popup } from 'src/components/Popup'
 import Footer from 'src/components/Popup/Footer'
 import Header from 'src/components/Popup/Header'
-import { getChainInfo, getInternalChainId } from 'src/config'
+import { getChainInfo, getCoinMinimalDenom, getInternalChainId } from 'src/config'
 import { enhanceSnackbarForAction, NOTIFICATIONS } from 'src/logic/notifications'
 import enqueueSnackbar from 'src/logic/notifications/store/actions/enqueueSnackbar'
 import { MsgTypeUrl } from 'src/logic/providers/constants/constant'
@@ -33,14 +33,19 @@ export default function Execute({ open, onClose, data, sendTx, rejectTx, disable
     const chainInfo = getChainInfo()
     const safeAddress = extractSafeAddress()
     const chainId = chainInfo.chainId
-    const _sendFee = calcFee(DEFAULT_GAS_LIMIT)
+
+    const denom = getCoinMinimalDenom()
+    const sendFee = {
+      amount: coins(data?.txDetails?.fee, denom),
+      gas: data?.txDetails?.gas,
+    }
     const Data: MsgWithdrawDelegatorRewardEncodeObject['value'] = {
       delegatorAddress: data?.txDetails?.txMessage?.[0]?.delegatorAddress,
       validatorAddress: data?.txDetails?.txMessage?.[0]?.validatorAddress,
     }
     try {
       dispatch(enqueueSnackbar(enhanceSnackbarForAction(NOTIFICATIONS.SIGN_TX_MSG)))
-      const signResult = await createMessage(chainId, safeAddress, MsgTypeUrl.GetReward, Data, _sendFee)
+      const signResult = await createMessage(chainId, safeAddress, MsgTypeUrl.GetReward, Data, sendFee)
       if (!signResult) throw new Error()
       const signatures = toBase64(signResult.signatures[0])
       const bodyBytes = toBase64(signResult.bodyBytes)
@@ -81,7 +86,12 @@ export default function Execute({ open, onClose, data, sendTx, rejectTx, disable
           <p className="label">Claim from: </p>
           {data?.txDetails?.txMessage &&
             data?.txDetails?.txMessage?.map((msg, index) => {
-              return <AddressInfo key={index} address={msg?.validatorAddress} />
+              return (
+                <>
+                  {index != 0 && <Gap height={8} />}
+                  <AddressInfo key={index} address={msg?.validatorAddress} />
+                </>
+              )
             })}
           <Gap height={24} />
           <TotalAllocationAmount data={data} />

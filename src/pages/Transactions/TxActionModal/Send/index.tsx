@@ -35,8 +35,11 @@ export default function Execute({ open, onClose, data, sendTx, rejectTx, disable
     const chainInfo = getChainInfo()
     const safeAddress = extractSafeAddress()
     const chainId = chainInfo.chainId
-    const _sendFee = calcFee(DEFAULT_GAS_LIMIT)
     const denom = getCoinMinimalDenom()
+    const sendFee = {
+      amount: coins(data?.txDetails?.fee, denom),
+      gas: data?.txDetails?.gas,
+    }
     const Data: MsgSendEncodeObject['value'] = {
       amount: coins(data?.txDetails?.txMessage[0]?.amount, denom),
       fromAddress: data?.txDetails?.txMessage[0]?.fromAddress,
@@ -44,7 +47,7 @@ export default function Execute({ open, onClose, data, sendTx, rejectTx, disable
     }
     try {
       dispatch(enqueueSnackbar(enhanceSnackbarForAction(NOTIFICATIONS.SIGN_TX_MSG)))
-      const signResult = await createMessage(chainId, safeAddress, MsgTypeUrl.Send, Data, _sendFee)
+      const signResult = await createMessage(chainId, safeAddress, MsgTypeUrl.Send, Data, sendFee)
       if (!signResult) throw new Error()
       const signatures = toBase64(signResult.signatures[0])
       const bodyBytes = toBase64(signResult.bodyBytes)

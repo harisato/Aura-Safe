@@ -1,12 +1,12 @@
 import { toBase64 } from '@cosmjs/encoding'
-import { MsgVoteEncodeObject } from '@cosmjs/stargate'
+import { coins, MsgVoteEncodeObject } from '@cosmjs/stargate'
 import { useContext } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { OutlinedButton, OutlinedNeutralButton } from 'src/components/Button'
 import { Popup } from 'src/components/Popup'
 import Footer from 'src/components/Popup/Footer'
 import Header from 'src/components/Popup/Header'
-import { getChainInfo, getInternalChainId } from 'src/config'
+import { getChainInfo, getCoinMinimalDenom, getInternalChainId } from 'src/config'
 import { enhanceSnackbarForAction, NOTIFICATIONS } from 'src/logic/notifications'
 import enqueueSnackbar from 'src/logic/notifications/store/actions/enqueueSnackbar'
 import { MsgTypeUrl } from 'src/logic/providers/constants/constant'
@@ -48,7 +48,11 @@ export default function Execute({ open, onClose, data, sendTx, rejectTx, disable
     const chainInfo = getChainInfo()
     const safeAddress = extractSafeAddress()
     const chainId = chainInfo.chainId
-    const _sendFee = calcFee(DEFAULT_GAS_LIMIT)
+    const denom = getCoinMinimalDenom()
+    const sendFee = {
+      amount: coins(data?.txDetails?.fee, denom),
+      gas: data?.txDetails?.gas,
+    }
     const voteData: MsgVoteEncodeObject['value'] = {
       option: data.txDetails?.txMessage[0]?.voteOption,
       proposalId: data.txDetails?.extraDetails?.proposalDetail?.id,
@@ -56,7 +60,7 @@ export default function Execute({ open, onClose, data, sendTx, rejectTx, disable
     }
     try {
       dispatch(enqueueSnackbar(enhanceSnackbarForAction(NOTIFICATIONS.SIGN_TX_MSG)))
-      const signResult = await createMessage(chainId, safeAddress, MsgTypeUrl.Vote, voteData, _sendFee)
+      const signResult = await createMessage(chainId, safeAddress, MsgTypeUrl.Vote, voteData, sendFee)
       if (!signResult) throw new Error()
       const signatures = toBase64(signResult.signatures[0])
       const bodyBytes = toBase64(signResult.bodyBytes)
