@@ -37,9 +37,10 @@ export default function TxActionModal() {
           safeAddress,
         }),
       )
-
-      dispatch(fetchTransactionDetailsById({ transactionId: data.transactionId }))
+      dispatch(fetchTransactions(chainId, safeAddress, true))
+      // dispatch(fetchTransactionDetailsById({ transactionId: data.transactionId }))
       setIsDisabled(false)
+      setOpen(false)
       // window.location.reload()
     } else {
       setIsDisabled(false)

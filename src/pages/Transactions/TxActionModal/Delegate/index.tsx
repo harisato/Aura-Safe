@@ -49,6 +49,7 @@ export default function Execute({ open, onClose, data, sendTx, rejectTx, disable
       validatorAddress: data?.txDetails?.txMessage[0]?.validatorAddress,
     }
     try {
+      dispatch(enqueueSnackbar(enhanceSnackbarForAction(NOTIFICATIONS.SIGN_TX_MSG)))
       const signResult = await createMessage(chainId, safeAddress, MsgTypeUrl.Delegate, Data, _sendFee)
       if (!signResult) throw new Error()
       const signatures = toBase64(signResult.signatures[0])

@@ -55,6 +55,7 @@ export default function Execute({ open, onClose, data, sendTx, rejectTx, disable
       voter: safeAddress,
     }
     try {
+      dispatch(enqueueSnackbar(enhanceSnackbarForAction(NOTIFICATIONS.SIGN_TX_MSG)))
       const signResult = await createMessage(chainId, safeAddress, MsgTypeUrl.Vote, voteData, _sendFee)
       if (!signResult) throw new Error()
       const signatures = toBase64(signResult.signatures[0])

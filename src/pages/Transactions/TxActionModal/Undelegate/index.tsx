@@ -60,6 +60,7 @@ export default function Execute({ open, onClose, data, sendTx, rejectTx, disable
       amount: coin(data?.txDetails?.txMessage[0]?.amount, denom),
     }
     try {
+      dispatch(enqueueSnackbar(enhanceSnackbarForAction(NOTIFICATIONS.SIGN_TX_MSG)))
       const signResult = await createMessage(chainId, safeAddress, MsgTypeUrl.Undelegate, Data, _sendFee)
       if (!signResult) throw new Error()
       const signatures = toBase64(signResult.signatures[0])

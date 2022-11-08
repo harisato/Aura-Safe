@@ -3,7 +3,7 @@ import { ReactElement } from 'react'
 import styled from 'styled-components'
 
 import Img from 'src/components/layout/Img'
-import { AddressInfo } from 'src/routes/safe/components/Transactions/TxList/AddressInfo'
+import { AddressInfo } from '../AddressInfo'
 import DoneIcon from 'src/assets/icons/done-icon.svg'
 import ExecuteIcon from 'src/assets/icons/excute-icon.svg'
 import NotExecuteIcon from 'src/assets/icons/execute.svg'
@@ -39,7 +39,6 @@ export const TxOwners = ({ txDetails }: { txDetails: any }): ReactElement | null
     <OwnerList>
       {CreationNode}
       {txDetails.confirmations.map(({ signer }) => {
-        console.log(signer)
         return (
           <OwnerListItem key={signer.value}>
             <span className="icon">
@@ -53,7 +52,6 @@ export const TxOwners = ({ txDetails }: { txDetails: any }): ReactElement | null
                 address={signer.value}
                 name={signer?.name || undefined}
                 avatarUrl={signer?.logoUri || undefined}
-                // shortenHash={4}
               />
             </div>
           </OwnerListItem>
