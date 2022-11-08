@@ -14,7 +14,9 @@ const NotificationPopupStyled = styled.div`
 `
 
 const IconStyled = styled.img`
-  margin-right: 5px;
+  margin-right: 12px;
+  width: 24px;
+  height: 24px;
 `
 
 function NotificationPopup(props): ReactElement {

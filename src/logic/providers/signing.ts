@@ -53,6 +53,7 @@ const signMessage = async (
     if (!(signerAddress && value && fee && signerData)) {
       return undefined
     }
+
     const respone = await client.sign(signerAddress, [{ typeUrl, value }], fee, '', signerData)
     return { ...respone, accountNumber: onlineData.accountNumber, sequence: onlineData.sequence }
   }

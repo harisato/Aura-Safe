@@ -1,6 +1,6 @@
 import { MsgTypeUrl } from 'src/logic/providers/constants/constant'
 import { formatNativeToken } from 'src/utils'
-import { AddressInfo } from '../AddressInfo'
+import AddressInfo from 'src/components/AddressInfo'
 import { Fragment } from 'react'
 import { formatDateTime, formatWithSchema } from 'src/utils/date'
 import StatusCard from 'src/components/StatusCard'
@@ -43,7 +43,7 @@ export default function TxMsg({ tx, txDetail }) {
         <AddressInfo address={txDetail?.txMessage[0]?.validatorAddress} />
         {txDetail.autoClaimAmount && (
           <strong>
-            Auto Claim Reward: <span className="token">{txDetail.autoClaimAmount}</span>
+            Auto Claim Reward: <span className="token">{formatNativeToken(txDetail.autoClaimAmount)}</span>
           </strong>
         )}
       </div>

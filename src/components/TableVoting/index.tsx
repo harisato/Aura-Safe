@@ -17,19 +17,21 @@ export const StyledTableCell = withStyles((theme) => ({
     color: '#9DA1AC',
     fontSize: 12,
     fontWeight: 590,
-    padding: 5,
+    padding: 8,
     letterSpacing: 0,
     lineHeight: 1,
   },
   body: {
     fontSize: '14px !important',
-    padding: 5,
+    padding: 12,
     color: '#E5E7EA !important',
     borderTop: '1px solid #363843',
   },
 }))(TableCell)
 
-export const StyledTableRow = styled(TableRow)``
+export const StyledTableRow = styled(TableRow)`
+  padding: 4px 0px;
+`
 
 const useStyles = makeStyles({
   table: {

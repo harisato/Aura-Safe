@@ -17,13 +17,13 @@ export const StyledTableCell = withStyles((theme) => ({
     color: '#9DA1AC',
     fontSize: 12,
     fontWeight: 590,
-    padding: 5,
+    padding: 8,
     letterSpacing: 0,
     lineHeight: 1,
   },
   body: {
     fontSize: '14px !important',
-    padding: 5,
+    padding: 12,
     color: '#E5E7EA !important',
     borderTop: '1px solid #363843',
   },
@@ -57,26 +57,27 @@ function DenseTable({
   showPagination,
 }: {
   headers: string[]
-  children: ReactElement | ReactElement[]
+  children: ReactElement | ReactElement[] | undefined
   showPagination?: boolean
 }): ReactElement {
   const classes = useStyles()
-
   return (
     <>
       <TableContainer>
         <Table className={classes.table} aria-label="customized table">
-          <TableHead>
-            <TableRow>
-              {headers.map((header, index) => {
-                return (
-                  <StyledTableCell key={index} align="left">
-                    {header}
-                  </StyledTableCell>
-                )
-              })}
-            </TableRow>
-          </TableHead>
+          {headers.length > 0 && (
+            <TableHead>
+              <TableRow>
+                {headers.map((header, index) => {
+                  return (
+                    <StyledTableCell key={index} align="left">
+                      {header}
+                    </StyledTableCell>
+                  )
+                })}
+              </TableRow>
+            </TableHead>
+          )}
           <TableBody>{children}</TableBody>
         </Table>
         {showPagination && (

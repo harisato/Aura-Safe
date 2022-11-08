@@ -43,9 +43,10 @@ const BoxCardStakingOverview = styled.div`
 const BoxCardStaking = styled.div`
   display: flex;
   flex-direction: column;
-  border-radius: 25px;
+  border-radius: 12px;
   background: #363843;
   align-items: flex-start;
+  overflow: hidden;
 `
 const BoxCardStakingList = styled.div`
   display: flex;
@@ -54,7 +55,6 @@ const BoxCardStakingList = styled.div`
   align-items: flex-start;
   padding: 24px;
   background: #24262e;
-  border-radius: 25px;
 `
 
 const StyledButtonManage = styled(Button)`

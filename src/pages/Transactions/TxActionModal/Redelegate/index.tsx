@@ -19,7 +19,7 @@ import { DEFAULT_GAS_LIMIT } from 'src/services/constant/common'
 import { ICreateSafeTransaction } from 'src/types/transaction'
 import { calcFee, formatNativeToken } from 'src/utils'
 
-import { AddressInfo } from '../../components/AddressInfo'
+import AddressInfo from 'src/components/AddressInfo'
 import { TxSignModalContext } from '../../Queue'
 import { ReviewTxPopupWrapper } from '../../styled'
 import Amount from '../Amount'

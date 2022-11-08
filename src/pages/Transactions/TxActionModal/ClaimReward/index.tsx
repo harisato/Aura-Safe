@@ -1,4 +1,4 @@
-import { coins, MsgVoteEncodeObject, MsgWithdrawDelegatorRewardEncodeObject } from '@cosmjs/stargate'
+import { coins, MsgWithdrawDelegatorRewardEncodeObject } from '@cosmjs/stargate'
 import { useContext } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { OutlinedButton, OutlinedNeutralButton } from 'src/components/Button'
@@ -13,15 +13,13 @@ import { MsgTypeUrl } from 'src/logic/providers/constants/constant'
 import { createMessage } from 'src/logic/providers/signing'
 import { userAccountSelector } from 'src/logic/wallets/store/selectors'
 import { extractSafeAddress } from 'src/routes/routes'
-import { DEFAULT_GAS_LIMIT } from 'src/services/constant/common'
 import { ICreateSafeTransaction } from 'src/types/transaction'
-import { calcFee } from 'src/utils'
 
-import { AddressInfo } from '../../components/AddressInfo'
+import { toBase64 } from '@cosmjs/encoding'
+import AddressInfo from 'src/components/AddressInfo'
 import { TxSignModalContext } from '../../Queue'
 import { ReviewTxPopupWrapper } from '../../styled'
 import TotalAllocationAmount from '../TotalAllocationAmount'
-import { toBase64 } from '@cosmjs/encoding'
 
 export default function Execute({ open, onClose, data, sendTx, rejectTx, disabled, setDisabled, confirmTxFromApi }) {
   const { action } = useContext(TxSignModalContext)

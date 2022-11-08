@@ -3,7 +3,7 @@ import { ReactElement } from 'react'
 import styled from 'styled-components'
 
 import Img from 'src/components/layout/Img'
-import { AddressInfo } from '../AddressInfo'
+import AddressInfo from 'src/components/AddressInfo'
 import DoneIcon from 'src/assets/icons/done-icon.svg'
 import ExecuteIcon from 'src/assets/icons/excute-icon.svg'
 import NotExecuteIcon from 'src/assets/icons/execute.svg'

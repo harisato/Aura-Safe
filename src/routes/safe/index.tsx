@@ -25,7 +25,7 @@ const Settings = lazy(() => import('src/routes/safe/components/Settings'))
 const Balances = lazy(() => import('src/routes/safe/components/Balances'))
 const Transaction = lazy(() => import('src/pages/Transactions'))
 const AddressBookTable = lazy(() => import('src/routes/safe/components/AddressBook'))
-const Staking = lazy(() => import('src/routes/safe/components/Staking'))
+const Staking = lazy(() => import('src/pages/Staking'))
 const Voting = lazy(() => import('src/pages/Voting'))
 const VotingDetail = lazy(() => import('src/pages/Voting/detail'))
 

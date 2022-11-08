@@ -1,4 +1,5 @@
-import { coin, coins, MsgDelegateEncodeObject, MsgVoteEncodeObject } from '@cosmjs/stargate'
+import { toBase64 } from '@cosmjs/encoding'
+import { coin, coins, MsgDelegateEncodeObject } from '@cosmjs/stargate'
 import { useContext } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { OutlinedButton, OutlinedNeutralButton } from 'src/components/Button'
@@ -7,31 +8,23 @@ import Gap from 'src/components/Gap'
 import { Popup } from 'src/components/Popup'
 import Footer from 'src/components/Popup/Footer'
 import Header from 'src/components/Popup/Header'
-import {
-  getChainDefaultGasPrice,
-  getChainInfo,
-  getCoinMinimalDenom,
-  getInternalChainId,
-  getNativeCurrency,
-} from 'src/config'
+import { getChainDefaultGasPrice, getChainInfo, getCoinMinimalDenom, getInternalChainId } from 'src/config'
 import { allDelegation } from 'src/logic/delegation/store/selectors'
 import { createMessage } from 'src/logic/providers/signing'
 import { currentSafeWithNames } from 'src/logic/safe/store/selectors'
 import { extractSafeAddress } from 'src/routes/routes'
-import { DEFAULT_GAS_LIMIT } from 'src/services/constant/common'
-import { calcFee, formatNativeCurrency, formatNativeToken } from 'src/utils'
-import { AddressInfo } from '../../components/AddressInfo'
+import { ICreateSafeTransaction } from 'src/types/transaction'
+import { formatNativeCurrency, formatNativeToken } from 'src/utils'
+import AddressInfo from 'src/components/AddressInfo'
 import { TxSignModalContext } from '../../Queue'
 import { ReviewTxPopupWrapper } from '../../styled'
-import { toBase64 } from '@cosmjs/encoding'
 import Amount from '../Amount'
 import TotalAllocationAmount from '../TotalAllocationAmount'
-import { ICreateSafeTransaction } from 'src/types/transaction'
 
-import enqueueSnackbar from 'src/logic/notifications/store/actions/enqueueSnackbar'
 import { enhanceSnackbarForAction, NOTIFICATIONS } from 'src/logic/notifications'
-import { userAccountSelector } from 'src/logic/wallets/store/selectors'
+import enqueueSnackbar from 'src/logic/notifications/store/actions/enqueueSnackbar'
 import { MsgTypeUrl } from 'src/logic/providers/constants/constant'
+import { userAccountSelector } from 'src/logic/wallets/store/selectors'
 export default function Execute({ open, onClose, data, sendTx, rejectTx, disabled, setDisabled, confirmTxFromApi }) {
   const { action } = useContext(TxSignModalContext)
   const { ethBalance: balance } = useSelector(currentSafeWithNames)

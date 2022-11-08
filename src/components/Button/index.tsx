@@ -1,8 +1,8 @@
 import { Button } from '@aura/safe-react-components'
 import styled from 'styled-components'
-import { borderLinear } from 'src/theme/variables'
+import { borderLinear, colorLinear } from 'src/theme/variables'
 
-const OutlinedButton = styled(Button)`
+export const OutlinedButton = styled(Button)`
   border: 2px solid transparent;
   background-image: ${borderLinear};
   background-origin: border-box;
@@ -17,21 +17,21 @@ const OutlinedButton = styled(Button)`
   }
 `
 
-const OutlinedNeutralButton = styled(Button)`
+export const OutlinedNeutralButton = styled(Button)`
   border: 1px solid #5c606d;
   border-radius: 50px !important;
   padding: 0 !important;
   min-width: 130px !important;
   background-color: transparent !important;
 `
-const TextButton = styled(Button)`
+export const TextButton = styled(Button)`
   border: none;
   padding: 0 !important;
   min-width: 130px !important;
   background-color: transparent !important;
   box-shadow: none !important;
 `
-const LinkButton = styled.button`
+export const LinkButton = styled.button`
   border: none;
   padding: 0 !important;
   background-color: transparent !important;
@@ -40,5 +40,14 @@ const LinkButton = styled.button`
   text-decoration: underline;
   cursor: pointer;
 `
-
-export { OutlinedButton, OutlinedNeutralButton, TextButton, LinkButton }
+export const FilledButton = styled(Button)`
+  background-image: ${colorLinear};
+  border-radius: 50px !important;
+  padding: 8px 20px;
+  min-width: 130px !important;
+  color: #000 !important;
+  &:disabled {
+    cursor: not-allowed;
+    pointer-events: unset;
+  }
+`
