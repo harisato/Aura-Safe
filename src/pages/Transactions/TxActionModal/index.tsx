@@ -4,6 +4,7 @@ import { getChainInfo, getInternalChainId, getShortName } from 'src/config'
 import { enhanceSnackbarForAction, NOTIFICATIONS } from 'src/logic/notifications'
 import enqueueSnackbar from 'src/logic/notifications/store/actions/enqueueSnackbar'
 import { MsgTypeUrl } from 'src/logic/providers/constants/constant'
+import { fetchTransactionDetailsById } from 'src/logic/safe/store/actions/fetchTransactionDetails'
 import fetchTransactions from 'src/logic/safe/store/actions/transactions/fetchTransactions'
 import { txTransactions } from 'src/logic/safe/store/selectors/gatewayTransactions'
 import { userAccountSelector } from 'src/logic/wallets/store/selectors'
@@ -37,7 +38,7 @@ export default function TxActionModal() {
         }),
       )
 
-      dispatch(fetchTransactions(chainId, safeAddress, true))
+      dispatch(fetchTransactionDetailsById({ transactionId: data.transactionId }))
       setIsDisabled(false)
       // window.location.reload()
     } else {

@@ -26,11 +26,12 @@ export const AddressInfo = ({ address, name, avatarUrl, ...rest }: Props): React
   if (address === '') {
     return null
   }
-
+  console.log(address, addressDetail)
   return (
     <PrefixedEthHashInfo
-      hash={addressDetail?.name || address}
-      name={addressDetail ? undefined : toInfo.name || undefined}
+      hash={address}
+      showHash={!addressDetail}
+      name={addressDetail ? addressDetail.name : toInfo.name || undefined}
       showAvatar
       customAvatar={addressDetail?.picture || toInfo.logoUri || undefined}
       showCopyBtn={!addressDetail}

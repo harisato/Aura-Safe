@@ -5,7 +5,7 @@ import { StyledPrefixedEthHashInfo } from './styles'
 
 type Props = Omit<Parameters<typeof StyledPrefixedEthHashInfo>[0], 'shouldShowShortName' | 'shouldCopyShortName'>
 
-const PrefixedEthHashInfo = ({ hash, ...rest }: any): ReactElement => {
+const PrefixedEthHashInfo = ({ hash, name, showHash = true, ...rest }: any): ReactElement => {
   // const showChainPrefix = useSelector(showShortNameSelector)
   // const copyChainPrefix = useSelector(copyShortNameSelector)
 
@@ -18,10 +18,11 @@ const PrefixedEthHashInfo = ({ hash, ...rest }: any): ReactElement => {
   if (!chainInfo) {
     return <></>
   }
-
   return (
     <StyledPrefixedEthHashInfo
       hash={address}
+      name={name}
+      showHash={showHash}
       className="ethInfo"
       shortName={chainInfo.shortName}
       shouldShowShortName={showChainPrefix}

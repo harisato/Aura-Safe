@@ -22,7 +22,6 @@ const Text = styled(AuraText)`
 
 export const TxOwners = ({ txDetails }: { txDetails: any }): ReactElement | null => {
   const confirmationsNeeded = txDetails.confirmationsRequired - txDetails.confirmations.length
-
   const CreationNode = (
     <OwnerListItem>
       <span className="icon">
@@ -39,24 +38,27 @@ export const TxOwners = ({ txDetails }: { txDetails: any }): ReactElement | null
   return (
     <OwnerList>
       {CreationNode}
-      {txDetails.confirmations.map(({ signer }) => (
-        <OwnerListItem key={signer.value}>
-          <span className="icon">
-            <img src={DoneIcon} alt="Aura Safe" />
-          </span>
-          <div className="legend">
-            <Text color="linkAura" size="lg" strong>
-              <span style={{ fontWeight: 700 }}>Confirmed</span>
-            </Text>
-            <AddressInfo
-              address={signer.value}
-              name={signer?.name || undefined}
-              avatarUrl={signer?.logoUri || undefined}
-              // shortenHash={4}
-            />
-          </div>
-        </OwnerListItem>
-      ))}
+      {txDetails.confirmations.map(({ signer }) => {
+        console.log(signer)
+        return (
+          <OwnerListItem key={signer.value}>
+            <span className="icon">
+              <img src={DoneIcon} alt="Aura Safe" />
+            </span>
+            <div className="legend">
+              <Text color="linkAura" size="lg" strong>
+                <span style={{ fontWeight: 700 }}>Confirmed</span>
+              </Text>
+              <AddressInfo
+                address={signer.value}
+                name={signer?.name || undefined}
+                avatarUrl={signer?.logoUri || undefined}
+                // shortenHash={4}
+              />
+            </div>
+          </OwnerListItem>
+        )
+      })}
       {txDetails.rejectors?.map(({ value, name, logoUri }) => (
         <OwnerListItem key={value}>
           <span className="icon">
