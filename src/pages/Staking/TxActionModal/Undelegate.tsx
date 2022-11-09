@@ -137,7 +137,7 @@ export default function Undelegate({ validator, amount, onClose, createTxFromApi
             </div>
           )}
         </div>
-        <TotalAllocationAmount amount={+amount + +gasPriceFormatted} />
+        <TotalAllocationAmount amount={+gasPriceFormatted} />
         <div className="notice">
           You’re about to create a transaction and will have to confirm it with your currently connected wallet.
         </div>

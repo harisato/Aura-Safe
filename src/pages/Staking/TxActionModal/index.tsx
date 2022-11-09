@@ -29,7 +29,7 @@ const Wrapper = styled.div`
   width: 480px;
   padding: 24px;
 `
-export default function TxActionModal({ open, onClose, action, validator, amount, dstValidator }) {
+export default function TxActionModal({ open, onClose, action, validator, amount, dstValidator, listReward }) {
   const chainInfo = getChainInfo()
   const dispatch = useDispatch()
   const safeAddress = extractSafeAddress()
@@ -79,8 +79,7 @@ export default function TxActionModal({ open, onClose, action, validator, amount
       : action == MsgTypeUrl.Redelegate
       ? 'Redelegate'
       : 'Claim Reward'
-
-  if (!validator) {
+  if (!validator && action != MsgTypeUrl.GetReward) {
     return <></>
   }
   return (
@@ -102,7 +101,7 @@ export default function TxActionModal({ open, onClose, action, validator, amount
         />
       )}
       {action == MsgTypeUrl.GetReward && (
-        <ClaimReward onClose={onClose} validator={validator} amount={amount} createTxFromApi={createTxFromApi} />
+        <ClaimReward onClose={onClose} listReward={listReward} createTxFromApi={createTxFromApi} />
       )}
     </Popup>
   )

@@ -107,7 +107,7 @@ export default function Execute({ open, onClose, data, sendTx, rejectTx, disable
               </p>
             </div>
           </div>
-          <TotalAllocationAmount data={data} />
+          <TotalAllocationAmount totalAmount={+data.txDetails?.fee || 0} />
           <div className="notice">{noti}</div>
         </ReviewTxPopupWrapper>
         <Footer>

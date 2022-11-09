@@ -26,8 +26,9 @@ const signMessage = async (
   chainId: string,
   safeAddress: string,
   typeUrl: MsgTypeUrl,
-  value: unknown,
+  messages: any,
   fee: StdFee,
+  memo?: string,
 ): Promise<any> => {
   const loadLastUsedProviderResult = await loadLastUsedProvider()
   const provider = loadLastUsedProviderResult
@@ -50,11 +51,14 @@ const signMessage = async (
       chainId,
     }
     const signerAddress = _.get(account, '[0].address')
-    if (!(signerAddress && value && fee && signerData)) {
+    if (!(signerAddress && messages && fee && signerData)) {
       return undefined
     }
 
-    const respone = await client.sign(signerAddress, [{ typeUrl, value }], fee, '', signerData)
+    const respone =
+      typeUrl == MsgTypeUrl.GetReward
+        ? await client.sign(signerAddress, messages, fee, memo || '', signerData)
+        : await client.sign(signerAddress, [{ typeUrl, value: messages }], fee, memo || '', signerData)
     return { ...respone, accountNumber: onlineData.accountNumber, sequence: onlineData.sequence }
   }
   return undefined

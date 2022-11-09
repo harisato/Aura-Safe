@@ -14,26 +14,15 @@ import queryString from 'query-string'
 import { extractSafeAddress } from 'src/routes/routes'
 
 import { useDispatch } from 'react-redux'
-import Modal from 'src/components/Modal'
+import { MsgTypeUrl } from 'src/logic/providers/constants/constant'
 import { formatNumber } from 'src/utils'
 import MyDelegation from './MyDelegation'
-import ReviewSendFundsTx from './ReviewSendFundsTx'
 import TxActionModal from './TxActionModal'
 
-export const TypeStaking = {
-  delegate: '/cosmos.staking.v1beta1.MsgDelegate',
-  undelegate: '/cosmos.staking.v1beta1.MsgUndelegate',
-  redelegate: '/cosmos.staking.v1beta1.MsgBeginRedelegate',
-  reward: '/cosmos.distribution.v1beta1.MsgWithdrawDelegatorReward',
-}
-
 function Staking(props): ReactElement {
-  const dispatch = useDispatch()
-
   const [isOpenDelagate, setIsOpenDelagate] = useState(false)
   const [isOpenReview, setIsOpenReview] = useState(false)
   const [typeStaking, setTypeStaking] = useState('')
-  const [title, setTitle] = useState('')
 
   const nativeCurrency = getNativeCurrency()
   const [amount, setAmount] = useState<any>('')
@@ -93,10 +82,12 @@ function Staking(props): ReactElement {
       setTotalStake(res.Data.total?.staked)
       setRewardAmount(res.Data.total?.reward || 0)
       res.Data?.delegations?.map((item) => {
-        dataTemp.push({
-          delegatorAddress: SafeAddress,
-          validatorAddress: item?.operatorAddress,
-        })
+        if (item.reward?.[0]?.amount) {
+          dataTemp.push({
+            delegatorAddress: SafeAddress,
+            validatorAddress: item?.operatorAddress,
+          })
+        }
       })
       setListReward(dataTemp)
     })
@@ -157,8 +148,7 @@ function Staking(props): ReactElement {
         setValidateMsg('Invalid amount! Please check and try again.')
         return
       }
-      setTypeStaking(TypeStaking.delegate)
-      setTitle('Delegate')
+      setTypeStaking(MsgTypeUrl.Delegate)
     }
 
     if (action === 'redelegate') {
@@ -169,8 +159,7 @@ function Staking(props): ReactElement {
         setValidateMsg('Invalid amount! Please check and try again.')
         return
       }
-      setTypeStaking(TypeStaking.redelegate)
-      setTitle('Redelegate')
+      setTypeStaking(MsgTypeUrl.Redelegate)
     }
 
     if (action === 'undelegate') {
@@ -181,32 +170,20 @@ function Staking(props): ReactElement {
         setValidateMsg('Invalid amount! Please check and try again.')
         return
       }
-      setTypeStaking(TypeStaking.undelegate)
-      setTitle('Undelegate')
+      setTypeStaking(MsgTypeUrl.Undelegate)
     }
     setIsOpenReview(true)
     setIsOpenDelagate(false)
   }
 
-  const ClaimReward = () => {
+  const claimReward = () => {
     setIsOpenReview(true)
     setIsOpenDelagate(false)
-    setTypeStaking(TypeStaking.reward)
-    setTitle('Claim reward')
+    setTypeStaking(MsgTypeUrl.GetReward)
   }
 
   const handleCloseSendFund = () => {
     setIsOpenReview(false)
-  }
-
-  const handlePrevSendFund = () => {
-    setIsOpenReview(false)
-  }
-
-  ///
-  const temp = {
-    token: '0000000000000000000000000000000000000000',
-    tokenSpendingLimit: 0,
   }
 
   const handleMax = (item) => {
@@ -234,7 +211,7 @@ function Staking(props): ReactElement {
         totalStake={totalStake}
         rewardAmount={rewardAmount}
         validatorOfUser={validatorOfUser}
-        ClaimReward={ClaimReward}
+        claimReward={claimReward}
         nativeCurrency={nativeCurrency}
         allValidator={allValidator}
       />
@@ -284,6 +261,7 @@ function Staking(props): ReactElement {
         validator={itemValidator}
         dstValidator={valueDelegate}
         amount={amount}
+        listReward={listReward}
       />
 
       {/* <Modal

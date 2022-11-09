@@ -302,22 +302,21 @@ const theme = createTheme({
     },
     MuiSnackbar: {
       root: {
-        maxWidth: '100%',
-        width: '340px',
+        maxWidth: '560px',
+        width: '100%',
       },
     },
     MuiSnackbarContent: {
       root: {
         borderRadius: `${sm} !important`,
-        boxShadow: '0 0 10px 0 rgba(212, 212, 211, 0.59)',
         display: 'flex',
         flexDirection: 'row',
         flexWrap: 'nowrap',
         padding: '20px',
         width: '100%',
+        letterSpacing: '0.1em',
       },
       message: {
-        color: fontColor,
         flexGrow: '1',
         fontFamily: 'SFProDisplay !important',
         fontSize: '14px',

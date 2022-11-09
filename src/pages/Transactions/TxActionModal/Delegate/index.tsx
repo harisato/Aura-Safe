@@ -105,7 +105,9 @@ export default function Execute({ open, onClose, data, sendTx, rejectTx, disable
           <Gap height={24} />
           <Amount amount={data?.txDetails?.txMessage[0]?.amount} />
           <Divider />
-          <TotalAllocationAmount data={data} />
+          <TotalAllocationAmount
+            totalAmount={(+data?.txDetails?.txMessage[0]?.amount || 0) + (+data.txDetails?.fee || 0)}
+          />
           <div className="notice">{noti}</div>
         </ReviewTxPopupWrapper>
         <Footer>

@@ -1,5 +1,5 @@
 import { coins, MsgWithdrawDelegatorRewardEncodeObject } from '@cosmjs/stargate'
-import { useContext } from 'react'
+import { useContext, Fragment } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { OutlinedButton, OutlinedNeutralButton } from 'src/components/Button'
 import Gap from 'src/components/Gap'
@@ -85,14 +85,14 @@ export default function Execute({ open, onClose, data, sendTx, rejectTx, disable
           {data?.txDetails?.txMessage &&
             data?.txDetails?.txMessage?.map((msg, index) => {
               return (
-                <>
+                <Fragment key={index}>
                   {index != 0 && <Gap height={8} />}
-                  <AddressInfo key={index} address={msg?.validatorAddress} />
-                </>
+                  <AddressInfo address={msg?.validatorAddress} />
+                </Fragment>
               )
             })}
           <Gap height={24} />
-          <TotalAllocationAmount data={data} />
+          <TotalAllocationAmount totalAmount={+data.txDetails?.fee || 0} />
           <div className="notice">{noti}</div>
         </ReviewTxPopupWrapper>
         <Footer>

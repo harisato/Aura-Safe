@@ -13,7 +13,7 @@ export default function MyDelegation(props): ReactElement {
     rewardAmount,
     validatorOfUser,
     allValidator,
-    ClaimReward,
+    claimReward,
     nativeCurrency,
   } = props
   const [data, setData] = useState<any[]>()
@@ -55,7 +55,7 @@ export default function MyDelegation(props): ReactElement {
           </div>
         </div>
         {rewardAmount[0]?.amount / 10 ** nativeCurrency.decimals > 0 ? (
-          <FilledButton size="md" onClick={ClaimReward}>
+          <FilledButton size="md" onClick={claimReward}>
             <span style={{ fontSize: 14, fontWeight: 590 }}>
               Claim Reward: {rewardAmount[0] ? (rewardAmount[0]?.amount / 10 ** nativeCurrency.decimals).toFixed(6) : 0}{' '}
               {nativeCurrency.symbol}

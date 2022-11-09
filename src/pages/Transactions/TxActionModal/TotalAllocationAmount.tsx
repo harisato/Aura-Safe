@@ -1,8 +1,7 @@
 import { getNativeCurrency } from 'src/config'
 import { formatNativeToken } from 'src/utils'
 
-export default function TotalAllocationAmount({ data }) {
-  const totalAmount = (+data?.txDetails?.txMessage[0]?.amount || 0) + (+data.txDetails?.fee || 0)
+export default function TotalAllocationAmount({ totalAmount }) {
   const nativeCurrency = getNativeCurrency()
   return (
     <div className="total-amount">
