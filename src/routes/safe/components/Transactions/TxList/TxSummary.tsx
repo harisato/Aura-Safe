@@ -19,6 +19,7 @@ import DelegateCallWarning from './DelegateCallWarning'
 type Props = { txDetails: ExpandedTxDetails }
 
 export const TxSummary = ({ txDetails }: Props): ReactElement => {
+  console.log(txDetails)
   const { txHash, detailedExecutionInfo, executedAt, txData, txInfo } = txDetails
   const explorerUrl = txHash ? getExplorerInfo(txHash) : undefined
   const nonce = isMultiSigExecutionDetails(detailedExecutionInfo) ? detailedExecutionInfo.nonce : undefined

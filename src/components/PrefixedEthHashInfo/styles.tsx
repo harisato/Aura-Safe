@@ -7,6 +7,9 @@ const StyledPrefixedEthHashInfo = styled(EthHashInfo)`
     font-size: 12px;
     color: white;
   }
+  > div > img {
+    border-radius: 50%;
+  }
 `
 
 export { StyledPrefixedEthHashInfo }

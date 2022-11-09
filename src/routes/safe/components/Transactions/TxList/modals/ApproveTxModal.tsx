@@ -40,7 +40,7 @@ import { isThresholdReached } from 'src/routes/safe/components/Transactions/TxLi
 import { TxParameters } from 'src/routes/safe/container/hooks/useTransactionParameters'
 import { confirmSafeTransaction, getAccountOnChain, getMChainsConfig, sendSafeTransaction } from 'src/services'
 import { Overwrite } from 'src/types/helpers'
-import { getTxDetailByHash } from 'src/services'
+import { getTxDetailById } from 'src/services'
 import { loadLastUsedProvider } from 'src/logic/wallets/store/middlewares/providerWatcher'
 
 export const APPROVE_TX_MODAL_SUBMIT_BTN_TEST_ID = 'approve-tx-modal-submit-btn'
@@ -376,7 +376,8 @@ export const ApproveTxModal = ({
       const accounts = await offlineSigner.getAccounts()
       // const tendermintUrl = chainInfo?.rpcUri?.value
       const client = await SigningStargateClient.offline(offlineSigner)
-
+      const account = await client.getSequence(safeAddress)
+      console.log(account)
       const amountFinal = value
 
       const signingInstruction = await (async () => {
@@ -398,8 +399,8 @@ export const ApproveTxModal = ({
       const msg: any = []
 
       const txTemp: any = transaction
-
-      const res = await getTxDetailByHash(transaction.id, safeAddress, 'OUTGOING')
+      console.log('transaction atf', transaction)
+      const res = await getTxDetailById(transaction.id, safeAddress, '')
 
       if (
         txTemp?.txInfo?.typeUrl === '/cosmos.staking.v1beta1.MsgDelegate' ||

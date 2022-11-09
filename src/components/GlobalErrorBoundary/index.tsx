@@ -4,43 +4,80 @@ import { IS_PRODUCTION } from 'src/utils/constants'
 import { FallbackRender } from '@sentry/react/dist/errorboundary'
 import { ROOT_ROUTE } from 'src/routes/routes'
 import { loadFromSessionStorage, removeFromSessionStorage, saveToSessionStorage } from 'src/utils/storage/session'
-
+import Astronaut from 'src/assets/images/astronaut.png'
+import Space from 'src/assets/images/bg-space.png'
+import { useState } from 'react'
+import { LinkButton } from '../Button'
 const Wrapper = styled.div`
-  width: 100%;
-  margin-top: 50px;
+  width: 100vw;
+  height: 90vh;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: flex-start;
-`
-
-const Content = styled.div`
-  width: 400px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-
-  > * {
-    margin-top: 10px;
+  margin-top: 10vh;
+  > .content {
+    display: flex;
+    align-items: flex-start;
+    > div {
+      width: 480px;
+      margin-top: 32px;
+    }
   }
-`
+  .astronaut-image {
+    width: 300px;
+    animation-name: flo;
+    animation-duration: 10s;
+    animation-iteration-count: infinite;
+    animation-timing-function: ease-in-out;
 
-const LinkWrapper = styled.div`
-  display: inline-flex;
-  margin-bottom: 10px;
-
-  > :first-of-type {
-    margin-right: 5px;
+    @keyframes flo {
+      25% {
+        transform: translate(-5px, 10px);
+      }
+      50% {
+        transform: translate(10px, 10px);
+      }
+      75% {
+        transform: translate(7px, 0px);
+      }
+    }
   }
-`
-
-const LinkContent = styled.div`
-  display: flex;
-  align-items: center;
-
-  > span {
-    margin-right: 5px;
+  p {
+    font-size: 16px;
+    color: #ccdcdc;
+  }
+  a {
+    text-decoration: none;
+    font-weight: 700;
+    color: #fff;
+    font-size: 18px;
+  }
+  .bg-space {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    z-index: -1;
+  }
+  .title {
+    font-size: 20px;
+    letter-spacing: 0.08em;
+    font-weight: 700;
+    color: #fff;
+  }
+  .error-stack {
+    font-size: 12px;
+    line-height: 16px;
+    letter-spacing: 0.05em;
+    max-height: 45vh;
+    overflow: auto;
+  }
+  .discord-anchor {
+    color: #7289da;
+  }
+  .homepage-anchor {
+    color: #5ee6d0;
   }
 `
 
@@ -74,7 +111,21 @@ export const handleChunkError = (error: Error): boolean => {
   window.location.reload()
   return true
 }
+const ErrorDetail = ({ error, componentStack }) => {
+  const [open, setOpen] = useState(false)
 
+  return (
+    <>
+      <LinkButton onClick={() => setOpen(!open)}>{open ? 'Hide details' : 'Show details'}</LinkButton>
+      {open && (
+        <div className="error-detail">
+          <p>{error.toString()}</p>
+          <div className="error-stack">{componentStack}</div>
+        </div>
+      )}
+    </>
+  )
+}
 const GlobalErrorBoundaryFallback: FallbackRender = ({ error, componentStack }) => {
   if (handleChunkError(error)) {
     // FallbackRender type does not allow null to be returned
@@ -83,41 +134,25 @@ const GlobalErrorBoundaryFallback: FallbackRender = ({ error, componentStack }) 
 
   return (
     <Wrapper>
-      <Content>
-        <Title size="md">Something went wrong, please try again.</Title>
-        <FixedIcon type="networkError" />
-        {IS_PRODUCTION && (
-          <div>
-            <Text size="xl" as="span">
-              In case the problem persists, please reach out to us via{' '}
-            </Text>
-            <LinkWrapper>
-              <a target="_blank" href="https://chat.gnosis-safe.io" rel="noopener noreferrer">
-                <Text color="primary" size="lg" as="span">
-                  Discord
-                </Text>
-              </a>
-              <Icon type="externalLink" color="primary" size="sm" />
-            </LinkWrapper>
-          </div>
-        )}
-        {!IS_PRODUCTION && (
-          <>
-            <Text size="xl" color="error">
-              {error.toString()}
-            </Text>
-            <Text size="md" color="error">
-              {componentStack}
-            </Text>
-          </>
-        )}
-        <Link size="lg" color="primary" href={ROOT_ROUTE}>
-          <LinkContent>
-            <Icon size="md" type="home" color="primary" />
-            Go to Home
-          </LinkContent>
-        </Link>
-      </Content>
+      <img className="bg-space" src={Space} alt="" />
+      <div className="content">
+        <img className="astronaut-image" src={Astronaut} alt="" />
+        <div>
+          <p className="title">OH NO! SOMETHING WENT WRONG!!</p>
+          <p>Don't be alone wanderer. Let us help you.</p>
+          <p>
+            Please contact us via{' '}
+            <a className="discord-anchor" href="https://discord.gg/bzm3dyxJxR">
+              Discord
+            </a>{' '}
+            or{' '}
+            <a className="homepage-anchor" href={ROOT_ROUTE}>
+              Return Homepage
+            </a>
+          </p>
+          {!IS_PRODUCTION && <ErrorDetail error={error} componentStack={componentStack} />}
+        </div>
+      </div>
     </Wrapper>
   )
 }

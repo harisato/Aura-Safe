@@ -20,7 +20,6 @@ const chainSpecificSafeAddressPathRegExp = `[a-z0-9-]{1,}:[a-z]+${hashRegExp}{39
 
 export const SAFE_ADDRESS_SLUG = 'prefixedSafeAddress'
 export const ADDRESSED_ROUTE = `/:${SAFE_ADDRESS_SLUG}(${chainSpecificSafeAddressPathRegExp})`
-
 // Safe section routes, i.e. /:prefixedSafeAddress/settings
 const SAFE_SECTION_SLUG = 'safeSection'
 export const SAFE_SECTION_ROUTE = `${ADDRESSED_ROUTE}/:${SAFE_SECTION_SLUG}`
@@ -70,7 +69,7 @@ export const SAFE_ROUTES = {
   TRANSACTIONS_SINGULAR: `${ADDRESSED_ROUTE}/transactions/:${TRANSACTION_ID_NUMBER}${singularExp}`, // [TRANSACTION_HASH_SLUG] === 'safeTxHash'
   ADDRESS_BOOK: `${ADDRESSED_ROUTE}/address-book`,
   STAKING: `${ADDRESSED_ROUTE}/staking`,
-  VOTING: `${ADDRESSED_ROUTE}/voting/`,
+  VOTING: `${ADDRESSED_ROUTE}/voting`,
   VOTING_DETAIL: `${ADDRESSED_ROUTE}/voting/detail/:${VOTING_SECTION_SLUG}`,
   APPS: `${ADDRESSED_ROUTE}/apps`,
   SETTINGS: `${ADDRESSED_ROUTE}/settings`,

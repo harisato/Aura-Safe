@@ -11,8 +11,8 @@ export type VoteKey = 'yes' | 'abstain' | 'no' | 'no_with_veto'
 
 export enum VoteMapping {
   'yes' = 'Yes',
-  'abstain' = 'No',
-  'no' = 'Abstain',
+  'abstain' = 'Abstain',
+  'no' = 'No',
   'no_with_veto' = 'NoWithVeto',
 }
 

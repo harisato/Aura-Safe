@@ -2,7 +2,7 @@ import { BigNumber } from 'bignumber.js'
 import ReactDOM from 'react-dom'
 import * as Sentry from '@sentry/react'
 import { Integrations } from '@sentry/tracing'
-import Root from 'src/components/Root'
+import Root from 'src/layout/Root'
 import { SENTRY_DSN } from './utils/constants'
 import { disableMMAutoRefreshWarning } from './utils/mm_warnings'
 import 'src/services/interceptor'
@@ -22,9 +22,5 @@ Sentry.init({
 const root = document.getElementById('root')
 
 if (root !== null) {
-  ReactDOM.render(
-    <Root />,
-
-    root,
-  )
+  ReactDOM.render(<Root />, root)
 }

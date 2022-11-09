@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
 import { ExpandedTxDetails } from 'src/logic/safe/store/models/types/gateway.d'
-import { fetchTransactionDetailsByHash } from 'src/logic/safe/store/actions/fetchTransactionDetails'
+import { fetchTransactionDetailsById } from 'src/logic/safe/store/actions/fetchTransactionDetails'
 import { getTransactionByAttribute } from 'src/logic/safe/store/selectors/gatewayTransactions'
 import { AppReduxState } from 'src/store'
 import { TransferDirection } from '@gnosis.pm/safe-react-gateway-sdk'
@@ -15,7 +15,7 @@ export type LoadTransactionDetails = {
 export const useTransactionDetails = (
   transactionId: string,
   txHash?: string,
-  direction?: TransferDirection,
+  direction?: string,
 ): LoadTransactionDetails => {
   const dispatch = useRef(useDispatch())
   const [txDetails, setTxDetails] = useState<LoadTransactionDetails>({
@@ -36,8 +36,7 @@ export const useTransactionDetails = (
     } else {
       // lookup tx details
       // dispatch.current(fetchTransactionDetails({ transactionId }))
-
-      dispatch.current(fetchTransactionDetailsByHash({ transactionId, txHash: txHash || null, direction }))
+      // dispatch.current(fetchTransactionDetailsById({ transactionId, txHash: txHash || null, direction }))
     }
   }, [data?.txDetails, transactionId, txHash, direction])
 

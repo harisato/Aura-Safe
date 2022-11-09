@@ -14,6 +14,7 @@ import {
   TransactionListItem,
   TransactionListPage,
   TransactionStatus,
+  AddressEx,
 } from '@gnosis.pm/safe-react-gateway-sdk'
 import { MTransactionListItem } from 'src/types/transaction'
 
@@ -35,6 +36,9 @@ export const LocalTransactionStatus: Record<string, TransactionStatus> = {
 export type Transaction = TransactionSummary & {
   txDetails?: any
   txHash?: string
+  rejectors?: AddressEx[]
+  confirmations?: { signature: string; signer: AddressEx; submittedAt: number }[]
+  confirmationsRequired?: number
 }
 
 export type ExpandedTxDetails = GWTransactionDetails

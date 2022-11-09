@@ -51,6 +51,10 @@ const StyledButton = styled(Button)`
   background-color: transparent !important;
   min-width: 130px !important;
   margin-left: 10px;
+  &:disabled {
+    cursor: not-allowed;
+    pointer-events: unset;
+  }
 `
 
 const StyledButtonDetail = styled(Button)`
@@ -64,12 +68,14 @@ const StyledButtonDetail = styled(Button)`
 const ContainDotVot = styled.div`
   display: flex;
   justify-content: space-between;
+  margin-top: 6px;
 `
 
 const DotVoteStyled = styled.div`
   width: 16px;
   height: 16px;
   background: #5ee6d0;
+  background: ${(props) => props.color ?? '#5ee6d0'};
   border-radius: 23px;
   margin-right: 10px;
 `
@@ -91,6 +97,9 @@ function CardVoting({ handleVote, proposal }: Props): ReactElement {
     })
     history.push(proposalDetailsPathname)
   }
+
+  const proposalMostVotedOnName = proposal.tally.mostVotedOn.name
+  const isEnded = new Date(proposal.votingEnd).getTime() < Date.now()
 
   return (
     <BoxCard width={'100%'} top={'10px'} left={'10px'}>
@@ -139,9 +148,19 @@ function CardVoting({ handleVote, proposal }: Props): ReactElement {
             </div>
             <ContainDotVot>
               <div style={{ display: 'flex' }}>
-                <DotVoteStyled />
+                <DotVoteStyled
+                  color={
+                    proposalMostVotedOnName == 'no'
+                      ? '#fa8684'
+                      : proposalMostVotedOnName == 'abstain'
+                      ? '#494c58'
+                      : proposalMostVotedOnName == 'yes'
+                      ? '#5ee6d0'
+                      : '#9da8ff'
+                  }
+                />
                 <Text size="xl" color="white">
-                  {VoteMapping[proposal.tally.mostVotedOn.name || 'yes']}
+                  {VoteMapping[proposalMostVotedOnName || 'yes']}
                 </Text>
               </div>
               <div>
@@ -157,9 +176,11 @@ function CardVoting({ handleVote, proposal }: Props): ReactElement {
           style={{ display: 'flex', justifyContent: 'space-between', borderTop: '1px solid #363843', paddingTop: 10 }}
         >
           <div style={{ alignSelf: 'center' }}>
-            <TextStyled size="lg" color="linkAura">
-              Voting ended
-            </TextStyled>
+            {isEnded && (
+              <TextStyled size="lg" color="linkAura">
+                Voting ended
+              </TextStyled>
+            )}
           </div>
           <div>
             <StyledButtonDetail size="md" disabled={false} onClick={() => handleDetail(proposal.id)}>

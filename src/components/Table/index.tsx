@@ -130,8 +130,8 @@ class GnoTable extends React.Component<any, any> {
           </Table>
         )}
         {isEmpty && (
-          <Row className={classes.loader} style={getEmptyStyle}>
-            <Loader size="sm" />
+          <Row className={classes.loader}>
+            <p>Not found</p>
           </Row>
         )}
         {!disablePagination && (

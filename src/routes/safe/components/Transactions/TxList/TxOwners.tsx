@@ -10,10 +10,10 @@ import { AddressInfo } from './AddressInfo'
 import { OwnerList, OwnerListItem } from './styled'
 import { isCancelTxDetails } from './utils'
 import PlusIcon from '../TxList/assets/plus-icon.svg'
-import ExcuteIcon from '../TxList/assets/excute-icon.svg'
+import ExecuteIcon from '../TxList/assets/excute-icon.svg'
 import DoneIcon from '../TxList/assets/done-icon.svg'
 import CircleRedIcon from '../TxList/assets/rejected.svg'
-import ExecuteIcon from '../TxList/assets/execute.svg'
+import NotExecuteIcon from '../TxList/assets/execute.svg'
 
 const StyledImg = styled(Img)`
   background-color: transparent;
@@ -103,7 +103,7 @@ export const TxOwners = ({
             {detailedExecutionInfo.executor ? (
               <img src={DoneIcon} alt="Aura Safe" />
             ) : (
-              <StyledImg alt="" src={ExcuteIcon} />
+              <StyledImg alt="" src={ExecuteIcon} />
             )}
           </span>
           <div className="legend">
