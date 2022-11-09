@@ -72,7 +72,7 @@ export default function ClaimReward({ listReward, onClose, createTxFromApi }) {
     }))
     try {
       dispatch(enqueueSnackbar(enhanceSnackbarForAction(NOTIFICATIONS.SIGN_TX_MSG)))
-      const signResult = await createMessage(chainId, safeAddress, MsgTypeUrl.GetReward, Msg, _sendFee, '1')
+      const signResult = await createMessage(chainId, safeAddress, MsgTypeUrl.GetReward, Msg, _sendFee)
       if (!signResult) throw new Error()
       const signatures = toBase64(signResult.signatures[0])
       const bodyBytes = toBase64(signResult.bodyBytes)

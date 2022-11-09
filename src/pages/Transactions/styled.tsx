@@ -208,7 +208,7 @@ export const StyledTransaction = styled.div`
     display: flex;
     align-items: center;
 
-    > img {
+    > :nth-child(1) {
       margin-right: 8px;
     }
   }
