@@ -111,9 +111,11 @@ export default function TxMsg({ tx, txDetail }) {
             return (
               <Fragment key={index}>
                 <AddressInfo address={msg?.validatorAddress} />
-                <strong>
-                  Amount: <span className="token">{formatNativeToken(msg?.amount || 0)}</span>
-                </strong>
+                {msg?.amount && (
+                  <strong>
+                    Amount: <span className="token">{formatNativeToken(msg?.amount || 0)}</span>
+                  </strong>
+                )}
               </Fragment>
             )
           })}

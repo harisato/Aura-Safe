@@ -3,11 +3,13 @@ import { MsgTypeUrl } from 'src/logic/providers/constants/constant'
 import IncomingIcon from 'src/assets/icons/incoming.svg'
 import OutgoingIcon from 'src/assets/icons/outgoing.svg'
 import CustomIcon from 'src/assets/icons/custom.svg'
+import { Icon, IconTypes } from '@aura/safe-react-components'
+
 export default function TxType({ type }) {
   if (type == MsgTypeUrl.Delegate) {
     return (
       <div className="tx-type">
-        <img src={OutgoingIcon} alt="outgoing-icon" />
+        <Icon size="sm" type="stakingAura" />
         <p>Delegate</p>
       </div>
     )
@@ -15,7 +17,8 @@ export default function TxType({ type }) {
   if (type == MsgTypeUrl.Undelegate) {
     return (
       <div className="tx-type">
-        <img src={IncomingIcon} alt="incoming-icon" />
+        <Icon size="sm" type="stakingAura" />
+
         <p>Undelegate</p>
       </div>
     )
@@ -39,7 +42,8 @@ export default function TxType({ type }) {
   if (type == MsgTypeUrl.Redelegate) {
     return (
       <div className="tx-type">
-        <img src={OutgoingIcon} alt="outgoing-icon" />
+        <Icon size="sm" type="stakingAura" />
+
         <p>Redelegate</p>
       </div>
     )
@@ -47,7 +51,8 @@ export default function TxType({ type }) {
   if (type == MsgTypeUrl.Vote) {
     return (
       <div className="tx-type">
-        <img src={OutgoingIcon} alt="outgoing-icon" />
+        <Icon size="sm" type="votingAura" />
+
         <p>Vote</p>
       </div>
     )
@@ -55,7 +60,8 @@ export default function TxType({ type }) {
   if (type == MsgTypeUrl.GetReward) {
     return (
       <div className="tx-type">
-        <img src={IncomingIcon} alt="incoming-icon" />
+        <Icon size="sm" type="stakingAura" />
+
         <p>Claim Reward</p>
       </div>
     )

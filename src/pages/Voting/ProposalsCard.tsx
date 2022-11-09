@@ -4,6 +4,7 @@ import { generatePath, useHistory } from 'react-router-dom'
 import Col from 'src/components/layout/Col'
 import StatusCard from 'src/components/StatusCard'
 import VoteBar from 'src/components/Vote'
+import { getExplorerInfo } from 'src/config'
 import { getPrefixedSafeAddressSlug, SAFE_ADDRESS_SLUG, SAFE_ROUTES, VOTING_ID_NUMBER } from 'src/routes/routes'
 import { borderLinear } from 'src/theme/variables'
 import { IProposal, VoteMapping } from 'src/types/proposal'
@@ -97,11 +98,8 @@ function ProposalsCard({ handleVote, proposal }: Props): ReactElement {
   const history = useHistory()
 
   const handleDetail = (proposalId) => {
-    const proposalDetailsPathname = generatePath(SAFE_ROUTES.VOTING_DETAIL, {
-      [SAFE_ADDRESS_SLUG]: getPrefixedSafeAddressSlug(),
-      [VOTING_ID_NUMBER]: proposalId,
-    })
-    history.push(proposalDetailsPathname)
+    const url = getExplorerInfo(proposalId)
+    window.open(url().url)
   }
 
   const proposalMostVotedOnName = proposal.tally.mostVotedOn.name
@@ -195,7 +193,7 @@ function ProposalsCard({ handleVote, proposal }: Props): ReactElement {
               </Text>
             </StyledButtonDetail>
 
-            <StyledButton size="md" disabled={false} onClick={handleVote}>
+            <StyledButton size="md" disabled={isEnded} onClick={handleVote}>
               <Text size="lg" color="white">
                 Vote
               </Text>
