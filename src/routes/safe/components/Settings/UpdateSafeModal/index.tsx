@@ -18,8 +18,8 @@ import { EstimationStatus, useEstimateTransactionGas } from 'src/logic/hooks/use
 import { useEstimationStatus } from 'src/logic/hooks/useEstimationStatus'
 import { getMultisendContractAddress } from 'src/logic/contracts/safeContracts'
 import { EMPTY_DATA } from 'src/logic/wallets/ethTransactions'
-import { TxParametersDetail } from 'src/routes/safe/components/Transactions/helpers/TxParametersDetail'
-import { EditableTxParameters } from 'src/routes/safe/components/Transactions/helpers/EditableTxParameters'
+import { TxParametersDetail } from 'src/utils/transactionHelpers/TxParametersDetail'
+import { EditableTxParameters } from 'src/utils/transactionHelpers/EditableTxParameters'
 import { TxParameters } from 'src/routes/safe/container/hooks/useTransactionParameters'
 import { ModalHeader } from 'src/routes/safe/components/Balances/SendModal/screens/ModalHeader'
 

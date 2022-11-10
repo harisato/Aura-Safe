@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react'
 
 import { getNativeCurrency } from 'src/config'
 import { isCustomTxInfo, isSettingsChangeTxInfo, isTransferTxInfo } from 'src/logic/safe/store/models/types/gateway.d'
-import { getTxAmount, NOT_AVAILABLE } from 'src/routes/safe/components/Transactions/TxList/utils'
+import { getTxAmount, NOT_AVAILABLE } from 'src/utils/transactionUtils'
 
 export type TokenTransferAsset = {
   type: 'Transfer'

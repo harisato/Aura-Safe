@@ -48,7 +48,7 @@ import {
   SAFE_ADDRESS_SLUG,
   SAFE_ROUTES,
 } from 'src/routes/routes'
-import { EditableTxParameters } from 'src/routes/safe/components/Transactions/helpers/EditableTxParameters'
+import { EditableTxParameters } from 'src/utils/transactionHelpers/EditableTxParameters'
 import { TxParameters } from 'src/routes/safe/container/hooks/useTransactionParameters'
 import { createSafeTransaction, getAccountOnChain, getMChainsConfig } from 'src/services'
 import { DEFAULT_GAS_LIMIT } from 'src/services/constant/common'

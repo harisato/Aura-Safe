@@ -5,7 +5,7 @@ import CircleCrossRed from 'src/routes/safe/components/Transactions/TxList/asset
 import IncomingTxIcon from 'src/routes/safe/components/Transactions/TxList/assets/incoming.svg'
 import OutgoingTxIcon from 'src/routes/safe/components/Transactions/TxList/assets/outgoing.svg'
 import SettingsTxIcon from 'src/routes/safe/components/Transactions/TxList/assets/settings.svg'
-import { getTxTo } from 'src/routes/safe/components/Transactions/TxList/utils'
+import { getTxTo } from 'src/utils/transactionUtils'
 import { useKnownAddress } from './useKnownAddress'
 import { extractSafeAddress } from 'src/routes/routes'
 

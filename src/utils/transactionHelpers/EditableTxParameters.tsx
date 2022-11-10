@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { TxParameters, useTransactionParameters } from 'src/routes/safe/container/hooks/useTransactionParameters'
-import { EditTxParametersForm } from 'src/routes/safe/components/Transactions/helpers/EditTxParametersForm'
+import { EditTxParametersForm } from 'src/utils/transactionHelpers/EditTxParametersForm'
 import { ParametersStatus } from './utils'
 import { useSelector } from 'react-redux'
 

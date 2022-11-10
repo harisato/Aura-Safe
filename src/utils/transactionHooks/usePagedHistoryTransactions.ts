@@ -8,7 +8,7 @@ import {
 import { addHistoryTransactions } from 'src/logic/safe/store/actions/transactions/gatewayTransactions'
 import { TransactionDetails } from 'src/logic/safe/store/models/types/gateway.d'
 import { extractSafeAddress } from 'src/routes/routes'
-import { useHistoryTransactions } from 'src/routes/safe/components/Transactions/TxList/hooks/useHistoryTransactions'
+import { useHistoryTransactions } from 'src/utils/transactionHooks/useHistoryTransactions'
 import { Await } from 'src/types/helpers'
 
 type PagedTransactions = {

@@ -6,7 +6,7 @@ import useLocalTxStatus from 'src/logic/hooks/useLocalTxStatus'
 
 import { LocalTransactionStatus, Transaction } from 'src/logic/safe/store/models/types/gateway.d'
 import { userAccountSelector } from 'src/logic/wallets/store/selectors'
-import { addressInList } from 'src/routes/safe/components/Transactions/TxList/utils'
+import { addressInList } from 'src/utils/transactionUtils'
 
 export type TransactionStatusProps = {
   color: ThemeColors
