@@ -365,14 +365,7 @@ const theme = createTheme({
       },
     },
     MuiTableContainer: {
-      root: {
-        marginLeft: '-10px',
-        marginRight: '-10px',
-        marginTop: '-10px',
-        paddingLeft: '10px',
-        paddingRight: '10px',
-        paddingTop: '10px',
-      },
+      root: {},
     },
     MuiTablePagination: {
       toolbar: {

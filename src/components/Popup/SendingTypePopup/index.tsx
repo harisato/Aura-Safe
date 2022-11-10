@@ -3,7 +3,7 @@ import Close from '@material-ui/icons/Close'
 import Hairline from 'src/components/layout/Hairline'
 import Row from 'src/components/layout/Row'
 import styled from 'styled-components'
-import { Popup } from '../'
+import { Popup } from '..'
 import { OutlinedButton } from '../../Button'
 
 const Wrapper = styled.div`
