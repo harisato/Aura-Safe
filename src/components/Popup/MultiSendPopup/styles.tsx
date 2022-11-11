@@ -1,7 +1,7 @@
 import styled from 'styled-components'
 
 export const PopupWrapper = styled.div`
-  width: 480px;
+  width: 640px;
 `
 export const HeaderWrapper = styled.div`
   padding: 14px 24px;
@@ -41,12 +41,18 @@ export const HeaderWrapper = styled.div`
 `
 export const BodyWrapper = styled.div`
   padding: 24px;
+  .token-selection {
+    width: 50%;
+  }
+  table {
+    min-width: unset;
+  }
   .label {
     font-weight: 600;
-    font-size: 12px;
-    line-height: 16px;
-    color: #98989b;
-    margin-bottom: 4px;
+    font-size: 16px;
+    line-height: 20px;
+    color: #e5e7ea;
+    margin-bottom: 8px;
   }
   .error-msg {
     color: #f56161;

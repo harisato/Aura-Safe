@@ -132,6 +132,7 @@ function Staking(props): ReactElement {
 
   const handleManageDelegate = async (item) => {
     setIsOpenDelagate(true)
+    setValidateMsg('')
     setSelectedAction('delegate')
     const dataTemp = {
       safeStaking: item.operatorAddress,
@@ -229,7 +230,7 @@ function Staking(props): ReactElement {
         {' '}
         <BoxCard>
           <Col layout="column" sm={12} xs={12}>
-            <Validators allValidator={allValidator} dandleManageDelegate={handleManageDelegate} />
+            <Validators allValidator={allValidator} handleManageDelegate={handleManageDelegate} />
           </Col>
         </BoxCard>
       </Block>

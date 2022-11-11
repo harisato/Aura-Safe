@@ -84,8 +84,8 @@ const SafeHeader = ({
             <CopyToClipboardBtn textToCopy={address} />
             {address && <ExplorerButton explorerUrl={getExplorerInfo(address)} />}
           </IconContainer>
-          <StyledButton size="md" disabled={!granted} onClick={() => onNewTransactionClick()}>
-            {/* <StyledButton size="md" disabled={!granted} onClick={() => setSendTxTypePopupOpen(true)}> */}
+          {/* <StyledButton size="md" disabled={!granted} onClick={() => onNewTransactionClick()}> */}
+          <StyledButton size="md" disabled={!granted} onClick={() => setSendTxTypePopupOpen(true)}>
             <FixedIcon type="arrowSentWhite" />
             <Text size="lg" color="white">
               New transaction

@@ -73,7 +73,7 @@ const ImgRow = styled.div`
 `
 
 const ValidatorTable = (props) => {
-  const { data, dandleManageDelegate, value } = props
+  const { data, handleManageDelegate, value } = props
   const obj1 = new Intl.NumberFormat('en-US')
 
   return (
@@ -102,7 +102,7 @@ const ValidatorTable = (props) => {
           <StyledTableCell align="left">{row.uptime} %</StyledTableCell>
           {value === 0 && (
             <StyledTableCell align="right">
-              <StyledButton size="md" onClick={() => dandleManageDelegate(row)}>
+              <StyledButton size="md" onClick={() => handleManageDelegate(row)}>
                 <Text size="lg" color="white">
                   Delegate
                 </Text>
@@ -116,7 +116,7 @@ const ValidatorTable = (props) => {
 }
 
 function Validators(props): ReactElement {
-  const { allValidator, dandleManageDelegate } = props
+  const { allValidator, handleManageDelegate } = props
   const [value, setValue] = React.useState(0)
   const classes = useStyles()
 
@@ -196,10 +196,10 @@ function Validators(props): ReactElement {
       {allValidator && (
         <>
           <TabPanel value={value} index={0}>
-            <ValidatorTable data={dataActive} dandleManageDelegate={dandleManageDelegate} value={value} />
+            <ValidatorTable data={dataActive} handleManageDelegate={handleManageDelegate} value={value} />
           </TabPanel>
           <TabPanel value={value} index={1}>
-            <ValidatorTable data={dataInActive} dandleManageDelegate={dandleManageDelegate} />
+            <ValidatorTable data={dataInActive} handleManageDelegate={handleManageDelegate} />
           </TabPanel>
         </>
       )}

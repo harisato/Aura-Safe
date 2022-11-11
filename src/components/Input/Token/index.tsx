@@ -2,6 +2,9 @@ import Select, { IOption } from 'src/components/Input/Select'
 import { Token } from 'src/logic/tokens/store/model/token'
 import styled from 'styled-components'
 import MenuItem from '@material-ui/core/MenuItem'
+import { useSelector } from 'react-redux'
+import { extendedSafeTokensSelector } from 'src/routes/safe/container/selector'
+import { List } from 'immutable'
 
 const MenuItemWrapper = styled.div`
   display: flex;
@@ -12,27 +15,30 @@ const MenuItemWrapper = styled.div`
     margin-right: 8px;
   }
 `
-export default function AssetSelect({ tokenList, selectedToken, setSelectedToken }) {
+export default function TokenSelect({ selectedToken, setSelectedToken }) {
+  const tokenList = useSelector(extendedSafeTokensSelector) as unknown as Token[]
+
   const tokenOptions: IOption[] = tokenList.map((token: Token) => ({
     value: token.address,
     label: token.name,
-  }))
+  })) as unknown as IOption[]
+
   return (
     <Select
       options={tokenOptions}
       value={selectedToken || ''}
       onChange={(token) => {
-        setSelectedToken(token)
+        setSelectedToken && setSelectedToken(token)
       }}
       placeholder="Select an asset*"
       customRenderer={(value) => {
         const selectedToken = tokenList.find((token) => token.address == value)
-        return (
+        return selectedToken ? (
           <MenuItemWrapper>
             <img src={selectedToken.logoUri || ''} alt={selectedToken.name} />
             {`${selectedToken.balance.tokenBalance} ${selectedToken.symbol}`}
           </MenuItemWrapper>
-        )
+        ) : null
       }}
     >
       {tokenList.map((token: Token, index: any) => {

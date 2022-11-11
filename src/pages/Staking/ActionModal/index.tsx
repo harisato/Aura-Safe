@@ -181,13 +181,13 @@ export default function ModalStaking(props) {
         <FotterModal>
           <CloseButton title="Close" onClick={handleClose} />
           {selectedAction === 'delegate' && (
-            <StyledButtonSubmit disabled={validateMsg} size="md" onClick={() => handleSubmit(selectedAction)}>
+            <StyledButtonSubmit disabled={!!validateMsg} size="md" onClick={() => handleSubmit(selectedAction)}>
               Delegate
             </StyledButtonSubmit>
           )}
           {selectedAction === 'redelegate' && (
             <StyledButtonSubmit
-              disabled={validateMsg || valueDelegate == 'none'}
+              disabled={!!validateMsg || valueDelegate == 'none'}
               size="md"
               onClick={() => handleSubmit(selectedAction)}
             >
@@ -195,7 +195,7 @@ export default function ModalStaking(props) {
             </StyledButtonSubmit>
           )}
           {selectedAction === 'undelegate' && (
-            <StyledButtonSubmit disabled={validateMsg} size="md" onClick={() => handleSubmit(selectedAction)}>
+            <StyledButtonSubmit disabled={!!validateMsg} size="md" onClick={() => handleSubmit(selectedAction)}>
               Undelegate
             </StyledButtonSubmit>
           )}

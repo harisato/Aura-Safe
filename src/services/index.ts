@@ -178,13 +178,16 @@ export function signSafeTransaction(transactionInfo: ISignSafeTransaction): Prom
 }
 
 export const getTxDetailById = async (
-  txId: string,
   safeAddress: string,
+  txId?: string,
   auraTxId?: string,
 ): Promise<IResponse<any>> => {
-  let url = `${baseUrl}/transaction/transaction-details?safeAddress=${safeAddress}&multisigTxId=${txId}`
+  let url = `${baseUrl}/transaction/transaction-details?safeAddress=${safeAddress}`
   if (auraTxId) {
     url += `&auraTxId=${auraTxId}`
+  }
+  if (txId) {
+    url += `&multisigTxId=${txId}`
   }
   return axios.get(url).then((res) => res.data)
 }
