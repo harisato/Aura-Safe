@@ -86,7 +86,7 @@ export default function TxActionModal() {
       const { ErrorCode } = result
 
       if (ErrorCode === 'SUCCESSFUL') {
-        dispatch(enqueueSnackbar(NOTIFICATIONS.TX_EXECUTED_MSG))
+        dispatch(enqueueSnackbar(NOTIFICATIONS.TX_REJECTED_MSG_SUCCESS))
       } else {
         dispatch(enqueueSnackbar(NOTIFICATIONS.TX_FAILED_MSG))
         setIsDisabled(false)

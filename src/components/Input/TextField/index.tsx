@@ -2,9 +2,9 @@ import styled from 'styled-components'
 import MuiTextField from '@material-ui/core/TextField'
 import React from 'react'
 import { colorLinear } from 'src/theme/variables'
-import { formatNumber, validateFloatNumber } from 'src/utils'
+import { formatNumber, isNumberKeyPress, validateFloatNumber } from 'src/utils'
 
-const StyledTextField = styled(MuiTextField)`
+export const StyledTextField = styled(MuiTextField)`
   width: 100%;
   > label {
     z-index: 1;
@@ -47,18 +47,23 @@ export default function TextField({
   value,
   onChange,
   type = 'text',
+  autoFocus,
 }: {
   label: string
   value: any
   onChange: (value: string) => void
   type?: React.HTMLInputTypeAttribute
+  autoFocus?: boolean
 }) {
   return (
     <StyledTextField
-      type={type}
+      autoFocus={autoFocus}
       variant="filled"
       label={label}
+      type={type}
       value={value}
+      onKeyPress={type == 'number' ? isNumberKeyPress : undefined}
+      inputProps={type == 'number' ? { inputMode: 'numeric', pattern: '[0-9]*', step: '0.0000001' } : {}}
       onChange={(event) =>
         type == 'number' ? onChange(formatNumber(event.target.value)) : onChange(event.target.value)
       }

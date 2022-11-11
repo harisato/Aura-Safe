@@ -120,3 +120,8 @@ input::-webkit-inner-spin-button {
 input[type='number'] {
   -moz-appearance: textfield;
 }
+.error-msg {
+  color: #f56161;
+  font-size: 12px;
+  margin: 6px 0px 0px;
+}

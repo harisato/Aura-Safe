@@ -31,6 +31,14 @@ export default function TxType({ type }) {
       </div>
     )
   }
+  if (type == 'Receive') {
+    return (
+      <div className="tx-type">
+        <img src={IncomingIcon} alt="incoming-icon" />
+        <p>Receive</p>
+      </div>
+    )
+  }
   if (type == MsgTypeUrl.MultiSend) {
     return (
       <div className="tx-type">

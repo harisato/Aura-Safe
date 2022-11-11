@@ -3,8 +3,8 @@ import { useState } from 'react'
 import ButtonHelper from 'src/components/ButtonHelper'
 import FlexSpacer from 'src/components/FlexSpacer'
 import MultiSendPopup from 'src/components/Popup/MultiSendPopup'
-import SendPopup from 'src/components/Popup/SendPopup'
-import SendTxTypePopup from 'src/components/Popup/SendTypePopup'
+import SendPopup from 'src/components/Popup/SendingPopup'
+import SendTxTypePopup from 'src/components/Popup/SendingTypePopup'
 import { getChainInfo, getExplorerInfo } from 'src/config'
 import { THEME_DF } from 'src/services/constant/chainThemes'
 import LockIcon from './assets/Lockicon.svg'
@@ -84,7 +84,8 @@ const SafeHeader = ({
             <CopyToClipboardBtn textToCopy={address} />
             {address && <ExplorerButton explorerUrl={getExplorerInfo(address)} />}
           </IconContainer>
-          <StyledButton size="md" disabled={!granted} onClick={() => onNewTransactionClick()}>
+          {/* <StyledButton size="md" disabled={!granted} onClick={() => onNewTransactionClick()}> */}
+          <StyledButton size="md" disabled={!granted} onClick={() => setSendTxTypePopupOpen(true)}>
             <FixedIcon type="arrowSentWhite" />
             <Text size="lg" color="white">
               New transaction

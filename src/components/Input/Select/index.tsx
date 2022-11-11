@@ -32,6 +32,7 @@ const useStyles = makeStyles(() => ({
       padding: '14px 52px 14px 16px',
       fontSize: 14,
       lineHeight: '20px',
+      color: '#fff',
     },
   },
   select: {
@@ -119,7 +120,7 @@ const Select = ({
         displayEmpty
         renderValue={(value) => {
           if (value === '') {
-            return placeholder ? placeholder : 'Select'
+            return <div style={{ color: '#98989B' }}>{placeholder ? placeholder : 'Select'}</div>
           }
           if (customRenderer) {
             return customRenderer(value)

@@ -28,7 +28,7 @@ import {
 import { getShortName } from 'src/config'
 import { setChainId } from 'src/logic/config/utils'
 import { switchNetworkWithUrl } from 'src/utils/history'
-import { isDeeplinkedTx } from './safe/components/Transactions/TxList/utils'
+import { isDeeplinkedTx } from '../utils/transactionUtils'
 import { useAddressedRouteKey } from './safe/container/hooks/useAddressedRouteKey'
 
 const Welcome = React.lazy(() => import('./welcome/Welcome'))

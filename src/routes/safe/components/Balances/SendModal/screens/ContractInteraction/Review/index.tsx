@@ -18,7 +18,7 @@ import { styles } from 'src/routes/safe/components/Balances/SendModal/screens/Co
 import { setImageToPlaceholder } from 'src/routes/safe/components/Balances/utils'
 import { createTransaction } from 'src/logic/safe/store/actions/createTransaction'
 import { TxParameters } from 'src/routes/safe/container/hooks/useTransactionParameters'
-import { TxParametersDetail } from 'src/routes/safe/components/Transactions/helpers/TxParametersDetail'
+import { TxParametersDetail } from 'src/utils/transactionHelpers/TxParametersDetail'
 import {
   generateFormFieldKey,
   getValueFromTxInputs,
@@ -29,7 +29,7 @@ import { useEstimationStatus } from 'src/logic/hooks/useEstimationStatus'
 import { Modal } from 'src/components/Modal'
 import { ButtonStatus } from 'src/components/Modal/type'
 import { ReviewInfoText } from 'src/components/ReviewInfoText'
-import { EditableTxParameters } from 'src/routes/safe/components/Transactions/helpers/EditableTxParameters'
+import { EditableTxParameters } from 'src/utils/transactionHelpers/EditableTxParameters'
 import { ModalHeader } from 'src/routes/safe/components/Balances/SendModal/screens/ModalHeader'
 import { extractSafeAddress } from 'src/routes/routes'
 import ExecuteCheckbox from 'src/components/ExecuteCheckbox'

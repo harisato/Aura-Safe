@@ -3,7 +3,7 @@ import { ReactElement, Fragment } from 'react'
 
 import { InfiniteScroll, INFINITE_SCROLL_CONTAINER } from 'src/components/InfiniteScroll'
 import Img from 'src/components/layout/Img'
-import { usePagedHistoryTransactions } from 'src/routes/safe/components/Transactions/TxList/hooks/usePagedHistoryTransactions'
+import { usePagedHistoryTransactions } from 'src/utils/transactionHooks/usePagedHistoryTransactions'
 import { formatWithSchema } from 'src/utils/date'
 import NoTransactionsImage from 'src/assets/icons/no-transactions.svg'
 import { Centered, HorizontallyCentered, NoTransactions, ScrollableTransactionsContainer, SubTitle } from '../styled'

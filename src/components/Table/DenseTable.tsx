@@ -18,7 +18,6 @@ export const StyledTableCell = withStyles((theme) => ({
     fontSize: 12,
     fontWeight: 590,
     padding: 8,
-    letterSpacing: 0,
     lineHeight: 1,
   },
   body: {

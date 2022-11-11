@@ -55,7 +55,7 @@ type DetailedExecutionInfoExtended = {
 }
 
 export const fetchTransactionDetailsById =
-  ({ transactionId, auraTxId }: { transactionId: string; auraTxId?: string }) =>
+  ({ transactionId, auraTxId }: { transactionId?: string; auraTxId?: string }) =>
   async (dispatch: Dispatch, getState: () => AppReduxState): Promise<Transaction['txDetails']> => {
     const transaction = getTransactionByAttribute(getState(), {
       attributeValue: transactionId,
@@ -64,12 +64,12 @@ export const fetchTransactionDetailsById =
     const safeAddress = extractSafeAddress()
     const chainId = currentChainId(getState())
     const internalChainId = getInternalChainId()
-    if (transaction?.txDetails || !safeAddress || !transactionId) {
+    if (transaction?.txDetails || !safeAddress) {
       return
     }
 
     try {
-      const { Data, ErrorCode } = await getTxDetailById(transactionId, safeAddress, auraTxId)
+      const { Data, ErrorCode } = await getTxDetailById(safeAddress, transactionId, auraTxId)
       if (ErrorCode !== MESSAGES_CODE.SUCCESSFUL.ErrorCode) {
         return
       }
@@ -95,8 +95,8 @@ export const fetchTransactionDetailsById =
         createAt: Data.CreatedAt ? new Date(Data.CreatedAt).getTime() : null,
         txStatus: (Data.Status == '0' ? TransactionStatus.SUCCESS : Data.Status) as TransactionStatus,
         txMessage: Data?.Messages?.length ? Data?.Messages : [],
-        fee: Data?.Fee || 0,
-        gas: Data?.Gas || 0,
+        fee: Data?.Fee.toString() || 0,
+        gas: Data?.Gas.toString() || 0,
         txHash: Data?.TxHash || null,
         confirmationsRequired: Data.ConfirmationsRequired,
         confirmations: Data?.Confirmations.map(
