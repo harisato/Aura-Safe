@@ -88,41 +88,41 @@ export default function CreateTxPopup({
     setGasPriceFormatted(gasFee)
     setOpenGasInput(!openGasInput)
   }
-
-  const signTransaction = async () => {
-    setDisabled(true)
-    const chainId = chainInfo.chainId
-    const _sendFee = calcFee(manualGasLimit)
-    const Msg: MsgSendEncodeObject['value'] = {
-      amount: coins(+amount * 10 ** +(selectedToken?.decimals || 6), selectedToken?.symbol || denom),
-      fromAddress: safeAddress,
-      toAddress: recipient?.address,
-    }
-    try {
-      dispatch(enqueueSnackbar(enhanceSnackbarForAction(NOTIFICATIONS.SIGN_TX_MSG)))
-      const signResult = await createMessage(chainId, safeAddress, MsgTypeUrl.Send, Msg, _sendFee)
-      if (!signResult) throw new Error()
-      const signatures = toBase64(signResult.signatures[0])
-      const bodyBytes = toBase64(signResult.bodyBytes)
-      const authInfoBytes = toBase64(signResult.authInfoBytes)
-      const data: ICreateSafeTransaction = {
-        internalChainId: getInternalChainId(),
-        creatorAddress: userWalletAddress,
-        signature: signatures,
-        bodyBytes: bodyBytes,
-        authInfoBytes: authInfoBytes,
-        from: safeAddress,
-        accountNumber: signResult.accountNumber,
-        sequence: signResult.sequence,
-      }
-      createTxFromApi(data)
-    } catch (error) {
-      setDisabled(false)
-      console.error(error)
-      dispatch(enqueueSnackbar(enhanceSnackbarForAction(NOTIFICATIONS.TX_REJECTED_MSG)))
-      handleClose()
-    }
+console.log(selectedToken)
+const signTransaction = async () => {
+  setDisabled(true)
+  const chainId = chainInfo.chainId
+  const _sendFee = calcFee(manualGasLimit)
+  const Msg: MsgSendEncodeObject['value'] = {
+    amount: coins(+amount * 10 ** +(selectedToken?.decimals || 6), denom),
+    fromAddress: safeAddress,
+    toAddress: recipient?.address,
   }
+  try {
+    dispatch(enqueueSnackbar(enhanceSnackbarForAction(NOTIFICATIONS.SIGN_TX_MSG)))
+    const signResult = await createMessage(chainId, safeAddress, MsgTypeUrl.Send, Msg, _sendFee)
+    if (!signResult) throw new Error()
+    const signatures = toBase64(signResult.signatures[0])
+    const bodyBytes = toBase64(signResult.bodyBytes)
+    const authInfoBytes = toBase64(signResult.authInfoBytes)
+    const data: ICreateSafeTransaction = {
+      internalChainId: getInternalChainId(),
+      creatorAddress: userWalletAddress,
+      signature: signatures,
+      bodyBytes: bodyBytes,
+      authInfoBytes: authInfoBytes,
+      from: safeAddress,
+      accountNumber: signResult.accountNumber,
+      sequence: signResult.sequence,
+    }
+    createTxFromApi(data)
+  } catch (error) {
+    setDisabled(false)
+    console.error(error)
+    dispatch(enqueueSnackbar(enhanceSnackbarForAction(NOTIFICATIONS.TX_REJECTED_MSG)))
+    handleClose()
+  }
+}
 
   const createTxFromApi = async (data: any) => {
     try {
