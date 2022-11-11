@@ -41,6 +41,18 @@ export const HeaderWrapper = styled.div`
 `
 export const BodyWrapper = styled.div`
   padding: 24px;
+  .balance-amount {
+    display: flex;
+    flex-direction: column;
+    align-items: end;
+    margin-top: 16px;
+    > p {
+      margin: 6px 0px 0px;
+    }
+    .value {
+      font-weight: 600;
+    }
+  }
   .token-selection {
     width: 50%;
   }

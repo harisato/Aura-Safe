@@ -22,8 +22,9 @@ import { isValidAddress } from 'src/utils/isValidAddress'
 import { currentChainId } from 'src/logic/config/store/selectors'
 import TokenSelect from 'src/components/Input/Token'
 import TextArea from 'src/components/Input/TextArea'
-import { formatNumber } from 'src/utils'
+import { formatNativeCurrency, formatNumber } from 'src/utils'
 import DenseTable, { StyledTableCell, StyledTableRow } from 'src/components/Table/DenseTable'
+import { currentSafeWithNames } from 'src/logic/safe/store/selectors'
 
 export type RecipientProps = {
   amount: string
@@ -41,12 +42,21 @@ const SendingPopup = ({ open, onClose }: SendFundsProps): ReactElement => {
   const nativeCurrency = getNativeCurrency()
   const chainId = useSelector(currentChainId)
   const [createTxPopupOpen, setCreateTxPopupOpen] = useState(false)
+
   const [amount, setAmount] = useState('')
   const [recipient, setRecipient] = useState<RecipientProps[]>([])
   const [addressValidateMsg, setAddressValidateMsg] = useState('')
   const [amountValidateMsg, setAmountValidateMsg] = useState('')
   const [selectedToken, setSelectedToken] = useState('')
   const [rawRecipient, setRawRecipient] = useState('')
+  const [totalAmount, setTotalAmount] = useState(0)
+  const [balance, setBalance] = useState(0)
+
+  useEffect(() => {
+    const bl = tokens.find((token) => token.address == selectedToken)?.balance?.tokenBalance || 0
+    setBalance(+bl)
+  }, [selectedToken])
+
   const handleClose = () => {
     setRecipient([])
     setAmount('')
@@ -61,6 +71,7 @@ const SendingPopup = ({ open, onClose }: SendFundsProps): ReactElement => {
       return
     }
     const newRecipient: RecipientProps[] = []
+    let newTotalAmount = 0
     const rawRecipientLine = rawRecipient.split('\n')
     for (const recipientLine of rawRecipientLine) {
       const [addr, am] = recipientLine.split(',')
@@ -69,10 +80,11 @@ const SendingPopup = ({ open, onClose }: SendFundsProps): ReactElement => {
       const amount = am?.trim()
       if (isValidAddress(address) && !isNaN(+amount) && amount != '') {
         newRecipient.push({ address: address, amount: formatNumber(amount) })
+        newTotalAmount += +formatNumber(amount)
       }
     }
     setRecipient(newRecipient)
-    console.log(newRecipient)
+    setTotalAmount(newTotalAmount)
   }, [rawRecipient])
 
   const createTx = () => {
@@ -115,6 +127,21 @@ const SendingPopup = ({ open, onClose }: SendFundsProps): ReactElement => {
                     )
                   })}
                 </DenseTable>
+              </>
+            ) : null}
+            {totalAmount && balance ? (
+              <>
+                <div className="balance-amount">
+                  <p>
+                    Total: <span className="value">{formatNativeCurrency(totalAmount)}</span>
+                  </p>
+                  <p>
+                    Balance: <span className="value">{formatNativeCurrency(balance)}</span>
+                  </p>
+                  {totalAmount > +balance && (
+                    <p className="error-msg">Total amount is greater than available balance.</p>
+                  )}
+                </div>
               </>
             ) : null}
           </BodyWrapper>
