@@ -46,7 +46,7 @@ export default function Execute({ open, onClose, data, sendTx, rejectTx, disable
     const denom = getCoinMinimalDenom()
     const sendFee = {
       amount: coins(data?.txDetails?.fee, denom),
-      gas: data?.txDetails?.gas,
+      gas: data?.txDetails?.gas.toString(),
     }
 
     const Data: any = {
