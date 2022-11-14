@@ -1,12 +1,13 @@
-import { SignerData, SigningStargateClient, StdFee } from '@cosmjs/stargate'
+import { SequenceResponse, SignerData, SigningStargateClient, StdFee } from '@cosmjs/stargate'
 import { KeplrIntereactionOptions } from '@keplr-wallet/types'
 import _ from 'lodash'
-import { getChainInfo } from 'src/config'
+import { getChainInfo, getInternalChainId } from 'src/config'
 import { MsgTypeUrl } from 'src/logic/providers/constants/constant'
 import { Vote } from 'src/logic/providers/utils/message'
 import { getProvider } from 'src/logic/providers/utils/wallets'
 import { WALLETS_NAME } from 'src/logic/wallets/constant/wallets'
 import { loadLastUsedProvider } from 'src/logic/wallets/store/middlewares/providerWatcher'
+import { getAccountOnChain } from 'src/services'
 
 const getDefaultOptions = (): KeplrIntereactionOptions => ({
   sign: {
@@ -44,7 +45,8 @@ const signMessage = async (
     const account = await signer.getAccounts()
     const client = await SigningStargateClient.offline(signer)
     const onlineClient = await SigningStargateClient.connectWithSigner(chainInfo.rpcUri.value, signer)
-    const onlineData = await onlineClient.getSequence(safeAddress)
+    // const onlineData = await onlineClient.getSequence(safeAddress)
+    const onlineData: SequenceResponse = (await getAccountOnChain(safeAddress, getInternalChainId())).Data
     const signerData: SignerData = {
       accountNumber: onlineData.accountNumber,
       sequence: onlineData.sequence,
@@ -55,10 +57,9 @@ const signMessage = async (
       return undefined
     }
 
-    const respone =
-      typeUrl == MsgTypeUrl.GetReward
-        ? await client.sign(signerAddress, messages, fee, memo || '', signerData)
-        : await client.sign(signerAddress, [{ typeUrl, value: messages }], fee, memo || '', signerData)
+    const respone = messages?.[0]?.typeUrl
+      ? await client.sign(signerAddress, messages, fee, memo || '', signerData)
+      : await client.sign(signerAddress, [{ typeUrl, value: messages }], fee, memo || '', signerData)
     return { ...respone, accountNumber: onlineData.accountNumber, sequence: onlineData.sequence }
   }
   return undefined

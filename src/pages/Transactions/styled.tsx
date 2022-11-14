@@ -376,7 +376,14 @@ export const TxDetailsContainer = styled.div<{ ownerRows?: number }>`
   grid-auto-rows: minmax(min-content, max-content);
   grid-template-rows: [tx-summary] minmax(min-content, max-content) [tx-details] minmax(min-content, 1fr);
   width: 100%;
-
+  .recipient {
+    display: flex;
+    align-items: center;
+    margin: 0 !important;
+    > p {
+      margin: 0px 4px 0px;
+    }
+  }
   & > div {
     background-color: #0e0e0f;
     line-break: anywhere;
@@ -573,6 +580,13 @@ export const NoTransactions = styled.div`
 export const ReviewTxPopupWrapper = styled.div`
   padding: 24px;
   width: 482px;
+  .recipient {
+    display: flex;
+    align-items: center;
+    > span {
+      margin: 0px 8px;
+    }
+  }
   .proposal-title {
     font-weight: 600;
     margin: 0;

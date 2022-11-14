@@ -26,7 +26,14 @@ const Wrapper = styled(PrefixedEthHashInfo)`
     flex-direction: ${(props) => (props.showHash ? 'column' : 'row')};
   }
 `
-export default function AddressInfo({ address, name, avatarUrl, ...rest }: Props): ReactElement | null {
+export default function AddressInfo({
+  address,
+  name,
+  showAvatar = true,
+  showName = true,
+  avatarUrl,
+  ...rest
+}: Props): ReactElement | null {
   const toInfo = useKnownAddress({ value: address, name: name || null, logoUri: avatarUrl || null })
   const validatorsData = useSelector(allValidator)
   const addressDetail = validatorsData.find((validator: ValidatorType) => validator.operatorAddress == address)
@@ -38,8 +45,8 @@ export default function AddressInfo({ address, name, avatarUrl, ...rest }: Props
     <Wrapper
       hash={address}
       showHash={!addressDetail}
-      name={addressDetail ? addressDetail.name : toInfo.name || undefined}
-      showAvatar
+      name={showName ? (addressDetail ? addressDetail.name : toInfo.name || undefined) : undefined}
+      showAvatar={showAvatar}
       customAvatar={addressDetail?.picture || toInfo.logoUri || undefined}
       showCopyBtn={!addressDetail}
       explorerUrl={getExplorerInfo(addressDetail?.operatorAddress || address)}

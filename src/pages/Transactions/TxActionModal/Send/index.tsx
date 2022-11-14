@@ -13,12 +13,11 @@ import { createMessage } from 'src/logic/providers/signing'
 import { currentSafeWithNames } from 'src/logic/safe/store/selectors'
 import { extractSafeAddress } from 'src/routes/routes'
 import { DEFAULT_GAS_LIMIT } from 'src/services/constant/common'
-import { calcFee, formatNativeCurrency } from 'src/utils'
+import { calcFee, formatNativeCurrency, formatNativeToken } from 'src/utils'
 import AddressInfo from 'src/components/AddressInfo'
 import { TxSignModalContext } from '../../Queue'
 import { ReviewTxPopupWrapper } from '../../styled'
-import Amount from '../Amount'
-import TotalAllocationAmount from '../TotalAllocationAmount'
+import Amount from 'src/components/TxComponents/Amount'
 import { toBase64 } from '@cosmjs/encoding'
 import { ICreateSafeTransaction } from 'src/types/transaction'
 import { userAccountSelector } from 'src/logic/wallets/store/selectors'
@@ -93,10 +92,11 @@ export default function Execute({ open, onClose, data, sendTx, rejectTx, disable
           <p className="label">Recipient</p>
           <AddressInfo address={data?.txDetails?.txMessage[0]?.toAddress} />
           <Gap height={24} />
-          <Amount amount={data?.txDetails?.txMessage[0]?.amount} />
+          <Amount amount={formatNativeToken(data?.txDetails?.txMessage[0]?.amount)} />
           <Divider />
-          <TotalAllocationAmount
-            totalAmount={(+data?.txDetails?.txMessage[0]?.amount || 0) + (+data.txDetails?.fee || 0)}
+          <Amount
+            label="Total Allocation Amount"
+            amount={formatNativeToken((+data?.txDetails?.txMessage[0]?.amount || 0) + (+data.txDetails?.fee || 0))}
           />
           <div className="notice">{noti}</div>
         </ReviewTxPopupWrapper>

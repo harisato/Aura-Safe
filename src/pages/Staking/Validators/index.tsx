@@ -23,6 +23,7 @@ const useStyles = makeStyles({
   root: {
     backgroundColor: 'transparent',
     marginTop: 10,
+    marginBottom: 30,
     boxShadow: 'none',
     width: 330,
   },

@@ -1,30 +1,23 @@
-import { ReactElement, useEffect, useState, useRef } from 'react'
+import { ReactElement, useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 
 import { getNativeCurrency } from 'src/config'
 import { currentNetworkAddressBook } from 'src/logic/addressBook/store/selectors'
-import { SpendingLimit } from 'src/logic/safe/store/models/safe'
 
 import { extendedSafeTokensSelector } from 'src/routes/safe/container/selector'
 
-import { LinkButton, OutlinedButton, TextButton } from 'src/components/Button'
-import Divider from 'src/components/Divider'
-import AddressInput from 'src/components/Input/Address'
-import TextField from 'src/components/Input/TextField'
+import { OutlinedButton, TextButton } from 'src/components/Button'
+import Gap from 'src/components/Gap'
+import TextArea from 'src/components/Input/TextArea'
+import TokenSelect from 'src/components/Input/Token'
+import DenseTable, { StyledTableCell, StyledTableRow } from 'src/components/Table/DenseTable'
+import { currentChainId } from 'src/logic/config/store/selectors'
+import { formatNativeCurrency, formatNumber } from 'src/utils'
+import { isValidAddress } from 'src/utils/isValidAddress'
 import { Popup } from '..'
 import Header from '../Header'
-import CreateTxPopup from './CreateTxPopup'
 import { BodyWrapper, Footer, PopupWrapper } from './styles'
-import Gap from 'src/components/Gap'
-import AddressInfo from 'src/components/AddressInfo'
-import { AddressBookEntry } from 'src/logic/addressBook/model/addressBook'
-import { isValidAddress } from 'src/utils/isValidAddress'
-import { currentChainId } from 'src/logic/config/store/selectors'
-import TokenSelect from 'src/components/Input/Token'
-import TextArea from 'src/components/Input/TextArea'
-import { formatNativeCurrency, formatNumber } from 'src/utils'
-import DenseTable, { StyledTableCell, StyledTableRow } from 'src/components/Table/DenseTable'
-import { currentSafeWithNames } from 'src/logic/safe/store/selectors'
+import CreateTxPopup from './CreateTxPopup'
 
 export type RecipientProps = {
   amount: string
@@ -38,14 +31,12 @@ type SendFundsProps = {
 
 const SendingPopup = ({ open, onClose }: SendFundsProps): ReactElement => {
   const tokens = useSelector(extendedSafeTokensSelector)
-  const addressBook = useSelector(currentNetworkAddressBook)
-  const nativeCurrency = getNativeCurrency()
-  const chainId = useSelector(currentChainId)
   const [createTxPopupOpen, setCreateTxPopupOpen] = useState(false)
 
-  const [amount, setAmount] = useState('')
   const [recipient, setRecipient] = useState<RecipientProps[]>([])
-  const [addressValidateMsg, setAddressValidateMsg] = useState('')
+  const [errorLine, setErrorLine] = useState<number[]>([])
+  const [addressValidateErrorMsg, setAddressValidateErrorMsg] = useState('')
+  const [addressValidateSuccessMsg, setAddressValidateSuccessMsg] = useState('')
   const [amountValidateMsg, setAmountValidateMsg] = useState('')
   const [selectedToken, setSelectedToken] = useState('')
   const [rawRecipient, setRawRecipient] = useState('')
@@ -57,34 +48,75 @@ const SendingPopup = ({ open, onClose }: SendFundsProps): ReactElement => {
     setBalance(+bl)
   }, [selectedToken])
 
-  const handleClose = () => {
+  const clearData = () => {
     setRecipient([])
-    setAmount('')
-    setSelectedToken('')
-    setAddressValidateMsg('')
+    setErrorLine([])
+    setAddressValidateErrorMsg('')
+    setAddressValidateSuccessMsg('')
+    setRawRecipient('')
     setAmountValidateMsg('')
     setCreateTxPopupOpen(false)
+    setTotalAmount(0)
+    setBalance(0)
+  }
+  const handleClose = () => {
+    onClose()
+    setSelectedToken('')
+    clearData()
   }
 
-  useEffect(() => {
+  const validateRecipient = () => {
     if (!rawRecipient) {
+      clearData()
       return
     }
     const newRecipient: RecipientProps[] = []
+    const newErrorLine: number[] = []
     let newTotalAmount = 0
     const rawRecipientLine = rawRecipient.split('\n')
-    for (const recipientLine of rawRecipientLine) {
+    for (let i = 0; i < rawRecipientLine.length; i++) {
+      const recipientLine = rawRecipientLine[i]
       const [addr, am] = recipientLine.split(',')
-      if (!addr || !am) break
       const address = addr?.trim()
       const amount = am?.trim()
-      if (isValidAddress(address) && !isNaN(+amount) && amount != '') {
+      // const alreadyAdd = newRecipient.find((r) => r.address == address)
+      if (isValidAddress(address) && !isNaN(+amount) && amount != '' && +amount > 0) {
         newRecipient.push({ address: address, amount: formatNumber(amount) })
         newTotalAmount += +formatNumber(amount)
+      } else {
+        newRecipient.push({ address: address || '', amount: formatNumber(amount) || '' })
+        newErrorLine.push(i)
       }
     }
+    if (newErrorLine.length > 0) {
+      setAddressValidateErrorMsg(
+        `Errors found on line ${newErrorLine.map((e) => e + 1).join(', ')}. Please check and try again.`,
+      )
+      setAddressValidateSuccessMsg('')
+    } else {
+      setAddressValidateErrorMsg('')
+      setAddressValidateSuccessMsg('All recipients Validated successfully')
+    }
+    setErrorLine(newErrorLine)
     setRecipient(newRecipient)
     setTotalAmount(newTotalAmount)
+  }
+
+  useEffect(() => {
+    if (balance && totalAmount && +totalAmount > +balance) {
+      setAmountValidateMsg('Total amount is greater than available balance. Please check and try agian.')
+    } else {
+      setAmountValidateMsg('')
+    }
+  }, [totalAmount])
+
+  useEffect(() => {
+    if (addressValidateSuccessMsg) {
+      setAddressValidateSuccessMsg('')
+    }
+    if (addressValidateErrorMsg) {
+      setAddressValidateErrorMsg('')
+    }
   }, [rawRecipient])
 
   const createTx = () => {
@@ -95,29 +127,31 @@ const SendingPopup = ({ open, onClose }: SendFundsProps): ReactElement => {
     <>
       <Popup open={open} title="Send Popup">
         <PopupWrapper>
-          <Header
-            onClose={() => {
-              onClose()
-              handleClose()
-            }}
-            subTitle="Step 1 of 2"
-            title="Multi-send"
-          />
+          <Header onClose={handleClose} subTitle="Step 1 of 2" title="Multi-send" />
           <BodyWrapper>
             <div className="token-selection">
               <TokenSelect selectedToken={selectedToken} setSelectedToken={setSelectedToken} />
             </div>
             <Gap height={16} />
             <div className="label">Add recipients & amounts</div>
-            <TextArea value={rawRecipient} onChange={setRawRecipient} />
+            <div className="recipient-input">
+              <TextArea placeholder="Address, amount" value={rawRecipient} onChange={setRawRecipient} />
+              <div>
+                <OutlinedButton size="md" onClick={validateRecipient}>
+                  Validate
+                </OutlinedButton>
+                {addressValidateErrorMsg && <p className="error-msg">{addressValidateErrorMsg}</p>}
+                {addressValidateSuccessMsg && <p className="success-msg">{addressValidateSuccessMsg}</p>}
+              </div>
+            </div>
             <Gap height={16} />
             {recipient.length ? (
               <>
                 <div className="label">Recipients list</div>
-                <DenseTable headers={['No.', 'Address', 'Amount']}>
+                <DenseTable stickyHeader maxHeight="30vh" headers={['No.', 'Address', 'Amount']}>
                   {recipient.map((row, index) => {
                     return (
-                      <StyledTableRow key={index}>
+                      <StyledTableRow key={index} className={errorLine.includes(index) ? 'error' : ''}>
                         <StyledTableCell component="th" scope="row">
                           {index + 1}
                         </StyledTableCell>
@@ -138,25 +172,23 @@ const SendingPopup = ({ open, onClose }: SendFundsProps): ReactElement => {
                   <p>
                     Balance: <span className="value">{formatNativeCurrency(balance)}</span>
                   </p>
-                  {totalAmount > +balance && (
-                    <p className="error-msg">Total amount is greater than available balance.</p>
-                  )}
+                  {amountValidateMsg && <p className="error-msg">{amountValidateMsg}</p>}
                 </div>
               </>
             ) : null}
           </BodyWrapper>
           <Footer>
-            <TextButton
-              size="md"
-              onClick={() => {
-                onClose()
-                handleClose()
-              }}
-            >
+            <TextButton size="md" onClick={handleClose}>
               Cancel
             </TextButton>
             <OutlinedButton
-              disabled={!selectedToken || !amount || !recipient || !!addressValidateMsg || !!amountValidateMsg}
+              disabled={
+                !selectedToken ||
+                !recipient ||
+                !!addressValidateErrorMsg ||
+                !!amountValidateMsg ||
+                !addressValidateSuccessMsg
+              }
               size="md"
               onClick={createTx}
             >
@@ -165,13 +197,12 @@ const SendingPopup = ({ open, onClose }: SendFundsProps): ReactElement => {
           </Footer>
         </PopupWrapper>
       </Popup>
-      {/* <CreateTxPopup
+      <CreateTxPopup
         recipient={recipient}
         selectedToken={tokens.find((t) => t.address == selectedToken)}
-        amount={amount}
         open={createTxPopupOpen}
         handleClose={handleClose}
-      /> */}
+      />
     </>
   )
 }

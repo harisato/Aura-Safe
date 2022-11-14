@@ -4,7 +4,6 @@ import { getChainInfo, getInternalChainId, getShortName } from 'src/config'
 import { enhanceSnackbarForAction, NOTIFICATIONS } from 'src/logic/notifications'
 import enqueueSnackbar from 'src/logic/notifications/store/actions/enqueueSnackbar'
 import { MsgTypeUrl } from 'src/logic/providers/constants/constant'
-import { fetchTransactionDetailsById } from 'src/logic/safe/store/actions/fetchTransactionDetails'
 import fetchTransactions from 'src/logic/safe/store/actions/transactions/fetchTransactions'
 import { txTransactions } from 'src/logic/safe/store/selectors/gatewayTransactions'
 import { userAccountSelector } from 'src/logic/wallets/store/selectors'
@@ -13,6 +12,7 @@ import { confirmSafeTransaction, rejectTransactionById, sendSafeTransaction } fr
 import { TxSignModalContext } from '../Queue'
 import ClaimRewardPopup from './ClaimReward'
 import DelegatePopup from './Delegate'
+import MultiSendPopup from './MultiSend'
 import RedelegatePopup from './Redelegate'
 import SendPopup from './Send'
 import UndelegatePopup from './Undelegate'
@@ -27,7 +27,6 @@ export default function TxActionModal() {
   const userWalletAddress = useSelector(userAccountSelector)
   const dispatch = useDispatch()
   const safeAddress = extractSafeAddress()
-
   const confirmTxFromApi = async (data: any, chainId: any, safeAddress: any) => {
     const { ErrorCode } = await confirmSafeTransaction(data)
     if (ErrorCode === 'SUCCESSFUL') {
@@ -146,7 +145,7 @@ export default function TxActionModal() {
   }
   if (type == MsgTypeUrl.MultiSend) {
     return (
-      <SendPopup
+      <MultiSendPopup
         open={open}
         onClose={() => setOpen(false)}
         data={txData}

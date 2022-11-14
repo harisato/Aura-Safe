@@ -113,9 +113,11 @@ export default function Delegate({ validator, amount, onClose, createTxFromApi }
         <Divider withArrow />
         <p className="label">Validator</p>
         <AddressInfo address={validator.safeStaking} name={validator.name} avatarUrl={validator.avatar} />
-        <div className="balance">
-          Staked Amount: <strong>{formatNativeToken(stakedAmount)}</strong>
-        </div>
+        {stakedAmount && (
+          <div className="balance">
+            Staked Amount: <strong>{formatNativeToken(stakedAmount)}</strong>
+          </div>
+        )}
         <Gap height={24} />
         <Amount amount={amount} />
         <Divider />

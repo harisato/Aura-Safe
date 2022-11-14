@@ -20,8 +20,24 @@ const StyledTextArea = styled.textarea`
     border: 1px solid transparent;
   }
 `
-export default function TextArea({ value, onChange, rows = 5 }: { value: string; onChange: any; rows?: number }) {
+export default function TextArea({
+  value,
+  onChange,
+  rows = 5,
+  placeholder,
+}: {
+  value: string
+  onChange: any
+  rows?: number
+  placeholder?: string
+}) {
   return (
-    <StyledTextArea spellCheck={false} rows={rows} value={value} onChange={(event) => onChange(event.target.value)} />
+    <StyledTextArea
+      placeholder={placeholder}
+      spellCheck={false}
+      rows={rows}
+      value={value}
+      onChange={(event) => onChange(event.target.value)}
+    />
   )
 }
