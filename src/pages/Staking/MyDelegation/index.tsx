@@ -65,8 +65,8 @@ export default function MyDelegation(props): ReactElement {
           <div></div>
         )}
       </div>
-      <div className="staked-validator">
-        {validatorOfUser && validatorOfUser?.length > 0 && (
+      {validatorOfUser && validatorOfUser?.length > 0 && (
+        <div className="staked-validator">
           <DenseTable headers={['NAME', 'AMOUNT STAKED', 'PENDING REWARD', '']}>
             {data?.map((row, index) => (
               <StyledTableRow key={index}>
@@ -92,8 +92,8 @@ export default function MyDelegation(props): ReactElement {
               </StyledTableRow>
             ))}
           </DenseTable>
-        )}
-      </div>
+        </div>
+      )}
     </Wrapper>
   )
 }

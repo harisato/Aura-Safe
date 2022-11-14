@@ -1,10 +1,14 @@
-import TextField from 'src/components/Input/TextField'
-import { useState } from 'react'
+import { Icon } from '@aura/safe-react-components'
+import { toBase64 } from '@cosmjs/encoding'
+import { AminoMsgMultiSend, coins } from '@cosmjs/stargate'
+import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import { generatePath } from 'react-router-dom'
 import AddressInfo from 'src/components/AddressInfo'
 import { LinkButton, OutlinedButton, OutlinedNeutralButton } from 'src/components/Button'
 import Divider from 'src/components/Divider'
 import Gap from 'src/components/Gap'
+import TextField from 'src/components/Input/TextField'
 import Amount from 'src/components/TxComponents/Amount'
 import {
   getChainDefaultGas,
@@ -15,11 +19,15 @@ import {
   getInternalChainId,
   getNativeCurrency,
 } from 'src/config'
-import { AddressBookEntry } from 'src/logic/addressBook/model/addressBook'
+import { enhanceSnackbarForAction, ERROR, NOTIFICATIONS } from 'src/logic/notifications'
+import enqueueSnackbar from 'src/logic/notifications/store/actions/enqueueSnackbar'
 import { MsgTypeUrl } from 'src/logic/providers/constants/constant'
+import { createMessage } from 'src/logic/providers/signing'
 import calculateGasFee from 'src/logic/providers/utils/fee'
+import fetchTransactions from 'src/logic/safe/store/actions/transactions/fetchTransactions'
 import { currentSafeWithNames } from 'src/logic/safe/store/selectors'
-import TotalAllocationAmount from 'src/pages/Transactions/TxActionModal/TotalAllocationAmount'
+import { Token } from 'src/logic/tokens/store/model/token'
+import { userAccountSelector } from 'src/logic/wallets/store/selectors'
 import {
   extractSafeAddress,
   extractShortChainName,
@@ -28,37 +36,26 @@ import {
   SAFE_ADDRESS_SLUG,
   SAFE_ROUTES,
 } from 'src/routes/routes'
+import { createSafeTransaction } from 'src/services'
 import { DEFAULT_GAS_LIMIT } from 'src/services/constant/common'
-import { calcFee, formatNativeCurrency, formatNativeToken } from 'src/utils'
-import styled from 'styled-components'
+import { MESSAGES_CODE } from 'src/services/constant/message'
+import { ICreateSafeTransaction } from 'src/types/transaction'
+import { calcFee, formatNativeCurrency, formatNumber } from 'src/utils'
+import { RecipientProps } from '.'
 import { Popup } from '..'
 import Header from '../Header'
 import { Footer, Wrapper } from './styles'
-import { MsgDelegateEncodeObject, coin, MsgSendEncodeObject, coins } from '@cosmjs/stargate'
-import { enhanceSnackbarForAction, ERROR, NOTIFICATIONS } from 'src/logic/notifications'
-import enqueueSnackbar from 'src/logic/notifications/store/actions/enqueueSnackbar'
-import { createMessage } from 'src/logic/providers/signing'
-import { ICreateSafeTransaction } from 'src/types/transaction'
-import { Token } from 'src/logic/tokens/store/model/token'
-import { toBase64 } from '@cosmjs/encoding'
-import { userAccountSelector } from 'src/logic/wallets/store/selectors'
-import { generatePath } from 'react-router-dom'
-import fetchTransactions from 'src/logic/safe/store/actions/transactions/fetchTransactions'
-import { createSafeTransaction } from 'src/services'
-import { MESSAGES_CODE } from 'src/services/constant/message'
 
 export default function CreateTxPopup({
   open,
   handleClose,
   recipient,
   selectedToken,
-  amount,
 }: {
   open: boolean
   handleClose: any
-  recipient?: AddressBookEntry
+  recipient?: RecipientProps[]
   selectedToken?: Token
-  amount: string
 }) {
   const safeAddress = extractSafeAddress()
   const userWalletAddress = useSelector(userAccountSelector)
@@ -80,6 +77,16 @@ export default function CreateTxPopup({
   const [openGasInput, setOpenGasInput] = useState<boolean>(false)
   const [isDisabled, setDisabled] = useState(false)
   const chainInfo = getChainInfo()
+  const [totalAmount, setTotalAmount] = useState(0)
+  useEffect(() => {
+    if (!recipient) return
+    let newTotalAmount = 0
+    for (const recipientLine of recipient) {
+      newTotalAmount += +formatNumber(recipientLine.amount)
+    }
+    setTotalAmount(newTotalAmount)
+  }, [recipient])
+
   const recalculateFee = () => {
     const gasFee =
       manualGasLimit && chainDefaultGasPrice
@@ -93,14 +100,30 @@ export default function CreateTxPopup({
     setDisabled(true)
     const chainId = chainInfo.chainId
     const _sendFee = calcFee(manualGasLimit)
-    const Msg: MsgSendEncodeObject['value'] = {
-      amount: coins(+amount * 10 ** +(selectedToken?.decimals || 6), selectedToken?.symbol || denom),
-      fromAddress: safeAddress,
-      toAddress: recipient?.address,
-    }
+
+    if (!recipient) throw new Error('No recipient found!')
+    const Outputs: AminoMsgMultiSend['value']['outputs'] = recipient.map((r) => ({
+      address: r.address,
+      coins: coins(+r.amount * 10 ** +(selectedToken?.decimals || 6), denom),
+    }))
+    const Msg: any = [
+      {
+        typeUrl: MsgTypeUrl.MultiSend,
+        value: {
+          inputs: [
+            {
+              address: safeAddress,
+              coins: coins(+totalAmount * 10 ** +(selectedToken?.decimals || 6), denom),
+            },
+          ],
+          outputs: Outputs,
+        },
+      },
+    ]
+
     try {
       dispatch(enqueueSnackbar(enhanceSnackbarForAction(NOTIFICATIONS.SIGN_TX_MSG)))
-      const signResult = await createMessage(chainId, safeAddress, MsgTypeUrl.Send, Msg, _sendFee)
+      const signResult = await createMessage(chainId, safeAddress, MsgTypeUrl.MultiSend, Msg, _sendFee)
       if (!signResult) throw new Error()
       const signatures = toBase64(signResult.signatures[0])
       const bodyBytes = toBase64(signResult.bodyBytes)
@@ -171,10 +194,18 @@ export default function CreateTxPopup({
           Balance: <strong>{formatNativeCurrency(balance)}</strong>
         </div>
         <Divider withArrow />
-        <p className="label">Recipient</p>
-        <AddressInfo address={recipient?.address || ''} />
+        <p className="label">Recipients</p>
+        {recipient?.map((recipient, index) => {
+          return (
+            <div className="recipient" key={index}>
+              <div>{`${recipient.amount} ${selectedToken?.symbol}`}</div>
+              <Icon type="arrowRight" size="sm" />
+              <AddressInfo showName={false} showAvatar={false} address={recipient.address} />
+            </div>
+          )
+        })}
         <Gap height={24} />
-        <Amount amount={formatNativeCurrency(amount)} />
+        <Amount label="Total Amount" amount={formatNativeCurrency(totalAmount)} />
         <Divider />
         <div className="tx-fee">
           <p className="title">Transaction fee</p>
@@ -194,7 +225,7 @@ export default function CreateTxPopup({
             </div>
           )}
         </div>
-        <Amount amount={formatNativeCurrency(+amount + +gasPriceFormatted)} />
+        <Amount label="Total Allocation Amount" amount={formatNativeCurrency(+totalAmount + +gasPriceFormatted)} />
         <div className="notice">
           You’re about to create a transaction and will have to confirm it with your currently connected wallet.
         </div>

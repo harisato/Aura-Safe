@@ -39,7 +39,6 @@ export const StyledTableRow = withStyles((theme) => ({
 const useStyles = makeStyles({
   table: {
     minWidth: 700,
-    marginTop: 20,
     borderBottom: '1px solid #363843',
   },
   pagi: {
@@ -54,16 +53,20 @@ function DenseTable({
   headers,
   children,
   showPagination,
+  stickyHeader,
+  maxHeight,
 }: {
   headers: string[]
   children: ReactElement | ReactElement[] | undefined
   showPagination?: boolean
+  stickyHeader?: boolean
+  maxHeight?: number | string
 }): ReactElement {
   const classes = useStyles()
   return (
     <>
-      <TableContainer>
-        <Table className={classes.table} aria-label="customized table">
+      <TableContainer style={maxHeight ? { maxHeight } : {}}>
+        <Table stickyHeader={stickyHeader} className={classes.table} aria-label="customized table">
           {headers.length > 0 && (
             <TableHead>
               <TableRow>

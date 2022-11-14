@@ -22,8 +22,7 @@ import { calcFee, formatNativeToken } from 'src/utils'
 import AddressInfo from 'src/components/AddressInfo'
 import { TxSignModalContext } from '../../Queue'
 import { ReviewTxPopupWrapper } from '../../styled'
-import Amount from '../Amount'
-import TotalAllocationAmount from '../TotalAllocationAmount'
+import Amount from 'src/components/TxComponents/Amount'
 import { toBase64 } from '@cosmjs/encoding'
 
 export default function Execute({ open, onClose, data, sendTx, rejectTx, disabled, setDisabled, confirmTxFromApi }) {
@@ -110,10 +109,11 @@ export default function Execute({ open, onClose, data, sendTx, rejectTx, disable
             </div>
           )}
           <Gap height={24} />
-          <Amount amount={data?.txDetails?.txMessage[0]?.amount} />
+          <Amount amount={formatNativeToken(data?.txDetails?.txMessage[0]?.amount)} />
           <Divider />
-          <TotalAllocationAmount
-            totalAmount={(+data?.txDetails?.txMessage[0]?.amount || 0) + (+data.txDetails?.fee || 0)}
+          <Amount
+            label="Total Allocation Amount"
+            amount={formatNativeToken((+data?.txDetails?.txMessage[0]?.amount || 0) + (+data.txDetails?.fee || 0))}
           />
           <div className="notice">{noti}</div>
         </ReviewTxPopupWrapper>

@@ -39,6 +39,7 @@ export const Wrapper = styled.div`
   .staked-validator {
     background: #24262e;
     padding: 0px 24px 24px;
+    margin-top: 30px;
   }
   .validator-cell {
     display: flex;

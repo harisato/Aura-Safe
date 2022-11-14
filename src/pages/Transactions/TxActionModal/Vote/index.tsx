@@ -15,12 +15,12 @@ import { userAccountSelector } from 'src/logic/wallets/store/selectors'
 import { extractSafeAddress } from 'src/routes/routes'
 import { DEFAULT_GAS_LIMIT } from 'src/services/constant/common'
 import { ICreateSafeTransaction } from 'src/types/transaction'
-import { calcFee } from 'src/utils'
+import { calcFee, formatNativeToken } from 'src/utils'
 import { formatWithSchema } from 'src/utils/date'
 
 import { TxSignModalContext } from '../../Queue'
 import { ReviewTxPopupWrapper } from '../../styled'
-import TotalAllocationAmount from '../TotalAllocationAmount'
+import Amount from 'src/components/TxComponents/Amount'
 
 const voteMapping = {
   1: 'Yes',
@@ -107,7 +107,7 @@ export default function Execute({ open, onClose, data, sendTx, rejectTx, disable
               </p>
             </div>
           </div>
-          <TotalAllocationAmount totalAmount={+data.txDetails?.fee || 0} />
+          <Amount label="Total Allocation Amount" amount={formatNativeToken(+data.txDetails?.fee || 0)} />
           <div className="notice">{noti}</div>
         </ReviewTxPopupWrapper>
         <Footer>

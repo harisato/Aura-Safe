@@ -1,3 +1,4 @@
+import { SequenceResponse } from '@cosmjs/stargate'
 import { ChainInfo, TransferDirection } from '@gnosis.pm/safe-react-gateway-sdk'
 import axios from 'axios'
 import { WalletKey } from 'src/logic/keplr/keplr'
@@ -208,7 +209,7 @@ export function confirmSafeTransaction(payload: any): Promise<IResponse<any>> {
   return axios.post(`${baseUrl}/transaction/confirm`, payload).then((res) => res.data)
 }
 
-export async function getAccountOnChain(safeAddress: string, internalChainId): Promise<IResponse<any>> {
+export async function getAccountOnChain(safeAddress: string, internalChainId): Promise<IResponse<SequenceResponse>> {
   return axios.get(`${baseUrl}/general/get-account-onchain/${safeAddress}/${internalChainId}`).then((res) => res.data)
 }
 

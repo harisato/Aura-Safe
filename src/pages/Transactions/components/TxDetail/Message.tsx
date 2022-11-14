@@ -60,11 +60,22 @@ export default function TxMsg({ tx, txDetail }) {
     )
   }
   if (type == MsgTypeUrl.MultiSend) {
+    const totalAmount = txDetail?.txMessage?.[0]?.outputs?.reduce((total, recipient) => {
+      return total + +recipient?.coins[0]?.amount
+    }, 0)
     return (
       <div className="tx-msg">
         <strong>
-          Send total of <span className="token">{amount}</span> to:
+          Send total of <span className="token">{formatNativeToken(totalAmount)}</span> to:
         </strong>
+        {txDetail?.txMessage[0].outputs.map((recipient, index) => (
+          <div className="recipient" key={index}>
+            <p>
+              <span className="token">{formatNativeToken(recipient?.coins[0]?.amount)}</span> to
+            </p>
+            <AddressInfo showAvatar={false} showName={false} address={recipient.address} />
+          </div>
+        ))}
       </div>
     )
   }

@@ -29,6 +29,7 @@ const BoxCardStakingList = styled.div`
   background: #24262e;
   max-height: 200px;
   overflow: auto;
+  margin-top: 30px;
   > div {
     width: 100%;
   }

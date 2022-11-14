@@ -22,11 +22,13 @@ export const isNumberKeyPress = (event): boolean => {
 
 export const formatNativeToken = (amount) => {
   const nativeCurrency = getNativeCurrency()
-  return `${parseFloat((+amount / 10 ** +nativeCurrency.decimals).toString())} ${nativeCurrency.symbol}`
+  return `${parseFloat((+amount / 10 ** +nativeCurrency.decimals).toFixed(+nativeCurrency.decimals))} ${
+    nativeCurrency.symbol
+  }`
 }
 export const formatNativeCurrency = (amount) => {
   const nativeCurrency = getNativeCurrency()
-  return `${parseFloat((+amount).toString())} ${nativeCurrency.symbol}`
+  return `${parseFloat((+amount).toFixed(+nativeCurrency.decimals))} ${nativeCurrency.symbol}`
 }
 export const calcFee = (gasAmount) => {
   const chainInfo = getChainInfo()
