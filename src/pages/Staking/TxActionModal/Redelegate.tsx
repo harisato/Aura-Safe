@@ -111,14 +111,18 @@ export default function Redelegate({ validator, amount, onClose, createTxFromApi
     <>
       <Wrapper>
         <AddressInfo address={validator.safeStaking} name={validator.name} avatarUrl={validator.avatar} />
-        <div className="balance">
-          Staked Amount: <strong>{formatNativeToken(stakedAmount)}</strong>
-        </div>
+        {stakedAmount && (
+          <div className="balance">
+            Staked Amount: <strong>{formatNativeToken(stakedAmount)}</strong>
+          </div>
+        )}
         <Divider withArrow />
         <AddressInfo address={dstValidator} />
-        <div className="balance">
-          Staked Amount: <strong>{formatNativeToken(dstValidatorStakedAmount)}</strong>
-        </div>
+        {dstValidatorStakedAmount && (
+          <div className="balance">
+            Staked Amount: <strong>{formatNativeToken(dstValidatorStakedAmount)}</strong>
+          </div>
+        )}
         <Gap height={24} />
         <Amount amount={amount} />
         <Divider />
