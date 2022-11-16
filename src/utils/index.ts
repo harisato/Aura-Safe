@@ -3,11 +3,19 @@ import { getChainDefaultGasPrice, getChainInfo, getNativeCurrency } from 'src/co
 import { MChainInfo } from 'src/services'
 import { calculateFee, GasPrice } from '@cosmjs/stargate'
 
+const nativeCurrency = getNativeCurrency()
+
 export const validateFloatNumber = (value: any): boolean => {
   return !isNaN(parseFloat(value)) && isFinite(value)
 }
 export const formatNumber = (value: any): string => {
-  return value == '' || value == 0 ? value : (+value).toString()
+  if (value == '' || value == 0) return value
+  const valueString = String(value)
+  const [integer, fractional] = valueString.split('.')
+  if (!fractional) return value
+  const parsedNumber = [integer, '.', fractional.slice(0, nativeCurrency.decimals || 6)].join('')
+  return String(+parsedNumber)
+  // return value == '' || value == 0 ? value : parseFloat((+value).toFixed(6)).toString()
 }
 export const isNumberKeyPress = (event): boolean => {
   if (event.key == '.') {

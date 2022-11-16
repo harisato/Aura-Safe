@@ -99,7 +99,7 @@ export const fetchTransactionDetailsById =
         gas: Data?.Gas.toString() || 0,
         txHash: Data?.TxHash || null,
         confirmationsRequired: Data.ConfirmationsRequired,
-        confirmations: Data?.Confirmations.map(
+        confirmations: Data?.Confirmations?.map(
           (cf) =>
             ({
               signature: cf.signature,
@@ -118,7 +118,7 @@ export const fetchTransactionDetailsById =
               name: null,
               value: Data.Executor.ownerAddress,
             },
-        rejectors: Data?.Rejectors.map((re) => ({ logoUri: null, name: null, value: re.ownerAddress } as AddressEx)),
+        rejectors: Data?.Rejectors?.map((re) => ({ logoUri: null, name: null, value: re.ownerAddress } as AddressEx)),
         extraDetails,
         autoClaimAmount: Data?.AutoClaimAmount,
       }

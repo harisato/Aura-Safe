@@ -1,8 +1,6 @@
 import { ReactElement, useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 
-import { getNativeCurrency } from 'src/config'
-import { currentNetworkAddressBook } from 'src/logic/addressBook/store/selectors'
 
 import { extendedSafeTokensSelector } from 'src/routes/safe/container/selector'
 
@@ -11,13 +9,12 @@ import Gap from 'src/components/Gap'
 import TextArea from 'src/components/Input/TextArea'
 import TokenSelect from 'src/components/Input/Token'
 import DenseTable, { StyledTableCell, StyledTableRow } from 'src/components/Table/DenseTable'
-import { currentChainId } from 'src/logic/config/store/selectors'
 import { formatNativeCurrency, formatNumber } from 'src/utils'
 import { isValidAddress } from 'src/utils/isValidAddress'
 import { Popup } from '..'
 import Header from '../Header'
-import { BodyWrapper, Footer, PopupWrapper } from './styles'
 import CreateTxPopup from './CreateTxPopup'
+import { BodyWrapper, Footer, PopupWrapper } from './styles'
 
 export type RecipientProps = {
   amount: string

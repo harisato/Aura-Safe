@@ -54,7 +54,7 @@ const RootConsumer = (): React.ReactElement | null => {
         const localItem = local.getItem<ConfigState>(LOCAL_CONFIG_KEY)
 
         if (chainId) {
-          _setChainId(localItem?.chainId || chainId)
+          setChainId(localItem?.chainId || chainId)
         }
 
         if (apiGateway) {

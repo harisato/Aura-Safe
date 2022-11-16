@@ -77,7 +77,7 @@ const SendingPopup = ({ open, onClose }: SendFundsProps): ReactElement => {
   }
 
   const createTx = () => {
-    if (amount == '0' || amount == '') {
+    if (+amount == 0 || amount == '') {
       setAmountValidateMsg('Invalid amount. Please try again.')
       return
     }
@@ -143,7 +143,7 @@ const SendingPopup = ({ open, onClose }: SendFundsProps): ReactElement => {
               <TextField type="number" label="Amount" value={amount} onChange={(value) => setAmount(value)} />
               <LinkButton onClick={setMaxAmount}>Send max</LinkButton>
             </div>
-            {amountValidateMsg && <div className="error-msg">amountValidateMsg</div>}
+            {amountValidateMsg && <div className="error-msg">{amountValidateMsg}</div>}
           </BodyWrapper>
           <Footer>
             <TextButton
