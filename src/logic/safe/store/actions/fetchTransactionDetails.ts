@@ -95,8 +95,8 @@ export const fetchTransactionDetailsById =
         createAt: Data.CreatedAt ? new Date(Data.CreatedAt).getTime() : null,
         txStatus: (Data.Status == '0' ? TransactionStatus.SUCCESS : Data.Status) as TransactionStatus,
         txMessage: Data?.Messages?.length ? Data?.Messages : [],
-        fee: Data?.Fee.toString() || 0,
-        gas: Data?.Gas.toString() || 0,
+        fee: Data?.Fee?.toString() || 0,
+        gas: Data?.Gas?.toString() || 0,
         txHash: Data?.TxHash || null,
         confirmationsRequired: Data.ConfirmationsRequired,
         confirmations: Data?.Confirmations?.map(
