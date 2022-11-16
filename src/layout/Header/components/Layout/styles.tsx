@@ -58,3 +58,11 @@ export const LogoContainer = styled.div`
   justify-content: center;
   gap: 12px;
 `
+export const DevelopBanner = styled.div`
+  color: #868a97;
+  border-radius: 4px;
+  padding: 8px 16px;
+  background: #24262e;
+  margin-left: 8px;
+  font-weight: 500;
+`
