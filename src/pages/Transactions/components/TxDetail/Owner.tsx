@@ -21,6 +21,9 @@ const Text = styled(AuraText)`
 `
 
 export const TxOwners = ({ txDetails }: { txDetails: any }): ReactElement | null => {
+  if (!txDetails.confirmations) {
+    return null
+  }
   const confirmationsNeeded = txDetails.confirmationsRequired - txDetails.confirmations.length
   const CreationNode = (
     <OwnerListItem>

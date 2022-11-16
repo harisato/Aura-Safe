@@ -34,6 +34,7 @@ export const LocalTransactionStatus: Record<string, TransactionStatus> = {
 }
 
 export type Transaction = TransactionSummary & {
+  auraTxId?: string
   txDetails?: any
   txHash?: string
   rejectors?: AddressEx[]

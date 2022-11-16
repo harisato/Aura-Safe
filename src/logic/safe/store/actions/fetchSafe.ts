@@ -187,9 +187,9 @@ export const fetchMSafe =
         dispatchPromises.push(dispatch(fetchMSafeTokens(mSafeInfo)))
       }
 
-      if (isInitialLoad) {
-        dispatchPromises.push(dispatch(fetchTransactions(chainId, safeAddress)))
-      }
+      // if (isInitialLoad) {
+      //   dispatchPromises.push(dispatch(fetchTransactions(chainId, safeAddress)))
+      // }
     }
 
     const owners = buildSafeOwners(remoteSafeInfo?.owners)

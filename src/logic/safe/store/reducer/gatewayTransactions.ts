@@ -57,15 +57,16 @@ export const gatewayTransactionsReducer = handleActions<GatewayTransactionsState
         }
 
         if (isTransactionSummary(value)) {
-          const transaction = (value as any).transaction as TransactionSummary
+          const transaction = (value as any).transaction as Transaction
           const startOfDate = getLocalStartOfDate(transaction.timestamp)
 
           if (typeof newHistory[startOfDate] === 'undefined') {
             newHistory[startOfDate] = []
           }
 
-          const txExist = newHistory[startOfDate].some(({ id }) => sameString(id, transaction.id))
-
+          const txExist = newHistory[startOfDate].some(
+            ({ id, auraTxId }) => sameString(id, transaction.id) || sameString(auraTxId, transaction?.auraTxId),
+          )
           if (!txExist) {
             newHistory[startOfDate].push(transaction)
             // pushing a newer transaction to the existing list messes the transactions order
