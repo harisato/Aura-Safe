@@ -177,7 +177,7 @@ export const fetchMSafe =
       const shouldUpdateTxHistory = txHistoryTag !== safeInfo.txHistoryTag
       const shouldUpdateTxQueued = txQueuedTag !== safeInfo.txQueuedTag
 
-      if (shouldUpdateTxHistory || isRefreshTx) {
+      if (shouldUpdateTxHistory || isRefreshTx || isInitialLoad) {
         dispatchPromises.push(dispatch(fetchTransactions(chainId, safeAddress)))
       } else if (shouldUpdateTxQueued) {
         dispatchPromises.push(dispatch(fetchTransactions(chainId, safeAddress, true)))
