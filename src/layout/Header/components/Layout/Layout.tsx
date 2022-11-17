@@ -11,10 +11,11 @@ import WalletSwitch from 'src/components/WalletSwitch'
 import { useStateHandler } from 'src/logic/hooks/useStateHandler'
 import { shouldSwitchWalletChain } from 'src/logic/wallets/store/selectors'
 import { WELCOME_ROUTE } from 'src/routes/routes'
+import { IS_PRODUCTION } from 'src/utils/constants'
 import SafeLogo from '../../assets/logoAura.svg'
 import NetworkSelector from '../NetworkSelector/NetworkSelector'
 import Provider from '../Provider/Provider'
-import { LogoContainer, styles } from './styles'
+import { LogoContainer, styles, DevelopBanner } from './styles'
 import WalletPopup from './WalletPopup/WalletPopup'
 
 const Layout = (props: any) => {
@@ -39,6 +40,7 @@ const Layout = (props: any) => {
             <Img alt="Aura Safe" height={40} src={SafeLogo} testId="heading-gnosis-logo" />
           </LogoContainer>
         </Link>
+        {!IS_PRODUCTION && <DevelopBanner>Develop Testnet Network</DevelopBanner>}
       </Col>
 
       <Spacer />
