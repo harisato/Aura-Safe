@@ -104,10 +104,7 @@ export default function Execute({ open, onClose, data, sendTx, rejectTx, disable
           <Gap height={24} />
           <Amount amount={formatNativeToken(data?.txDetails?.txMessage[0]?.amount)} />
           <Divider />
-          <Amount
-            label="Total Allocation Amount"
-            amount={formatNativeToken((+data?.txDetails?.txMessage[0]?.amount || 0) + (+data.txDetails?.fee || 0))}
-          />
+          <Amount label="Total Allocation Amount" amount={formatNativeToken(+data.txDetails?.fee || 0)} />
           <div className="notice">{noti}</div>
         </ReviewTxPopupWrapper>
         <Footer>
