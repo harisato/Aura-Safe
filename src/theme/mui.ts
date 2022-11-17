@@ -315,6 +315,7 @@ const theme = createTheme({
         padding: '20px',
         width: '100%',
         letterSpacing: '0.1em',
+        alignItems: 'flex-start',
       },
       message: {
         flexGrow: '1',
@@ -325,21 +326,24 @@ const theme = createTheme({
         '& > span': {
           display: 'flex',
           flexDirection: 'row',
-          alignItems: 'stretch',
+          alignItems: 'flex-start',
           overflowX: 'hidden',
           overflowY: 'auto',
           maxHeight: '160px',
           wordBreak: 'break-word',
           '& > img': {
             display: 'block',
-            marginRight: '13px',
+            margin: '2px 12px 2px 2px',
+            height: '16px',
+            width: '16px',
           },
         },
       },
       action: {
         paddingLeft: '0',
-        '& > button': {
-          color: secondaryText,
+        '& > button svg': {
+          width: '16px',
+          height: '16px',
         },
       },
     },

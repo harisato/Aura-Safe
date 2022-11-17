@@ -39,29 +39,28 @@ import { fetchAllDelegations } from 'src/logic/delegation/store/actions'
 
 const notificationStyles = {
   success: {
-    background: '#56b35a',
+    background: '#49996F',
     '& span, & svg': {
-      color: '#000!important',
+      color: '#fff!important',
     },
   },
   error: {
-    background: '#f44e42',
+    background: '#AF4F4C',
     '& span': {
       color: '#fff',
     },
   },
   warning: {
-    background: '#F5B73C',
+    background: '#BC872A',
     '& span, & svg': {
-      color: '#000!important',
+      color: '#fff!important',
     },
   },
   info: {
-    background: '#151720',
+    background: '#0F82C5',
     '& span': {
       color: '#fff',
     },
-    outline: '1px solid #4c4c4c',
   },
 }
 
