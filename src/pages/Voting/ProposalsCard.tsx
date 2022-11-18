@@ -97,8 +97,8 @@ function ProposalsCard({ handleVote, proposal }: Props): ReactElement {
   const history = useHistory()
 
   const handleDetail = (proposalId) => {
-    const url = getChainInfo().explorer
-    window.open(`${url}/votings/${proposalId}`)
+    const url = getChainInfo() as any
+    window.open(`${url.explorer}/votings/${proposalId}`)
   }
 
   const proposalMostVotedOnName = proposal.tally.mostVotedOn.name
