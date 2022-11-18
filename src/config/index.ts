@@ -112,7 +112,7 @@ export const getDisabledWallets = (): ChainInfo['disabledWallets'] => {
   return getChainInfo().disabledWallets
 }
 
-const getExplorerUriTemplate = (): ChainInfo['blockExplorerUriTemplate'] => {
+export const getExplorerUriTemplate = (): ChainInfo['blockExplorerUriTemplate'] => {
   return getChainInfo().blockExplorerUriTemplate
 }
 

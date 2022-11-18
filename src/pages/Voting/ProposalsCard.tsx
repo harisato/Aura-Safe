@@ -4,7 +4,7 @@ import { useHistory } from 'react-router-dom'
 import Col from 'src/components/layout/Col'
 import StatusCard from 'src/components/StatusCard'
 import VoteBar from 'src/components/Vote'
-import { getExplorerInfo } from 'src/config'
+import { getChainInfo, getExplorerInfo } from 'src/config'
 import { borderLinear } from 'src/theme/variables'
 import { IProposal, VoteMapping } from 'src/types/proposal'
 import { formatDateTimeDivider } from 'src/utils/date'
@@ -97,8 +97,8 @@ function ProposalsCard({ handleVote, proposal }: Props): ReactElement {
   const history = useHistory()
 
   const handleDetail = (proposalId) => {
-    const url = getExplorerInfo(proposalId)
-    window.open(url().url)
+    const url = getChainInfo().explorer
+    window.open(`${url}/votings/${proposalId}`)
   }
 
   const proposalMostVotedOnName = proposal.tally.mostVotedOn.name
