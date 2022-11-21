@@ -13,13 +13,21 @@ import { getAllDelegateOfUser, getAllUnDelegateOfUser, getAllValidator, getDeleg
 import queryString from 'query-string'
 import { extractSafeAddress } from 'src/routes/routes'
 
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { MsgTypeUrl } from 'src/logic/providers/constants/constant'
 import { formatNumber } from 'src/utils'
 import MyDelegation from './MyDelegation'
 import TxActionModal from './TxActionModal'
+import { grantedSelector } from 'src/routes/safe/container/selector'
+import useConnectWallet from 'src/logic/hooks/useConnectWallet'
+import { ConnectWalletModal } from 'src/components/ConnectWalletModal'
+import { loadedSelector } from 'src/logic/wallets/store/selectors'
 
 function Staking(props): ReactElement {
+  const granted = useSelector(grantedSelector)
+  const { connectWalletState, onConnectWalletShow, onConnectWalletHide } = useConnectWallet()
+  const loaded = useSelector(loadedSelector)
+
   const [isOpenDelagate, setIsOpenDelagate] = useState(false)
   const [isOpenReview, setIsOpenReview] = useState(false)
   const [typeStaking, setTypeStaking] = useState('')
@@ -117,6 +125,10 @@ function Staking(props): ReactElement {
   }
 
   const handleManage = async (item) => {
+    if (!loaded) {
+      onConnectWalletShow()
+      return
+    }
     setSelectedAction('manage')
     setIsOpenDelagate(true)
     const dataTemp = {
@@ -131,6 +143,10 @@ function Staking(props): ReactElement {
   }
 
   const handleManageDelegate = async (item) => {
+    if (!loaded) {
+      onConnectWalletShow()
+      return
+    }
     setIsOpenDelagate(true)
     setValidateMsg('')
     setSelectedAction('delegate')
@@ -178,6 +194,10 @@ function Staking(props): ReactElement {
   }
 
   const claimReward = () => {
+    if (!loaded) {
+      onConnectWalletShow()
+      return
+    }
     setIsOpenReview(true)
     setIsOpenDelagate(false)
     setTypeStaking(MsgTypeUrl.GetReward)
@@ -206,6 +226,7 @@ function Staking(props): ReactElement {
           </Breadcrumb>
         </Col>
       </Menu>
+
       <MyDelegation
         handleModal={handleManage}
         availableBalance={availableBalance}
@@ -215,6 +236,7 @@ function Staking(props): ReactElement {
         claimReward={claimReward}
         nativeCurrency={nativeCurrency}
         allValidator={allValidator}
+        disabledButton={loaded && !granted}
       />
 
       {unValidatorOfUser && unValidatorOfUser.length > 0 && (
@@ -230,7 +252,11 @@ function Staking(props): ReactElement {
         {' '}
         <BoxCard>
           <Col layout="column" sm={12} xs={12}>
-            <Validators allValidator={allValidator} handleManageDelegate={handleManageDelegate} />
+            <Validators
+              allValidator={allValidator}
+              handleManageDelegate={handleManageDelegate}
+              disabledButton={loaded && !granted}
+            />
           </Col>
         </BoxCard>
       </Block>
@@ -265,26 +291,7 @@ function Staking(props): ReactElement {
         listReward={listReward}
       />
 
-      {/* <Modal
-        description="Send Tokens Form"
-        handleClose={handleCloseSendFund}
-        open={isOpenReview}
-        paperClassName="smaller-modal-window"
-        title={title}
-      >
-        <ReviewSendFundsTx
-          onClose={handleCloseSendFund}
-          onPrev={handlePrevSendFund}
-          tx={temp as any}
-          typeStaking={typeStaking}
-          amount={amount}
-          itemValidator={itemValidator}
-          title={title}
-          valueDelegate={valueDelegate}
-          validatorOfUser={validatorOfUser}
-          listReward={listReward}
-        />
-      </Modal> */}
+      <ConnectWalletModal isOpen={connectWalletState.showConnect} onClose={onConnectWalletHide}></ConnectWalletModal>
     </>
   )
 }

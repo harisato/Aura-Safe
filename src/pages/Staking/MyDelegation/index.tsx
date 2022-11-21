@@ -15,6 +15,7 @@ export default function MyDelegation(props): ReactElement {
     allValidator,
     claimReward,
     nativeCurrency,
+    disabledButton,
   } = props
   const [data, setData] = useState<any[]>()
 
@@ -54,7 +55,7 @@ export default function MyDelegation(props): ReactElement {
             </p>
           </div>
         </div>
-        {rewardAmount[0]?.amount / 10 ** nativeCurrency.decimals > 0 ? (
+        {rewardAmount[0]?.amount / 10 ** nativeCurrency.decimals > 0 && !disabledButton ? (
           <FilledButton size="md" onClick={claimReward}>
             <span style={{ fontSize: 14, fontWeight: 590 }}>
               Claim Reward: {rewardAmount[0] ? (rewardAmount[0]?.amount / 10 ** nativeCurrency.decimals).toFixed(6) : 0}{' '}
@@ -85,9 +86,11 @@ export default function MyDelegation(props): ReactElement {
                 </StyledTableCell>
                 <StyledTableCell align="left">{row?.reward?.length > 0 ? 'Yes' : 'No'}</StyledTableCell>
                 <StyledTableCell align="right">
-                  <OutlinedButton size="md" onClick={() => handleModal(row)}>
-                    Manage
-                  </OutlinedButton>
+                  {!disabledButton && (
+                    <OutlinedButton size="md" onClick={() => handleModal(row)}>
+                      Manage
+                    </OutlinedButton>
+                  )}
                 </StyledTableCell>
               </StyledTableRow>
             ))}
