@@ -198,7 +198,7 @@ function ProposalsCard({ handleVote, proposal }: Props): ReactElement {
             </StyledButtonDetail>
 
             {!(loaded && !granted) && (
-              <StyledButton size="md" disabled={false} onClick={handleVote}>
+              <StyledButton size="md" disabled={isEnded} onClick={handleVote}>
                 <Text size="lg" color="white">
                   Vote
                 </Text>
