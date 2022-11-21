@@ -1,10 +1,13 @@
 import { Button, Text } from '@aura/safe-react-components'
 import { ReactElement } from 'react'
+import { useSelector } from 'react-redux'
 import { useHistory } from 'react-router-dom'
 import Col from 'src/components/layout/Col'
 import StatusCard from 'src/components/StatusCard'
 import VoteBar from 'src/components/Vote'
 import { getChainInfo, getExplorerInfo } from 'src/config'
+import { loadedSelector } from 'src/logic/wallets/store/selectors'
+import { grantedSelector } from 'src/routes/safe/container/selector'
 import { borderLinear } from 'src/theme/variables'
 import { IProposal, VoteMapping } from 'src/types/proposal'
 import { formatDateTimeDivider } from 'src/utils/date'
@@ -95,6 +98,8 @@ interface Props {
 
 function ProposalsCard({ handleVote, proposal }: Props): ReactElement {
   const history = useHistory()
+  const granted = useSelector(grantedSelector)
+  const loaded = useSelector(loadedSelector)
 
   const handleDetail = (proposalId) => {
     const url = getChainInfo() as any
@@ -192,11 +197,13 @@ function ProposalsCard({ handleVote, proposal }: Props): ReactElement {
               </Text>
             </StyledButtonDetail>
 
-            <StyledButton size="md" disabled={isEnded} onClick={handleVote}>
-              <Text size="lg" color="white">
-                Vote
-              </Text>
-            </StyledButton>
+            {!(loaded && !granted) && (
+              <StyledButton size="md" disabled={false} onClick={handleVote}>
+                <Text size="lg" color="white">
+                  Vote
+                </Text>
+              </StyledButton>
+            )}
           </div>
         </div>
       </Col>
