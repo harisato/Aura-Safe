@@ -78,7 +78,7 @@ export default function ModalStaking(props) {
     const dataTemp: any = []
     if (selectedAction === 'redelegate') {
       allValidator.map((item) => {
-        if (item.operatorAddress !== itemValidator?.safeStaking) {
+        if (item.operatorAddress !== itemValidator?.safeStaking && item.status == 'BOND_STATUS_BONDED') {
           dataTemp.push({
             name: item.validator,
             value: item.operatorAddress,
