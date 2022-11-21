@@ -33,7 +33,7 @@ export default function MyDelegation(props): ReactElement {
       })
     })
     setData(dataTemp)
-  }, [validatorOfUser])
+  }, [validatorOfUser?.length])
 
   return (
     <Wrapper>

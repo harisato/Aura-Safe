@@ -2,6 +2,7 @@ import { Breadcrumb, BreadcrumbElement, Loader, Text } from '@aura/safe-react-co
 import { ReactElement, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import BoxCard from 'src/components/BoxCard'
+import { ConnectWalletModal } from 'src/components/ConnectWalletModal'
 import Col from 'src/components/layout/Col'
 import { LoadingContainer } from 'src/components/LoaderContainer'
 import WarningPopup from 'src/components/Popup/WarningPopup'
@@ -9,7 +10,9 @@ import StatusCard from 'src/components/StatusCard'
 import DenseTable, { StyledTableCell, StyledTableRow } from 'src/components/Table/DenseTable'
 import { getChainInfo, getInternalChainId, _getChainId } from 'src/config'
 import { allDelegation } from 'src/logic/delegation/store/selectors'
+import useConnectWallet from 'src/logic/hooks/useConnectWallet'
 import addProposals from 'src/logic/proposal/store/actions/addProposal'
+import { loadedSelector } from 'src/logic/wallets/store/selectors'
 import { extractSafeAddress } from 'src/routes/routes'
 import { getProposals, MChainInfo } from 'src/services'
 import { IProposal } from 'src/types/proposal'
@@ -32,6 +35,8 @@ const parseBalance = (balance: IProposal['totalDeposit'], chainInfo: MChainInfo)
 function Voting(): ReactElement {
   const dispatch = useDispatch()
   const chainInfo = getChainInfo() as MChainInfo
+  const loaded = useSelector(loadedSelector)
+  const { connectWalletState, onConnectWalletShow, onConnectWalletHide } = useConnectWallet()
 
   const safeAddress = extractSafeAddress()
   const allDelegations = useSelector(allDelegation)
@@ -68,6 +73,10 @@ function Voting(): ReactElement {
   }
 
   const onVoteButtonClick = (proposal) => {
+    if (!loaded) {
+      onConnectWalletShow()
+      return
+    }
     if (allDelegations.length > 0) {
       setSelectedProposal(proposal)
       setOpenVotingModal(true)
@@ -135,6 +144,7 @@ function Voting(): ReactElement {
         You don't have the right to vote on this proposal because the voting period of this proposal started before you
         staked Aura.
       </WarningPopup>
+      <ConnectWalletModal isOpen={connectWalletState.showConnect} onClose={onConnectWalletHide}></ConnectWalletModal>
     </>
   )
 }
