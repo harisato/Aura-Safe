@@ -11,6 +11,8 @@ import TabPanel, { a11yProps } from 'src/components/TabPanel'
 import { borderLinear } from 'src/theme/variables'
 import styled from 'styled-components'
 import sreachIcon from '../assets/Shape.svg'
+import { grantedSelector } from 'src/routes/safe/container/selector'
+import { useSelector } from 'react-redux'
 
 const TitleStyled = styled.div`
   font-weight: 500;
@@ -74,7 +76,7 @@ const ImgRow = styled.div`
 `
 
 const ValidatorTable = (props) => {
-  const { data, handleManageDelegate, value } = props
+  const { data, handleManageDelegate, value, disabledButton } = props
   const obj1 = new Intl.NumberFormat('en-US')
 
   return (
@@ -101,7 +103,7 @@ const ValidatorTable = (props) => {
           </StyledTableCell>
 
           <StyledTableCell align="left">{row.uptime} %</StyledTableCell>
-          {value === 0 && (
+          {value === 0 && !disabledButton && (
             <StyledTableCell align="right">
               <StyledButton size="md" onClick={() => handleManageDelegate(row)}>
                 <Text size="lg" color="white">
@@ -117,7 +119,7 @@ const ValidatorTable = (props) => {
 }
 
 function Validators(props): ReactElement {
-  const { allValidator, handleManageDelegate } = props
+  const { allValidator, handleManageDelegate, disabledButton } = props
   const [value, setValue] = React.useState(0)
   const classes = useStyles()
 
@@ -197,7 +199,12 @@ function Validators(props): ReactElement {
       {allValidator && (
         <>
           <TabPanel value={value} index={0}>
-            <ValidatorTable data={dataActive} handleManageDelegate={handleManageDelegate} value={value} />
+            <ValidatorTable
+              data={dataActive}
+              handleManageDelegate={handleManageDelegate}
+              value={value}
+              disabledButton={disabledButton}
+            />
           </TabPanel>
           <TabPanel value={value} index={1}>
             <ValidatorTable data={dataInActive} handleManageDelegate={handleManageDelegate} />
