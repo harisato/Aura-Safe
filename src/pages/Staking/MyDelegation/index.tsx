@@ -55,7 +55,7 @@ export default function MyDelegation(props): ReactElement {
             </p>
           </div>
         </div>
-        {rewardAmount[0]?.amount / 10 ** nativeCurrency.decimals > 0 && !disabledButton ? (
+        {rewardAmount[0]?.amount >= 1 && !disabledButton ? (
           <FilledButton size="md" onClick={claimReward}>
             <span style={{ fontSize: 14, fontWeight: 590 }}>
               Claim Reward: {rewardAmount[0] ? (rewardAmount[0]?.amount / 10 ** nativeCurrency.decimals).toFixed(6) : 0}{' '}

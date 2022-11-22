@@ -167,16 +167,18 @@ function Validators(props): ReactElement {
       <Col start="sm" sm={12} xs={12}>
         <HeaderValidator>
           <TitleStyled>Validators</TitleStyled>
-          <ContainSearch>
-            <StyleSearch
-              type="text"
-              placeholder="Search validators"
-              onChange={(e) => {
-                setSearch(e.target.value)
-              }}
-            />
-            <img src={sreachIcon} alt="icon-search" />
-          </ContainSearch>
+          {!disabledButton && (
+            <ContainSearch>
+              <StyleSearch
+                type="text"
+                placeholder="Search validators"
+                onChange={(e) => {
+                  setSearch(e.target.value)
+                }}
+              />
+              <img src={sreachIcon} alt="icon-search" />
+            </ContainSearch>
+          )}
         </HeaderValidator>
       </Col>
 

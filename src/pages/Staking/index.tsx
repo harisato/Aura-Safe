@@ -22,12 +22,18 @@ import { grantedSelector } from 'src/routes/safe/container/selector'
 import useConnectWallet from 'src/logic/hooks/useConnectWallet'
 import { ConnectWalletModal } from 'src/components/ConnectWalletModal'
 import { loadedSelector } from 'src/logic/wallets/store/selectors'
+import enqueueSnackbar from 'src/logic/notifications/store/actions/enqueueSnackbar'
+import { NOTIFICATIONS } from 'src/logic/notifications'
+import { usePagedQueuedTransactions } from '../Transactions/hooks/usePagedQueuedTransactions'
 
 function Staking(props): ReactElement {
+  const dispatch = useDispatch()
   const granted = useSelector(grantedSelector)
   const { connectWalletState, onConnectWalletShow, onConnectWalletHide } = useConnectWallet()
+  const { count, isLoading, hasMore, next, transactions } = usePagedQueuedTransactions()
   const loaded = useSelector(loadedSelector)
 
+  const [hasPendingTx, setHasPendingTx] = useState(false)
   const [isOpenDelagate, setIsOpenDelagate] = useState(false)
   const [isOpenReview, setIsOpenReview] = useState(false)
   const [typeStaking, setTypeStaking] = useState('')
@@ -79,6 +85,19 @@ function Staking(props): ReactElement {
     const listValidator: any = (await getAllValidator(internalChainId)) || []
     setAllValidator(listValidator?.Data?.validators)
   }
+
+  useEffect(() => {
+    console.log(transactions)
+    const hasPendingTx = transactions.find((tx: any) =>
+      [MsgTypeUrl.Delegate, MsgTypeUrl.Redelegate, MsgTypeUrl.Undelegate, MsgTypeUrl.GetReward].includes(
+        tx?.[1]?.[0]?.txInfo?.typeUrl,
+      ),
+    )
+    if (hasPendingTx) {
+      dispatch(enqueueSnackbar(NOTIFICATIONS.CREATE_SAFE_PENDING_EXECUTE_MSG))
+      setHasPendingTx(true)
+    }
+  }, [])
 
   useEffect(() => {
     const dataTemp: any = []
@@ -236,7 +255,7 @@ function Staking(props): ReactElement {
         claimReward={claimReward}
         nativeCurrency={nativeCurrency}
         allValidator={allValidator}
-        disabledButton={loaded && !granted}
+        disabledButton={(loaded && !granted) || hasPendingTx}
       />
 
       {unValidatorOfUser && unValidatorOfUser.length > 0 && (
@@ -255,7 +274,7 @@ function Staking(props): ReactElement {
             <Validators
               allValidator={allValidator}
               handleManageDelegate={handleManageDelegate}
-              disabledButton={loaded && !granted}
+              disabledButton={(loaded && !granted) || hasPendingTx}
             />
           </Col>
         </BoxCard>
