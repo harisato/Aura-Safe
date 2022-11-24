@@ -36,7 +36,6 @@ export default function MyDelegation(props): ReactElement {
     })
     setData(dataTemp)
   }, [validatorOfUser?.length])
-
   return (
     <Wrapper>
       <div className="stake-management">

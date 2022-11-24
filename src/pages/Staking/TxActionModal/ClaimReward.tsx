@@ -7,6 +7,7 @@ import { LinkButton, OutlinedButton, OutlinedNeutralButton } from 'src/component
 import Gap from 'src/components/Gap'
 import TextField from 'src/components/Input/TextField'
 import Footer from 'src/components/Popup/Footer'
+import Amount from 'src/components/TxComponents/Amount'
 import {
   getChainDefaultGas,
   getChainDefaultGasPrice,
@@ -24,8 +25,7 @@ import { userAccountSelector } from 'src/logic/wallets/store/selectors'
 import { extractSafeAddress } from 'src/routes/routes'
 import { DEFAULT_GAS_LIMIT } from 'src/services/constant/common'
 import { ICreateSafeTransaction } from 'src/types/transaction'
-import { calcFee } from 'src/utils'
-import TotalAllocationAmount from './components/TotalAllocationAmount'
+import { calcFee, formatNativeCurrency, formatNativeToken } from 'src/utils'
 import { Wrapper } from './style'
 
 export default function ClaimReward({ listReward, onClose, createTxFromApi }) {
@@ -127,7 +127,7 @@ export default function ClaimReward({ listReward, onClose, createTxFromApi }) {
             </div>
           )}
         </div>
-        <TotalAllocationAmount amount={+gasPriceFormatted} />
+        <Amount amount={formatNativeCurrency(+gasPriceFormatted)} label="Total Allocation Amount" />
         <div className="notice">
           You’re about to create a transaction and will have to confirm it with your currently connected wallet.
         </div>

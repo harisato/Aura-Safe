@@ -3,7 +3,7 @@ import BigNumber from 'bignumber.js'
 import { useEffect, useRef } from 'react'
 import Col from 'src/components/layout/Col'
 import NotificationPopup from 'src/components/NotificationPopup'
-import { isNumberKeyPress } from 'src/utils'
+import { formatBigNumber, isNumberKeyPress } from 'src/utils'
 import {
   BorderAura,
   BorderInput,
@@ -62,10 +62,7 @@ export default function ModalDelegate(props) {
                   </Text>
                 </Col>
                 <Text size="xl" color="numberAura">
-                  {new BigNumber(dataDelegateOfUser?.delegation?.delegationBalance?.amount)
-                    .div(new BigNumber(10).pow(nativeCurrency.decimals))
-                    .toFixed() || 0}{' '}
-                  <TextGreen>{nativeCurrency.symbol}</TextGreen>
+                  {formatBigNumber(availableBalance?.amount) || 0} <TextGreen>{nativeCurrency.symbol}</TextGreen>
                 </Text>
               </PaddingPopup>
             </BoxDelegate>

@@ -30,6 +30,8 @@ export const isNumberKeyPress = (event): boolean => {
 }
 
 export const formatBigNumber = (amount, isMulti = false) => {
+  const nativeCurrency = getNativeCurrency()
+  if (isNaN(amount)) return '0'
   return isMulti
     ? new BigNumber(amount).times(new BigNumber(10).pow(nativeCurrency.decimals)).toFixed()
     : new BigNumber(
@@ -44,7 +46,7 @@ export const formatNativeToken = (amount) => {
 }
 export const formatNativeCurrency = (amount) => {
   const nativeCurrency = getNativeCurrency()
-  return `${parseFloat((+amount).toFixed(+nativeCurrency.decimals))} ${nativeCurrency.symbol}`
+  return `${new BigNumber(new BigNumber(+amount).toFixed(+nativeCurrency.decimals)).toFixed()} ${nativeCurrency.symbol}`
 }
 export const calcFee = (gasAmount) => {
   const chainInfo = getChainInfo()

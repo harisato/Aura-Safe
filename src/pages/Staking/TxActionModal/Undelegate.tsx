@@ -8,6 +8,7 @@ import Divider from 'src/components/Divider'
 import Gap from 'src/components/Gap'
 import TextField from 'src/components/Input/TextField'
 import Footer from 'src/components/Popup/Footer'
+import Amount from 'src/components/TxComponents/Amount'
 import {
   getChainDefaultGas,
   getChainDefaultGasPrice,
@@ -29,8 +30,6 @@ import { extractSafeAddress } from 'src/routes/routes'
 import { DEFAULT_GAS_LIMIT } from 'src/services/constant/common'
 import { ICreateSafeTransaction } from 'src/types/transaction'
 import { calcFee, formatBigNumber, formatNativeCurrency, formatNativeToken } from 'src/utils'
-import Amount from './components/Amount'
-import TotalAllocationAmount from './components/TotalAllocationAmount'
 import { Wrapper } from './style'
 
 export default function Undelegate({ validator, amount, onClose, createTxFromApi }) {
@@ -119,7 +118,7 @@ export default function Undelegate({ validator, amount, onClose, createTxFromApi
           </div>
         )}
         <Gap height={24} />
-        <Amount amount={amount} />
+        <Amount amount={formatNativeCurrency(amount)} />
         <Divider />
         <div className="tx-fee">
           <p className="title">Transaction fee</p>
@@ -139,7 +138,7 @@ export default function Undelegate({ validator, amount, onClose, createTxFromApi
             </div>
           )}
         </div>
-        <TotalAllocationAmount amount={+gasPriceFormatted} />
+        <Amount amount={formatNativeCurrency(gasPriceFormatted)} label="Total Allocation Amount" />
         <div className="notice">
           You’re about to create a transaction and will have to confirm it with your currently connected wallet.
         </div>

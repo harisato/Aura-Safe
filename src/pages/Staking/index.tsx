@@ -88,7 +88,6 @@ function Staking(props): ReactElement {
   }
 
   useEffect(() => {
-    console.log(transactions)
     const hasPendingTx = transactions.find((tx: any) =>
       [MsgTypeUrl.Delegate, MsgTypeUrl.Redelegate, MsgTypeUrl.Undelegate, MsgTypeUrl.GetReward].includes(
         tx?.[1]?.[0]?.txInfo?.typeUrl,
