@@ -46,9 +46,7 @@ export default function ModalDelegate(props) {
                   </Text>
                 </Col>
                 <Text size="xl" color="numberAura">
-                  {new BigNumber(dataDelegateOfUser?.delegation?.delegationBalance?.amount)
-                    .div(new BigNumber(10).pow(nativeCurrency.decimals))
-                    .toFixed() || 0}{' '}
+                  {formatBigNumber(dataDelegateOfUser?.delegation?.delegationBalance?.amount)}{' '}
                   <TextGreen>{nativeCurrency.symbol}</TextGreen>
                 </Text>
               </PaddingPopup>

@@ -1,3 +1,4 @@
+import { formatBigNumber, formatNativeCurrency } from 'src/utils'
 import { List } from 'immutable'
 import { formatAmountInUsFormat } from 'src/logic/tokens/utils/formatAmount'
 import { TableColumn } from 'src/components/Table/types.d'
@@ -24,7 +25,6 @@ export interface BalanceData {
 export const getBalanceData = (safeTokens: List<Token>, currencySelected?: string): List<BalanceData> => {
   return safeTokens.map((token) => {
     const { tokenBalance, fiatBalance } = token.balance
-
     return {
       [BALANCE_TABLE_ASSET_ID]: {
         name: token.name,
@@ -33,7 +33,7 @@ export const getBalanceData = (safeTokens: List<Token>, currencySelected?: strin
         symbol: token.symbol,
       },
       assetOrder: token.name,
-      [BALANCE_TABLE_BALANCE_ID]: `${formatAmountInUsFormat(tokenBalance?.toString() || '0.000000')} ${token.symbol}`,
+      [BALANCE_TABLE_BALANCE_ID]: `${formatNativeCurrency(tokenBalance || '0.000000')}`,
       balanceOrder: Number(tokenBalance),
       [BALANCE_TABLE_VALUE_ID]: getTokenPriceInCurrency(fiatBalance || '0.000000', currencySelected),
       valueOrder: Number(tokenBalance),
