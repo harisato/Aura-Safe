@@ -44,7 +44,6 @@ const signMessage = async (
     if (!signer) return
     const account = await signer.getAccounts()
     const client = await SigningStargateClient.offline(signer)
-    const onlineClient = await SigningStargateClient.connectWithSigner(chainInfo.rpcUri.value, signer)
     // const onlineData = await onlineClient.getSequence(safeAddress)
     const onlineData: SequenceResponse = (await getAccountOnChain(safeAddress, getInternalChainId())).Data
     const signerData: SignerData = {
