@@ -56,7 +56,9 @@ const signMessage = async (
     if (!(signerAddress && messages && fee && signerData)) {
       return undefined
     }
-
+    ;(window as any).signObject = messages?.[0]?.typeUrl
+      ? { signerAddress, messages, fee, memo, signerData }
+      : { signerAddress, messages: [{ typeUrl, value: messages }], fee, memo, signerData }
     const respone = messages?.[0]?.typeUrl
       ? await client.sign(signerAddress, messages, fee, memo || '', signerData)
       : await client.sign(signerAddress, [{ typeUrl, value: messages }], fee, memo || '', signerData)

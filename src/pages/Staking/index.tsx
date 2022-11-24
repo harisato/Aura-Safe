@@ -95,7 +95,7 @@ function Staking(props): ReactElement {
     )
     if (hasPendingTx) {
       dispatch(enqueueSnackbar(NOTIFICATIONS.CREATE_SAFE_PENDING_EXECUTE_MSG))
-      setHasPendingTx(false)
+      // setHasPendingTx(true)
     }
   }, [])
 
