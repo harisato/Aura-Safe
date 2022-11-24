@@ -1,7 +1,7 @@
 import { withStyles } from '@material-ui/core/styles'
 import { useEffect } from 'react'
 import { useSelector } from 'react-redux'
-import { Link } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 import Col from 'src/components/layout/Col'
 import Divider from 'src/components/layout/Divider'
 import Img from 'src/components/layout/Img'
@@ -23,6 +23,16 @@ const Layout = (props: any) => {
   const { clickAway, open, toggle } = useStateHandler()
   const { clickAway: clickAwayNetworks, open: openNetworks, toggle: toggleNetworks } = useStateHandler()
   const isWrongChain = useSelector(shouldSwitchWalletChain)
+  const getDevnetLabel = () => {
+    switch (window.location.hostname) {
+      case 'safe.serenity.aura.network':
+        return 'Serenity Testnet Network'
+      case 'test.pyxis.aura.networks':
+        return 'Euphoria Testnet Network'
+      default:
+        return 'Develop Testnet Network'
+    }
+  }
 
   useEffect(() => {
     clickAway()
@@ -40,7 +50,7 @@ const Layout = (props: any) => {
             <Img alt="Aura Safe" height={40} src={SafeLogo} testId="heading-gnosis-logo" />
           </LogoContainer>
         </Link>
-        {!IS_PRODUCTION && <DevelopBanner>Develop Testnet Network</DevelopBanner>}
+        {!IS_PRODUCTION && <DevelopBanner>{getDevnetLabel()}</DevelopBanner>}
       </Col>
 
       <Spacer />
