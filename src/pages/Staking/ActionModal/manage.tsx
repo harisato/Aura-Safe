@@ -2,10 +2,11 @@ import NotificationPopup from 'src/components/NotificationPopup'
 import { TextNotiStyled, TextGreen, TextDelegateNoti, BoxDelegate } from './styles'
 import { Text } from '@aura/safe-react-components'
 import Col from 'src/components/layout/Col'
+import { formatBigNumber } from 'src/utils'
 
 export default function ManageModal(props) {
   const { nativeCurrency, itemDelegate, availableBalance, dataDelegateOfUser } = props
-  const pendingReward: any = dataDelegateOfUser?.delegation?.pendingReward?.amount / 10 ** nativeCurrency.decimals
+  const pendingReward: any = formatBigNumber(dataDelegateOfUser?.delegation?.pendingReward?.amount || 0)
   return (
     <>
       <NotificationPopup>
@@ -31,7 +32,7 @@ export default function ManageModal(props) {
               </Text>
             </Col>
             <Text size="lg" color="numberAura">
-              {dataDelegateOfUser?.delegation?.delegationBalance?.amount / 10 ** nativeCurrency.decimals || 0}{' '}
+              {formatBigNumber(dataDelegateOfUser?.delegation?.delegationBalance?.amount) || 0}{' '}
               <TextGreen>{nativeCurrency.symbol}</TextGreen>
             </Text>
           </BoxDelegate>
@@ -42,7 +43,7 @@ export default function ManageModal(props) {
               </Text>
             </Col>
             <Text size="lg" color="numberAura">
-              {pendingReward ? parseFloat(pendingReward).toFixed(6) : 0} <TextGreen>{nativeCurrency.symbol}</TextGreen>
+              {pendingReward ? pendingReward : 0} <TextGreen>{nativeCurrency.symbol}</TextGreen>
             </Text>
           </BoxDelegate>
         </Col>
@@ -56,7 +57,7 @@ export default function ManageModal(props) {
             </Col>
 
             <Text size="lg" color="numberAura">
-              {dataDelegateOfUser?.delegation?.delegatableBalance?.amount / 10 ** nativeCurrency.decimals || 0}{' '}
+              {formatBigNumber(dataDelegateOfUser?.delegation?.delegatableBalance?.amount || 0)}{' '}
               <TextGreen>{nativeCurrency.symbol}</TextGreen>
             </Text>
           </BoxDelegate>
@@ -68,7 +69,7 @@ export default function ManageModal(props) {
             </Col>
 
             <Text size="lg" color="numberAura">
-              {dataDelegateOfUser?.delegation?.claimedReward?.amount / 10 ** nativeCurrency.decimals || 0}{' '}
+              {formatBigNumber(dataDelegateOfUser?.delegation?.claimedReward?.amount || 0)}{' '}
               <TextGreen>{nativeCurrency.symbol}</TextGreen>
             </Text>
           </BoxDelegate>

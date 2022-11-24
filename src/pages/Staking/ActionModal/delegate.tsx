@@ -1,4 +1,5 @@
 import { Text } from '@aura/safe-react-components'
+import BigNumber from 'bignumber.js'
 import { useEffect, useRef } from 'react'
 import Col from 'src/components/layout/Col'
 import NotificationPopup from 'src/components/NotificationPopup'
@@ -45,7 +46,9 @@ export default function ModalDelegate(props) {
                   </Text>
                 </Col>
                 <Text size="xl" color="numberAura">
-                  {dataDelegateOfUser.delegation?.delegationBalance?.amount / 10 ** nativeCurrency.decimals || 0}{' '}
+                  {new BigNumber(dataDelegateOfUser?.delegation?.delegationBalance?.amount)
+                    .div(new BigNumber(10).pow(nativeCurrency.decimals))
+                    .toFixed() || 0}{' '}
                   <TextGreen>{nativeCurrency.symbol}</TextGreen>
                 </Text>
               </PaddingPopup>
@@ -59,7 +62,9 @@ export default function ModalDelegate(props) {
                   </Text>
                 </Col>
                 <Text size="xl" color="numberAura">
-                  {dataDelegateOfUser?.delegation?.delegatableBalance?.amount / 10 ** nativeCurrency.decimals || 0}{' '}
+                  {new BigNumber(dataDelegateOfUser?.delegation?.delegationBalance?.amount)
+                    .div(new BigNumber(10).pow(nativeCurrency.decimals))
+                    .toFixed() || 0}{' '}
                   <TextGreen>{nativeCurrency.symbol}</TextGreen>
                 </Text>
               </PaddingPopup>
@@ -85,7 +90,12 @@ export default function ModalDelegate(props) {
                       ref={inputRef}
                     />
                     <StyledButtonModal
-                      onClick={() => handleMax(availableBalance?.amount / 10 ** nativeCurrency.decimals || 0)}
+                      onClick={() =>
+                        handleMax(
+                          new BigNumber(availableBalance?.amount).div(new BigNumber(10).pow(nativeCurrency.decimals)) ||
+                            0,
+                        )
+                      }
                     >
                       Max
                     </StyledButtonModal>

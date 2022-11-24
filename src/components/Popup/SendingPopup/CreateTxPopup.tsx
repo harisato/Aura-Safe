@@ -40,7 +40,7 @@ import { createSafeTransaction } from 'src/services'
 import { DEFAULT_GAS_LIMIT } from 'src/services/constant/common'
 import { MESSAGES_CODE } from 'src/services/constant/message'
 import { ICreateSafeTransaction } from 'src/types/transaction'
-import { calcFee, formatNativeCurrency } from 'src/utils'
+import { calcFee, formatBigNumber, formatNativeCurrency } from 'src/utils'
 import { Popup } from '..'
 import Header from '../Header'
 import { Footer, Wrapper } from './styles'
@@ -91,7 +91,7 @@ export default function CreateTxPopup({
     const chainId = chainInfo.chainId
     const _sendFee = calcFee(manualGasLimit)
     const Msg: MsgSendEncodeObject['value'] = {
-      amount: coins(+amount * 10 ** +(selectedToken?.decimals || 6), denom),
+      amount: coins(formatBigNumber(+amount, true), denom),
       fromAddress: safeAddress,
       toAddress: recipient?.address,
     }

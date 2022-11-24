@@ -15,7 +15,7 @@ import { extractSafeAddress } from 'src/routes/routes'
 
 import { useDispatch, useSelector } from 'react-redux'
 import { MsgTypeUrl } from 'src/logic/providers/constants/constant'
-import { formatNumber } from 'src/utils'
+import { formatBigNumber, formatNumber } from 'src/utils'
 import MyDelegation from './MyDelegation'
 import TxActionModal from './TxActionModal'
 import { grantedSelector } from 'src/routes/safe/container/selector'
@@ -25,6 +25,7 @@ import { loadedSelector } from 'src/logic/wallets/store/selectors'
 import enqueueSnackbar from 'src/logic/notifications/store/actions/enqueueSnackbar'
 import { NOTIFICATIONS } from 'src/logic/notifications'
 import { usePagedQueuedTransactions } from '../Transactions/hooks/usePagedQueuedTransactions'
+import BigNumber from 'bignumber.js'
 
 function Staking(props): ReactElement {
   const dispatch = useDispatch()
@@ -76,7 +77,7 @@ function Staking(props): ReactElement {
     setValidateMsg(undefined)
     const value = formatNumber(event.target.value)
     setAmount(value)
-    if (+value > dataDelegateOfUser?.delegation?.delegationBalance?.amount / 10 ** nativeCurrency.decimals) {
+    if (value > formatBigNumber(dataDelegateOfUser?.delegation?.delegationBalance?.amount)) {
       setValidateMsg('Given amount is greater than available balance!')
     }
   }
@@ -95,7 +96,7 @@ function Staking(props): ReactElement {
     )
     if (hasPendingTx) {
       dispatch(enqueueSnackbar(NOTIFICATIONS.CREATE_SAFE_PENDING_EXECUTE_MSG))
-      setHasPendingTx(true)
+      setHasPendingTx(false)
     }
   }, [])
 
@@ -127,7 +128,7 @@ function Staking(props): ReactElement {
     setValidateMsg(undefined)
     const value = formatNumber(event.target.value)
     setAmount(value)
-    if (+value > +availableBalance.amount / 10 ** nativeCurrency.decimals) {
+    if (value > formatBigNumber(availableBalance?.amount)) {
       setValidateMsg('Given amount is greater than available balance!')
     }
   }
@@ -180,7 +181,7 @@ function Staking(props): ReactElement {
 
   const handleSubmit = (action) => {
     if (action === 'delegate') {
-      if (amount > +availableBalance.amount / 10 ** nativeCurrency.decimals || amount == 0) {
+      if (amount > formatBigNumber(availableBalance?.amount) || amount == 0) {
         setValidateMsg('Invalid amount! Please check and try again.')
         return
       }
@@ -188,10 +189,7 @@ function Staking(props): ReactElement {
     }
 
     if (action === 'redelegate') {
-      if (
-        amount > dataDelegateOfUser?.delegation?.delegationBalance?.amount / 10 ** nativeCurrency.decimals ||
-        amount == 0
-      ) {
+      if (amount > formatBigNumber(dataDelegateOfUser?.delegation?.delegationBalance?.amount) || amount == 0) {
         setValidateMsg('Invalid amount! Please check and try again.')
         return
       }
@@ -199,10 +197,7 @@ function Staking(props): ReactElement {
     }
 
     if (action === 'undelegate') {
-      if (
-        amount > dataDelegateOfUser?.delegation?.delegationBalance?.amount / 10 ** nativeCurrency.decimals ||
-        amount == 0
-      ) {
+      if (amount > formatBigNumber(dataDelegateOfUser?.delegation?.delegationBalance?.amount) || amount == 0) {
         setValidateMsg('Invalid amount! Please check and try again.')
         return
       }

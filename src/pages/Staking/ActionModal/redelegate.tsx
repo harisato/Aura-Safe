@@ -1,6 +1,7 @@
 import { Text } from '@aura/safe-react-components'
 import { useEffect, useRef } from 'react'
 import Col from 'src/components/layout/Col'
+import { formatBigNumber } from 'src/utils'
 import SelectValidator from '../SelectValidator'
 import {
   BorderAura,
@@ -54,7 +55,7 @@ export default function ModalRedelegate(props) {
               <Text size="lg" color="white">
                 Available for redelegation{'  '}
                 <TextDisable>
-                  {dataDelegateOfUser?.delegation?.delegationBalance?.amount / 10 ** nativeCurrency.decimals || 0}
+                  {formatBigNumber(dataDelegateOfUser?.delegation?.delegationBalance?.amount || 0)}
                 </TextDisable>{' '}
                 <TextGreen>{nativeCurrency.symbol}</TextGreen>
               </Text>
@@ -72,9 +73,7 @@ export default function ModalRedelegate(props) {
                 />
                 <StyledButtonModal
                   onClick={() =>
-                    handleMax(
-                      dataDelegateOfUser?.delegation?.delegationBalance?.amount / 10 ** nativeCurrency.decimals || 0,
-                    )
+                    handleMax(formatBigNumber(dataDelegateOfUser?.delegation?.delegationBalance?.amount || 0))
                   }
                 >
                   Max

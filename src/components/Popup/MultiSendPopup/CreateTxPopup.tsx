@@ -40,7 +40,7 @@ import { createSafeTransaction } from 'src/services'
 import { DEFAULT_GAS_LIMIT } from 'src/services/constant/common'
 import { MESSAGES_CODE } from 'src/services/constant/message'
 import { ICreateSafeTransaction } from 'src/types/transaction'
-import { calcFee, formatNativeCurrency, formatNumber } from 'src/utils'
+import { calcFee, formatBigNumber, formatNativeCurrency, formatNumber } from 'src/utils'
 import { RecipientProps } from '.'
 import { Popup } from '..'
 import Header from '../Header'
@@ -104,7 +104,7 @@ export default function CreateTxPopup({
     if (!recipient) throw new Error('No recipient found!')
     const Outputs: AminoMsgMultiSend['value']['outputs'] = recipient.map((r) => ({
       address: r.address,
-      coins: coins(+r.amount * 10 ** +(selectedToken?.decimals || 6), denom),
+      coins: coins(formatBigNumber(+r.amount, true), denom),
     }))
     const Msg: any = [
       {
@@ -113,7 +113,7 @@ export default function CreateTxPopup({
           inputs: [
             {
               address: safeAddress,
-              coins: coins(+totalAmount * 10 ** +(selectedToken?.decimals || 6), denom),
+              coins: coins(formatBigNumber(+totalAmount, true), denom),
             },
           ],
           outputs: Outputs,

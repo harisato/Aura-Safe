@@ -28,7 +28,7 @@ import { userAccountSelector } from 'src/logic/wallets/store/selectors'
 import { extractSafeAddress } from 'src/routes/routes'
 import { DEFAULT_GAS_LIMIT } from 'src/services/constant/common'
 import { ICreateSafeTransaction } from 'src/types/transaction'
-import { calcFee, formatNativeCurrency, formatNativeToken } from 'src/utils'
+import { calcFee, formatBigNumber, formatNativeCurrency, formatNativeToken } from 'src/utils'
 import Amount from './components/Amount'
 import TotalAllocationAmount from './components/TotalAllocationAmount'
 import { Wrapper } from './style'
@@ -76,7 +76,7 @@ export default function Redelegate({ validator, amount, onClose, createTxFromApi
     const chainId = chainInfo.chainId
     const _sendFee = calcFee(manualGasLimit)
     const Msg: any['value'] = {
-      amount: coin(amount * 10 ** nativeCurrency.decimals, denom),
+      amount: coin(formatBigNumber(amount, true), denom),
       delegatorAddress: safeAddress,
       validatorSrcAddress: validator.safeStaking,
       validatorDstAddress: dstValidator,

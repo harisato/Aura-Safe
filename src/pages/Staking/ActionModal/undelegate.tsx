@@ -13,6 +13,7 @@ import {
 import { Text } from '@aura/safe-react-components'
 import Col from 'src/components/layout/Col'
 import { useEffect, useRef } from 'react'
+import { formatBigNumber } from 'src/utils'
 
 export default function ModalUndelegate(props) {
   const { handleDelegatedAmount, nativeCurrency, handleMax, amount, dataDelegateOfUser, validateMsg } = props
@@ -29,7 +30,7 @@ export default function ModalUndelegate(props) {
               <Text size="lg" color="white">
                 Available for undelegation{'  '}
                 <TextDisable>
-                  {dataDelegateOfUser?.delegation?.delegationBalance?.amount / 10 ** nativeCurrency.decimals || 0}
+                  {formatBigNumber(dataDelegateOfUser?.delegation?.delegationBalance?.amount || 0)}
                 </TextDisable>{' '}
                 <TextGreen>{nativeCurrency.symbol}</TextGreen>
               </Text>
@@ -47,9 +48,7 @@ export default function ModalUndelegate(props) {
                 />
                 <StyledButtonModal
                   onClick={() =>
-                    handleMax(
-                      dataDelegateOfUser?.delegation?.delegationBalance?.amount / 10 ** nativeCurrency.decimals || 0,
-                    )
+                    handleMax(formatBigNumber(dataDelegateOfUser?.delegation?.delegationBalance?.amount || 0))
                   }
                 >
                   Max

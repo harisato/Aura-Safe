@@ -2,6 +2,7 @@ import { getChains } from 'src/config/cache/chains'
 import { getChainDefaultGasPrice, getChainInfo, getNativeCurrency } from 'src/config'
 import { MChainInfo } from 'src/services'
 import { calculateFee, GasPrice } from '@cosmjs/stargate'
+import BigNumber from 'bignumber.js'
 
 const nativeCurrency = getNativeCurrency()
 
@@ -14,7 +15,7 @@ export const formatNumber = (value: any): string => {
   const [integer, fractional] = valueString.split('.')
   if (!fractional) return value
   const parsedNumber = [integer, '.', fractional.slice(0, nativeCurrency.decimals || 6)].join('')
-  return String(+parsedNumber)
+  return parsedNumber
   // return value == '' || value == 0 ? value : parseFloat((+value).toFixed(6)).toString()
 }
 export const isNumberKeyPress = (event): boolean => {
@@ -28,11 +29,18 @@ export const isNumberKeyPress = (event): boolean => {
   return true
 }
 
+export const formatBigNumber = (amount, isMulti = false) => {
+  return isMulti
+    ? new BigNumber(amount).times(new BigNumber(10).pow(nativeCurrency.decimals)).toFixed()
+    : new BigNumber(
+        new BigNumber(amount).div(new BigNumber(10).pow(nativeCurrency.decimals)).toFixed(nativeCurrency.decimals),
+      ).toFixed()
+}
 export const formatNativeToken = (amount) => {
   const nativeCurrency = getNativeCurrency()
-  return `${parseFloat((+amount / 10 ** +nativeCurrency.decimals).toFixed(+nativeCurrency.decimals))} ${
-    nativeCurrency.symbol
-  }`
+  return `${new BigNumber(
+    new BigNumber(amount).div(new BigNumber(10).pow(nativeCurrency.decimals)).toFixed(+nativeCurrency.decimals),
+  ).toFixed()} ${nativeCurrency.symbol}`
 }
 export const formatNativeCurrency = (amount) => {
   const nativeCurrency = getNativeCurrency()

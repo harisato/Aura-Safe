@@ -3,6 +3,7 @@ import { Divider } from '@material-ui/core'
 import { ReactElement, useEffect, useState } from 'react'
 import Col from 'src/components/layout/Col'
 import DenseTable, { StyledTableCell, StyledTableRow } from 'src/components/Table/DenseTable'
+import { formatBigNumber } from 'src/utils'
 import { formatTimeInWords, getUTCStartOfDate } from 'src/utils/date'
 import styled from 'styled-components'
 
@@ -114,7 +115,7 @@ function Undelegating(props): ReactElement {
                     <div>
                       <TotalDelegate>
                         <Text size="lg" color="white">
-                          {item?.balance / 10 ** 6 || 0}
+                          {formatBigNumber(item?.balance || 0)}
                         </Text>
                       </TotalDelegate>
                       <Text size="lg" color="disableAura">
