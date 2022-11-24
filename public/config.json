@@ -1,10 +1,10 @@
 {
   "api-gateway": "https://safe-api.dev.aura.network",
-  "chain_id": "aura-testnet",
+  "chain_id": "aura-testnet-2",
   "chain_info": [
     {
       "features": ["no-legacy-stdTx"],
-      "chainId": "aura-testnet",
+      "chainId": "aura-testnet-2",
       "chainName": "aura testnet",
       "rpc": "https://rpc.dev.aura.network",
       "rest": "https://lcd.dev.aura.network",

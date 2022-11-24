@@ -24,6 +24,7 @@ const Layout = (props: any) => {
   const { clickAway: clickAwayNetworks, open: openNetworks, toggle: toggleNetworks } = useStateHandler()
   const isWrongChain = useSelector(shouldSwitchWalletChain)
   const getDevnetLabel = () => {
+    console.log(window.location.hostname)
     switch (window.location.hostname) {
       case 'safe.serenity.aura.network':
         return 'Serenity Testnet Network'
