@@ -41,11 +41,11 @@ export default function TxMsg({ tx, txDetail }) {
           Undelegate <span className="token">{amount}</span> from:
         </strong>
         <AddressInfo address={txDetail?.txMessage[0]?.validatorAddress} />
-        {txDetail.autoClaimAmount && (
+        {txDetail.autoClaimAmount ? (
           <strong>
             Auto Claim Reward: <span className="token">{formatNativeToken(txDetail.autoClaimAmount)}</span>
           </strong>
-        )}
+        ) : null}
       </div>
     )
   }
@@ -88,11 +88,11 @@ export default function TxMsg({ tx, txDetail }) {
         <AddressInfo address={txDetail?.txMessage[0]?.validatorSrcAddress} />
         <strong>To:</strong>
         <AddressInfo address={txDetail?.txMessage[0]?.validatorDstAddress} />
-        {txDetail.autoClaimAmount && (
+        {txDetail.autoClaimAmount ? (
           <strong>
             Auto Claim Reward: <span className="token">{txDetail.autoClaimAmount}</span>
           </strong>
-        )}
+        ) : null}
       </div>
     )
   }
