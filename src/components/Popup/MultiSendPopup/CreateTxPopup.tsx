@@ -186,8 +186,8 @@ export default function CreateTxPopup({
   }
 
   return (
-    <Popup open={open} handleClose={handleClose} title="">
-      <Header subTitle="Step 2 of 2" title="Send funds" onClose={handleClose} />
+    <Popup open={open} title="">
+      <Header subTitle="Step 2 of 2" title="Send funds" onClose={() => handleClose()} />
       <Wrapper>
         <AddressInfo address={safeAddress} />
         <div className="balance">
@@ -231,7 +231,7 @@ export default function CreateTxPopup({
         </div>
       </Wrapper>
       <Footer>
-        <OutlinedNeutralButton size="md" onClick={handleClose} disabled={isDisabled}>
+        <OutlinedNeutralButton size="md" onClick={() => handleClose(true)} disabled={isDisabled}>
           Back
         </OutlinedNeutralButton>
         <OutlinedButton size="md" onClick={signTransaction} disabled={isDisabled}>

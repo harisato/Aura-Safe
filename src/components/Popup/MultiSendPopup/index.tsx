@@ -1,7 +1,6 @@
 import { ReactElement, useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 
-
 import { extendedSafeTokensSelector } from 'src/routes/safe/container/selector'
 
 import { OutlinedButton, TextButton } from 'src/components/Button'
@@ -24,9 +23,10 @@ export type RecipientProps = {
 type SendFundsProps = {
   open: boolean
   onClose: () => void
+  onOpen: () => void
 }
 
-const SendingPopup = ({ open, onClose }: SendFundsProps): ReactElement => {
+const SendingPopup = ({ open, onClose, onOpen }: SendFundsProps): ReactElement => {
   const tokens = useSelector(extendedSafeTokensSelector)
   const [createTxPopupOpen, setCreateTxPopupOpen] = useState(false)
 
@@ -56,7 +56,12 @@ const SendingPopup = ({ open, onClose }: SendFundsProps): ReactElement => {
     setTotalAmount(0)
     setBalance(0)
   }
-  const handleClose = () => {
+  const handleClose = (isBack = false) => {
+    if (isBack) {
+      onOpen()
+      setCreateTxPopupOpen(false)
+      return
+    }
     onClose()
     setSelectedToken('')
     clearData()
@@ -124,7 +129,7 @@ const SendingPopup = ({ open, onClose }: SendFundsProps): ReactElement => {
     <>
       <Popup open={open} title="Send Popup">
         <PopupWrapper>
-          <Header onClose={handleClose} subTitle="Step 1 of 2" title="Multi-send" />
+          <Header onClose={() => handleClose()} subTitle="Step 1 of 2" title="Multi-send" />
           <BodyWrapper>
             <div className="token-selection">
               <TokenSelect selectedToken={selectedToken} setSelectedToken={setSelectedToken} />
@@ -175,7 +180,7 @@ const SendingPopup = ({ open, onClose }: SendFundsProps): ReactElement => {
             ) : null}
           </BodyWrapper>
           <Footer>
-            <TextButton size="md" onClick={handleClose}>
+            <TextButton size="md" onClick={() => handleClose()}>
               Cancel
             </TextButton>
             <OutlinedButton

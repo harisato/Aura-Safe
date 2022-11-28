@@ -109,7 +109,11 @@ const SafeHeader = ({
         }}
       />
       <SendPopup open={sendTxType == 'single-send'} onClose={() => setSendTxType(undefined)} />
-      <MultiSendPopup open={sendTxType == 'multi-send'} onClose={() => setSendTxType(undefined)} />
+      <MultiSendPopup
+        open={sendTxType == 'multi-send'}
+        onOpen={() => setSendTxType('multi-send')}
+        onClose={() => setSendTxType(undefined)}
+      />
     </>
   )
 }
