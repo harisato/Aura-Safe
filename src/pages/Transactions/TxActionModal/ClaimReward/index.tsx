@@ -38,10 +38,14 @@ export default function Execute({ open, onClose, data, sendTx, rejectTx, disable
       amount: coins(data?.txDetails?.fee, denom),
       gas: data?.txDetails?.gas.toString(),
     }
-    const Data: MsgWithdrawDelegatorRewardEncodeObject['value'] = {
-      delegatorAddress: data?.txDetails?.txMessage?.[0]?.delegatorAddress,
-      validatorAddress: data?.txDetails?.txMessage?.[0]?.validatorAddress,
-    }
+
+    const Data: MsgWithdrawDelegatorRewardEncodeObject = data?.txDetails?.txMessage?.map((msg) => ({
+      typeUrl: MsgTypeUrl.GetReward,
+      value: {
+        delegatorAddress: msg.delegatorAddress,
+        validatorAddress: msg.validatorAddress,
+      },
+    }))
     try {
       dispatch(enqueueSnackbar(enhanceSnackbarForAction(NOTIFICATIONS.SIGN_TX_MSG)))
       const signResult = await createMessage(chainId, safeAddress, MsgTypeUrl.GetReward, Data, sendFee)
