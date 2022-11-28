@@ -37,8 +37,11 @@ export default function ClaimReward({ listReward, onClose, createTxFromApi }) {
   const chainDefaultGas = getChainDefaultGas()
   const chainDefaultGasPrice = getChainDefaultGasPrice()
   const decimal = getCoinDecimal()
-  const defaultGas =
-    chainDefaultGas.find((chain) => chain.typeUrl === MsgTypeUrl.GetReward)?.gasAmount || DEFAULT_GAS_LIMIT.toString()
+  const defaultGas = String(
+    +(
+      chainDefaultGas.find((chain) => chain.typeUrl === MsgTypeUrl.GetReward)?.gasAmount || DEFAULT_GAS_LIMIT.toString()
+    ) * listReward.length,
+  )
   const gasFee =
     defaultGas && chainDefaultGasPrice
       ? calculateGasFee(+defaultGas, +chainDefaultGasPrice, decimal)
@@ -67,7 +70,6 @@ export default function ClaimReward({ listReward, onClose, createTxFromApi }) {
       value: {
         delegatorAddress: item.delegatorAddress,
         validatorAddress: item.validatorAddress,
-        amount: 1,
       },
     }))
     try {
