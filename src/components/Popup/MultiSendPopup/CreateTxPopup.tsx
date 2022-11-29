@@ -1,6 +1,7 @@
 import { Icon } from '@aura/safe-react-components'
 import { toBase64 } from '@cosmjs/encoding'
 import { AminoMsgMultiSend, coins } from '@cosmjs/stargate'
+import BigNumber from 'bignumber.js'
 import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { generatePath } from 'react-router-dom'
@@ -77,14 +78,14 @@ export default function CreateTxPopup({
   const [openGasInput, setOpenGasInput] = useState<boolean>(false)
   const [isDisabled, setDisabled] = useState(false)
   const chainInfo = getChainInfo()
-  const [totalAmount, setTotalAmount] = useState(0)
+  const [totalAmount, setTotalAmount] = useState('0')
   useEffect(() => {
     if (!recipient) return
-    let newTotalAmount = 0
+    let newTotalAmount = new BigNumber(0)
     for (const recipientLine of recipient) {
-      newTotalAmount += +formatNumber(recipientLine.amount)
+      newTotalAmount = newTotalAmount.plus(+formatNumber(recipientLine.amount))
     }
-    setTotalAmount(newTotalAmount)
+    setTotalAmount(newTotalAmount.toString())
   }, [recipient])
 
   const recalculateFee = () => {
@@ -113,7 +114,7 @@ export default function CreateTxPopup({
           inputs: [
             {
               address: safeAddress,
-              coins: coins(formatBigNumber(+totalAmount, true), denom),
+              coins: coins(formatBigNumber(totalAmount, true), denom),
             },
           ],
           outputs: Outputs,
@@ -187,7 +188,14 @@ export default function CreateTxPopup({
 
   return (
     <Popup open={open} title="">
-      <Header subTitle="Step 2 of 2" title="Send funds" onClose={() => handleClose()} />
+      <Header
+        subTitle="Step 2 of 2"
+        title="Send funds"
+        onClose={() => {
+          setDisabled(false)
+          handleClose()
+        }}
+      />
       <Wrapper>
         <AddressInfo address={safeAddress} />
         <div className="balance">
@@ -195,15 +203,17 @@ export default function CreateTxPopup({
         </div>
         <Divider withArrow />
         <p className="label">Recipients</p>
-        {recipient?.map((recipient, index) => {
-          return (
-            <div className="recipient" key={index}>
-              <div>{`${recipient.amount} ${selectedToken?.symbol}`}</div>
-              <Icon type="arrowRight" size="sm" />
-              <AddressInfo showName={false} showAvatar={false} address={recipient.address} />
-            </div>
-          )
-        })}
+        <div className="recipients">
+          {recipient?.map((recipient, index) => {
+            return (
+              <div className="recipient" key={index}>
+                <div>{`${recipient.amount} ${selectedToken?.symbol}`}</div>
+                <Icon type="arrowRight" size="sm" />
+                <AddressInfo showName={false} showAvatar={false} address={recipient.address} />
+              </div>
+            )
+          })}
+        </div>
         <Gap height={24} />
         <Amount label="Total Amount" amount={formatNativeCurrency(totalAmount)} />
         <Divider />
@@ -231,7 +241,14 @@ export default function CreateTxPopup({
         </div>
       </Wrapper>
       <Footer>
-        <OutlinedNeutralButton size="md" onClick={() => handleClose(true)} disabled={isDisabled}>
+        <OutlinedNeutralButton
+          size="md"
+          onClick={() => {
+            setDisabled(false)
+            handleClose(true)
+          }}
+          disabled={isDisabled}
+        >
           Back
         </OutlinedNeutralButton>
         <OutlinedButton size="md" onClick={signTransaction} disabled={isDisabled}>

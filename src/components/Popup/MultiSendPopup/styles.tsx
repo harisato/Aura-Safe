@@ -110,6 +110,10 @@ export const Footer = styled.div`
 export const Wrapper = styled.div`
   width: 640px;
   padding: 24px;
+  .recipients {
+    max-height: 18vh;
+    overflow: auto;
+  }
   .recipient {
     display: flex;
     align-items: center;
