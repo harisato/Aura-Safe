@@ -74,6 +74,9 @@ function Staking(props): ReactElement {
   const [dataDelegateOfUser, setDataDelegateOfUser] = useState<any>()
   const [validateMsg, setValidateMsg] = useState<string | undefined>()
   const [gasUsed, setGasUsed] = useState(0)
+
+  const [simulateLoading, setSimulateLoading] = useState(false)
+
   const handleChangeAction = (event) => {
     setSelectedAction(event.target.value)
     setAmount('')
@@ -296,6 +299,7 @@ function Staking(props): ReactElement {
       return
     }
     try {
+      setSimulateLoading(true)
       const res = await simulate({
         encodedMsgs: Buffer.from(
           JSON.stringify(
@@ -314,7 +318,9 @@ function Staking(props): ReactElement {
       if (res?.Data?.gasUsed) {
         setGasUsed(res?.Data?.gasUsed)
       }
+      setSimulateLoading(false)
     } catch (error) {
+      setSimulateLoading(false)
       setGasUsed(0)
     }
 
@@ -357,6 +363,7 @@ function Staking(props): ReactElement {
         nativeCurrency={nativeCurrency}
         allValidator={allValidator}
         disabledButton={(loaded && !granted) || hasPendingTx}
+        simulateLoading={simulateLoading}
       />
 
       {unValidatorOfUser && unValidatorOfUser.length > 0 && (

@@ -1,4 +1,4 @@
-import { Text } from '@aura/safe-react-components'
+import { Loader, Text } from '@aura/safe-react-components'
 import BigNumber from 'bignumber.js'
 import { ReactElement, useEffect, useState } from 'react'
 import { FilledButton, OutlinedButton } from 'src/components/Button'
@@ -18,6 +18,7 @@ export default function MyDelegation(props): ReactElement {
     claimReward,
     nativeCurrency,
     disabledButton,
+    simulateLoading,
   } = props
   const [data, setData] = useState<any[]>()
 
@@ -57,10 +58,21 @@ export default function MyDelegation(props): ReactElement {
           </div>
         </div>
         {rewardAmount[0]?.amount >= 1 && !disabledButton ? (
-          <FilledButton size="md" onClick={claimReward}>
-            <span style={{ fontSize: 14, fontWeight: 590 }}>
-              Claim Reward: {rewardAmount[0] ? formatBigNumber(rewardAmount[0]?.amount) : 0} {nativeCurrency.symbol}
-            </span>
+          <FilledButton disabled={simulateLoading} size="md" onClick={claimReward}>
+            {simulateLoading ? (
+              <>
+                <span style={{ fontSize: 14, fontWeight: 590, visibility: 'hidden' }}>
+                  Claim Reward: {rewardAmount[0] ? formatBigNumber(rewardAmount[0]?.amount) : 0} {nativeCurrency.symbol}
+                </span>
+                <span style={{ position: 'absolute' }}>
+                  <Loader size="xs" />
+                </span>
+              </>
+            ) : (
+              <span style={{ fontSize: 14, fontWeight: 590 }}>
+                Claim Reward: {rewardAmount[0] ? formatBigNumber(rewardAmount[0]?.amount) : 0} {nativeCurrency.symbol}
+              </span>
+            )}
           </FilledButton>
         ) : (
           <div></div>

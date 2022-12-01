@@ -173,7 +173,6 @@ const SendingPopup = ({ open, onClose, onOpen, defaultToken }: SendFundsProps): 
                     }
                   }}
                   onClose={(address, _, reason) => {
-                    console.log(isValidAddress(address))
                     if (!address) {
                       return
                     }
