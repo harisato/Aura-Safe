@@ -5,7 +5,8 @@ import { useHistory } from 'react-router-dom'
 import Col from 'src/components/layout/Col'
 import StatusCard from 'src/components/StatusCard'
 import VoteBar from 'src/components/Vote'
-import { getChainInfo, getExplorerInfo } from 'src/config'
+import { getChainInfo, getExplorerInfo, getExplorerUriTemplate } from 'src/config'
+import { evalTemplate } from 'src/config/utils'
 import { loadedSelector } from 'src/logic/wallets/store/selectors'
 import { grantedSelector } from 'src/routes/safe/container/selector'
 import { borderLinear } from 'src/theme/variables'
@@ -102,8 +103,8 @@ function ProposalsCard({ handleVote, proposal }: Props): ReactElement {
   const loaded = useSelector(loadedSelector)
 
   const handleDetail = (proposalId) => {
-    const url = getChainInfo() as any
-    window.open(`${url.explorer}/votings/${proposalId}`)
+    const uri = getExplorerUriTemplate()['proposals']
+    window.open(evalTemplate(uri, { ['proposalsId']: proposalId }))
   }
 
   const proposalMostVotedOnName = proposal.tally.mostVotedOn.name

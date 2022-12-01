@@ -8,7 +8,8 @@ import { LoadingContainer } from 'src/components/LoaderContainer'
 import WarningPopup from 'src/components/Popup/WarningPopup'
 import StatusCard from 'src/components/StatusCard'
 import DenseTable, { StyledTableCell, StyledTableRow } from 'src/components/Table/DenseTable'
-import { getChainInfo, getInternalChainId, _getChainId } from 'src/config'
+import { getChainInfo, getExplorerUriTemplate, getInternalChainId, _getChainId } from 'src/config'
+import { evalTemplate } from 'src/config/utils'
 import { allDelegation } from 'src/logic/delegation/store/selectors'
 import useConnectWallet from 'src/logic/hooks/useConnectWallet'
 import addProposals from 'src/logic/proposal/store/actions/addProposal'
@@ -85,6 +86,11 @@ function Voting(): ReactElement {
     }
   }
 
+  const handleDetail = (proposalId) => {
+    const uri = getExplorerUriTemplate()['proposals']
+    window.open(evalTemplate(uri, { ['proposalsId']: proposalId }))
+  }
+
   return (
     <>
       <Breadcrumb>
@@ -109,7 +115,7 @@ function Voting(): ReactElement {
                   <StyledTableCell component="th" scope="row">
                     {row.id}
                   </StyledTableCell>
-                  <StyledTableCell align="left">
+                  <StyledTableCell align="left" onClick={() => handleDetail(row.id)}>
                     <Text size="lg" color="linkAura">
                       {row.title}
                     </Text>

@@ -25,12 +25,22 @@ export const getGatewayUrl = async (): Promise<IConfiguration> => {
     })
 }
 
-export function getExplorerUrl(chainId: string, baseUrl: string, type: 'txHash' | 'address' | 'api'): string {
+export function getExplorerUrl(
+  chainId: string,
+  baseUrl: string,
+  type: 'txHash' | 'address' | 'api' | 'proposals',
+): string {
   switch (type) {
     case 'txHash':
       return getExplorerUrlTxHash(chainId, baseUrl)
     case 'address':
       return `${baseUrl.endsWith('/') ? baseUrl : baseUrl + '/'}account/{{address}}`
+    case 'proposals':
+      if (baseUrl.includes('aura')) {
+        return `${baseUrl.endsWith('/') ? baseUrl : baseUrl + '/'}votings/{{proposalsId}}`
+      } else {
+        return `${baseUrl.endsWith('/') ? baseUrl : baseUrl + '/'}proposals/{{proposalsId}}`
+      }
     case 'api':
       return `${
         baseUrl.endsWith('/') ? baseUrl : baseUrl + '/'
