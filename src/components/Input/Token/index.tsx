@@ -15,7 +15,7 @@ const MenuItemWrapper = styled.div`
     margin-right: 8px;
   }
 `
-export default function TokenSelect({ selectedToken, setSelectedToken }) {
+export default function TokenSelect({ selectedToken, setSelectedToken, disabled = false }) {
   const tokenList = useSelector(extendedSafeTokensSelector) as unknown as Token[]
 
   const tokenOptions: IOption[] = tokenList.map((token: Token) => ({
@@ -30,6 +30,7 @@ export default function TokenSelect({ selectedToken, setSelectedToken }) {
       onChange={(token) => {
         setSelectedToken && setSelectedToken(token)
       }}
+      disabled={disabled}
       placeholder="Select an asset*"
       customRenderer={(value) => {
         const selectedToken = tokenList.find((token) => token.address == value)

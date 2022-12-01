@@ -12,6 +12,8 @@ import { wrapInSuspense } from 'src/utils/wrapInSuspense'
 import { generatePrefixedAddressRoutes, SAFE_ROUTES, SAFE_SUBSECTION_ROUTE } from 'src/routes/routes'
 import { getShortName } from 'src/config'
 import { FEATURES } from '@gnosis.pm/safe-react-gateway-sdk'
+import MultiSendPopup from 'src/components/Popup/MultiSendPopup'
+import SendingPopup from 'src/components/Popup/SendingPopup'
 
 const Collectibles = lazy(() => import('src/routes/safe/components/Balances/Collectibles'))
 const Coins = lazy(() => import('src/routes/safe/components/Balances/Coins'))
@@ -28,6 +30,7 @@ const Balances = (): ReactElement => {
   const { address: safeAddress, featuresEnabled, name: safeName } = useSelector(currentSafeWithNames)
   const erc721Enabled = featuresEnabled?.includes(FEATURES.ERC721)
   const [showReceive, setShowReceive] = useState<boolean>(false)
+  const [showSendingPopup, setShowSendingPopup] = useState<boolean>(false)
   const [sentToken, setSentToken] = useState<string>('')
 
   // Question mark makes matching [SAFE_SUBSECTION_SLUG] optional
@@ -50,7 +53,6 @@ const Balances = (): ReactElement => {
 
   const openReceive = () => setShowReceive(true)
   const closeReceive = () => setShowReceive(false)
-  const closeSendFunds = () => setSentToken('')
 
   return (
     <>
@@ -78,12 +80,26 @@ const Balances = (): ReactElement => {
         <Route
           path={SAFE_ROUTES.ASSETS_BALANCES}
           exact
-          render={() => wrapInSuspense(<Coins showReceiveFunds={openReceive} showSendFunds={setSentToken} />)}
+          render={() =>
+            wrapInSuspense(
+              <Coins
+                showReceiveFunds={openReceive}
+                showSendFunds={(token) => {
+                  setSentToken(token)
+                  setShowSendingPopup(true)
+                }}
+              />,
+            )
+          }
         />
       </Switch>
 
-      {/* Send Funds modal */}
-      <SendModal activeScreenType="sendFunds" isOpen={!!sentToken} onClose={closeSendFunds} selectedToken={sentToken} />
+      <SendingPopup
+        open={showSendingPopup}
+        onClose={() => setShowSendingPopup(false)}
+        onOpen={() => setShowSendingPopup(true)}
+        defaultToken={sentToken}
+      />
 
       {/* Receive Tokens modal */}
       <Modal

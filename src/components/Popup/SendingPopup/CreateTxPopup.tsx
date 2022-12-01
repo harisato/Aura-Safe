@@ -1,6 +1,6 @@
 import { toBase64 } from '@cosmjs/encoding'
 import { coins, MsgSendEncodeObject } from '@cosmjs/stargate'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { generatePath } from 'react-router-dom'
 import AddressInfo from 'src/components/AddressInfo'
@@ -51,12 +51,14 @@ export default function CreateTxPopup({
   recipient,
   selectedToken,
   amount,
+  gasUsed,
 }: {
   open: boolean
   handleClose: any
   recipient?: AddressBookEntry
   selectedToken?: Token
   amount: string
+  gasUsed: string
 }) {
   const safeAddress = extractSafeAddress()
   const userWalletAddress = useSelector(userAccountSelector)
@@ -67,8 +69,9 @@ export default function CreateTxPopup({
   const chainDefaultGas = getChainDefaultGas()
   const chainDefaultGasPrice = getChainDefaultGasPrice()
   const decimal = getCoinDecimal()
-  const defaultGas =
-    chainDefaultGas.find((chain) => chain.typeUrl === MsgTypeUrl.Send)?.gasAmount || DEFAULT_GAS_LIMIT.toString()
+  const [defaultGas, setDefaultGas] = useState(
+    chainDefaultGas.find((chain) => chain.typeUrl === MsgTypeUrl.Send)?.gasAmount || DEFAULT_GAS_LIMIT.toString(),
+  )
   const gasFee =
     defaultGas && chainDefaultGasPrice
       ? calculateGasFee(+defaultGas, +chainDefaultGasPrice, decimal)
@@ -78,6 +81,16 @@ export default function CreateTxPopup({
   const [openGasInput, setOpenGasInput] = useState<boolean>(false)
   const [isDisabled, setDisabled] = useState(false)
   const chainInfo = getChainInfo()
+  useEffect(() => {
+    if (gasUsed != '0') {
+      setDefaultGas(gasUsed)
+      setManualGasLimit(gasUsed)
+      const gasFee = chainDefaultGasPrice
+        ? calculateGasFee(+gasUsed, +chainDefaultGasPrice, decimal)
+        : chainDefaultGasPrice
+      setGasPriceFormatted(gasFee)
+    }
+  }, [gasUsed])
   const recalculateFee = () => {
     const gasFee =
       manualGasLimit && chainDefaultGasPrice
@@ -160,8 +173,8 @@ export default function CreateTxPopup({
   }
 
   return (
-    <Popup open={open} handleClose={handleClose} title="">
-      <Header subTitle="Step 2 of 2" title="Send funds" onClose={handleClose} />
+    <Popup open={open} handleClose={() => handleClose()} title="">
+      <Header subTitle="Step 2 of 2" title="Send funds" onClose={() => handleClose()} />
       <Wrapper>
         <AddressInfo address={safeAddress} />
         <div className="balance">
@@ -178,7 +191,7 @@ export default function CreateTxPopup({
           <div className="fee">
             <div className="fee-amount">
               <img alt={'nativeCurrencyLogoUri'} height={25} src={nativeCurrency.logoUri} />
-              <p>{`${gasPriceFormatted} ${nativeCurrency.symbol}`}</p>
+              <p>{`${formatNativeCurrency(+gasPriceFormatted)}`}</p>
             </div>
             <LinkButton onClick={() => setOpenGasInput(!openGasInput)}>Edit gas</LinkButton>
           </div>
@@ -197,7 +210,7 @@ export default function CreateTxPopup({
         </div>
       </Wrapper>
       <Footer>
-        <OutlinedNeutralButton size="md" onClick={handleClose} disabled={isDisabled}>
+        <OutlinedNeutralButton size="md" onClick={() => handleClose(true)} disabled={isDisabled}>
           Back
         </OutlinedNeutralButton>
         <OutlinedButton size="md" onClick={signTransaction} disabled={isDisabled}>

@@ -46,7 +46,9 @@ export const formatNativeToken = (amount) => {
 }
 export const formatNativeCurrency = (amount) => {
   const nativeCurrency = getNativeCurrency()
-  return `${new BigNumber(new BigNumber(+amount).toFixed(+nativeCurrency.decimals)).toFixed()} ${nativeCurrency.symbol}`
+  return `${new BigNumber(new BigNumber(+amount).toFixed(+nativeCurrency.decimals, 2)).toFixed()} ${
+    nativeCurrency.symbol
+  }`
 }
 export const calcFee = (gasAmount) => {
   const chainInfo = getChainInfo()

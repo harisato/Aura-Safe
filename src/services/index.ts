@@ -220,6 +220,9 @@ export async function getAddress(safeAddress: string): Promise<IResponse<any>> {
 export function auth(payload: any): Promise<IResponse<any>> {
   return axios.post(`${baseUrl}/auth`, payload).then((res) => res.data)
 }
+export async function simulate(payload: any): Promise<IResponse<any>> {
+  return axios.post(`${baseUrl}/transaction/simulate`, payload).then((res) => res.data)
+}
 
 //STAKING
 

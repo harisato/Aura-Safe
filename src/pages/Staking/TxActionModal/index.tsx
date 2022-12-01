@@ -29,7 +29,7 @@ const Wrapper = styled.div`
   width: 480px;
   padding: 24px;
 `
-export default function TxActionModal({ open, onClose, action, validator, amount, dstValidator, listReward }) {
+export default function TxActionModal({ open, onClose, action, validator, amount, dstValidator, listReward, gasUsed }) {
   const chainInfo = getChainInfo()
   const dispatch = useDispatch()
   const safeAddress = extractSafeAddress()
@@ -86,10 +86,22 @@ export default function TxActionModal({ open, onClose, action, validator, amount
     <Popup title="" open={open} handleClose={onClose}>
       <Header onClose={onClose} title={title} />
       {action == MsgTypeUrl.Delegate && (
-        <Delegate onClose={onClose} validator={validator} amount={amount} createTxFromApi={createTxFromApi} />
+        <Delegate
+          gasUsed={gasUsed}
+          onClose={onClose}
+          validator={validator}
+          amount={amount}
+          createTxFromApi={createTxFromApi}
+        />
       )}
       {action == MsgTypeUrl.Undelegate && (
-        <Undelegate onClose={onClose} validator={validator} amount={amount} createTxFromApi={createTxFromApi} />
+        <Undelegate
+          gasUsed={gasUsed}
+          onClose={onClose}
+          validator={validator}
+          amount={amount}
+          createTxFromApi={createTxFromApi}
+        />
       )}
       {action == MsgTypeUrl.Redelegate && (
         <Redelegate
@@ -98,10 +110,11 @@ export default function TxActionModal({ open, onClose, action, validator, amount
           amount={amount}
           createTxFromApi={createTxFromApi}
           dstValidator={dstValidator}
+          gasUsed={gasUsed}
         />
       )}
       {action == MsgTypeUrl.GetReward && (
-        <ClaimReward onClose={onClose} listReward={listReward} createTxFromApi={createTxFromApi} />
+        <ClaimReward onClose={onClose} gasUsed={gasUsed} listReward={listReward} createTxFromApi={createTxFromApi} />
       )}
     </Popup>
   )

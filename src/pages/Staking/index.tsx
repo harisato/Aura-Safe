@@ -7,11 +7,17 @@ import ActionModal from './ActionModal/index'
 import Undelegating from './Undelegating'
 import Validators from './Validators'
 
-import { getInternalChainId, getNativeCurrency } from 'src/config'
-import { getAllDelegateOfUser, getAllUnDelegateOfUser, getAllValidator, getDelegateOfUser } from 'src/services/index'
+import { getCoinMinimalDenom, getInternalChainId, getNativeCurrency } from 'src/config'
+import {
+  getAllDelegateOfUser,
+  getAllUnDelegateOfUser,
+  getAllValidator,
+  getDelegateOfUser,
+  simulate,
+} from 'src/services/index'
 
 import queryString from 'query-string'
-import { extractSafeAddress } from 'src/routes/routes'
+import { extractPrefixedSafeAddress, extractSafeAddress } from 'src/routes/routes'
 
 import { useDispatch, useSelector } from 'react-redux'
 import { MsgTypeUrl } from 'src/logic/providers/constants/constant'
@@ -26,12 +32,18 @@ import enqueueSnackbar from 'src/logic/notifications/store/actions/enqueueSnackb
 import { NOTIFICATIONS } from 'src/logic/notifications'
 import { usePagedQueuedTransactions } from '../Transactions/hooks/usePagedQueuedTransactions'
 import BigNumber from 'bignumber.js'
+import { coin } from '@cosmjs/stargate'
+import { currentSafeWithNames } from 'src/logic/safe/store/selectors'
 
 function Staking(props): ReactElement {
   const dispatch = useDispatch()
   const granted = useSelector(grantedSelector)
+  const { safeId } = extractPrefixedSafeAddress()
+
+  const denom = getCoinMinimalDenom()
   const { connectWalletState, onConnectWalletShow, onConnectWalletHide } = useConnectWallet()
   const { count, isLoading, hasMore, next, transactions } = usePagedQueuedTransactions()
+  const currentSafeData = useSelector(currentSafeWithNames)
   const loaded = useSelector(loadedSelector)
 
   const [hasPendingTx, setHasPendingTx] = useState(false)
@@ -53,7 +65,7 @@ function Staking(props): ReactElement {
   const [allValidator, setAllValidator] = useState([])
   const [validatorOfUser, setValidatorOfUser] = useState([])
   const [unValidatorOfUser, setUnValidatorOfUser] = useState([])
-  const [listReward, setListReward] = useState([])
+  const [listReward, setListReward] = useState<any>([])
 
   const [valueDelegate, setValueDelegate] = React.useState('none')
   const [itemValidator, setItemValidator] = useState<any>()
@@ -61,7 +73,7 @@ function Staking(props): ReactElement {
   const [itemDelegate, setItemDelegate] = useState<any>()
   const [dataDelegateOfUser, setDataDelegateOfUser] = useState<any>()
   const [validateMsg, setValidateMsg] = useState<string | undefined>()
-
+  const [gasUsed, setGasUsed] = useState(0)
   const handleChangeAction = (event) => {
     setSelectedAction(event.target.value)
     setAmount('')
@@ -178,11 +190,34 @@ function Staking(props): ReactElement {
     setItemValidator(dataTemp)
   }
 
-  const handleSubmit = (action) => {
+  const handleSubmit = async (action) => {
     if (action === 'delegate') {
       if (amount > formatBigNumber(availableBalance?.amount) || amount == 0) {
         setValidateMsg('Invalid amount! Please check and try again.')
         return
+      }
+      try {
+        const res = await simulate({
+          encodedMsgs: Buffer.from(
+            JSON.stringify([
+              {
+                typeUrl: MsgTypeUrl.Delegate,
+                value: {
+                  amount: coin(formatBigNumber(amount, true), denom),
+                  delegatorAddress: SafeAddress,
+                  validatorAddress: itemValidator.safeStaking,
+                },
+              },
+            ]),
+            'binary',
+          ).toString('base64'),
+          safeId,
+        })
+        if (res?.Data?.gasUsed) {
+          setGasUsed(res?.Data?.gasUsed)
+        }
+      } catch (error) {
+        setGasUsed(0)
       }
       setTypeStaking(MsgTypeUrl.Delegate)
     }
@@ -192,6 +227,31 @@ function Staking(props): ReactElement {
         setValidateMsg('Invalid amount! Please check and try again.')
         return
       }
+      try {
+        const res = await simulate({
+          encodedMsgs: Buffer.from(
+            JSON.stringify([
+              {
+                typeUrl: MsgTypeUrl.Redelegate,
+                value: {
+                  amount: coin(formatBigNumber(amount, true), denom),
+                  delegatorAddress: SafeAddress,
+                  validatorSrcAddress: itemValidator.safeStaking,
+                  validatorDstAddress: valueDelegate,
+                },
+              },
+            ]),
+            'binary',
+          ).toString('base64'),
+          safeId,
+        })
+        if (res?.Data?.gasUsed) {
+          setGasUsed(res?.Data?.gasUsed)
+        }
+      } catch (error) {
+        setGasUsed(0)
+      }
+
       setTypeStaking(MsgTypeUrl.Redelegate)
     }
 
@@ -200,17 +260,64 @@ function Staking(props): ReactElement {
         setValidateMsg('Invalid amount! Please check and try again.')
         return
       }
+      try {
+        const res = await simulate({
+          encodedMsgs: Buffer.from(
+            JSON.stringify([
+              {
+                typeUrl: MsgTypeUrl.Undelegate,
+                value: {
+                  amount: coin(formatBigNumber(amount, true), denom),
+                  delegatorAddress: SafeAddress,
+                  validatorAddress: itemValidator.safeStaking,
+                },
+              },
+            ]),
+            'binary',
+          ).toString('base64'),
+          safeId,
+        })
+        if (res?.Data?.gasUsed) {
+          setGasUsed(res?.Data?.gasUsed)
+        }
+      } catch (error) {
+        setGasUsed(0)
+      }
+
       setTypeStaking(MsgTypeUrl.Undelegate)
     }
     setIsOpenReview(true)
     setIsOpenDelagate(false)
   }
 
-  const claimReward = () => {
+  const claimReward = async () => {
     if (!loaded) {
       onConnectWalletShow()
       return
     }
+    try {
+      const res = await simulate({
+        encodedMsgs: Buffer.from(
+          JSON.stringify(
+            listReward.map((item) => ({
+              typeUrl: MsgTypeUrl.GetReward,
+              value: {
+                delegatorAddress: item.delegatorAddress,
+                validatorAddress: item.validatorAddress,
+              },
+            })),
+          ),
+          'binary',
+        ).toString('base64'),
+        safeId,
+      })
+      if (res?.Data?.gasUsed) {
+        setGasUsed(res?.Data?.gasUsed)
+      }
+    } catch (error) {
+      setGasUsed(0)
+    }
+
     setIsOpenReview(true)
     setIsOpenDelagate(false)
     setTypeStaking(MsgTypeUrl.GetReward)
@@ -302,6 +409,7 @@ function Staking(props): ReactElement {
         dstValidator={valueDelegate}
         amount={amount}
         listReward={listReward}
+        gasUsed={Math.round(gasUsed * 1.3)}
       />
 
       <ConnectWalletModal isOpen={connectWalletState.showConnect} onClose={onConnectWalletHide}></ConnectWalletModal>

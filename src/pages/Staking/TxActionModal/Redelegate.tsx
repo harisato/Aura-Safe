@@ -32,7 +32,7 @@ import { ICreateSafeTransaction } from 'src/types/transaction'
 import { calcFee, formatBigNumber, formatNativeCurrency, formatNativeToken } from 'src/utils'
 import { Wrapper } from './style'
 
-export default function Redelegate({ validator, amount, onClose, createTxFromApi, dstValidator }) {
+export default function Redelegate({ validator, amount, onClose, createTxFromApi, dstValidator, gasUsed }) {
   const safeAddress = extractSafeAddress()
   const dispatch = useDispatch()
   const { ethBalance: balance } = useSelector(currentSafeWithNames)
@@ -50,7 +50,9 @@ export default function Redelegate({ validator, amount, onClose, createTxFromApi
   const chainDefaultGasPrice = getChainDefaultGasPrice()
   const decimal = getCoinDecimal()
   const defaultGas =
-    chainDefaultGas.find((chain) => chain.typeUrl === MsgTypeUrl.Redelegate)?.gasAmount || DEFAULT_GAS_LIMIT.toString()
+    gasUsed ||
+    chainDefaultGas.find((chain) => chain.typeUrl === MsgTypeUrl.Redelegate)?.gasAmount ||
+    DEFAULT_GAS_LIMIT.toString()
   const gasFee =
     defaultGas && chainDefaultGasPrice
       ? calculateGasFee(+defaultGas, +chainDefaultGasPrice, decimal)
@@ -130,7 +132,7 @@ export default function Redelegate({ validator, amount, onClose, createTxFromApi
           <div className="fee">
             <div className="fee-amount">
               <img alt={'nativeCurrencyLogoUri'} height={25} src={nativeCurrency.logoUri} />
-              <p>{`${gasPriceFormatted} ${nativeCurrency.symbol}`}</p>
+              <p>{`${formatNativeCurrency(gasPriceFormatted)}`}</p>
             </div>
             <LinkButton onClick={() => setOpenGasInput(!openGasInput)}>Edit gas</LinkButton>
           </div>
@@ -150,7 +152,7 @@ export default function Redelegate({ validator, amount, onClose, createTxFromApi
       </Wrapper>
       <Footer>
         <OutlinedNeutralButton size="md" onClick={onClose} disabled={isDisabled}>
-          Back
+          Close
         </OutlinedNeutralButton>
         <OutlinedButton size="md" onClick={signTransaction} disabled={isDisabled}>
           Submit

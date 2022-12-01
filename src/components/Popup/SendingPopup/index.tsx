@@ -1,7 +1,7 @@
 import { ReactElement, useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 
-import { getNativeCurrency } from 'src/config'
+import { getCoinMinimalDenom, getNativeCurrency } from 'src/config'
 import { currentNetworkAddressBook } from 'src/logic/addressBook/store/selectors'
 import { SpendingLimit } from 'src/logic/safe/store/models/safe'
 
@@ -22,6 +22,12 @@ import Header from '../Header'
 import CreateTxPopup from './CreateTxPopup'
 import CurrentSafe from './CurrentSafe'
 import { BodyWrapper, Footer, PopupWrapper } from './styles'
+import { simulate } from 'src/services'
+import { MsgTypeUrl } from 'src/logic/providers/constants/constant'
+import { coin, coins } from '@cosmjs/stargate'
+import { formatBigNumber } from 'src/utils'
+import { extractPrefixedSafeAddress, extractSafeAddress } from 'src/routes/routes'
+import { Loader } from '@aura/safe-react-components'
 
 export type SendFundsTx = {
   amount?: string
@@ -35,12 +41,17 @@ export type SendFundsTx = {
 type SendFundsProps = {
   open: boolean
   onClose: () => void
+  onOpen: () => void
+  defaultToken?: string
 }
 
-const SendingPopup = ({ open, onClose }: SendFundsProps): ReactElement => {
+const SendingPopup = ({ open, onClose, onOpen, defaultToken }: SendFundsProps): ReactElement => {
   const tokens = useSelector(extendedSafeTokensSelector)
-  const addressBook = useSelector(currentNetworkAddressBook)
-  const nativeCurrency = getNativeCurrency()
+  const safeAddress = extractSafeAddress()
+  const denom = getCoinMinimalDenom()
+  const { safeId } = extractPrefixedSafeAddress()
+  const [simulateLoading, setSimulateLoading] = useState(false)
+  const [gasUsed, setGasUsed] = useState(0)
   const chainId = useSelector(currentChainId)
   const [createTxPopupOpen, setCreateTxPopupOpen] = useState(false)
   const [amount, setAmount] = useState('')
@@ -48,9 +59,19 @@ const SendingPopup = ({ open, onClose }: SendFundsProps): ReactElement => {
   const [recipientFocus, setRecipientFocus] = useState(false)
   const [addressValidateMsg, setAddressValidateMsg] = useState('')
   const [amountValidateMsg, setAmountValidateMsg] = useState('')
-  const [selectedToken, setSelectedToken] = useState('')
+  const [selectedToken, setSelectedToken] = useState(defaultToken || '')
+  useEffect(() => {
+    if (defaultToken) {
+      setSelectedToken(defaultToken)
+    }
+  })
 
-  const handleClose = () => {
+  const handleClose = (isBack = false) => {
+    if (isBack) {
+      onOpen()
+      setCreateTxPopupOpen(false)
+      return
+    }
     setRecipient(undefined)
     setAmount('')
     setSelectedToken('')
@@ -76,11 +97,37 @@ const SendingPopup = ({ open, onClose }: SendFundsProps): ReactElement => {
     }
   }
 
-  const createTx = () => {
+  const createTx = async () => {
     if (+amount == 0 || amount == '') {
       setAmountValidateMsg('Invalid amount. Please try again.')
       return
     }
+    setSimulateLoading(true)
+    try {
+      const res = await simulate({
+        encodedMsgs: Buffer.from(
+          JSON.stringify([
+            {
+              typeUrl: MsgTypeUrl.Send,
+              value: {
+                amount: coins(formatBigNumber(amount, true), denom),
+                fromAddress: safeAddress,
+                toAddress: recipient?.address,
+              },
+            },
+          ]),
+          'binary',
+        ).toString('base64'),
+        safeId,
+      })
+      if (res?.Data?.gasUsed) {
+        setGasUsed(res?.Data?.gasUsed)
+      }
+    } catch (error) {
+      setSimulateLoading(false)
+      setGasUsed(0)
+    }
+    setSimulateLoading(false)
     onClose()
     setCreateTxPopupOpen(true)
   }
@@ -115,16 +162,26 @@ const SendingPopup = ({ open, onClose }: SendFundsProps): ReactElement => {
                   value={recipient}
                   onFocus={() => setAddressValidateMsg('')}
                   onChange={(recipient) => {
-                    setRecipientFocus(false)
-                    setRecipient(recipient)
+                    if (!isValidAddress(recipient.address)) {
+                      setAddressValidateMsg('Invalid address input! Please check and try again.')
+                      setRecipientFocus(true)
+
+                      setRecipient({ address: recipient.address, chainId, name: '' })
+                    } else {
+                      setRecipientFocus(false)
+                      setRecipient(recipient)
+                    }
                   }}
                   onClose={(address, _, reason) => {
+                    console.log(isValidAddress(address))
                     if (!address) {
                       return
                     }
                     if (reason == 'blur') {
                       if (!isValidAddress(address)) {
                         setAddressValidateMsg('Invalid address input! Please check and try again.')
+                        setRecipientFocus(true)
+
                         setRecipient({ address: address, chainId, name: '' })
                       } else {
                         setRecipientFocus(false)
@@ -137,7 +194,7 @@ const SendingPopup = ({ open, onClose }: SendFundsProps): ReactElement => {
               </>
             )}
             <Gap height={16} />
-            <TokenSelect selectedToken={selectedToken} setSelectedToken={setSelectedToken} />
+            <TokenSelect selectedToken={selectedToken} setSelectedToken={setSelectedToken} disabled={!!defaultToken} />
             <Gap height={16} />
             <div className="amount-section">
               <TextField type="number" label="Amount" value={amount} onChange={(value) => setAmount(value)} />
@@ -156,11 +213,18 @@ const SendingPopup = ({ open, onClose }: SendFundsProps): ReactElement => {
               Cancel
             </TextButton>
             <OutlinedButton
-              disabled={!selectedToken || !amount || !recipient || !!addressValidateMsg || !!amountValidateMsg}
+              disabled={
+                !selectedToken ||
+                !amount ||
+                !recipient ||
+                !!addressValidateMsg ||
+                !!amountValidateMsg ||
+                simulateLoading
+              }
               size="md"
               onClick={createTx}
             >
-              Review
+              {simulateLoading ? <Loader size="xs" /> : 'Review'}
             </OutlinedButton>
           </Footer>
         </PopupWrapper>
@@ -171,6 +235,7 @@ const SendingPopup = ({ open, onClose }: SendFundsProps): ReactElement => {
         amount={amount}
         open={createTxPopupOpen}
         handleClose={handleClose}
+        gasUsed={String(Math.round(gasUsed * 1.3))}
       />
     </>
   )

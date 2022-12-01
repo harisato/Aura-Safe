@@ -52,11 +52,13 @@ export default function CreateTxPopup({
   handleClose,
   recipient,
   selectedToken,
+  gasUsed,
 }: {
   open: boolean
   handleClose: any
   recipient?: RecipientProps[]
   selectedToken?: Token
+  gasUsed: string
 }) {
   const safeAddress = extractSafeAddress()
   const userWalletAddress = useSelector(userAccountSelector)
@@ -67,8 +69,9 @@ export default function CreateTxPopup({
   const chainDefaultGas = getChainDefaultGas()
   const chainDefaultGasPrice = getChainDefaultGasPrice()
   const decimal = getCoinDecimal()
-  const defaultGas =
-    chainDefaultGas.find((chain) => chain.typeUrl === MsgTypeUrl.Send)?.gasAmount || DEFAULT_GAS_LIMIT.toString()
+  const [defaultGas, setDefaultGas] = useState(
+    chainDefaultGas.find((chain) => chain.typeUrl === MsgTypeUrl.Send)?.gasAmount || DEFAULT_GAS_LIMIT.toString(),
+  )
   const gasFee =
     defaultGas && chainDefaultGasPrice
       ? calculateGasFee(+defaultGas, +chainDefaultGasPrice, decimal)
@@ -79,6 +82,16 @@ export default function CreateTxPopup({
   const [isDisabled, setDisabled] = useState(false)
   const chainInfo = getChainInfo()
   const [totalAmount, setTotalAmount] = useState('0')
+  useEffect(() => {
+    if (gasUsed != '0') {
+      setDefaultGas(gasUsed)
+      setManualGasLimit(gasUsed)
+      const gasFee = chainDefaultGasPrice
+        ? calculateGasFee(+gasUsed, +chainDefaultGasPrice, decimal)
+        : chainDefaultGasPrice
+      setGasPriceFormatted(gasFee)
+    }
+  }, [gasUsed])
   useEffect(() => {
     if (!recipient) return
     let newTotalAmount = new BigNumber(0)
@@ -96,7 +109,6 @@ export default function CreateTxPopup({
     setGasPriceFormatted(gasFee)
     setOpenGasInput(!openGasInput)
   }
-
   const signTransaction = async () => {
     setDisabled(true)
     const chainId = chainInfo.chainId
@@ -185,7 +197,6 @@ export default function CreateTxPopup({
       )
     }
   }
-
   return (
     <Popup open={open} title="">
       <Header
@@ -222,7 +233,7 @@ export default function CreateTxPopup({
           <div className="fee">
             <div className="fee-amount">
               <img alt={'nativeCurrencyLogoUri'} height={25} src={nativeCurrency.logoUri} />
-              <p>{`${gasPriceFormatted} ${nativeCurrency.symbol}`}</p>
+              <p>{`${formatNativeCurrency(gasPriceFormatted)}`}</p>
             </div>
             <LinkButton onClick={() => setOpenGasInput(!openGasInput)}>Edit gas</LinkButton>
           </div>

@@ -73,6 +73,17 @@ export default function ModalStaking(props) {
 
   const [arrRedelegate, setArrDelegate] = useState([])
   const allValidatorData = useSelector(allValidatorSelector)
+  const [loadingSimulate, setLoadingSimulate] = useState(false)
+
+  useEffect(() => {
+    if (!modalIsOpen || validateMsg) {
+      setLoadingSimulate(false)
+    }
+  }, [modalIsOpen, validateMsg])
+  const submit = () => {
+    setLoadingSimulate(true)
+    handleSubmit(selectedAction)
+  }
 
   useEffect(() => {
     const dataTemp: any = []
@@ -181,22 +192,22 @@ export default function ModalStaking(props) {
         <FotterModal>
           <CloseButton title="Close" onClick={handleClose} />
           {selectedAction === 'delegate' && (
-            <StyledButtonSubmit disabled={!!validateMsg} size="md" onClick={() => handleSubmit(selectedAction)}>
-              Delegate
+            <StyledButtonSubmit disabled={!!validateMsg || loadingSimulate} size="md" onClick={submit}>
+              {loadingSimulate ? <Loader size="xs" /> : 'Delegate'}
             </StyledButtonSubmit>
           )}
           {selectedAction === 'redelegate' && (
             <StyledButtonSubmit
-              disabled={!!validateMsg || valueDelegate == 'none'}
+              disabled={!!validateMsg || loadingSimulate || valueDelegate == 'none'}
               size="md"
-              onClick={() => handleSubmit(selectedAction)}
+              onClick={submit}
             >
-              Redelegate
+              {loadingSimulate ? <Loader size="xs" /> : 'Redelegate'}
             </StyledButtonSubmit>
           )}
           {selectedAction === 'undelegate' && (
-            <StyledButtonSubmit disabled={!!validateMsg} size="md" onClick={() => handleSubmit(selectedAction)}>
-              Undelegate
+            <StyledButtonSubmit disabled={!!validateMsg || loadingSimulate} size="md" onClick={submit}>
+              {loadingSimulate ? <Loader size="xs" /> : 'Undelegate'}
             </StyledButtonSubmit>
           )}
           {selectedAction === 'manage' && (

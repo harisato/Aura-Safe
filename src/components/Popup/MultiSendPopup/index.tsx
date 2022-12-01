@@ -8,12 +8,19 @@ import Gap from 'src/components/Gap'
 import TextArea from 'src/components/Input/TextArea'
 import TokenSelect from 'src/components/Input/Token'
 import DenseTable, { StyledTableCell, StyledTableRow } from 'src/components/Table/DenseTable'
-import { formatNativeCurrency, formatNumber } from 'src/utils'
+import { formatBigNumber, formatNativeCurrency, formatNumber } from 'src/utils'
 import { isValidAddress } from 'src/utils/isValidAddress'
 import { Popup } from '..'
 import Header from '../Header'
 import CreateTxPopup from './CreateTxPopup'
 import { BodyWrapper, Footer, PopupWrapper } from './styles'
+import { AminoMsgMultiSend, coin, coins } from '@cosmjs/stargate'
+import { getCoinMinimalDenom } from 'src/config'
+import { MsgTypeUrl } from 'src/logic/providers/constants/constant'
+import { extractSafeAddress, extractPrefixedSafeAddress } from 'src/routes/routes'
+import { simulate } from 'src/services'
+import { Loader } from '@aura/safe-react-components'
+import BigNumber from 'bignumber.js'
 
 export type RecipientProps = {
   amount: string
@@ -26,10 +33,14 @@ type SendFundsProps = {
   onOpen: () => void
 }
 
-const SendingPopup = ({ open, onClose, onOpen }: SendFundsProps): ReactElement => {
+const MultiSendPopup = ({ open, onClose, onOpen }: SendFundsProps): ReactElement => {
   const tokens = useSelector(extendedSafeTokensSelector)
   const [createTxPopupOpen, setCreateTxPopupOpen] = useState(false)
-
+  const safeAddress = extractSafeAddress()
+  const denom = getCoinMinimalDenom()
+  const { safeId } = extractPrefixedSafeAddress()
+  const [simulateLoading, setSimulateLoading] = useState(false)
+  const [gasUsed, setGasUsed] = useState(0)
   const [recipient, setRecipient] = useState<RecipientProps[]>([])
   const [errorLine, setErrorLine] = useState<number[]>([])
   const [addressValidateErrorMsg, setAddressValidateErrorMsg] = useState('')
@@ -37,7 +48,7 @@ const SendingPopup = ({ open, onClose, onOpen }: SendFundsProps): ReactElement =
   const [amountValidateMsg, setAmountValidateMsg] = useState('')
   const [selectedToken, setSelectedToken] = useState('')
   const [rawRecipient, setRawRecipient] = useState('')
-  const [totalAmount, setTotalAmount] = useState(0)
+  const [totalAmount, setTotalAmount] = useState('0')
   const [balance, setBalance] = useState(0)
 
   useEffect(() => {
@@ -53,7 +64,7 @@ const SendingPopup = ({ open, onClose, onOpen }: SendFundsProps): ReactElement =
     setRawRecipient('')
     setAmountValidateMsg('')
     setCreateTxPopupOpen(false)
-    setTotalAmount(0)
+    setTotalAmount('0')
     setBalance(0)
   }
   const handleClose = (isBack = false) => {
@@ -74,7 +85,7 @@ const SendingPopup = ({ open, onClose, onOpen }: SendFundsProps): ReactElement =
     }
     const newRecipient: RecipientProps[] = []
     const newErrorLine: number[] = []
-    let newTotalAmount = 0
+    let newTotalAmount = new BigNumber(0)
     const rawRecipientLine = rawRecipient.split('\n')
     for (let i = 0; i < rawRecipientLine.length; i++) {
       const recipientLine = rawRecipientLine[i]
@@ -84,7 +95,7 @@ const SendingPopup = ({ open, onClose, onOpen }: SendFundsProps): ReactElement =
       // const alreadyAdd = newRecipient.find((r) => r.address == address)
       if (isValidAddress(address) && !isNaN(+amount) && amount != '' && +amount > 0) {
         newRecipient.push({ address: address, amount: formatNumber(amount) })
-        newTotalAmount += +formatNumber(amount)
+        newTotalAmount = newTotalAmount.plus(new BigNumber(amount))
       } else {
         newRecipient.push({ address: address || '', amount: formatNumber(amount) || '' })
         newErrorLine.push(i)
@@ -101,7 +112,7 @@ const SendingPopup = ({ open, onClose, onOpen }: SendFundsProps): ReactElement =
     }
     setErrorLine(newErrorLine)
     setRecipient(newRecipient)
-    setTotalAmount(newTotalAmount)
+    setTotalAmount(newTotalAmount.toString())
   }
 
   useEffect(() => {
@@ -121,7 +132,39 @@ const SendingPopup = ({ open, onClose, onOpen }: SendFundsProps): ReactElement =
     }
   }, [rawRecipient])
 
-  const createTx = () => {
+  const createTx = async () => {
+    setSimulateLoading(true)
+    const Outputs: AminoMsgMultiSend['value']['outputs'] = recipient.map((r) => ({
+      address: r.address,
+      coins: coins(formatBigNumber(+r.amount, true), denom),
+    }))
+    const Msg: any = [
+      {
+        typeUrl: MsgTypeUrl.MultiSend,
+        value: {
+          inputs: [
+            {
+              address: safeAddress,
+              coins: coins(formatBigNumber(totalAmount, true), denom),
+            },
+          ],
+          outputs: Outputs,
+        },
+      },
+    ]
+    try {
+      const res = await simulate({
+        encodedMsgs: Buffer.from(JSON.stringify(Msg), 'binary').toString('base64'),
+        safeId,
+      })
+      if (res?.Data?.gasUsed) {
+        setGasUsed(res?.Data?.gasUsed)
+      }
+    } catch (error) {
+      setSimulateLoading(false)
+      setGasUsed(0)
+    }
+    setSimulateLoading(false)
     onClose()
     setCreateTxPopupOpen(true)
   }
@@ -189,12 +232,13 @@ const SendingPopup = ({ open, onClose, onOpen }: SendFundsProps): ReactElement =
                 !recipient ||
                 !!addressValidateErrorMsg ||
                 !!amountValidateMsg ||
-                !addressValidateSuccessMsg
+                !addressValidateSuccessMsg ||
+                simulateLoading
               }
               size="md"
               onClick={createTx}
             >
-              Review
+              {simulateLoading ? <Loader size="xs" /> : 'Review'}
             </OutlinedButton>
           </Footer>
         </PopupWrapper>
@@ -204,9 +248,10 @@ const SendingPopup = ({ open, onClose, onOpen }: SendFundsProps): ReactElement =
         selectedToken={tokens.find((t) => t.address == selectedToken)}
         open={createTxPopupOpen}
         handleClose={handleClose}
+        gasUsed={String(Math.round(gasUsed * 1.3))}
       />
     </>
   )
 }
 
-export default SendingPopup
+export default MultiSendPopup

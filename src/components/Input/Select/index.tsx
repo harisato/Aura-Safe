@@ -79,6 +79,7 @@ const Select = ({
   children,
   placeholder,
   customRenderer,
+  disabled,
 }: {
   value: string | number
   onChange: (value: unknown) => void
@@ -86,6 +87,7 @@ const Select = ({
   children?: ReactNode[]
   placeholder?: string
   customRenderer?: any
+  disabled?: boolean
 }) => {
   const classes = useStyles()
 
@@ -116,6 +118,7 @@ const Select = ({
         classes={{
           select: classes.select,
         }}
+        disabled={disabled}
         placeholder={placeholder}
         displayEmpty
         renderValue={(value) => {

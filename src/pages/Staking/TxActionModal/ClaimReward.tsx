@@ -25,10 +25,10 @@ import { userAccountSelector } from 'src/logic/wallets/store/selectors'
 import { extractSafeAddress } from 'src/routes/routes'
 import { DEFAULT_GAS_LIMIT } from 'src/services/constant/common'
 import { ICreateSafeTransaction } from 'src/types/transaction'
-import { calcFee, formatNativeCurrency, formatNativeToken } from 'src/utils'
+import { calcFee, formatBigNumber, formatNativeCurrency, formatNativeToken } from 'src/utils'
 import { Wrapper } from './style'
 
-export default function ClaimReward({ listReward, onClose, createTxFromApi }) {
+export default function ClaimReward({ listReward, onClose, createTxFromApi, gasUsed }) {
   const safeAddress = extractSafeAddress()
   const dispatch = useDispatch()
   const userWalletAddress = useSelector(userAccountSelector)
@@ -37,11 +37,14 @@ export default function ClaimReward({ listReward, onClose, createTxFromApi }) {
   const chainDefaultGas = getChainDefaultGas()
   const chainDefaultGasPrice = getChainDefaultGasPrice()
   const decimal = getCoinDecimal()
-  const defaultGas = String(
-    +(
-      chainDefaultGas.find((chain) => chain.typeUrl === MsgTypeUrl.GetReward)?.gasAmount || DEFAULT_GAS_LIMIT.toString()
-    ) * listReward.length,
-  )
+  const defaultGas =
+    gasUsed ||
+    String(
+      +(
+        chainDefaultGas.find((chain) => chain.typeUrl === MsgTypeUrl.GetReward)?.gasAmount ||
+        DEFAULT_GAS_LIMIT.toString()
+      ) * listReward.length,
+    )
   const gasFee =
     defaultGas && chainDefaultGasPrice
       ? calculateGasFee(+defaultGas, +chainDefaultGasPrice, decimal)
@@ -116,7 +119,7 @@ export default function ClaimReward({ listReward, onClose, createTxFromApi }) {
           <div className="fee">
             <div className="fee-amount">
               <img alt={'nativeCurrencyLogoUri'} height={25} src={nativeCurrency.logoUri} />
-              <p>{`${gasPriceFormatted} ${nativeCurrency.symbol}`}</p>
+              <p>{`${formatNativeCurrency(gasPriceFormatted)}`}</p>
             </div>
             <LinkButton onClick={() => setOpenGasInput(!openGasInput)}>Edit gas</LinkButton>
           </div>
@@ -136,7 +139,7 @@ export default function ClaimReward({ listReward, onClose, createTxFromApi }) {
       </Wrapper>
       <Footer>
         <OutlinedNeutralButton size="md" onClick={onClose} disabled={isDisabled}>
-          Back
+          Close
         </OutlinedNeutralButton>
         <OutlinedButton size="md" onClick={signTransaction} disabled={isDisabled}>
           Submit
