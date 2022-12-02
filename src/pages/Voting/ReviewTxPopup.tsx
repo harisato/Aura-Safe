@@ -1,6 +1,6 @@
 import { toBase64 } from '@cosmjs/encoding'
 import { MsgVoteEncodeObject } from '@cosmjs/stargate'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { generatePath } from 'react-router-dom'
 
@@ -58,17 +58,19 @@ type ReviewVotingTxProps = {
   onBack: () => void
   proposal?: IProposal
   vote: string
+  gasUsed: string
 }
 
-const ReviewTxPopup = ({ open, onClose, proposal, vote, onBack }: ReviewVotingTxProps): React.ReactElement => {
+const ReviewTxPopup = ({ open, onClose, proposal, vote, onBack, gasUsed }: ReviewVotingTxProps): React.ReactElement => {
   const dispatch = useDispatch()
   const safeAddress = extractSafeAddress()
   const nativeCurrency = getNativeCurrency()
   const chainDefaultGas = getChainDefaultGas()
   const chainDefaultGasPrice = getChainDefaultGasPrice()
   const decimal = getCoinDecimal()
-  const defaultGas =
-    chainDefaultGas.find((chain) => chain.typeUrl === MsgTypeUrl.Vote)?.gasAmount || DEFAULT_GAS_LIMIT.toString()
+  const [defaultGas, setDefaultGas] = useState(
+    chainDefaultGas.find((chain) => chain.typeUrl === MsgTypeUrl.Vote)?.gasAmount || DEFAULT_GAS_LIMIT.toString(),
+  )
   const gasFee =
     defaultGas && chainDefaultGasPrice
       ? calculateGasFee(+defaultGas, +chainDefaultGasPrice, decimal)
@@ -79,7 +81,17 @@ const ReviewTxPopup = ({ open, onClose, proposal, vote, onBack }: ReviewVotingTx
   const chainInfo = getChainInfo()
   const userWalletAddress = useSelector(userAccountSelector)
   const [openGasInput, setOpenGasInput] = useState<boolean>(false)
-
+  useEffect(() => {
+    if (gasUsed != '0') {
+      setDefaultGas(gasUsed)
+      setManualGasLimit(gasUsed)
+      const gasFee =
+        gasUsed && chainDefaultGasPrice
+          ? calculateGasFee(+gasUsed, +chainDefaultGasPrice, decimal)
+          : chainDefaultGasPrice
+      setGasPriceFormatted(gasFee)
+    }
+  }, [gasUsed])
   const signTransaction = async (safeAddress: string) => {
     setDisabled(true)
     const chainId = chainInfo.chainId

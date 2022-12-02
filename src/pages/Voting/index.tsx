@@ -1,4 +1,5 @@
 import { Breadcrumb, BreadcrumbElement, Loader, Text } from '@aura/safe-react-components'
+import { coin } from '@cosmjs/stargate'
 import { ReactElement, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import BoxCard from 'src/components/BoxCard'
@@ -14,9 +15,10 @@ import { allDelegation } from 'src/logic/delegation/store/selectors'
 import useConnectWallet from 'src/logic/hooks/useConnectWallet'
 import addProposals from 'src/logic/proposal/store/actions/addProposal'
 import { loadedSelector } from 'src/logic/wallets/store/selectors'
-import { extractSafeAddress } from 'src/routes/routes'
-import { getProposals, MChainInfo } from 'src/services'
+import { extractPrefixedSafeAddress, extractSafeAddress } from 'src/routes/routes'
+import { getProposals, MChainInfo, simulate } from 'src/services'
 import { IProposal } from 'src/types/proposal'
+import { formatBigNumber } from 'src/utils'
 import { calcBalance } from 'src/utils/calc'
 import { formatDateTimeDivider } from 'src/utils/date'
 import ProposalsCard from './ProposalsCard'
@@ -73,17 +75,14 @@ function Voting(): ReactElement {
     )
   }
 
-  const onVoteButtonClick = (proposal) => {
+  const onVoteButtonClick = async (proposal) => {
     if (!loaded) {
       onConnectWalletShow()
       return
     }
-    if (allDelegations.length > 0) {
-      setSelectedProposal(proposal)
-      setOpenVotingModal(true)
-    } else {
-      setOpenWarningPopup(true)
-    }
+
+    setSelectedProposal(proposal)
+    setOpenVotingModal(true)
   }
 
   const handleDetail = (proposalId) => {
