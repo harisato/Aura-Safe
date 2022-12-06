@@ -246,7 +246,10 @@ export default function CreateTxPopup({
             </div>
           )}
         </div>
-        <Amount label="Total Allocation Amount" amount={formatNativeCurrency(+totalAmount + +gasPriceFormatted)} />
+        <Amount
+          label="Total Allocation Amount"
+          amount={formatNativeCurrency(new BigNumber(+totalAmount).plus(+gasPriceFormatted).toString())}
+        />
         <div className="notice">
           You’re about to create a transaction and will have to confirm it with your currently connected wallet.
         </div>

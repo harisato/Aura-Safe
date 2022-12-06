@@ -1,5 +1,6 @@
 import { toBase64 } from '@cosmjs/encoding'
 import { coins, MsgSendEncodeObject } from '@cosmjs/stargate'
+import BigNumber from 'bignumber.js'
 import { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { generatePath } from 'react-router-dom'
@@ -204,7 +205,10 @@ export default function CreateTxPopup({
             </div>
           )}
         </div>
-        <Amount label="Total Allocation Amount" amount={formatNativeCurrency(+amount + +gasPriceFormatted)} />
+        <Amount
+          label="Total Allocation Amount"
+          amount={formatNativeCurrency(new BigNumber(+amount).plus(+gasPriceFormatted).toString())}
+        />
         <div className="notice">
           You’re about to create a transaction and will have to confirm it with your currently connected wallet.
         </div>

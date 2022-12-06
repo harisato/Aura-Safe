@@ -1,6 +1,7 @@
 import { Icon } from '@aura/safe-react-components'
 import { toBase64 } from '@cosmjs/encoding'
 import { coins } from '@cosmjs/stargate'
+import BigNumber from 'bignumber.js'
 import { useContext } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import AddressInfo from 'src/components/AddressInfo'
@@ -112,7 +113,7 @@ export default function Execute({ open, onClose, data, sendTx, rejectTx, disable
           <Divider />
           <Amount
             label="Total Allocation Amount"
-            amount={formatNativeToken((totalAmount || 0) + (+data.txDetails?.fee || 0))}
+            amount={formatNativeToken(new BigNumber(totalAmount || 0).plus(+data.txDetails?.fee || 0).toString())}
           />
           <div className="notice">{noti}</div>
         </ReviewTxPopupWrapper>

@@ -23,6 +23,7 @@ import { ICreateSafeTransaction } from 'src/types/transaction'
 import { userAccountSelector } from 'src/logic/wallets/store/selectors'
 import enqueueSnackbar from 'src/logic/notifications/store/actions/enqueueSnackbar'
 import { enhanceSnackbarForAction, NOTIFICATIONS } from 'src/logic/notifications'
+import BigNumber from 'bignumber.js'
 export default function Execute({ open, onClose, data, sendTx, rejectTx, disabled, setDisabled, confirmTxFromApi }) {
   const { action } = useContext(TxSignModalContext)
   const { ethBalance: balance } = useSelector(currentSafeWithNames)
@@ -96,7 +97,9 @@ export default function Execute({ open, onClose, data, sendTx, rejectTx, disable
           <Divider />
           <Amount
             label="Total Allocation Amount"
-            amount={formatNativeToken((+data?.txDetails?.txMessage[0]?.amount || 0) + (+data.txDetails?.fee || 0))}
+            amount={formatNativeToken(
+              new BigNumber(+data?.txDetails?.txMessage[0]?.amount || 0).plus(+data.txDetails?.fee || 0).toString(),
+            )}
           />
           <div className="notice">{noti}</div>
         </ReviewTxPopupWrapper>
