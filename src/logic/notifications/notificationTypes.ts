@@ -81,8 +81,8 @@ export const NOTIFICATIONS: Record<NotificationId, Notification> = {
   },
   CREATE_SAFE_PENDING_EXECUTE_MSG: {
     message:
-      'There is still 1 pending staking transaction on the queue. Reject or execute the transaction before creating another one.',
-    options: { variant: WARNING, persist: false, autoHideDuration: longDuration },
+      'There is still 1 pending transaction on the queue. Reject or execute the transaction before creating another one.',
+    options: { variant: WARNING, persist: false, autoHideDuration: longDuration, preventDuplicate: true },
   },
   // Regular/Custom Transactions
   SIGN_TX_MSG: {

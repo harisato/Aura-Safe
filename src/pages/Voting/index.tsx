@@ -13,7 +13,10 @@ import { getChainInfo, getExplorerUriTemplate, getInternalChainId, _getChainId }
 import { evalTemplate } from 'src/config/utils'
 import { allDelegation } from 'src/logic/delegation/store/selectors'
 import useConnectWallet from 'src/logic/hooks/useConnectWallet'
+import { NOTIFICATIONS } from 'src/logic/notifications'
+import enqueueSnackbar from 'src/logic/notifications/store/actions/enqueueSnackbar'
 import addProposals from 'src/logic/proposal/store/actions/addProposal'
+import { MsgTypeUrl } from 'src/logic/providers/constants/constant'
 import { loadedSelector } from 'src/logic/wallets/store/selectors'
 import { extractPrefixedSafeAddress, extractSafeAddress } from 'src/routes/routes'
 import { getProposals, MChainInfo, simulate } from 'src/services'
@@ -21,6 +24,7 @@ import { IProposal } from 'src/types/proposal'
 import { formatBigNumber } from 'src/utils'
 import { calcBalance } from 'src/utils/calc'
 import { formatDateTimeDivider } from 'src/utils/date'
+import { usePagedQueuedTransactions } from '../Transactions/hooks/usePagedQueuedTransactions'
 import ProposalsCard from './ProposalsCard'
 import { ProposalsSection, StyledBlock, StyledColumn, TitleNumberStyled } from './styledComponents'
 import VotingModal from './VotingPopup'
@@ -40,6 +44,7 @@ function Voting(): ReactElement {
   const chainInfo = getChainInfo() as MChainInfo
   const loaded = useSelector(loadedSelector)
   const { connectWalletState, onConnectWalletShow, onConnectWalletHide } = useConnectWallet()
+  const { count, isLoading, hasMore, next, transactions } = usePagedQueuedTransactions()
 
   const safeAddress = extractSafeAddress()
   const allDelegations = useSelector(allDelegation)
@@ -49,6 +54,14 @@ function Voting(): ReactElement {
 
   const [proposals, setProposals] = useState<IProposal[]>([])
   const [selectedProposal, setSelectedProposal] = useState<IProposal | undefined>(undefined)
+  const [hasPendingTx, setHasPendingTx] = useState(false)
+
+  useEffect(() => {
+    if (transactions.length > 0) {
+      dispatch(enqueueSnackbar(NOTIFICATIONS.CREATE_SAFE_PENDING_EXECUTE_MSG))
+      setHasPendingTx(true)
+    }
+  }, [])
 
   useEffect(() => {
     getProposals(getInternalChainId()).then((response) => {
@@ -99,7 +112,11 @@ function Voting(): ReactElement {
         <StyledColumn sm={12} xs={12}>
           {proposals.slice(0, 4).map((proposal) => (
             <Col sm={6} xs={12} key={proposal.id}>
-              <ProposalsCard proposal={proposal} handleVote={() => onVoteButtonClick(proposal)} />
+              <ProposalsCard
+                proposal={proposal}
+                handleVote={() => onVoteButtonClick(proposal)}
+                disabled={hasPendingTx}
+              />
             </Col>
           ))}
         </StyledColumn>

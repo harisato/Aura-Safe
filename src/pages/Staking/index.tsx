@@ -19,21 +19,20 @@ import {
 import queryString from 'query-string'
 import { extractPrefixedSafeAddress, extractSafeAddress } from 'src/routes/routes'
 
+import { coin } from '@cosmjs/stargate'
 import { useDispatch, useSelector } from 'react-redux'
+import { ConnectWalletModal } from 'src/components/ConnectWalletModal'
+import useConnectWallet from 'src/logic/hooks/useConnectWallet'
+import { NOTIFICATIONS } from 'src/logic/notifications'
+import enqueueSnackbar from 'src/logic/notifications/store/actions/enqueueSnackbar'
 import { MsgTypeUrl } from 'src/logic/providers/constants/constant'
+import { currentSafeWithNames } from 'src/logic/safe/store/selectors'
+import { loadedSelector } from 'src/logic/wallets/store/selectors'
+import { grantedSelector } from 'src/routes/safe/container/selector'
 import { formatBigNumber, formatNumber } from 'src/utils'
+import { usePagedQueuedTransactions } from '../Transactions/hooks/usePagedQueuedTransactions'
 import MyDelegation from './MyDelegation'
 import TxActionModal from './TxActionModal'
-import { grantedSelector } from 'src/routes/safe/container/selector'
-import useConnectWallet from 'src/logic/hooks/useConnectWallet'
-import { ConnectWalletModal } from 'src/components/ConnectWalletModal'
-import { loadedSelector } from 'src/logic/wallets/store/selectors'
-import enqueueSnackbar from 'src/logic/notifications/store/actions/enqueueSnackbar'
-import { NOTIFICATIONS } from 'src/logic/notifications'
-import { usePagedQueuedTransactions } from '../Transactions/hooks/usePagedQueuedTransactions'
-import BigNumber from 'bignumber.js'
-import { coin } from '@cosmjs/stargate'
-import { currentSafeWithNames } from 'src/logic/safe/store/selectors'
 
 function Staking(props): ReactElement {
   const dispatch = useDispatch()
@@ -103,12 +102,7 @@ function Staking(props): ReactElement {
   }
 
   useEffect(() => {
-    const hasPendingTx = transactions.find((tx: any) =>
-      [MsgTypeUrl.Delegate, MsgTypeUrl.Redelegate, MsgTypeUrl.Undelegate, MsgTypeUrl.GetReward].includes(
-        tx?.[1]?.[0]?.txInfo?.typeUrl,
-      ),
-    )
-    if (hasPendingTx) {
+    if (transactions.length > 0) {
       dispatch(enqueueSnackbar(NOTIFICATIONS.CREATE_SAFE_PENDING_EXECUTE_MSG))
       setHasPendingTx(true)
     }
