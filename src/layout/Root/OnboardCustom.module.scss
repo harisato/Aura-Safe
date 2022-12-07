@@ -1,0 +1,10 @@
+/* Onboard.js custom styles */
+
+:global(.bn-onboard-custom.bn-onboard-modal) {
+  font-family: 'SFProDisplay !important';
+  z-index: 1298;
+}
+
+:global(.torusIframe) {
+  z-index: 9999;
+}

@@ -70,7 +70,6 @@ const Coins = (props: Props): React.ReactElement => {
     () => getBalanceData(safeTokens, selectedCurrency),
     [safeTokens, selectedCurrency],
   )
-
   return (
     <TableContainer>
       <Table

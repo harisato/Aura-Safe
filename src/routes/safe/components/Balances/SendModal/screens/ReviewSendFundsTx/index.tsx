@@ -48,7 +48,7 @@ import {
   SAFE_ADDRESS_SLUG,
   SAFE_ROUTES,
 } from 'src/routes/routes'
-import { EditableTxParameters } from 'src/routes/safe/components/Transactions/helpers/EditableTxParameters'
+import { EditableTxParameters } from 'src/utils/transactionHelpers/EditableTxParameters'
 import { TxParameters } from 'src/routes/safe/container/hooks/useTransactionParameters'
 import { createSafeTransaction, getAccountOnChain, getMChainsConfig } from 'src/services'
 import { DEFAULT_GAS_LIMIT } from 'src/services/constant/common'
@@ -156,13 +156,14 @@ const ReviewSendFundsTx = ({ onClose, onPrev, tx }: ReviewTxProps): React.ReactE
       const accounts = await offlineSigner.getAccounts()
 
       const client = await SigningStargateClient.offline(offlineSigner)
-
+      const onlineClient = await SigningStargateClient.connectWithSigner(chainInfo.rpcUri.value, offlineSigner)
+      const onlineData = await onlineClient.getSequence(safeAddress)
       const amountFinal =
         chainInfo.shortName === 'evmos'
           ? Math.floor(Number(tx?.amount) * Math.pow(10, 18)).toString() || ''
           : Math.floor(Number(tx?.amount) * Math.pow(10, 6)).toString() || ''
 
-      const signingInstruction = await (async () => {
+      const signingInstruction = await(async () => {
         // get account on chain from API
         const { Data: accountOnChainResult } = await getAccountOnChain(safeAddress, getInternalChainId())
         // const accountOnChain = await client.getAccount(safeAddress)
@@ -190,8 +191,8 @@ const ReviewSendFundsTx = ({ onClose, onPrev, tx }: ReviewTxProps): React.ReactE
       const sendFee = calculateFee(Number(manualGasLimit || defaultGas || DEFAULT_GAS_LIMIT), gasPrice)
 
       const signerData: SignerData = {
-        accountNumber: signingInstruction.accountNumber || 0,
-        sequence: signingInstruction.sequence || 0,
+        accountNumber: onlineData.accountNumber,
+        sequence: onlineData.sequence,
         chainId: chainId,
       }
 
@@ -204,6 +205,8 @@ const ReviewSendFundsTx = ({ onClose, onPrev, tx }: ReviewTxProps): React.ReactE
         // }
 
         const signResult = await client.sign(accounts[0]?.address, [msg], sendFee, '', signerData)
+
+        console.log(signResult)
 
         const signatures = toBase64(signResult.signatures[0])
         const bodyBytes = toBase64(signResult.bodyBytes)
@@ -219,6 +222,8 @@ const ReviewSendFundsTx = ({ onClose, onPrev, tx }: ReviewTxProps): React.ReactE
           signature: signatures,
           bodyBytes: bodyBytes,
           authInfoBytes: authInfoBytes,
+          accountNumber: onlineData.accountNumber,
+          sequence: onlineData.sequence,
         }
 
         createTxFromApi(data)

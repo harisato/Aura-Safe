@@ -30,6 +30,8 @@ const SendCustomTx = lazy(() => import('./screens/ContractInteraction/SendCustom
 
 const ReviewCustomTx = lazy(() => import('./screens/ContractInteraction/ReviewCustomTx'))
 
+const ReviewVoteTx = lazy(() => import('./screens/ReviewVoteTx'))
+
 const useStyles = makeStyles({
   loaderStyle: {
     height: '500px',
@@ -49,6 +51,10 @@ export type TxType =
   | 'reviewCustomTx'
   | 'sendCollectible'
   | 'reviewCollectible'
+  | 'voting'
+  | 'delegate'
+  | 'redelegate'
+  | 'claimReward'
   | ''
 
 type Props = {
@@ -113,6 +119,8 @@ const SendModal = ({
     setActiveScreen(screen)
   }
 
+  const handleVoting = (screen: TxType) => {}
+
   return (
     <Modal
       description="Send Tokens Form"
@@ -155,6 +163,16 @@ const SendModal = ({
               handleOnPrev('sendFunds')
             }}
             tx={tx as ReviewTxProp}
+          />
+        )}
+
+        {activeScreen === 'voting' && (
+          <ReviewVoteTx
+            onClose={onClose}
+            votingTx={{
+              option: 1,
+              proposalId: 205,
+            }}
           />
         )}
 

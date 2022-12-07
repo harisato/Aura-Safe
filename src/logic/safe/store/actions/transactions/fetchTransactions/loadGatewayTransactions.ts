@@ -5,10 +5,7 @@ import { checksumAddress } from 'src/utils/checksumAddress'
 import { Errors, CodedException } from 'src/logic/exceptions/CodedException'
 import { GATEWAY_URL } from 'src/utils/constants'
 import { getAllTx } from 'src/services'
-import {
-  makeQueueTransactionsFromService,
-  makeHistoryTransactionsFromService,
-} from 'src/routes/safe/components/Transactions/TxList/utils'
+import { makeQueueTransactionsFromService, makeHistoryTransactionsFromService } from 'src/utils/transactionUtils'
 import isEqual from 'lodash/isEqual'
 import { DEFAULT_PAGE_FIRST, DEFAULT_PAGE_SIZE, QUEUED_PAGE_SIZE } from 'src/services/constant/common'
 import { ITransactionListQuery } from 'src/types/transaction'

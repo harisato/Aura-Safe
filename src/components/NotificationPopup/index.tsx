@@ -1,6 +1,6 @@
 import React, { ReactElement } from 'react'
 import styled from 'styled-components'
-import notiIcon from 'src/routes/safe/components/Staking/assets/notiLinear.svg'
+import notiIcon from 'src/pages/Staking/assets/notiLinear.svg'
 
 const NotificationPopupStyled = styled.div`
   border: 1px solid #363843;
@@ -14,7 +14,9 @@ const NotificationPopupStyled = styled.div`
 `
 
 const IconStyled = styled.img`
-  margin-right: 5px;
+  margin-right: 12px;
+  width: 24px;
+  height: 24px;
 `
 
 function NotificationPopup(props): ReactElement {

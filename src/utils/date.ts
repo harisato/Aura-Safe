@@ -26,10 +26,16 @@ export const getLocalStartOfDate = (timestamp: number): number => {
   return date.setHours(0, 0, 0, 0)
 }
 
-export const formatWithSchema = (timestamp: number, schema: string): string => format(timestamp, schema)
+export const formatWithSchema = (timestamp: number, schema: string): string =>
+  timestamp ? format(timestamp, schema) : 'Invalid time'
 
 export const formatTime = (timestamp: number): string => formatWithSchema(timestamp, 'h:mm a')
 
 export const formatDateTime = (timestamp: number): string => formatWithSchema(timestamp, 'MMM d, yyyy - h:mm:ss a')
 
-export const formatTimeInWords = (timestamp: number): string => formatDistanceToNow(timestamp, { addSuffix: true })
+export const formatDateTimeDivider = (timestamp: string | Date | number): string => {
+  return formatWithSchema(new Date(timestamp).getTime(), 'yyyy-MM-dd | HH:mm:ss')
+}
+
+export const formatTimeInWords = (timestamp: number): string =>
+  timestamp ? formatDistanceToNow(timestamp, { addSuffix: true }) : 'Invalid time'

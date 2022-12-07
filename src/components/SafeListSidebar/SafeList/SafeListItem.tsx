@@ -182,8 +182,6 @@ const SafeListItem = ({
   }
 
   const hashText = (status: SafeStatus | undefined, address: string): string => {
-    console.log({ status })
-
     switch (status) {
       case SafeStatus.Pending:
         return 'Created by you'

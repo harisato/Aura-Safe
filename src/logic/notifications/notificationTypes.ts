@@ -80,8 +80,9 @@ export const NOTIFICATIONS: Record<NotificationId, Notification> = {
     options: { variant: ERROR, persist: false, autoHideDuration: longDuration },
   },
   CREATE_SAFE_PENDING_EXECUTE_MSG: {
-    message: 'Please execute/reject your transaction before creating a new one!',
-    options: { variant: ERROR, persist: false, autoHideDuration: longDuration },
+    message:
+      'There is still 1 pending transaction on the queue. Reject or execute the transaction before creating another one.',
+    options: { variant: WARNING, persist: false, autoHideDuration: longDuration, preventDuplicate: true },
   },
   // Regular/Custom Transactions
   SIGN_TX_MSG: {

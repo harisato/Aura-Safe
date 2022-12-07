@@ -302,22 +302,22 @@ const theme = createTheme({
     },
     MuiSnackbar: {
       root: {
-        maxWidth: '100%',
-        width: '340px',
+        maxWidth: '560px',
+        width: '100%',
       },
     },
     MuiSnackbarContent: {
       root: {
         borderRadius: `${sm} !important`,
-        boxShadow: '0 0 10px 0 rgba(212, 212, 211, 0.59)',
         display: 'flex',
         flexDirection: 'row',
         flexWrap: 'nowrap',
         padding: '20px',
         width: '100%',
+        letterSpacing: '0.1em',
+        alignItems: 'flex-start',
       },
       message: {
-        color: fontColor,
         flexGrow: '1',
         fontFamily: 'SFProDisplay !important',
         fontSize: '14px',
@@ -326,21 +326,24 @@ const theme = createTheme({
         '& > span': {
           display: 'flex',
           flexDirection: 'row',
-          alignItems: 'stretch',
+          alignItems: 'flex-start',
           overflowX: 'hidden',
           overflowY: 'auto',
           maxHeight: '160px',
           wordBreak: 'break-word',
           '& > img': {
             display: 'block',
-            marginRight: '13px',
+            margin: '2px 12px 2px 2px',
+            height: '16px',
+            width: '16px',
           },
         },
       },
       action: {
         paddingLeft: '0',
-        '& > button': {
-          color: secondaryText,
+        '& > button svg': {
+          width: '16px',
+          height: '16px',
         },
       },
     },
@@ -366,14 +369,7 @@ const theme = createTheme({
       },
     },
     MuiTableContainer: {
-      root: {
-        marginLeft: '-10px',
-        marginRight: '-10px',
-        marginTop: '-10px',
-        paddingLeft: '10px',
-        paddingRight: '10px',
-        paddingTop: '10px',
-      },
+      root: {},
     },
     MuiTablePagination: {
       toolbar: {
@@ -454,6 +450,7 @@ const theme = createTheme({
     MuiMenuItem: {
       root: {
         fontFamily: secondaryFontFamily,
+        border: 'none',
       },
     },
     MuiListItemIcon: {

@@ -41,9 +41,16 @@ const WalletSwitch = ({ openConnectWallet }: { openConnectWallet?: () => void })
   return (
     // <span className={classes.border}>
     <Button size="medium" onClick={keplrConnect} color="primary" variant="outlined">
-      <Text size="lg" color="white">
-        Switch wallet to <ChainIndicator chainId={chainId} />
-      </Text>
+      <div style={{ marginRight: 4 }}>
+        <Text size="lg" color="white">
+          Switch wallet to
+        </Text>
+      </div>
+      <div>
+        <Text size="lg" color="white">
+          <ChainIndicator chainId={chainId} />
+        </Text>
+      </div>
     </Button>
     // </span>
   )

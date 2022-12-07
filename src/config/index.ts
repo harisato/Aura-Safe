@@ -112,7 +112,7 @@ export const getDisabledWallets = (): ChainInfo['disabledWallets'] => {
   return getChainInfo().disabledWallets
 }
 
-const getExplorerUriTemplate = (): ChainInfo['blockExplorerUriTemplate'] => {
+export const getExplorerUriTemplate = (): ChainInfo['blockExplorerUriTemplate'] => {
   return getChainInfo().blockExplorerUriTemplate
 }
 
@@ -126,7 +126,7 @@ export const getExplorerUrl = (): string => {
 }
 
 export const getHashedExplorerUrl = (hash: string): string => {
-  const isTx = hash.length > 50
+  const isTx = hash?.length > 50
   const param = isTx ? 'txHash' : 'address'
   const uri = getExplorerUriTemplate()[param]
   return evalTemplate(uri, { [param]: hash })
@@ -204,6 +204,12 @@ export const getCoinDecimal = (): number => {
 export const getCoinSymbol = (): string => {
   return getChainInfo().nativeCurrency.symbol
 }
+
+export const getNativeCurrencyLogoUri = (): string => {
+  return getChainInfo().nativeCurrency.logoUri
+}
+
+
 export const getCoinMinimalDenom = (): string => {
   return (getChainInfo() as MChainInfo).denom
 }

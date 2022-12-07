@@ -9,12 +9,16 @@ const CloseButtonStyled = styled.button`
   background-color: transparent;
   color: white;
   height: 32px;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `
 
 function CloseButton(props): ReactElement {
-  const { title } = props
+  const { title, onClick } = props
 
-  return <CloseButtonStyled>{title}</CloseButtonStyled>
+  return <CloseButtonStyled onClick={onClick}>{title}</CloseButtonStyled>
 }
 
 export default CloseButton

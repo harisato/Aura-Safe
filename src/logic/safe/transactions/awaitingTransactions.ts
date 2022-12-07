@@ -1,7 +1,7 @@
 import { TransactionSummary } from '@gnosis.pm/safe-react-gateway-sdk'
 
 import { isMultisigExecutionInfo, LocalTransactionStatus } from 'src/logic/safe/store/models/types/gateway.d'
-import { addressInList } from 'src/routes/safe/components/Transactions/TxList/utils'
+import { addressInList } from 'src/utils/transactionUtils'
 
 export const getAwaitingGatewayTransactions = (
   allTransactions: TransactionSummary[],

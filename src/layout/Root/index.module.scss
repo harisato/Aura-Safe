@@ -1,0 +1,127 @@
+@import 'src/theme/variables.scss';
+html,
+body {
+  height: 100%;
+  width: 100%;
+}
+
+@font-face {
+  font-family: SFProDisplay;
+  src: url('../../assets/fonts/SfProDisplay/SFPRODISPLAYREGULAR.otf');
+  font-style: normal;
+  font-weight: 400;
+}
+
+@font-face {
+  font-family: SFProDisplay;
+  src: url('../../assets/fonts/SfProDisplay/SFPRODISPLAYMEDIUM.otf');
+  font-style: normal;
+  font-weight: 500;
+}
+
+@font-face {
+  font-family: SFProDisplay;
+  src: url('../../assets/fonts/SfProDisplay/SFPRODISPLAYBOLD.otf');
+  font-style: normal;
+  font-weight: 700;
+}
+
+/* italic */
+
+@font-face {
+  font-family: SFProDisplay;
+  src: url('../../assets/fonts/SfProDisplay/SFPRODISPLAYTHINITALIC.otf');
+  font-style: italic;
+  font-weight: 100;
+}
+
+@font-face {
+  font-family: SFProDisplay;
+  src: url('../../assets/fonts/SfProDisplay/SFPRODISPLAYULTRALIGHTITALIC.otf');
+  font-style: italic;
+  font-weight: 200;
+}
+
+@font-face {
+  font-family: SFProDisplay;
+  src: url('../../assets/fonts/SfProDisplay/SFPRODISPLAYLIGHTITALIC.otf');
+  font-style: italic;
+  font-weight: 300;
+}
+
+@font-face {
+  font-family: SFProDisplay;
+  src: url('../../assets/fonts/SfProDisplay/SFPRODISPLAYSEMIBOLDITALIC.otf');
+  font-style: italic;
+  font-weight: 600;
+}
+
+@font-face {
+  font-family: SFProDisplay;
+  src: url('../../assets/fonts/SfProDisplay/SFPRODISPLAYBLACKITALIC.otf');
+  font-style: italic;
+  font-weight: 800;
+}
+
+@font-face {
+  font-family: SFProDisplay;
+  src: url('../../assets/fonts/SfProDisplay/SFPRODISPLAYHEAVYITALIC.otf');
+  font-style: italic;
+  font-weight: 900;
+}
+
+body {
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  background-color: $background;
+  bottom: 0;
+  color: $fontColor;
+  font-family: 'SFProDisplay', monospace;
+  font-size: $mediumFontSize;
+  left: 0;
+  margin: 0;
+  overflow-x: hidden;
+  position: absolute;
+  right: 0;
+  text-rendering: geometricPrecision;
+  top: 0;
+}
+
+body > div:first-child {
+  display: flex;
+  min-height: 100%;
+}
+/*Aura custom scollbar*/
+/* width */
+::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(108.46deg, #5ee6d0 12.51%, #bfc6ff 51.13%, #ffba69 87.49%);
+  border-radius: 2px;
+}
+
+.title-h3_20m {
+  font-family: 'SFProDisplay';
+  font-style: normal;
+  font-weight: 510;
+  font-size: 20px;
+  line-height: 26px;
+}
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type='number'] {
+  -moz-appearance: textfield;
+}
+.error-msg {
+  color: #f56161;
+  font-size: 12px;
+  margin: 6px 0px 0px;
+}

@@ -57,15 +57,16 @@ export const gatewayTransactionsReducer = handleActions<GatewayTransactionsState
         }
 
         if (isTransactionSummary(value)) {
-          const transaction = (value as any).transaction as TransactionSummary
+          const transaction = (value as any).transaction as Transaction
           const startOfDate = getLocalStartOfDate(transaction.timestamp)
 
           if (typeof newHistory[startOfDate] === 'undefined') {
             newHistory[startOfDate] = []
           }
 
-          const txExist = newHistory[startOfDate].some(({ id }) => sameString(id, transaction.id))
-
+          const txExist = newHistory[startOfDate].some(
+            ({ id, auraTxId }) => sameString(id, transaction.id) || sameString(auraTxId, transaction?.auraTxId),
+          )
           if (!txExist) {
             newHistory[startOfDate].push(transaction)
             // pushing a newer transaction to the existing list messes the transactions order
@@ -205,15 +206,11 @@ export const gatewayTransactionsReducer = handleActions<GatewayTransactionsState
 
         for (const [timestamp, transactions] of Object.entries(txGroup)) {
           const txIndex = transactions.findIndex(({ txHash, id, txInfo }) => {
-            const direction = (txInfo as Transfer).direction
-            const remoteDirection = (value?.txInfo as Transfer).direction
-            const isSameDirection = sameString(direction, remoteDirection)
-
             const isSameTxHas = sameString(txHash, value?.txHash || undefined)
 
             const isSameId = sameString(id, transactionId)
 
-            return (isSameDirection && isSameTxHas) || isSameId
+            return isSameTxHas || isSameId
 
             // return sameString(txHash, value?.txHash || undefined) || sameString(id, transactionId)
           })
