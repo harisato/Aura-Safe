@@ -44,9 +44,9 @@ const SendTxTypePopup = ({ onClose, open, onTypeButtonClick }: SendTxTypePopupPr
         <StyledButton size="lg" onClick={() => onTypeButtonClick('single-send')}>
           Send
         </StyledButton>
-        {/* <StyledButton size="lg" onClick={() => onTypeButtonClick('multi-send')}>
+        <StyledButton size="lg" onClick={() => onTypeButtonClick('multi-send')}>
           Multi-send
-        </StyledButton> */}
+        </StyledButton>
       </Wrapper>
     </Popup>
   )
