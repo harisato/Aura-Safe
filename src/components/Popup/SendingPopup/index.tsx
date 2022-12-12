@@ -25,7 +25,7 @@ import { BodyWrapper, Footer, PopupWrapper } from './styles'
 import { simulate } from 'src/services'
 import { MsgTypeUrl } from 'src/logic/providers/constants/constant'
 import { coin, coins } from '@cosmjs/stargate'
-import { formatBigNumber } from 'src/utils'
+import { formatBigNumber, roundGasAmount } from 'src/utils'
 import { extractPrefixedSafeAddress, extractSafeAddress } from 'src/routes/routes'
 import { Loader } from '@aura/safe-react-components'
 
@@ -118,7 +118,7 @@ const SendingPopup = ({ open, onClose, onOpen, defaultToken }: SendFundsProps): 
           ]),
           'binary',
         ).toString('base64'),
-        safeId,
+        safeId: safeId?.toString(),
       })
       if (res?.Data?.gasUsed) {
         setGasUsed(res?.Data?.gasUsed)

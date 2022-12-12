@@ -8,7 +8,7 @@ import Gap from 'src/components/Gap'
 import TextArea from 'src/components/Input/TextArea'
 import TokenSelect from 'src/components/Input/Token'
 import DenseTable, { StyledTableCell, StyledTableRow } from 'src/components/Table/DenseTable'
-import { formatBigNumber, formatNativeCurrency, formatNumber } from 'src/utils'
+import { formatBigNumber, formatNativeCurrency, formatNumber, roundGasAmount } from 'src/utils'
 import { isValidAddress } from 'src/utils/isValidAddress'
 import { Popup } from '..'
 import Header from '../Header'
@@ -155,7 +155,7 @@ const MultiSendPopup = ({ open, onClose, onOpen }: SendFundsProps): ReactElement
     try {
       const res = await simulate({
         encodedMsgs: Buffer.from(JSON.stringify(Msg), 'binary').toString('base64'),
-        safeId,
+        safeId: safeId?.toString(),
       })
       if (res?.Data?.gasUsed) {
         setGasUsed(res?.Data?.gasUsed)
