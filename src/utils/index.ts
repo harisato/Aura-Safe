@@ -1,8 +1,9 @@
 import { getChains } from 'src/config/cache/chains'
-import { getChainDefaultGasPrice, getChainInfo, getNativeCurrency } from 'src/config'
+import { getChainDefaultGasPrice, getChainInfo, getCoinDecimal, getNativeCurrency } from 'src/config'
 import { MChainInfo } from 'src/services'
 import { calculateFee, GasPrice } from '@cosmjs/stargate'
 import BigNumber from 'bignumber.js'
+import calculateGasFee from 'src/logic/providers/utils/fee'
 
 const nativeCurrency = getNativeCurrency()
 
@@ -28,7 +29,12 @@ export const isNumberKeyPress = (event): boolean => {
   }
   return true
 }
-
+export const roundGasAmount = (amount) => {
+  const decimal = getCoinDecimal()
+  const chainDefaultGasPrice = getChainDefaultGasPrice()
+  const fee = calculateGasFee(+amount, +chainDefaultGasPrice, decimal)
+  return amount
+}
 export const formatBigNumber = (amount, isMulti = false) => {
   const nativeCurrency = getNativeCurrency()
   if (isNaN(amount)) return '0'

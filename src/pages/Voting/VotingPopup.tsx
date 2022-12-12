@@ -8,6 +8,7 @@ import { VotingPopupWrapper } from './styledComponents'
 import { MsgTypeUrl } from 'src/logic/providers/constants/constant'
 import { extractPrefixedSafeAddress, extractSafeAddress } from 'src/routes/routes'
 import { Loader } from '@aura/safe-react-components'
+import { roundGasAmount } from 'src/utils'
 
 const voteMapping = {
   ['YES']: 1,
@@ -41,7 +42,7 @@ const VotingPopup = ({ proposal, openVotingModal, setOpenVotingModal }): React.R
           ]),
           'binary',
         ).toString('base64'),
-        safeId,
+        safeId: safeId?.toString(),
       })
       if (res?.Data?.gasUsed) {
         setGasUsed(res?.Data?.gasUsed)
