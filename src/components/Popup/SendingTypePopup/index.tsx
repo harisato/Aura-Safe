@@ -16,7 +16,6 @@ const Wrapper = styled.div`
     }
   }
 `
-const StyledButton = styled(OutlinedButton)``
 const StyledRow = styled(Row)`
   padding: 24px;
   justify-content: end;
@@ -41,12 +40,8 @@ const SendTxTypePopup = ({ onClose, open, onTypeButtonClick }: SendTxTypePopupPr
       </StyledRow>
       <Hairline />
       <Wrapper>
-        <StyledButton size="lg" onClick={() => onTypeButtonClick('single-send')}>
-          Send
-        </StyledButton>
-        <StyledButton size="lg" onClick={() => onTypeButtonClick('multi-send')}>
-          Multi-send
-        </StyledButton>
+        <OutlinedButton onClick={() => onTypeButtonClick('single-send')}>Send</OutlinedButton>
+        <OutlinedButton onClick={() => onTypeButtonClick('multi-send')}>Multi-send</OutlinedButton>
       </Wrapper>
     </Popup>
   )

@@ -5,6 +5,15 @@ export const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
   height: 100%;
+  > .head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 16px;
+    > div {
+      margin: 0;
+    }
+  }
 `
 
 export const StyledText = styled.span`
@@ -67,9 +76,8 @@ export const H2 = styled.h2`
   font-size: smaller;
 `
 
-export const SubTitle = styled(Text)`
-  margin-bottom: 8px;
-
+export const SubTitle = styled.p`
+  margin: 0px 0px 8px 0px;
   font-size: 0.76em;
   font-weight: 600;
   line-height: 1.5;
@@ -261,7 +269,7 @@ export const StyledTransaction = styled.div`
 export const StyledGroupedTransactions = styled(StyledTransaction)`
   // no \`tx-nonce\` column required
   grid-template-columns: ${Object.values(gridColumns).slice(1).join(' ')};
-  font-family: 'SFProDisplay !important';
+  font-family: 'Inter !important';
 `
 
 export const GroupedTransactions = styled(StyledTransaction)`

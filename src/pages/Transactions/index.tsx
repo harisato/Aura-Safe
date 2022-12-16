@@ -1,9 +1,10 @@
-import { Menu, Breadcrumb, BreadcrumbElement, Tab } from '@aura/safe-react-components'
 import { Item } from '@aura/safe-react-components/dist/navigation/Tab'
-import { ReactElement, useEffect } from 'react'
+import { ReactElement, useEffect, useState } from 'react'
 import { Redirect, Route, Switch, useHistory, useRouteMatch } from 'react-router-dom'
-
-import Col from 'src/components/layout/Col'
+import Icon from 'src/assets/icons/ChartBar.svg'
+import Breadcrumb from 'src/components/Breadcrumb'
+import Tabs from 'src/components/Tabs'
+import Tab from 'src/components/Tabs/Tab'
 import { extractPrefixedSafeAddress, generateSafeRoute, SAFE_ROUTES } from 'src/routes/routes'
 import { SAFE_EVENTS, useAnalytics } from 'src/utils/googleAnalytics'
 import HistoryTransactions from './History'
@@ -18,29 +19,34 @@ const TRANSACTION_TABS: Item[] = [
 const Transactions = (): ReactElement => {
   const history = useHistory()
   const { path } = useRouteMatch()
+  const [tab, setTab] = useState(0)
   const { trackEvent } = useAnalytics()
   useEffect(() => {
     trackEvent(SAFE_EVENTS.TRANSACTIONS)
   }, [trackEvent])
+  useEffect(() => {
+    switch (tab) {
+      case 0:
+        onTabChange(SAFE_ROUTES.TRANSACTIONS_QUEUE)
+        break
+      case 1:
+        onTabChange(SAFE_ROUTES.TRANSACTIONS_HISTORY)
+        break
+    }
+  }, [tab])
   const onTabChange = (path: string) => {
     history.replace(generateSafeRoute(path, extractPrefixedSafeAddress()))
   }
 
   return (
     <Wrapper>
-      <Menu>
-        <Col start="sm" xs={12}>
-          <Breadcrumb>
-            <BreadcrumbElement iconType="transactionsAura" text="TRANSACTIONS" color="white" />
-            {path.search('queue') > 0 ? (
-              <BreadcrumbElement text="QUEUE" color="disableAura" />
-            ) : (
-              <BreadcrumbElement text="HISTORY" color="disableAura" />
-            )}
-          </Breadcrumb>
-        </Col>
-      </Menu>
-      <Tab onChange={onTabChange} items={TRANSACTION_TABS} selectedTab={path} />
+      <div className="head">
+        <Breadcrumb title="Transactions" subtitleIcon={Icon} subtitle="Transactions" />
+        <Tabs value={tab} onChange={(e, v) => setTab(v)}>
+          <Tab label="Queue" />
+          <Tab label="History" />
+        </Tabs>
+      </div>
       <ContentWrapper>
         <Switch>
           <Route exact path={SAFE_ROUTES.TRANSACTIONS_QUEUE} render={() => <QueueTransactions />} />

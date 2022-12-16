@@ -9,16 +9,10 @@ export const StyledCol = styled(({ bgColor, txtColor, ...props }) => <Col {...pr
   padding: 0 ${sm};
   cursor: ${(props) => (props.onClick ? 'pointer' : 'inherit')};
 
+  padding: 4px 6px;
   border-radius: 4px;
-  padding: 6px 8px;
-
   background: ${(props) => props?.bgColor};
   color: ${(props) => props?.txtColor};
-
-  @media (min-width: ${screenSm}px) {
-    padding-left: ${md};
-    padding-right: ${md};
-  }
 `
 
 // export const StyledCol = styled(Col)`
@@ -40,14 +34,11 @@ export const StyledCol = styled(({ bgColor, txtColor, ...props }) => <Col {...pr
 export const StyledParagraph = styled(Paragraph)<{
   $theme: ChainInfo['theme']
 }>`
-  // background-color: ${(props) => props?.$theme?.backgroundColor ?? border};
-  // color: ${(props) => props?.$theme?.textColor ?? fontColor};
-  color: inherit;
-  border-radius: 3px;
-  line-height: normal;
   text-transform: capitalize;
   margin: 0;
-  // padding: ${xs} ${sm};
   min-width: 70px;
   text-align: center;
+  font-family: 'Inter';
+  line-height: 16px;
+  color: inherit;
 `

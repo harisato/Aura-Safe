@@ -1,4 +1,3 @@
-import { Breadcrumb, BreadcrumbElement, Menu } from '@aura/safe-react-components'
 import React, { ReactElement, useEffect, useState } from 'react'
 import BoxCard from 'src/components/BoxCard'
 import Block from 'src/components/layout/Block'
@@ -33,7 +32,8 @@ import { formatBigNumber, formatNumber } from 'src/utils'
 import { usePagedQueuedTransactions } from '../Transactions/hooks/usePagedQueuedTransactions'
 import MyDelegation from './MyDelegation'
 import TxActionModal from './TxActionModal'
-
+import Breadcrumb from 'src/components/Breadcrumb'
+import Icon from 'src/assets/icons/Stack.svg'
 function Staking(props): ReactElement {
   const dispatch = useDispatch()
   const granted = useSelector(grantedSelector)
@@ -132,11 +132,11 @@ function Staking(props): ReactElement {
     })
   }, [internalChainId, SafeAddress])
 
-  const handleAmout = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleAmout = (v) => {
     setValidateMsg(undefined)
-    const value = formatNumber(event.target.value)
+    const value = formatNumber(v)
     setAmount(value)
-    if (value > formatBigNumber(availableBalance?.amount)) {
+    if (+value > +formatBigNumber(availableBalance?.amount)) {
       setValidateMsg('Given amount is greater than available balance!')
     }
   }
@@ -339,13 +339,7 @@ function Staking(props): ReactElement {
 
   return (
     <>
-      <Menu>
-        <Col start="sm" sm={12} xs={12}>
-          <Breadcrumb>
-            <BreadcrumbElement color="white" iconType="stakingAura" text="Staking" />
-          </Breadcrumb>
-        </Col>
-      </Menu>
+      <Breadcrumb title="Staking" subtitleIcon={Icon} subtitle="Staking" />
 
       <MyDelegation
         handleModal={handleManage}
@@ -361,26 +355,14 @@ function Staking(props): ReactElement {
       />
 
       {unValidatorOfUser && unValidatorOfUser.length > 0 && (
-        <Block margin="mdTop">
-          {' '}
-          <Col start="sm" sm={12} xs={12}>
-            <Undelegating unValidatorOfUser={unValidatorOfUser} allValidator={allValidator} />
-          </Col>
-        </Block>
+        <Undelegating unValidatorOfUser={unValidatorOfUser} allValidator={allValidator} />
       )}
 
-      <Block margin="mdTop" style={{ marginBottom: 10 }}>
-        {' '}
-        <BoxCard>
-          <Col layout="column" sm={12} xs={12}>
-            <Validators
-              allValidator={allValidator}
-              handleManageDelegate={handleManageDelegate}
-              disabledButton={(loaded && !granted) || hasPendingTx}
-            />
-          </Col>
-        </BoxCard>
-      </Block>
+      <Validators
+        allValidator={allValidator}
+        handleManageDelegate={handleManageDelegate}
+        disabledButton={(loaded && !granted) || hasPendingTx}
+      />
 
       <ActionModal
         modalIsOpen={isOpenDelagate}

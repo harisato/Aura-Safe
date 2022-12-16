@@ -5,7 +5,7 @@ import BigNumber from 'bignumber.js'
 import { useContext } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import AddressInfo from 'src/components/AddressInfo'
-import { OutlinedButton, OutlinedNeutralButton } from 'src/components/Button'
+import { FilledButton, OutlinedButton, OutlinedNeutralButton } from 'src/components/Button'
 import Divider from 'src/components/Divider'
 import Gap from 'src/components/Gap'
 import { Popup } from 'src/components/Popup'
@@ -118,18 +118,15 @@ export default function Execute({ open, onClose, data, sendTx, rejectTx, disable
           <div className="notice">{noti}</div>
         </ReviewTxPopupWrapper>
         <Footer>
-          <OutlinedNeutralButton size="md" onClick={onClose}>
-            Back
-          </OutlinedNeutralButton>
-          <OutlinedButton
-            size="md"
+          <OutlinedNeutralButton onClick={onClose}>Back</OutlinedNeutralButton>
+          <FilledButton
             onClick={() => {
               action == 'confirm' ? confirmTx() : action == 'reject' ? rejectTx() : sendTx()
             }}
             disabled={disabled}
           >
             Submit
-          </OutlinedButton>
+          </FilledButton>
         </Footer>
       </Popup>
     </>

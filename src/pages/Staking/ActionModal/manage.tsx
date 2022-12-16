@@ -1,5 +1,5 @@
 import NotificationPopup from 'src/components/NotificationPopup'
-import { TextNotiStyled, TextGreen, TextDelegateNoti, BoxDelegate } from './styles'
+import { TextNotiStyled, TextGray, TextDelegateNoti, BoxDelegate } from './styles'
 import { Text } from '@aura/safe-react-components'
 import Col from 'src/components/layout/Col'
 import { formatBigNumber } from 'src/utils'
@@ -27,51 +27,43 @@ export default function ManageModal(props) {
         <Col sm={5} xs={12} layout="column">
           <BoxDelegate>
             <Col sm={7} xs={12}>
-              <Text size="lg" color="white">
-                My delegation
-              </Text>
+              <TextGray>My delegation</TextGray>
             </Col>
-            <Text size="lg" color="numberAura">
+            <p>
               {formatBigNumber(dataDelegateOfUser?.delegation?.delegationBalance?.amount) || 0}{' '}
-              <TextGreen>{nativeCurrency.symbol}</TextGreen>
-            </Text>
+              <TextGray>{nativeCurrency.symbol}</TextGray>
+            </p>
           </BoxDelegate>
           <BoxDelegate>
             <Col sm={7} xs={12}>
-              <Text size="lg" color="white">
-                Pending Reward
-              </Text>
+              <TextGray>Pending Reward</TextGray>
             </Col>
-            <Text size="lg" color="numberAura">
-              {pendingReward ? pendingReward : 0} <TextGreen>{nativeCurrency.symbol}</TextGreen>
-            </Text>
+            <p>
+              {pendingReward ? pendingReward : 0} <TextGray>{nativeCurrency.symbol}</TextGray>
+            </p>
           </BoxDelegate>
         </Col>
         <Col sm={2} />
         <Col sm={5} xs={12} layout="column">
           <BoxDelegate>
             <Col sm={7} xs={12}>
-              <Text size="lg" color="white">
-                Delegatable Balance
-              </Text>
+              <TextGray>Delegatable Balance</TextGray>
             </Col>
 
-            <Text size="lg" color="numberAura">
+            <p>
               {formatBigNumber(dataDelegateOfUser?.delegation?.delegatableBalance?.amount || 0)}{' '}
-              <TextGreen>{nativeCurrency.symbol}</TextGreen>
-            </Text>
+              <TextGray>{nativeCurrency.symbol}</TextGray>
+            </p>
           </BoxDelegate>
           <BoxDelegate>
             <Col sm={7} xs={12}>
-              <Text size="lg" color="white">
-                Total Reward
-              </Text>
+              <TextGray>Total Reward</TextGray>
             </Col>
 
-            <Text size="lg" color="numberAura">
+            <p>
               {formatBigNumber(dataDelegateOfUser?.delegation?.claimedReward?.amount || 0)}{' '}
-              <TextGreen>{nativeCurrency.symbol}</TextGreen>
-            </Text>
+              <TextGray>{nativeCurrency.symbol}</TextGray>
+            </p>
           </BoxDelegate>
         </Col>
       </div>

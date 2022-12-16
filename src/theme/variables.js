@@ -5,7 +5,7 @@ const disabled = 'rgba(255, 255, 255, 1)'
 const errorColor = '#f02525'
 const fancyColor = '#f02525'
 const fontColor = '#777E91'
-const headerHeight = '52px'
+const headerHeight = '75px'
 const lg = '24px'
 const marginButtonImg = '12px'
 const md = '16px'
@@ -21,11 +21,11 @@ const xs = '4px'
 const xxl = '40px'
 const borderButtonRadius = '50px'
 const borderLinear =
-  'linear-gradient(rgba(18, 18, 18, 1),rgba(18, 18, 18, 1)) ,linear-gradient(108.46deg, #5ee6d0 12.51%, #bfc6ff 51.13%, #ffba69 87.49%)'
+  'linear-gradient(rgba(19 ,20 ,25, 1),rgba(19 ,20 ,25, 1)) ,linear-gradient(108.46deg, #5ee6d0 12.51%, #bfc6ff 51.13%, #ffba69 87.49%)'
 const inputLinear =
   'linear-gradient(#24262E,#24262E) ,linear-gradient(108.46deg, #5ee6d0 12.51%, #bfc6ff 51.13%, #ffba69 87.49%)'
 const colorLinear = 'linear-gradient(108.46deg, #5ee6d0 12.51%, #bfc6ff 51.13%, #ffba69 87.49%)'
-const bgBox = 'rgba(18, 18, 18, 1)'
+const bgBox = 'rgb(36 38 46)'
 const bgDisabledColorStep = '#666769'
 const bgInput = '#2E2E33'
 const green = '#5EE6D0'
@@ -36,8 +36,8 @@ module.exports = {
   borderLinear,
   background,
 
-  mainFontFamily: 'SFProDisplay !important',
-  secondaryFontFamily: 'SFProDisplay !important',
+  mainFontFamily: 'Inter !important',
+  secondaryFontFamily: 'Inter !important',
   descriptionAura,
 
   lightFont: 300,

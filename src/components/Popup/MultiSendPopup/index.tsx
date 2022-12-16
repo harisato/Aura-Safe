@@ -3,24 +3,24 @@ import { useSelector } from 'react-redux'
 
 import { extendedSafeTokensSelector } from 'src/routes/safe/container/selector'
 
+import { AminoMsgMultiSend, coins } from '@cosmjs/stargate'
+import BigNumber from 'bignumber.js'
 import { OutlinedButton, TextButton } from 'src/components/Button'
 import Gap from 'src/components/Gap'
 import TextArea from 'src/components/Input/TextArea'
 import TokenSelect from 'src/components/Input/Token'
 import DenseTable, { StyledTableCell, StyledTableRow } from 'src/components/Table/DenseTable'
+import { getCoinMinimalDenom } from 'src/config'
+import { MsgTypeUrl } from 'src/logic/providers/constants/constant'
+import { extractPrefixedSafeAddress, extractSafeAddress } from 'src/routes/routes'
+import { simulate } from 'src/services'
 import { formatBigNumber, formatNativeCurrency, formatNumber } from 'src/utils'
 import { isValidAddress } from 'src/utils/isValidAddress'
 import { Popup } from '..'
 import Header from '../Header'
 import CreateTxPopup from './CreateTxPopup'
 import { BodyWrapper, Footer, PopupWrapper } from './styles'
-import { AminoMsgMultiSend, coin, coins } from '@cosmjs/stargate'
-import { getCoinMinimalDenom } from 'src/config'
-import { MsgTypeUrl } from 'src/logic/providers/constants/constant'
-import { extractSafeAddress, extractPrefixedSafeAddress } from 'src/routes/routes'
-import { simulate } from 'src/services'
-import { Loader } from '@aura/safe-react-components'
-import BigNumber from 'bignumber.js'
+import Loader from 'src/components/Loader'
 
 export type RecipientProps = {
   amount: string
@@ -182,9 +182,7 @@ const MultiSendPopup = ({ open, onClose, onOpen }: SendFundsProps): ReactElement
             <div className="recipient-input">
               <TextArea placeholder="Address, amount" value={rawRecipient} onChange={setRawRecipient} />
               <div>
-                <OutlinedButton size="md" onClick={validateRecipient}>
-                  Validate
-                </OutlinedButton>
+                <OutlinedButton onClick={validateRecipient}>Validate</OutlinedButton>
                 {addressValidateErrorMsg && <p className="error-msg">{addressValidateErrorMsg}</p>}
                 {addressValidateSuccessMsg && <p className="success-msg">{addressValidateSuccessMsg}</p>}
               </div>
@@ -235,10 +233,9 @@ const MultiSendPopup = ({ open, onClose, onOpen }: SendFundsProps): ReactElement
                 !addressValidateSuccessMsg ||
                 simulateLoading
               }
-              size="md"
               onClick={createTx}
             >
-              {simulateLoading ? <Loader size="xs" /> : 'Review'}
+              {simulateLoading ? <Loader content="Review" /> : 'Review'}
             </OutlinedButton>
           </Footer>
         </PopupWrapper>

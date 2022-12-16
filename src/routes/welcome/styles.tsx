@@ -28,7 +28,7 @@ const CardContentContainer = styled.div`
 const StyledButtonLabel = styled(Text)`
   color: white;
   background-color: transparent !important;
-  font-family: 'SFProDisplay';
+  font-family: 'Inter';
   margin-left: 10px;
 `
 
@@ -47,7 +47,7 @@ const StyledButton = styled(Button)`
 
 const StyledTextButton = styled(Text)`
   color: black;
-  font-family: 'SFProDisplay';
+  font-family: 'Inter';
   display: flex;
   justify-content: center;
   align-item: center;

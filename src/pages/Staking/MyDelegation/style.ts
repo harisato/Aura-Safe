@@ -10,7 +10,7 @@ export const Wrapper = styled.div`
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background: #363843;
+    background: #24262e;
     padding: 24px;
     > div.balance {
       width: 100%;
@@ -38,7 +38,6 @@ export const Wrapper = styled.div`
   }
   .staked-validator {
     background: #24262e;
-    padding: 24px;
   }
   .validator-cell {
     display: flex;
@@ -47,6 +46,14 @@ export const Wrapper = styled.div`
       width: 24px;
       height: 24px;
       border-radius: 50%;
+    }
+    > div {
+      margin: 0px 0px 0px 8px;
+      font-weight: 600;
+      font-size: 14px;
+      line-height: 24px;
+      letter-spacing: 0.01em;
+      color: #2cb1f5;
     }
   }
 `

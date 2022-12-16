@@ -1,7 +1,7 @@
 import { sm } from 'src/theme/variables'
 export const styles = () => ({
   network: {
-    fontFamily: 'SFProDisplay, sans-serif',
+    fontFamily: 'Inter, sans-serif',
   },
   account: {
     alignItems: 'start',

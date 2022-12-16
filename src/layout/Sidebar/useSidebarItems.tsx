@@ -114,7 +114,6 @@ const useSidebarItems = (): ListItemType[] => {
         label: 'Assets',
         iconType: 'assestAura',
         href: currentSafeRoutes.ASSETS_BALANCES,
-        subItems: assetsSubItems,
       }),
       makeEntryItem({
         label: 'Transactions',
@@ -123,11 +122,6 @@ const useSidebarItems = (): ListItemType[] => {
           window.location.pathname === currentSafeRoutes.TRANSACTIONS_HISTORY
             ? currentSafeRoutes.TRANSACTIONS_HISTORY
             : currentSafeRoutes.TRANSACTIONS_QUEUE,
-      }),
-      makeEntryItem({
-        label: 'Address Book',
-        iconType: 'addressbookAura',
-        href: currentSafeRoutes.ADDRESS_BOOK,
       }),
       makeEntryItem({
         label: 'Staking',
@@ -140,10 +134,9 @@ const useSidebarItems = (): ListItemType[] => {
         href: currentSafeRoutes.VOTING,
       }),
       makeEntryItem({
-        disabled: !safeAppsEnabled,
-        label: 'Apps',
-        iconType: 'apps',
-        href: currentSafeRoutes.APPS,
+        label: 'Address Book',
+        iconType: 'addressbookAura',
+        href: currentSafeRoutes.ADDRESS_BOOK,
       }),
       makeEntryItem({
         label: 'Settings',

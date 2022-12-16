@@ -1,6 +1,6 @@
 import SelectValidator from '../SelectValidator'
 import {
-  TextGreen,
+  TextGray,
   BoxDelegate,
   PaddingPopup,
   InputAura,
@@ -14,6 +14,8 @@ import { Text } from '@aura/safe-react-components'
 import Col from 'src/components/layout/Col'
 import { useEffect, useRef } from 'react'
 import { formatBigNumber } from 'src/utils'
+import AmountInput from 'src/components/Input/AmountInput'
+import Gap from 'src/components/Gap'
 
 export default function ModalUndelegate(props) {
   const { handleDelegatedAmount, nativeCurrency, handleMax, amount, dataDelegateOfUser, validateMsg } = props
@@ -27,39 +29,23 @@ export default function ModalUndelegate(props) {
         <BoxDelegate>
           <PaddingPopup>
             <Col sm={7} xs={12}>
-              <Text size="lg" color="white">
+              <p>
                 Available for undelegation{'  '}
-                <TextDisable>
-                  {formatBigNumber(dataDelegateOfUser?.delegation?.delegationBalance?.amount || 0)}
-                </TextDisable>{' '}
-                <TextGreen>{nativeCurrency.symbol}</TextGreen>
-              </Text>
+                <strong>{formatBigNumber(dataDelegateOfUser?.delegation?.delegationBalance?.amount || 0)}</strong>{' '}
+                <TextGray>{nativeCurrency.symbol}</TextGray>
+              </p>
             </Col>
-            <InputAura>
-              <BorderInput>
-                <StyledInputModal
-                  type="number"
-                  step="0.1"
-                  min="0"
-                  max="20"
-                  onChange={handleDelegatedAmount}
-                  value={amount}
-                  ref={inputRef}
-                />
-                <StyledButtonModal
-                  onClick={() =>
-                    handleMax(formatBigNumber(dataDelegateOfUser?.delegation?.delegationBalance?.amount || 0))
-                  }
-                >
-                  Max
-                </StyledButtonModal>
-              </BorderInput>
-              <BorderAura>
-                <Text size="xl" color="linkAura">
-                  {nativeCurrency.symbol}
-                </Text>
-              </BorderAura>
-            </InputAura>
+            <Gap height={8} />
+            <AmountInput
+              handleMax={() =>
+                handleMax(formatBigNumber(dataDelegateOfUser?.delegation?.delegationBalance?.amount || 0))
+              }
+              onChange={handleDelegatedAmount}
+              value={amount}
+              autoFocus={true}
+              placeholder="Amount to undelegate"
+            />
+
             {validateMsg && <p className="validate-msg">{validateMsg}</p>}
           </PaddingPopup>
         </BoxDelegate>

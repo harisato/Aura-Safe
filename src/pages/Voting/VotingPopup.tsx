@@ -88,10 +88,8 @@ const VotingPopup = ({ proposal, openVotingModal, setOpenVotingModal }): React.R
             />
           </div>
           <div className="buttons">
-            <OutlinedNeutralButton size="md" onClick={onClose}>
-              Cancel
-            </OutlinedNeutralButton>
-            <OutlinedButton size="md" onClick={createTx} disabled={simualteLoading}>
+            <OutlinedNeutralButton onClick={onClose}>Cancel</OutlinedNeutralButton>
+            <OutlinedButton onClick={createTx} disabled={simualteLoading}>
               {simualteLoading ? <Loader size="xs" /> : 'Confirm'}
             </OutlinedButton>
           </div>

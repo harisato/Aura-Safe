@@ -1,8 +1,8 @@
-import { Breadcrumb, BreadcrumbElement, Loader, Text } from '@aura/safe-react-components'
-import { coin } from '@cosmjs/stargate'
+import { Loader, Text } from '@aura/safe-react-components'
 import { ReactElement, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import BoxCard from 'src/components/BoxCard'
+import Breadcrumb from 'src/components/Breadcrumb'
 import { ConnectWalletModal } from 'src/components/ConnectWalletModal'
 import Col from 'src/components/layout/Col'
 import { LoadingContainer } from 'src/components/LoaderContainer'
@@ -16,19 +16,17 @@ import useConnectWallet from 'src/logic/hooks/useConnectWallet'
 import { NOTIFICATIONS } from 'src/logic/notifications'
 import enqueueSnackbar from 'src/logic/notifications/store/actions/enqueueSnackbar'
 import addProposals from 'src/logic/proposal/store/actions/addProposal'
-import { MsgTypeUrl } from 'src/logic/providers/constants/constant'
 import { loadedSelector } from 'src/logic/wallets/store/selectors'
-import { extractPrefixedSafeAddress, extractSafeAddress } from 'src/routes/routes'
-import { getProposals, MChainInfo, simulate } from 'src/services'
+import { extractSafeAddress } from 'src/routes/routes'
+import { getProposals, MChainInfo } from 'src/services'
 import { IProposal } from 'src/types/proposal'
-import { formatBigNumber } from 'src/utils'
 import { calcBalance } from 'src/utils/calc'
 import { formatDateTimeDivider } from 'src/utils/date'
 import { usePagedQueuedTransactions } from '../Transactions/hooks/usePagedQueuedTransactions'
 import ProposalsCard from './ProposalsCard'
 import { ProposalsSection, StyledBlock, StyledColumn, TitleNumberStyled } from './styledComponents'
 import VotingModal from './VotingPopup'
-
+import Icon from 'src/assets/icons/Stamp.svg'
 const parseBalance = (balance: IProposal['totalDeposit'], chainInfo: MChainInfo) => {
   const symbol = chainInfo.nativeCurrency.symbol
   const amount = calcBalance(balance[0].amount, chainInfo.nativeCurrency.decimals)
@@ -68,7 +66,6 @@ function Voting(): ReactElement {
       const { Data } = response
       if (Data?.proposals) {
         setProposals(Data.proposals)
-
         dispatch(
           addProposals({
             chainId,
@@ -105,9 +102,7 @@ function Voting(): ReactElement {
 
   return (
     <>
-      <Breadcrumb>
-        <BreadcrumbElement color="white" iconType="votingAura" text="Voting" />
-      </Breadcrumb>
+      <Breadcrumb title="Voting" subtitleIcon={Icon} subtitle="Voting" />
       <StyledBlock>
         <StyledColumn sm={12} xs={12}>
           {proposals.slice(0, 4).map((proposal) => (

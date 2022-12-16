@@ -3,12 +3,17 @@ import styled from 'styled-components'
 
 const StyledPrefixedEthHashInfo = styled(EthHashInfo)`
   p {
-    font-family: 'SFProDisplay';
+    font-family: 'Inter';
     font-size: 12px;
+    line-height: 16px;
     color: white;
   }
-  > div > img {
-    border-radius: 50%;
+  > div {
+    align-items: center;
+    margin-right: 4px;
+    > img {
+      border-radius: 50%;
+    }
   }
 `
 

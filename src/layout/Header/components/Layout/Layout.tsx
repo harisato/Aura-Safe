@@ -12,12 +12,32 @@ import { useStateHandler } from 'src/logic/hooks/useStateHandler'
 import { shouldSwitchWalletChain } from 'src/logic/wallets/store/selectors'
 import { WELCOME_ROUTE } from 'src/routes/routes'
 import { IS_PRODUCTION } from 'src/utils/constants'
+import styled from 'styled-components'
 import SafeLogo from '../../assets/logoAura.svg'
 import NetworkSelector from '../NetworkSelector/NetworkSelector'
 import Provider from '../Provider/Provider'
-import { LogoContainer, styles, DevelopBanner } from './styles'
+import { styles, DevelopBanner } from './styles'
 import WalletPopup from './WalletPopup/WalletPopup'
 
+const Wrap = styled.div`
+  background: #131419;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0px 28px;
+  border-bottom: 1px solid #3e3f40;
+  .MuiSvgIcon-root {
+    color: #98989b !important;
+  }
+`
+const LogoContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  > a {
+    height: 42px;
+  }
+`
 const Layout = (props: any) => {
   const { classes, providerDetails, providerInfo, showConnect, openConnectWallet } = props
   const { clickAway, open, toggle } = useStateHandler()
@@ -27,20 +47,14 @@ const Layout = (props: any) => {
     clickAway()
   }, [showConnect])
 
-  // const TOGGLE_SIDEBAR_BTN_TESTID = 'TOGGLE_SIDEBAR_BTN'
   return (
-    <Row className={classes.summary}>
-      {/* <IconButton className={classes.menu} onClick={onToggleSafeList} data-testid={TOGGLE_SIDEBAR_BTN_TESTID}>
-        <MenuIcon type={'button'} />
-      </IconButton> */}
-      <Col className={classes.logo} middle="xs" start="xs">
+    <Wrap>
+      <LogoContainer>
         <Link to={WELCOME_ROUTE} className={classes.link}>
-          <LogoContainer>
-            <Img alt="Aura Safe" height={40} src={SafeLogo} testId="heading-gnosis-logo" />
-          </LogoContainer>
+          <Img alt="Aura Safe" height={42} src={SafeLogo} testId="heading-gnosis-logo" />
         </Link>
         {!IS_PRODUCTION && <DevelopBanner>Testnet Only</DevelopBanner>}
-      </Col>
+      </LogoContainer>
 
       <Spacer />
 
@@ -69,7 +83,7 @@ const Layout = (props: any) => {
       />
 
       <NetworkSelector open={openNetworks} toggle={toggleNetworks} clickAway={clickAwayNetworks} />
-    </Row>
+    </Wrap>
   )
 }
 

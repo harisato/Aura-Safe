@@ -39,7 +39,6 @@ export const TxActions = ({ transaction }: TxActionsProps): ReactElement => {
   if (confirmationNeeded <= 0) {
     return (
       <OutlinedButton
-        size="md"
         onClick={() => {
           setTxId(transaction.txId)
           setAction('execute')
@@ -56,7 +55,6 @@ export const TxActions = ({ transaction }: TxActionsProps): ReactElement => {
     return (
       <>
         <OutlinedNeutralButton
-          size="md"
           onClick={() => {
             setTxId(transaction.txId)
             setAction('reject')
@@ -67,7 +65,6 @@ export const TxActions = ({ transaction }: TxActionsProps): ReactElement => {
         </OutlinedNeutralButton>
         <OutlinedButton
           style={{ marginLeft: 16 }}
-          size="md"
           onClick={() => {
             setTxId(transaction.txId)
             setAction('confirm')

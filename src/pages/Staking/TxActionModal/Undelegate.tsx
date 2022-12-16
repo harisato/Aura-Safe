@@ -3,7 +3,7 @@ import { coin, MsgUndelegateEncodeObject } from '@cosmjs/stargate'
 import { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import AddressInfo from 'src/components/AddressInfo'
-import { LinkButton, OutlinedButton, OutlinedNeutralButton } from 'src/components/Button'
+import { FilledButton, LinkButton, OutlinedButton, OutlinedNeutralButton } from 'src/components/Button'
 import Divider from 'src/components/Divider'
 import Gap from 'src/components/Gap'
 import TextField from 'src/components/Input/TextField'
@@ -134,7 +134,7 @@ export default function Undelegate({ validator, amount, onClose, createTxFromApi
           {openGasInput && (
             <div className="edit-fee-section">
               <TextField type="number" label="Gas Amount" value={manualGasLimit} onChange={setManualGasLimit} />
-              <OutlinedButton disabled={!manualGasLimit || +manualGasLimit < 1} size="md" onClick={recalculateFee}>
+              <OutlinedButton disabled={!manualGasLimit || +manualGasLimit < 1} onClick={recalculateFee}>
                 Apply
               </OutlinedButton>
             </div>
@@ -146,12 +146,12 @@ export default function Undelegate({ validator, amount, onClose, createTxFromApi
         </div>
       </Wrapper>
       <Footer>
-        <OutlinedNeutralButton size="md" onClick={onClose} disabled={isDisabled}>
+        <OutlinedNeutralButton onClick={onClose} disabled={isDisabled}>
           Close
         </OutlinedNeutralButton>
-        <OutlinedButton size="md" onClick={signTransaction} disabled={isDisabled}>
+        <FilledButton onClick={signTransaction} disabled={isDisabled}>
           Submit
-        </OutlinedButton>
+        </FilledButton>
       </Footer>
     </>
   )

@@ -1,28 +1,13 @@
-import { Text } from '@aura/safe-react-components'
 import BigNumber from 'bignumber.js'
-import { useEffect, useRef } from 'react'
+import Gap from 'src/components/Gap'
+import AmountInput from 'src/components/Input/AmountInput'
 import Col from 'src/components/layout/Col'
 import NotificationPopup from 'src/components/NotificationPopup'
-import { formatBigNumber, isNumberKeyPress } from 'src/utils'
-import {
-  BorderAura,
-  BorderInput,
-  BoxDelegate,
-  InputAura,
-  PaddingPopup,
-  StyledButtonModal,
-  StyledInputModal,
-  TextGreen,
-  TextNotiStyled,
-  TextTitleStaking,
-} from './styles'
-
+import { formatBigNumber } from 'src/utils'
+import { BoxDelegate, PaddingPopup, TextGray, TextNotiStyled, TextTitleStaking } from './styles'
 export default function ModalDelegate(props) {
   const { handleAmout, amount, nativeCurrency, availableBalance, dataDelegateOfUser, handleMax, validateMsg } = props
-  const inputRef = useRef<HTMLInputElement | null>(null)
-  useEffect(() => {
-    inputRef?.current?.focus()
-  }, [inputRef])
+
   return (
     <>
       <NotificationPopup>
@@ -39,68 +24,43 @@ export default function ModalDelegate(props) {
         <>
           <Col sm={12} xs={12} layout="column">
             <BoxDelegate>
-              <PaddingPopup>
-                <Col sm={7} xs={12}>
-                  <Text size="lg" color="disableAura">
-                    My Delegation
-                  </Text>
-                </Col>
-                <Text size="xl" color="numberAura">
-                  {formatBigNumber(dataDelegateOfUser?.delegation?.delegationBalance?.amount)}{' '}
-                  <TextGreen>{nativeCurrency.symbol}</TextGreen>
-                </Text>
-              </PaddingPopup>
+              <Col sm={7} xs={12}>
+                <TextGray>My Delegation</TextGray>
+              </Col>
+              <p>
+                {formatBigNumber(dataDelegateOfUser?.delegation?.delegationBalance?.amount)}{' '}
+                <TextGray>{nativeCurrency.symbol}</TextGray>
+              </p>
             </BoxDelegate>
 
             <BoxDelegate>
-              <PaddingPopup>
-                <Col sm={7} xs={12}>
-                  <Text size="lg" color="disableAura">
-                    Delegatable Balance
-                  </Text>
-                </Col>
-                <Text size="xl" color="numberAura">
-                  {formatBigNumber(availableBalance?.amount) || 0} <TextGreen>{nativeCurrency.symbol}</TextGreen>
-                </Text>
-              </PaddingPopup>
+              <Col sm={7} xs={12}>
+                <TextGray>Delegatable Balance</TextGray>
+              </Col>
+              <p>
+                {availableBalance?.amount ? formatBigNumber(availableBalance?.amount) : 0}{' '}
+                <TextGray>{nativeCurrency.symbol}</TextGray>
+              </p>
             </BoxDelegate>
-
+            <Gap height={12} />
             <BoxDelegate>
               <PaddingPopup>
                 <Col sm={7} xs={12}>
-                  <Text size="lg" color="white">
-                    Available to delegate
-                  </Text>
+                  <p>Available to delegate</p>
                 </Col>
-                <InputAura>
-                  <BorderInput>
-                    <StyledInputModal
-                      onChange={handleAmout}
-                      onKeyPress={isNumberKeyPress}
-                      value={amount}
-                      type="number"
-                      step="0.1"
-                      min="0"
-                      max="20"
-                      ref={inputRef}
-                    />
-                    <StyledButtonModal
-                      onClick={() =>
-                        handleMax(
-                          new BigNumber(availableBalance?.amount).div(new BigNumber(10).pow(nativeCurrency.decimals)) ||
-                            0,
-                        )
-                      }
-                    >
-                      Max
-                    </StyledButtonModal>
-                  </BorderInput>
-                  <BorderAura>
-                    <Text size="xl" color="linkAura">
-                      {nativeCurrency.symbol}
-                    </Text>
-                  </BorderAura>
-                </InputAura>
+                <Gap height={8} />
+
+                <AmountInput
+                  handleMax={() =>
+                    handleMax(
+                      new BigNumber(availableBalance?.amount).div(new BigNumber(10).pow(nativeCurrency.decimals)) || 0,
+                    )
+                  }
+                  onChange={handleAmout}
+                  value={amount}
+                  autoFocus={true}
+                  placeholder="Amount to delegate"
+                />
                 {validateMsg && <p className="validate-msg">{validateMsg}</p>}
               </PaddingPopup>
             </BoxDelegate>

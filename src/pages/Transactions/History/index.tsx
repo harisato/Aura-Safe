@@ -34,11 +34,11 @@ export default function HistoryTransactions(): ReactElement {
           transactions.map(([nonce, txs]) => {
             return (
               <Fragment key={nonce}>
-                <div className="gap-div"></div>
-                <SubTitle size="lg">{formatWithSchema(Number(nonce), 'MMM d, yyyy')}</SubTitle>
+                <SubTitle>{formatWithSchema(Number(nonce), 'MMM d, yyyy')}</SubTitle>
                 {txs.map((tx, index) => {
                   return <Transaction key={index} transaction={tx} />
                 })}
+                <div className="gap-div"></div>
               </Fragment>
             )
           })}

@@ -11,13 +11,13 @@ const PopupWrapper = styled(Modal)`
     overflow-y: scroll;
   }
   .overlay {
-    background-color: rgba(0, 0, 0, 0.7) !important;
+    background-color: rgba(19, 20, 25, 0.7) !important;
   }
   .paper {
     position: relative;
     top: 68px;
     border-radius: 12px;
-    background-color: ${bgBox};
+    background-color: #24262e;
     display: flex;
     flex-direction: column;
     &:focus {

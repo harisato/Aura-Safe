@@ -3,7 +3,7 @@ import { ReactElement } from 'react'
 
 import { Modal } from 'src/components/Modal'
 import GnoForm from 'src/components/forms/GnoForm'
-import { Entry } from 'src/routes/safe/components/AddressBook'
+import { Entry } from 'src/pages/AddressBook'
 
 export const DELETE_ENTRY_BTN_ID = 'delete-entry-btn-id'
 

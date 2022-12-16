@@ -10,12 +10,9 @@ export const styles = createStyles({
     height: '100%',
     justifyContent: 'center',
     borderRadius: 4,
-
-    [`@media (min-width: ${screenSm}px)`]: {
-      flexBasis: '180px',
-      marginRight: '20px',
-      marginLeft: '20px',
-    },
+    marginLeft: '12px',
+    padding: '4px 6px',
+    background: '#222223',
   },
   networkList: {
     // alignItems: 'center',
@@ -25,9 +22,6 @@ export const styles = createStyles({
     borderRadius: '4px',
     height: '70%',
     flex: '1 1 auto',
-    [`@media (min-width: ${screenSm}px)`]: {
-      paddingRight: sm,
-    },
   },
   expand: {
     height: '30px',

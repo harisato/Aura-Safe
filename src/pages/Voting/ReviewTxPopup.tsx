@@ -206,7 +206,7 @@ const ReviewTxPopup = ({ open, onClose, proposal, vote, onBack, gasUsed }: Revie
           {openGasInput && (
             <div className="edit-fee-section">
               <TextField type="number" label="Gas Amount" value={manualGasLimit} onChange={setManualGasLimit} />
-              <OutlinedButton disabled={!manualGasLimit || +manualGasLimit < 1} size="md" onClick={recalculateFee}>
+              <OutlinedButton disabled={!manualGasLimit || +manualGasLimit < 1} onClick={recalculateFee}>
                 Apply
               </OutlinedButton>
             </div>
@@ -224,11 +224,8 @@ const ReviewTxPopup = ({ open, onClose, proposal, vote, onBack, gasUsed }: Revie
         </div>
       </ReviewTxPopupWrapper>
       <Footer>
-        <OutlinedNeutralButton size="md" onClick={onBack}>
-          Back
-        </OutlinedNeutralButton>
+        <OutlinedNeutralButton onClick={onBack}>Back</OutlinedNeutralButton>
         <OutlinedButton
-          size="md"
           onClick={() => {
             signTransaction(safeAddress)
           }}
