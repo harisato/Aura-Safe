@@ -1,25 +1,14 @@
 import React, { ReactElement, useEffect, useState } from 'react'
 
-import { Button, Text } from '@aura/safe-react-components'
 import AppBar from '@material-ui/core/AppBar'
 import { makeStyles } from '@material-ui/core/styles'
-import Tab from '@material-ui/core/Tab'
-import Tabs from '@material-ui/core/Tabs'
-import Col from 'src/components/layout/Col'
+import { OutlinedButton } from 'src/components/Button'
 import DenseTable, { StyledTableCell, StyledTableRow } from 'src/components/Table/DenseTable'
-import TabPanel, { a11yProps } from 'src/components/TabPanel'
-import { borderLinear } from 'src/theme/variables'
-import styled from 'styled-components'
+import TabPanel, { a11yProps } from 'src/components/Tabs/TabPanel'
 import sreachIcon from '../assets/Shape.svg'
-import { grantedSelector } from 'src/routes/safe/container/selector'
-import { useSelector } from 'react-redux'
-
-const TitleStyled = styled.div`
-  font-weight: 500;
-  font-size: 20px;
-  line-height: 26px;
-  color: rgba(255, 255, 255, 1);
-`
+import { ContainSearch, HeaderValidator, ImgRow, StyleSearch, TitleStyled, Wrap } from './styles'
+import Tabs from 'src/components/Tabs'
+import Tab from 'src/components/Tabs/Tab'
 
 const useStyles = makeStyles({
   root: {
@@ -31,56 +20,12 @@ const useStyles = makeStyles({
   },
 })
 
-const StyledButton = styled(Button)`
-  border: 2px solid transparent;
-  background-image: ${borderLinear};
-  background-origin: border-box;
-  background-clip: content-box, border-box;
-  border-radius: 50px !important;
-  padding: 0 !important;
-  background-color: transparent !important;
-  min-width: 130px !important;
-`
-
-const ContainSearch = styled.div`
-  border: 1px solid #363843;
-  border-radius: 25px;
-  width: 350px;
-  padding: 12px 24px;
-  display: flex;
-  align-items: center;
-  justify-content: space-around;
-  background: #131419;
-`
-const StyleSearch = styled.input`
-  background: transparent;
-  height: 100%;
-  width: 90%;
-  outline: none;
-  border: none;
-  color: #868a97;
-`
-const HeaderValidator = styled.div`
-  display: flex;
-  justify-content: space-between;
-  width: 100%;
-`
-const ImgRow = styled.div`
-  display: flex;
-  > img {
-    margin-right: 5px;
-    width: 24px;
-    height: 24px;
-    border-radius: 50%;
-  }
-`
-
 const ValidatorTable = (props) => {
   const { data, handleManageDelegate, value, disabledButton } = props
   const obj1 = new Intl.NumberFormat('en-US')
 
   return (
-    <DenseTable headers={['RANK', 'VALIDATOR', 'VOTING POWER', 'COMMISION', 'UPTIME', ' ']}>
+    <DenseTable headers={['Rank', 'Validator', 'Voting Power', 'Commision', 'Uptime', ' ']}>
       {data?.map((row, index) => (
         <StyledTableRow key={index}>
           <StyledTableCell component="th" scope="row">
@@ -89,9 +34,7 @@ const ValidatorTable = (props) => {
           <StyledTableCell align="left">
             <ImgRow>
               <img src={row.description.picture} />
-              <Text size="lg" color="linkAura">
-                {row.validator}
-              </Text>
+              <p className="validator-name">{row.validator}</p>
             </ImgRow>
           </StyledTableCell>
           <StyledTableCell align="left">
@@ -103,14 +46,14 @@ const ValidatorTable = (props) => {
           </StyledTableCell>
 
           <StyledTableCell align="left">{row.uptime} %</StyledTableCell>
-          {value === 0 && !disabledButton && (
+          {value === 0 && !disabledButton ? (
             <StyledTableCell align="right">
-              <StyledButton size="md" onClick={() => handleManageDelegate(row)}>
-                <Text size="lg" color="white">
-                  Delegate
-                </Text>
-              </StyledButton>
+              <OutlinedButton className="small" onClick={() => handleManageDelegate(row)}>
+                Delegate
+              </OutlinedButton>
             </StyledTableCell>
+          ) : (
+            <StyledTableCell></StyledTableCell>
           )}
         </StyledTableRow>
       ))}
@@ -163,40 +106,33 @@ function Validators(props): ReactElement {
   }, [search])
 
   return (
-    <>
-      <Col start="sm" sm={12} xs={12}>
-        <HeaderValidator>
-          <TitleStyled>Validators</TitleStyled>
+    <Wrap>
+      <HeaderValidator>
+        <TitleStyled>Validators</TitleStyled>
+        <div>
           {!disabledButton && (
-            <ContainSearch>
-              <StyleSearch
-                type="text"
-                placeholder="Search validators"
-                onChange={(e) => {
-                  setSearch(e.target.value)
-                }}
-              />
-              <img src={sreachIcon} alt="icon-search" />
-            </ContainSearch>
+            <>
+              <ContainSearch>
+                <StyleSearch
+                  type="text"
+                  placeholder="Search validators"
+                  onChange={(e) => {
+                    setSearch(e.target.value)
+                  }}
+                />
+                <img src={sreachIcon} alt="icon-search" />
+              </ContainSearch>
+              <span className="div-bar" />
+            </>
           )}
-        </HeaderValidator>
-      </Col>
-
-      {dataActive && (
-        <AppBar position="static" className={classes.root}>
-          <Tabs
-            value={value}
-            onChange={handleChange}
-            indicatorColor="primary"
-            textColor="primary"
-            // variant="fullWidth"
-            // aria-label="scrollable auto tabs example"
-          >
-            <Tab label="ACTIVE" {...a11yProps(0)} disabled={dataActive?.length > 0 ? false : true} />
-            <Tab label="INACTIVE" {...a11yProps(1)} disabled={dataInActive?.length > 0 ? false : true} />
-          </Tabs>
-        </AppBar>
-      )}
+          {dataActive && (
+            <Tabs value={value} onChange={handleChange}>
+              <Tab label="Active" {...a11yProps(0)} disabled={dataActive?.length > 0 ? false : true} />
+              <Tab label="Inactive" {...a11yProps(1)} disabled={dataInActive?.length > 0 ? false : true} />
+            </Tabs>
+          )}
+        </div>
+      </HeaderValidator>
 
       {allValidator && (
         <>
@@ -213,7 +149,7 @@ function Validators(props): ReactElement {
           </TabPanel>
         </>
       )}
-    </>
+    </Wrap>
   )
 }
 

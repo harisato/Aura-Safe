@@ -18,7 +18,7 @@ export const styles = createStyles({
     wordBreak: 'break-all',
     overflow: 'auto',
     fontSize: '14px',
-    fontFamily: 'SFProDisplay !important',
+    fontFamily: 'Inter !important',
     maxHeight: '100px',
     letterSpacing: 'normal',
     fontStretch: 'normal',

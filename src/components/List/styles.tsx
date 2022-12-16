@@ -7,16 +7,15 @@ import Badge from '@material-ui/core/Badge'
 import ListMui, { ListProps } from '@material-ui/core/List'
 import { FixedIcon } from '@aura/safe-react-components'
 
-import { semiBoldFont, mediumFontSize} from 'src/theme/variables'
+import { semiBoldFont, mediumFontSize } from 'src/theme/variables'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
-      width: '100%',
       maxWidth: 320,
       backgroundColor: 'transparent',
       overflowX: 'auto',
-      margin: '8px 0 -4px 0',
+      padding: '24px 16px',
       '&::-webkit-scrollbar': {
         width: '0.5em',
       },
@@ -39,15 +38,25 @@ const useStyles = makeStyles((theme: Theme) =>
 
 const StyledListItem = styled(ListItem)<ListItemProps>`
   &.MuiButtonBase-root.MuiListItem-root {
-    margin: 4px 0;
+    color: #b4b8c0;
+    margin-bottom: 16px;
     /* background-color: #3e3f40 !important; */
     border-radius: 8px;
     span {
-      color: white;
+      font-family: 'Inter' !important;
+      font-style: normal;
+      font-weight: 600;
+      font-size: 14px;
+      line-height: 18px;
+      letter-spacing: 0.01em;
+      color: #b4b8c0;
+    }
+    svg {
+      color: inherit !important;
     }
 
     &.Mui-selected {
-      background-color: #252529 !important;
+      background-color: #363843 !important;
     }
     .icon-color {
       fill: white;
@@ -55,28 +64,32 @@ const StyledListItem = styled(ListItem)<ListItemProps>`
   }
 
   &.MuiListItem-button:hover {
-    border-radius: 8px;
+    background: #1b1c21;
   }
 
   &.MuiListItem-root.Mui-selected {
     border-radius: 8px;
-    color: #5ee6d0;
+    color: #fff;
     span {
-      color: #5ee6d0;
-    }
-    .icon-color {
-      fill: #5ee6d0;
+      color: #fff;
     }
   }
 `
 
 const StyledListSubItem = styled(ListItem)<ListItemProps>`
   &.MuiButtonBase-root.MuiListItem-root {
-    margin: 4px 0;
+    margin-top: -8px;
     margin-left: auto;
     width: 85%;
+    color: #b4b8c0;
     span {
-      color: white !important;
+      font-family: 'Inter' !important;
+      font-style: normal;
+      font-weight: 600;
+      font-size: 14px;
+      line-height: 18px;
+      letter-spacing: 0.01em;
+      color: #b4b8c0;
     }
     .icon-color {
       fill: white !important;
@@ -88,41 +101,20 @@ const StyledListSubItem = styled(ListItem)<ListItemProps>`
   }
 
   &.MuiButtonBase-root.MuiListItem-root.Mui-selected {
-    background-color: #252529;
+    background-color: #363843;
     border-radius: 8px;
-    /* width: 85%; */
-    color: ${({ theme }) => theme.colors.primary};
+    color: #fff;
     span {
-      color: #5ee6d0 !important;
-    }
-    .icon-color {
-      fill: #5ee6d0 !important;
+      color: #fff !important;
     }
   }
 `
 
 const StyledListItemText = styled(ListItemText)`
-  span {
-    font-family: ${({ theme }) => theme.fonts.fontFamily};
-    font-size: ${mediumFontSize};
-    font-weight: ${semiBoldFont};
-    line-height: 1.5;
-    letter-spacing: 1px;
-    color: ${({ theme }) => theme.colors.placeHolder};
-    text-transform: capitalize;
-  }
+  margin-top: 6px;
 `
 
-const StyledListSubItemText = styled(ListItemText)`
-  span {
-    font-family: ${({ theme }) => theme.fonts.fontFamily};
-    font-size: ${mediumFontSize};
-    font-weight: ${semiBoldFont};
-    letter-spacing: 0px;
-    color: ${({ theme }) => theme.colors.placeHolder};
-    text-transform: none;
-  }
-`
+const StyledListSubItemText = styled(ListItemText)``
 
 const TextAndBadgeWrapper = styled.div`
   flex: 1 1 auto;
@@ -137,16 +129,6 @@ const StyledBadge = styled(Badge)`
 
 const StyledSubListMui = styled(ListMui)<ListProps<any>>`
   position: relative;
-  &::before {
-    content: '';
-    position: absolute;
-    height: calc(100% - 25.859px);
-    width: 2px;
-    background-color: #404047;
-
-    top: 0;
-    left: calc(15% - 18px);
-  }
 
   a {
     position: relative;
@@ -155,7 +137,7 @@ const StyledSubListMui = styled(ListMui)<ListProps<any>>`
       content: '';
       position: absolute;
       top: 0;
-      left: -18px;
+      left: -25px;
 
       height: 50%;
       width: 16px;

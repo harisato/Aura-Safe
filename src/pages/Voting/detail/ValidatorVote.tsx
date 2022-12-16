@@ -7,7 +7,7 @@ import React, { ReactElement } from 'react'
 import Col from 'src/components/layout/Col'
 import DenseTable from 'src/components/Table/DenseTable'
 import { StyledTableCell, StyledTableRow } from 'src/components/TableVoting'
-import TabPanel, { a11yProps } from 'src/components/TabPanel'
+import TabPanel, { a11yProps } from 'src/components/Tabs/TabPanel'
 import styled from 'styled-components'
 
 const TitleStyled = styled.div`
@@ -36,7 +36,6 @@ const useStyles = makeStyles({
   },
 })
 
-const RowHead = [{ name: 'RANK' }, { name: 'VALIDATOR' }, { name: 'TxHASH' }, { name: 'ANSWER' }, { name: 'TIME' }]
 
 const RowData = [
   {

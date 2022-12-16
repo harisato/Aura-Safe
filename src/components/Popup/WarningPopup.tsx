@@ -38,9 +38,7 @@ export default function WarningPopup({
       <Wrapper>
         <img src={WarningIcon} alt="" />
         <div className="warning-content">{children}</div>
-        <OutlinedButton size="md" onClick={onClose}>
-          OK
-        </OutlinedButton>
+        <OutlinedButton onClick={onClose}>OK</OutlinedButton>
       </Wrapper>
     </Popup>
   )

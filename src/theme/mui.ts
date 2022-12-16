@@ -319,7 +319,7 @@ const theme = createTheme({
       },
       message: {
         flexGrow: '1',
-        fontFamily: 'SFProDisplay !important',
+        fontFamily: 'Inter !important',
         fontSize: '14px',
         lineHeight: '1.43',
         padding: '0 10px 0 0',

@@ -15,7 +15,7 @@ import Col from 'src/components/layout/Col'
 import Row from 'src/components/layout/Row'
 import { currentNetworkAddressBookAddresses } from 'src/logic/addressBook/store/selectors'
 import { AddressBookEntry } from 'src/logic/addressBook/model/addressBook'
-import { Entry } from 'src/routes/safe/components/AddressBook'
+import { Entry } from 'src/pages/AddressBook'
 
 export const CREATE_ENTRY_INPUT_NAME_ID = 'create-entry-input-name'
 export const CREATE_ENTRY_INPUT_ADDRESS_ID = 'create-entry-input-address'

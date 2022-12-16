@@ -14,17 +14,18 @@ import Pagination from '@material-ui/lab/Pagination'
 export const StyledTableCell = withStyles((theme) => ({
   head: {
     backgroundColor: '#363843',
-    color: '#9DA1AC',
-    fontSize: 12,
-    fontWeight: 590,
-    padding: 8,
-    lineHeight: 1,
+    fontSize: 16,
+    fontWeight: 600,
+    padding: '14px 16px',
+    lineHeight: '20px',
+    textTransform: 'unset',
   },
   body: {
     fontSize: '14px !important',
-    padding: 12,
+    padding: '12px 16px',
     color: '#E5E7EA !important',
     borderTop: '1px solid #363843',
+    background: '#24262E',
   },
 }))(TableCell)
 
@@ -39,7 +40,6 @@ export const StyledTableRow = withStyles((theme) => ({
 const useStyles = makeStyles({
   table: {
     minWidth: 700,
-    borderBottom: '1px solid #363843',
   },
   pagi: {
     display: 'flex',

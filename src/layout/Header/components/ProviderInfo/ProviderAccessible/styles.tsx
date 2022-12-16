@@ -2,7 +2,9 @@ import { connected as connectedBg, screenSm, sm } from 'src/theme/variables'
 import { createStyles } from '@material-ui/core/styles'
 export const styles = createStyles({
   network: {
-    fontFamily: 'SFProDisplay, sans-serif',
+    fontFamily: 'Inter, sans-serif',
+    lineHeight: '18px',
+    letterSpacing: '0.01em',
   },
   networkLabel: {
     '& div': {
@@ -37,6 +39,10 @@ export const styles = createStyles({
     width: '100px',
     '& span': {
       color: 'white',
+    },
+    '& img': {
+      width: 12,
+      height: 12,
     },
   },
   account: {

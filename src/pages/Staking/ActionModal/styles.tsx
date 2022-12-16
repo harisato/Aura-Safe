@@ -64,11 +64,10 @@ const TextNotiStyled = styled.div`
   font-weight: 400;
   font-size: 14px;
   letter-spacing: 0.01em;
-  margin-top: 8px;
 `
 
-const TextGreen = styled.span`
-  color: #5ee6d0;
+const TextGray = styled.span`
+  color: #ccd0d5;
 `
 
 const TextDelegateNoti = styled.span`
@@ -79,6 +78,9 @@ const BoxDelegate = styled.div`
   margin-bottom: 4px;
   display: flex;
   justify-content: space-between;
+  p {
+    margin: 0;
+  }
 `
 
 const FotterModal = styled.div`
@@ -168,7 +170,7 @@ export {
   Commission,
   StyleDivider,
   TextNotiStyled,
-  TextGreen,
+  TextGray,
   TextDelegateNoti,
   BoxDelegate,
   FotterModal,

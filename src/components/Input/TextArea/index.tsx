@@ -8,7 +8,7 @@ const StyledTextArea = styled.textarea`
   width: 100%;
   resize: vertical;
   font-size: 14px;
-  font-family: 'SFProDisplay';
+  font-family: 'Inter';
   border: 1px solid #494c58;
   border-radius: 8px;
   padding: 14px;

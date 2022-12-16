@@ -22,10 +22,10 @@ import plusIcon from './assets/plus.svg'
 import walletIcon from './assets/wallet.svg'
 
 const TitleFont = styled(Title)`
-  font-family: 'SFProDisplay';
+  font-family: 'Inter';
 `
 const TextFont = styled(Text)`
-  font-family: 'SFProDisplay';
+  font-family: 'Inter';
 `
 function Welcome(): ReactElement {
   return (

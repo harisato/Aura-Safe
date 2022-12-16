@@ -36,7 +36,7 @@ const useStyles = makeStyles((theme) => ({
   boxSelect: {
     backgroundColor: 'transparent',
     color: 'white !important',
-    height: 27,
+    height: '100%',
     padding: 0,
     '&. Mui-focused': {
       border: 'none',
@@ -49,8 +49,8 @@ const useStyles = makeStyles((theme) => ({
   },
   selectMenu: {
     marginLeft: 10,
-    border: '2px solid transparent',
-    borderRadius: '20px',
+    border: '1px solid transparent',
+    borderRadius: '8px',
     backgroundImage: borderLinear,
     transition: '0.3s',
     backgroundOrigin: 'border-box',

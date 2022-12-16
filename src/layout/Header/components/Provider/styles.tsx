@@ -4,9 +4,10 @@ export const styles = () => ({
     alignItems: 'center',
     display: 'flex',
     height: '100%',
-
+    borderLeft: '1px solid #3E3F40',
+    borderRight: '1px solid #3E3F40',
     [`@media (min-width: ${screenSm}px)`]: {
-      flexBasis: '284px',
+      flexBasis: '256pxF',
     },
   },
   provider: {
@@ -14,7 +15,7 @@ export const styles = () => ({
     cursor: 'pointer',
     display: 'flex',
     flex: '1 1 auto',
-    padding: sm,
+    padding: '20px 12px',
     [`@media (min-width: ${screenSm}px)`]: {
       paddingLeft: sm,
       paddingRight: sm,

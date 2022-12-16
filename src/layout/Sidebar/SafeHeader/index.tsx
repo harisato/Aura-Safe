@@ -1,5 +1,6 @@
 import { CopyToClipboardBtn, ExplorerButton, FixedIcon, Icon, Identicon, Text } from '@aura/safe-react-components'
 import { useState } from 'react'
+import { FilledButton } from 'src/components/Button'
 import ButtonHelper from 'src/components/ButtonHelper'
 import FlexSpacer from 'src/components/FlexSpacer'
 import MultiSendPopup from 'src/components/Popup/MultiSendPopup'
@@ -85,20 +86,11 @@ const SafeHeader = ({
             {address && <ExplorerButton explorerUrl={getExplorerInfo(address)} />}
           </IconContainer>
           {/* <StyledButton size="md" disabled={!granted} onClick={() => onNewTransactionClick()}> */}
-          <StyledButton size="md" disabled={!granted} onClick={() => setSendTxTypePopupOpen(true)}>
-            <FixedIcon type="arrowSentWhite" />
-            <Text size="lg" color="white">
-              New transaction
-            </Text>
-          </StyledButton>
+          <FilledButton disabled={!granted} onClick={() => setSendTxTypePopupOpen(true)}>
+            New transaction
+          </FilledButton>
         </ContainerButton>
-        {!granted && (
-          <StyledLabel>
-            <Text size="sm" color="white">
-              READ ONLY
-            </Text>
-          </StyledLabel>
-        )}
+        {!granted && <StyledLabel>READ ONLY</StyledLabel>}
       </Container>
       <SendTxTypePopup
         open={sendTxTypePopupOpen}

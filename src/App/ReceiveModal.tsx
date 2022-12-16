@@ -54,7 +54,7 @@ const useStyles = (chainInfo: ChainInfo) =>
         justifyContent: 'flex-end',
         marginRight: 50,
         // '& > button': {
-        //   fontFamily: 'SFProDisplay',
+        //   fontFamily: 'Inter',
         //   fontSize: md,
         //   boxShadow: 'none',
         //   backgroundColor: 'transparent !important',

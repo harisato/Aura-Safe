@@ -30,10 +30,10 @@ import {
   ADDRESS_BOOK_ROW_ID,
   generateColumns,
   SEND_ENTRY_BUTTON,
-} from 'src/routes/safe/components/AddressBook/columns'
-import { CreateEditEntryModal } from 'src/routes/safe/components/AddressBook/CreateEditEntryModal'
-import { DeleteEntryModal } from 'src/routes/safe/components/AddressBook/DeleteEntryModal'
-import { ExportEntriesModal } from 'src/routes/safe/components/AddressBook/ExportEntriesModal'
+} from 'src/pages/AddressBook/columns'
+import { CreateEditEntryModal } from 'src/pages/AddressBook/CreateEditEntryModal'
+import { DeleteEntryModal } from 'src/pages/AddressBook/DeleteEntryModal'
+import { ExportEntriesModal } from 'src/pages/AddressBook/ExportEntriesModal'
 import SendModal from 'src/routes/safe/components/Balances/SendModal'
 import { grantedSelector } from 'src/routes/safe/container/selector'
 import { checksumAddress } from 'src/utils/checksumAddress'

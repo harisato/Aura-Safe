@@ -1,4 +1,4 @@
-import { Button, Loader } from '@aura/safe-react-components'
+import { Button } from '@aura/safe-react-components'
 import { useEffect, useState } from 'react'
 import ButtonSelect from 'src/components/ButtonSelect'
 import CloseButton from 'src/components/CloseButton'
@@ -16,7 +16,7 @@ import {
   ImgStyled,
   StyleDivider,
   TextDelegators,
-  TextGreen,
+  TextGray,
   TextPower,
   Wrapper,
 } from './styles'
@@ -32,6 +32,8 @@ import { LoadingContainer } from 'src/components/LoaderContainer'
 import { ValidatorType } from 'src/logic/validator/store/reducer'
 import { allValidator as allValidatorSelector } from 'src/logic/validator/store/selectors'
 import ModalUndelegate from './undelegate'
+import Loader from 'src/components/Loader'
+import { FilledButton, OutlinedNeutralButton } from 'src/components/Button'
 const StyledButtonSubmit = styled(Button)`
   border: 2px solid transparent;
   background-image: ${borderLinear};
@@ -109,7 +111,7 @@ export default function ModalStaking(props) {
       <Popup title="" open={modalIsOpen} handleClose={handleClose}>
         <Wrapper>
           <LoadingContainer>
-            <Loader size="md" />
+            <Loader size={60} />
           </LoadingContainer>
         </Wrapper>
       </Popup>
@@ -133,7 +135,7 @@ export default function ModalStaking(props) {
             <TextPower>
               Voting power -{' '}
               {parseFloat(Number(dataDelegateOfUser?.validator?.votingPower?.percent_voting_power).toFixed(2)) || 0}% (0{' '}
-              <TextGreen>{nativeCurrency.symbol}</TextGreen> )
+              <TextGray>{nativeCurrency.symbol}</TextGray> )
             </TextPower>
             <TextDelegators>Delegators - {dataDelegateOfUser?.validator?.delegators || 0}</TextDelegators>
           </BoxVotingPower>
@@ -190,25 +192,27 @@ export default function ModalStaking(props) {
         )}
 
         <FotterModal>
-          <CloseButton title="Close" onClick={handleClose} />
+          <OutlinedNeutralButton style={{ marginRight: 8 }} onClick={handleClose}>
+            Close
+          </OutlinedNeutralButton>
           {selectedAction === 'delegate' && (
-            <StyledButtonSubmit disabled={!!validateMsg || loadingSimulate} size="md" onClick={submit}>
-              {loadingSimulate ? <Loader size="xs" /> : 'Delegate'}
-            </StyledButtonSubmit>
+            <FilledButton disabled={!!validateMsg} className={loadingSimulate ? 'loading' : ''} onClick={submit}>
+              {loadingSimulate ? <Loader color="#24262E" content="Delegate" /> : 'Delegate'}
+            </FilledButton>
           )}
           {selectedAction === 'redelegate' && (
-            <StyledButtonSubmit
-              disabled={!!validateMsg || loadingSimulate || valueDelegate == 'none'}
-              size="md"
+            <FilledButton
+              disabled={!!validateMsg || valueDelegate == 'none'}
               onClick={submit}
+              className={loadingSimulate ? 'loading' : ''}
             >
-              {loadingSimulate ? <Loader size="xs" /> : 'Redelegate'}
-            </StyledButtonSubmit>
+              {loadingSimulate ? <Loader color="#24262E" content="Redelegate" /> : 'Redelegate'}
+            </FilledButton>
           )}
           {selectedAction === 'undelegate' && (
-            <StyledButtonSubmit disabled={!!validateMsg || loadingSimulate} size="md" onClick={submit}>
-              {loadingSimulate ? <Loader size="xs" /> : 'Undelegate'}
-            </StyledButtonSubmit>
+            <FilledButton disabled={!!validateMsg} className={loadingSimulate ? 'loading' : ''} onClick={submit}>
+              {loadingSimulate ? <Loader color="#24262E" content="Undelegate" /> : 'Undelegate'}
+            </FilledButton>
           )}
           {selectedAction === 'manage' && (
             <>

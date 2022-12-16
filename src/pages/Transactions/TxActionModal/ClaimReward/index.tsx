@@ -1,7 +1,7 @@
 import { coins, MsgWithdrawDelegatorRewardEncodeObject } from '@cosmjs/stargate'
 import { useContext, Fragment } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { OutlinedButton, OutlinedNeutralButton } from 'src/components/Button'
+import { FilledButton, OutlinedButton, OutlinedNeutralButton } from 'src/components/Button'
 import Gap from 'src/components/Gap'
 import { Popup } from 'src/components/Popup'
 import Footer from 'src/components/Popup/Footer'
@@ -101,18 +101,15 @@ export default function Execute({ open, onClose, data, sendTx, rejectTx, disable
           <div className="notice">{noti}</div>
         </ReviewTxPopupWrapper>
         <Footer>
-          <OutlinedNeutralButton size="md" onClick={onClose}>
-            Back
-          </OutlinedNeutralButton>
-          <OutlinedButton
-            size="md"
+          <OutlinedNeutralButton onClick={onClose}>Back</OutlinedNeutralButton>
+          <FilledButton
             onClick={() => {
               action == 'confirm' ? confirmTx() : action == 'reject' ? rejectTx() : sendTx()
             }}
             disabled={disabled}
           >
             Submit
-          </OutlinedButton>
+          </FilledButton>
         </Footer>
       </Popup>
     </>

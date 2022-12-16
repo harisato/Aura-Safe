@@ -10,10 +10,9 @@ const Container = styled.div`
 `
 
 const HeaderWrapper = styled.nav`
-  height: 52px;
+  height: 76px;
   width: 100%;
   z-index: 1299;
-
   background-color: white;
   box-shadow: 0 2px 4px 0 rgba(40, 54, 61, 0.18);
 `
@@ -27,14 +26,11 @@ const BodyWrapper = styled.div`
 
 const SidebarWrapper = styled.aside`
   height: 100%;
-  width: 320px;
+  min-width: 320px;
   display: flex;
   flex-direction: column;
   z-index: 1;
-
-  padding: 8px 8px 0 8px;
-  background-color: rgba(18, 18, 18, 1);
-  box-shadow: 0 2px 4px 0 rgba(40, 54, 61, 0.18);
+  background-color: #0f0f0f;
 `
 
 const ContentWrapper = styled.div`
@@ -42,9 +38,8 @@ const ContentWrapper = styled.div`
   display: flex;
   flex-direction: column;
   overflow-x: auto;
-
-  padding: 16px 32px;
-
+  padding: 32px;
+  background: #131419;
   > :nth-child(1) {
     flex-grow: 1;
     width: 100%;
