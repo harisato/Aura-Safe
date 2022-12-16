@@ -6,6 +6,7 @@ import TableRow from '@material-ui/core/TableRow'
 import { List } from 'immutable'
 import { useEffect, useMemo } from 'react'
 import { useSelector } from 'react-redux'
+import { OutlinedNeutralButton } from 'src/components/Button'
 import Row from 'src/components/layout/Row'
 import Table from 'src/components/Table'
 import { cellWidth } from 'src/components/Table/TableHead'
@@ -21,6 +22,7 @@ import {
 } from 'src/routes/safe/components/Balances/dataFetcher'
 import { extendedSafeTokensSelector, grantedSelector } from 'src/routes/safe/container/selector'
 import { SAFE_EVENTS, useAnalytics } from 'src/utils/googleAnalytics'
+import styled from 'styled-components'
 import { StyledButton, styles } from './styles'
 
 const useStyles = makeStyles(styles)
@@ -30,27 +32,13 @@ type Props = {
   showSendFunds: (tokenAddress: string) => void
 }
 
-// type CurrencyTooltipProps = {
-//   valueWithCurrency: string
-//   balanceWithSymbol: string
-// }
-
-// const CurrencyTooltip = (props: CurrencyTooltipProps): React.ReactElement | null => {
-//   const { balanceWithSymbol, valueWithCurrency } = props
-//   const classes = useStyles()
-//   const balance = balanceWithSymbol.replace(/[^\d.-]/g, '')
-//   const value = valueWithCurrency.replace(/[^\d.-]/g, '')
-//   if (!Number(value) && Number(balance)) {
-//     return (
-//       <Tooltip placement="top" title="Value may be zero due to missing token price information">
-//         <span>
-//           <Img className={classes.tooltipInfo} alt="Info Tooltip" height={16} src={InfoIcon} />
-//         </span>
-//       </Tooltip>
-//     )
-//   }
-//   return null
-// }
+const Icon = styled.div`
+  > span {
+    display: inline-block;
+    width: 20px;
+    margin: 0px 6px 0px -8px;
+  }
+`
 
 const Coins = (props: Props): React.ReactElement => {
   const { showReceiveFunds, showSendFunds } = props
@@ -60,12 +48,6 @@ const Coins = (props: Props): React.ReactElement => {
   const selectedCurrency = useSelector(currentCurrencySelector)
   const safeTokens = useSelector(extendedSafeTokensSelector)
   const granted = useSelector(grantedSelector)
-  // const { trackEvent } = useAnalytics()
-
-  // useEffect(() => {
-  //   trackEvent(SAFE_EVENTS.COINS)
-  // }, [trackEvent])
-
   const filteredData: List<BalanceData> = useMemo(
     () => getBalanceData(safeTokens, selectedCurrency),
     [safeTokens, selectedCurrency],
@@ -99,25 +81,6 @@ const Coins = (props: Props): React.ReactElement => {
                     )
                     break
                   }
-                  // case BALANCE_TABLE_VALUE_ID: {
-                  //   // If there are no values for that row but we have balances, we display as '0.00 {CurrencySelected}'
-                  //   // In case we don't have balances, we display a skeleton
-                  //   const showCurrencyValueRow = row[id] || row[BALANCE_TABLE_BALANCE_ID]
-                  //   const valueWithCurrency = row[id] ? row[id] : `0.00 ${selectedCurrency}`
-                  //   cellItem =
-                  //     showCurrencyValueRow && selectedCurrency ? (
-                  //       <div className={classes.currencyValueRow}>
-                  //         {valueWithCurrency}
-                  //         <CurrencyTooltip
-                  //           valueWithCurrency={valueWithCurrency}
-                  //           balanceWithSymbol={row[BALANCE_TABLE_BALANCE_ID]}
-                  //         />
-                  //       </div>
-                  //     ) : (
-                  //       <Skeleton animation="wave" />
-                  //     )
-                  //   break
-                  // }
                   default: {
                     cellItem = null
                     break
@@ -132,19 +95,23 @@ const Coins = (props: Props): React.ReactElement => {
               <TableCell component="td">
                 <Row align="end" className={classes.actions}>
                   {granted && (
-                    <StyledButton onClick={() => showSendFunds(row.asset.address)} data-testid="balance-send-btn">
-                      <FixedIcon type="arrowSentWhite" />
-                      <Text size="lg" color="white">
+                    <OutlinedNeutralButton
+                      className="small"
+                      onClick={() => showSendFunds(row.asset.address)}
+                      data-testid="balance-send-btn"
+                    >
+                      <Icon>
+                        <FixedIcon type="arrowSentWhite" />
                         Send
-                      </Text>
-                    </StyledButton>
+                      </Icon>
+                    </OutlinedNeutralButton>
                   )}
-                  <StyledButton onClick={showReceiveFunds}>
-                    <FixedIcon type="arrowReceivedWhite" />
-                    <Text size="lg" color="white">
+                  <OutlinedNeutralButton className="small" style={{ marginLeft: 8 }} onClick={showReceiveFunds}>
+                    <Icon>
+                      <FixedIcon type="arrowReceivedWhite" />
                       Receive
-                    </Text>
-                  </StyledButton>
+                    </Icon>
+                  </OutlinedNeutralButton>
                 </Row>
               </TableCell>
             </TableRow>

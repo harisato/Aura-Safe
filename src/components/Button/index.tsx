@@ -114,6 +114,17 @@ export const OutlinedNeutralButton = styled.button<{ disabled?: boolean }>`
     pointer-events: unset;
     background: #24262e;
   }
+  &.small {
+    font-size: 12px;
+    line-height: 16px;
+    padding: 8px 16px;
+    > i,
+    img,
+    svg,
+    .icon {
+      margin: 0px -8px;
+    }
+  }
 `
 export const TextButton = styled(Button)`
   border: none;
