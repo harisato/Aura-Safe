@@ -7,7 +7,8 @@ import TxType from '../components/TxType'
 import { NoPaddingAccordion, StyledAccordionSummary, StyledTransaction } from '../styled'
 import { useState } from 'react'
 import TxDetail from '../components/TxDetail'
-export default function Transaction({ transaction }) {
+import TxSequence from '../components/TxSequence'
+export default function Transaction({ transaction, notFirstTx }) {
   const [txDetailLoaded, setTxDetailLoaded] = useState(false)
   if (!transaction) {
     return null
@@ -22,7 +23,12 @@ export default function Transaction({ transaction }) {
       }}
     >
       <StyledAccordionSummary>
-        <StyledTransaction>
+        <StyledTransaction shouldBlur={transaction.txStatus == 'REPLACED'}>
+          {notFirstTx ? (
+            <TxSequence style={{ visibility: 'hidden' }} sequence={transaction.txSequence} />
+          ) : (
+            <TxSequence sequence={transaction.txSequence} />
+          )}
           <TxType type={transaction.txInfo.typeUrl} />
           <TxAmount amount={transaction.txInfo.amount} />
           <TxTime time={transaction.timestamp ? formatTimeInWords(transaction.timestamp) : 'Unknown'} />

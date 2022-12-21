@@ -33,11 +33,24 @@ export const ColumnDisplayAccordionDetails = styled(AccordionDetails)`
   flex-flow: column;
 `
 
-export const AccordionWrapper = styled.div`
+export const AccordionWrapper = styled.div<{ hasSameSeqTxAfter?: boolean; hasSameSeqTxBefore?: boolean }>`
   background: #24262e;
   border: 1px solid #363843;
   border-radius: 4px;
   margin-bottom: 16px;
+  overflow: hidden;
+  &.history-tx {
+    border-top: ${(props) => (props.hasSameSeqTxAfter ? '1px solid #363843' : 'unset')};
+    border-bottom: ${(props) => (props.hasSameSeqTxBefore ? '1px solid #363843' : 'unset')};
+    border-left: 1px solid #363843;
+    border-right: 1px solid #363843;
+    margin-bottom: ${(props) => (props.hasSameSeqTxAfter ? 'unset' : '16px')};
+    border-bottom-left-radius: ${(props) => (props.hasSameSeqTxAfter ? 'unset' : '4px')};
+    border-bottom-right-radius: ${(props) => (props.hasSameSeqTxAfter ? 'unset' : '4px')};
+    border-top-left-radius: ${(props) => (props.hasSameSeqTxBefore ? 'unset' : '4px')};
+    border-top-right-radius: ${(props) => (props.hasSameSeqTxBefore ? 'unset' : '4px')};
+    border-top: ${(props) => (props.hasSameSeqTxBefore ? '1px solid #404047 !important;' : 'unset')};
+  }
   &.merged-tx {
     > div:not(:first-child) {
       border-top: 1px solid #404047 !important;
@@ -106,7 +119,7 @@ export const H2 = styled.h2`
 `
 
 export const SubTitle = styled.p`
-  margin: 0px 0px 8px 0px;
+  margin: 16px 0px 8px 0px;
   font-size: 0.76em;
   font-weight: 600;
   line-height: 1.5;
@@ -227,12 +240,13 @@ const onChainRejection = css`
   }
 `
 
-export const StyledTransaction = styled.div`
+export const StyledTransaction = styled.div<{ shouldBlur?: boolean }>`
   ${willBeReplaced};
   ${failedTransaction};
   display: flex;
   width: 100%;
-
+  color: ${(props) => (props.shouldBlur ? '#5C606D!important' : '')};
+  font-weight: 600;
   & > div {
     flex: 1;
     align-self: center;

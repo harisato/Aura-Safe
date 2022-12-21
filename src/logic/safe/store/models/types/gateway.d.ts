@@ -30,7 +30,7 @@ export const LocalTransactionStatus: Record<string, TransactionStatus> = {
   SUCCESS: 'SUCCESS',
   PENDING: 'PENDING',
   PENDING_FAILED: 'PENDING_FAILED',
-  WILL_BE_REPLACED: 'WILL_BE_REPLACED',
+  REPLACED: 'REPLACED',
 }
 
 export type Transaction = TransactionSummary & {
@@ -134,6 +134,6 @@ export const isTxQueued = (value: LocalTransactionStatus): boolean => {
     LocalTransactionStatus.PENDING_FAILED,
     LocalTransactionStatus.AWAITING_CONFIRMATIONS,
     LocalTransactionStatus.AWAITING_EXECUTION,
-    LocalTransactionStatus.WILL_BE_REPLACED,
+    LocalTransactionStatus.REPLACED,
   ].includes(value)
 }

@@ -1,5 +1,5 @@
 import { Loader, Title } from '@aura/safe-react-components'
-import { ReactElement, Fragment } from 'react'
+import { ReactElement, Fragment, useState, useEffect } from 'react'
 
 import { InfiniteScroll, INFINITE_SCROLL_CONTAINER } from 'src/components/InfiniteScroll'
 import Img from 'src/components/layout/Img'
@@ -16,7 +16,7 @@ import {
 import Transaction from './Transaction'
 import { usePagedHistoryTransactions } from '../hooks/usePagedHistoryTransactions'
 export default function HistoryTransactions(): ReactElement {
-  const { count, isLoading, hasMore, next, transactions } = usePagedHistoryTransactions()
+  const { count, isLoading, hasMore, next, transactions: historyTx } = usePagedHistoryTransactions()
   if (count === 0 && isLoading) {
     return (
       <Centered>
@@ -24,7 +24,7 @@ export default function HistoryTransactions(): ReactElement {
       </Centered>
     )
   }
-  if (count === 0 || !transactions) {
+  if (count === 0 || !historyTx) {
     return (
       <NoTransactions>
         <Img alt="No Transactions yet" src={NoTransactionsImage} />
@@ -33,24 +33,30 @@ export default function HistoryTransactions(): ReactElement {
     )
   }
 
-  console.log(transactions)
   return (
     <InfiniteScroll next={next} hasMore={hasMore}>
       <ScrollableTransactionsContainer id={INFINITE_SCROLL_CONTAINER}>
-        {transactions &&
+        {historyTx &&
           count !== 0 &&
-          transactions.map(([nonce, txs]) => {
+          historyTx.map(([nonce, txs], index) => {
             return (
               <Fragment key={nonce}>
                 <SubTitle>{formatWithSchema(Number(nonce), 'MMM d, yyyy')}</SubTitle>
-                {txs.map((tx, index) => {
+                {txs.map((tx, index, txs) => {
                   return (
-                    <AccordionWrapper key={index}>
-                      <Transaction transaction={tx} />
+                    <AccordionWrapper
+                      key={index}
+                      hasSameSeqTxAfter={txs[index].txSequence == txs[index + 1]?.txSequence}
+                      hasSameSeqTxBefore={txs[index].txSequence == txs[index - 1]?.txSequence}
+                      className="history-tx"
+                    >
+                      <Transaction
+                        transaction={tx}
+                        notFirstTx={index == 0 ? false : txs[index].txSequence == txs[index - 1].txSequence}
+                      />
                     </AccordionWrapper>
                   )
                 })}
-                <div className="gap-div"></div>
               </Fragment>
             )
           })}
