@@ -9,7 +9,6 @@ const StyledPrefixedEthHashInfo = styled(EthHashInfo)`
     color: white;
   }
   > div {
-    align-items: center;
     margin-right: 4px;
     > img {
       border-radius: 50%;

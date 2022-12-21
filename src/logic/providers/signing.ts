@@ -30,6 +30,7 @@ const signMessage = async (
   messages: any,
   fee: StdFee,
   memo?: string,
+  sequence?: string,
 ): Promise<any> => {
   const loadLastUsedProviderResult = await loadLastUsedProvider()
   const provider = loadLastUsedProviderResult
@@ -48,7 +49,7 @@ const signMessage = async (
     const onlineData: SequenceResponse = (await getAccountOnChain(safeAddress, getInternalChainId())).Data
     const signerData: SignerData = {
       accountNumber: onlineData.accountNumber,
-      sequence: onlineData.sequence,
+      sequence: sequence ? +sequence : onlineData.sequence,
       chainId,
     }
     const signerAddress = _.get(account, '[0].address')
@@ -61,7 +62,7 @@ const signMessage = async (
     const respone = messages?.[0]?.typeUrl
       ? await client.sign(signerAddress, messages, fee, memo || '', signerData)
       : await client.sign(signerAddress, [{ typeUrl, value: messages }], fee, memo || '', signerData)
-    return { ...respone, accountNumber: onlineData.accountNumber, sequence: onlineData.sequence }
+    return { ...respone, accountNumber: onlineData.accountNumber, sequence: sequence ? +sequence : onlineData.sequence }
   }
   return undefined
 }

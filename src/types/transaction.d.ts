@@ -42,6 +42,7 @@ export interface ITransactionListItem {
   MultisigTxId: number
   AuraTxId?: number
   CreatedAt: string
+  Sequence: string
   UpdatedAt: string
   FromAddress: string
   ToAddress: string

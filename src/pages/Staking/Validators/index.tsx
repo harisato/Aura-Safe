@@ -4,11 +4,11 @@ import AppBar from '@material-ui/core/AppBar'
 import { makeStyles } from '@material-ui/core/styles'
 import { OutlinedButton } from 'src/components/Button'
 import DenseTable, { StyledTableCell, StyledTableRow } from 'src/components/Table/DenseTable'
-import TabPanel, { a11yProps } from 'src/components/Tabs/TabPanel'
+import TabPanel, { a11yProps } from 'src/components/Tabs/FilterTab/TabPanel'
 import sreachIcon from '../assets/Shape.svg'
 import { ContainSearch, HeaderValidator, ImgRow, StyleSearch, TitleStyled, Wrap } from './styles'
-import Tabs from 'src/components/Tabs'
-import Tab from 'src/components/Tabs/Tab'
+import Tabs from 'src/components/Tabs/FilterTab'
+import Tab from 'src/components/Tabs/FilterTab/Tab'
 
 const useStyles = makeStyles({
   root: {

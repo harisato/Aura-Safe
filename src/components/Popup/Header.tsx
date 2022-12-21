@@ -8,6 +8,9 @@ const HeaderWrapper = styled.div`
   justify-content: space-between;
   align-items: center;
   border-bottom: 1px solid #404047;
+  background: #363843;
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
   > div:nth-child(2) {
     display: flex;
     color: #98989b;

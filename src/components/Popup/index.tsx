@@ -15,7 +15,8 @@ const PopupWrapper = styled(Modal)`
   }
   .paper {
     position: relative;
-    top: 68px;
+    top: 50%;
+    transform: translateY(-50%);
     border-radius: 12px;
     background-color: #24262e;
     display: flex;

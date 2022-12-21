@@ -1,16 +1,25 @@
-import { Dot, Loader } from '@aura/safe-react-components'
-import { ThemeColors } from '@aura/safe-react-components/dist/theme'
+import Loader from 'src/components/Loader'
 import styled from 'styled-components'
 import { useTransactionStatus } from '../hooks/useTransactionStatus'
 
-const SmallDot = styled(Dot)`
-  height: 8px;
-  width: 8px;
-  background-color: #e65e5e !important;
+const SmallDot = styled.div`
+  height: 4px;
+  width: 4px;
+  border-radius: 50%;
+  background-color: ${({ color }) => color};
 `
 
-const CircularProgressPainter = styled.div<{ color: ThemeColors }>`
-  color: ${({ theme, color }) => theme.colors[color]};
+const CircularProgressPainter = styled.div<{ color: string }>`
+  color: ${({ color }) => color};
+  > div {
+    margin-right: 8px;
+  }
+  > p {
+    font-weight: 600;
+    font-size: 14px;
+    line-height: 18px;
+    letter-spacing: 0.01em;
+  }
 `
 
 export default function TxStatus({ transaction, shouldDisplayDot = false }) {
@@ -18,11 +27,9 @@ export default function TxStatus({ transaction, shouldDisplayDot = false }) {
   return (
     <CircularProgressPainter color={status.color} className="tx-status">
       {transaction.txStatus == 'PENDING' ? (
-        <div>
-          <Loader size="xs" color="pending" />
-        </div>
+        <Loader color={status.color} size={14} />
       ) : (
-        shouldDisplayDot && <SmallDot color={status.color} />
+        <SmallDot color={status.color} />
       )}
       <p style={{ color: status.color }}>{status.text}</p>
     </CircularProgressPainter>

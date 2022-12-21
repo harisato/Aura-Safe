@@ -5,7 +5,7 @@ import { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { generatePath } from 'react-router-dom'
 import AddressInfo from 'src/components/AddressInfo'
-import { LinkButton, OutlinedButton, OutlinedNeutralButton } from 'src/components/Button'
+import { FilledButton, LinkButton, OutlinedButton, OutlinedNeutralButton } from 'src/components/Button'
 import Divider from 'src/components/Divider'
 import Gap from 'src/components/Gap'
 import TextField from 'src/components/Input/TextField'
@@ -45,6 +45,8 @@ import { calcFee, formatBigNumber, formatNativeCurrency } from 'src/utils'
 import { Popup } from '..'
 import Header from '../Header'
 import { Footer, Wrapper } from './styles'
+import ReloadIcon from 'src/assets/icons/reload.svg'
+import Loader from 'src/components/Loader'
 
 export default function CreateTxPopup({
   open,
@@ -63,7 +65,7 @@ export default function CreateTxPopup({
 }) {
   const safeAddress = extractSafeAddress()
   const userWalletAddress = useSelector(userAccountSelector)
-  const { ethBalance: balance } = useSelector(currentSafeWithNames)
+  const { ethBalance: balance, nextQueueSeq, sequence: currentSequence } = useSelector(currentSafeWithNames)
   const dispatch = useDispatch()
   const nativeCurrency = getNativeCurrency()
   const denom = getCoinMinimalDenom()
@@ -81,6 +83,9 @@ export default function CreateTxPopup({
   const [gasPriceFormatted, setGasPriceFormatted] = useState(gasFee)
   const [openGasInput, setOpenGasInput] = useState<boolean>(false)
   const [isDisabled, setDisabled] = useState(false)
+
+  const [sequence, setSequence] = useState(nextQueueSeq)
+
   const chainInfo = getChainInfo()
   useEffect(() => {
     if (gasUsed != '0') {
@@ -92,13 +97,25 @@ export default function CreateTxPopup({
       setGasPriceFormatted(gasFee)
     }
   }, [gasUsed])
+
+  useEffect(() => {
+    recalculateFee()
+  }, [manualGasLimit])
+
+  useEffect(() => {
+    setSequence(nextQueueSeq)
+  }, [nextQueueSeq])
+
   const recalculateFee = () => {
+    if (!manualGasLimit) {
+      setGasPriceFormatted(0)
+      return
+    }
     const gasFee =
       manualGasLimit && chainDefaultGasPrice
         ? calculateGasFee(+manualGasLimit, +chainDefaultGasPrice, decimal)
         : chainDefaultGasPrice
     setGasPriceFormatted(gasFee)
-    setOpenGasInput(!openGasInput)
   }
   const signTransaction = async () => {
     setDisabled(true)
@@ -111,7 +128,7 @@ export default function CreateTxPopup({
     }
     try {
       dispatch(enqueueSnackbar(enhanceSnackbarForAction(NOTIFICATIONS.SIGN_TX_MSG)))
-      const signResult = await createMessage(chainId, safeAddress, MsgTypeUrl.Send, Msg, _sendFee)
+      const signResult = await createMessage(chainId, safeAddress, MsgTypeUrl.Send, Msg, _sendFee, '', sequence)
       if (!signResult) throw new Error()
       const signatures = toBase64(signResult.signatures[0])
       const bodyBytes = toBase64(signResult.bodyBytes)
@@ -124,7 +141,7 @@ export default function CreateTxPopup({
         authInfoBytes: authInfoBytes,
         from: safeAddress,
         accountNumber: signResult.accountNumber,
-        sequence: signResult.sequence,
+        sequence: +sequence,
       }
       createTxFromApi(data)
     } catch (error) {
@@ -149,6 +166,7 @@ export default function CreateTxPopup({
         history.push(txRoute)
         setDisabled(false)
       } else {
+        setDisabled(false)
         switch (ErrorCode) {
           case MESSAGES_CODE.E029.ErrorCode:
             dispatch(enqueueSnackbar(enhanceSnackbarForAction(NOTIFICATIONS.CREATE_SAFE_PENDING_EXECUTE_MSG)))
@@ -161,6 +179,7 @@ export default function CreateTxPopup({
       handleClose()
     } catch (error) {
       console.error(error)
+      setDisabled(false)
       handleClose()
       dispatch(
         enqueueSnackbar(
@@ -184,27 +203,77 @@ export default function CreateTxPopup({
         <Divider withArrow />
         <p className="label">Recipient</p>
         <AddressInfo address={recipient?.address || ''} />
-        <Gap height={24} />
+        <Gap height={16} />
         <Amount amount={formatNativeCurrency(amount)} />
         <Divider />
-        <div className="tx-fee">
-          <p className="title">Transaction fee</p>
-          <div className="fee">
-            <div className="fee-amount">
-              <img alt={'nativeCurrencyLogoUri'} height={25} src={nativeCurrency.logoUri} />
-              <p>{`${formatNativeCurrency(+gasPriceFormatted)}`}</p>
-            </div>
-            <LinkButton onClick={() => setOpenGasInput(!openGasInput)}>Edit gas</LinkButton>
-          </div>
-          {openGasInput && (
-            <div className="edit-fee-section">
+
+        {openGasInput ? (
+          <div className="edit-fee-section">
+            <div className="gas-fee">
               <TextField type="number" label="Gas Amount" value={manualGasLimit} onChange={setManualGasLimit} />
-              <OutlinedButton disabled={!manualGasLimit || +manualGasLimit < 1} onClick={recalculateFee}>
-                Apply
-              </OutlinedButton>
+              <div className="tx-fee">
+                <p className="title">Transaction fee</p>
+                <div className="fee">
+                  <div className="fee-amount">
+                    <img alt={'nativeCurrencyLogoUri'} height={25} src={nativeCurrency.logoUri} />
+                    <p>{`${formatNativeCurrency(+gasPriceFormatted)}`}</p>
+                  </div>
+                </div>
+              </div>
             </div>
-          )}
-        </div>
+            <TextField
+              endIcon={<img src={ReloadIcon} onClick={() => setSequence(nextQueueSeq)} alt="icon" />}
+              type="number"
+              label="Transaction sequence"
+              value={sequence}
+              onChange={setSequence}
+            />
+            <Gap height={16} />
+            <div>
+              {+sequence > +nextQueueSeq ? (
+                <div className="noti">
+                  Be aware that a transaction can only be executed after the execution of all other transactions with
+                  lower sequences.
+                </div>
+              ) : +sequence == +currentSequence ? (
+                <div className="noti">
+                  There are other pending transactions with this sequence. Be aware that only one can be executed.
+                </div>
+              ) : +sequence < +currentSequence ? (
+                <div className="noti">The chosen Tx sequence has already been executed.</div>
+              ) : (
+                <div></div>
+              )}
+              <FilledButton
+                disabled={!manualGasLimit || +manualGasLimit < 1 || +sequence < +currentSequence}
+                onClick={() => setOpenGasInput(false)}
+              >
+                Apply
+              </FilledButton>
+            </div>
+          </div>
+        ) : (
+          <div className="tx-extra-info">
+            <div>
+              <div className="tx-fee">
+                <p className="title">Transaction fee</p>
+                <div className="fee">
+                  <div className="fee-amount">
+                    <img alt={'nativeCurrencyLogoUri'} height={25} src={nativeCurrency.logoUri} />
+                    <p>{`${formatNativeCurrency(+gasPriceFormatted)}`}</p>
+                  </div>
+                </div>
+              </div>
+              <div className="tx-sequence">
+                <p className="title">Transaction sequence</p>
+                <div className="sequence">{sequence}</div>
+              </div>
+            </div>
+            <LinkButton onClick={() => setOpenGasInput(true)}>Advanced</LinkButton>
+          </div>
+        )}
+        <Divider />
+
         <Amount
           label="Total Allocation Amount"
           amount={formatNativeCurrency(new BigNumber(+amount).plus(+gasPriceFormatted).toString())}
@@ -217,9 +286,9 @@ export default function CreateTxPopup({
         <OutlinedNeutralButton onClick={() => handleClose(true)} disabled={isDisabled}>
           Back
         </OutlinedNeutralButton>
-        <OutlinedButton onClick={signTransaction} disabled={isDisabled}>
-          Submit
-        </OutlinedButton>
+        <FilledButton onClick={signTransaction} disabled={openGasInput} className={isDisabled ? 'loading' : ''}>
+          {isDisabled ? <Loader content="Submit" /> : 'Submit'}
+        </FilledButton>
       </Footer>
     </Popup>
   )

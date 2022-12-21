@@ -42,31 +42,66 @@ export const StyledTextField = styled(MuiTextField)`
     display: none;
   }
 `
+const Wrap = styled.div`
+  width: 100%;
+  .input-label {
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 20px;
+    margin-bottom: 8px;
+  }
+  .input {
+    background: #24262e;
+    border: 1px solid #494c58;
+    border-radius: 8px;
+    padding: 14px 16px;
+    display: flex;
+    align-items: center;
+    input {
+      background: #24262e;
+      font-weight: 400;
+      font-size: 14px;
+      line-height: 18px;
+      width: 100%;
+      outline: none;
+      border: none;
+      color: #ffffff;
+      font-family: 'Inter';
+      padding: 0;
+    }
+  }
+  .input-end-icon {
+    height: 24px;
+    width: 24px;
+    margin: -4px 0px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+  }
+`
 export default function TextField({
   label,
   value,
   onChange,
   type = 'text',
   autoFocus,
+  endIcon,
 }: {
   label: string
   value: any
   onChange: (value: string) => void
   type?: React.HTMLInputTypeAttribute
   autoFocus?: boolean
+  endIcon?: any
 }) {
   return (
-    <StyledTextField
-      autoFocus={autoFocus}
-      variant="filled"
-      label={label}
-      type={type}
-      value={value}
-      onKeyPress={type == 'number' ? isNumberKeyPress : undefined}
-      inputProps={type == 'number' ? { inputMode: 'numeric', pattern: '[0-9]*', step: '0.0000001' } : {}}
-      onChange={(event) =>
-        type == 'number' ? onChange(formatNumber(event.target.value)) : onChange(event.target.value)
-      }
-    />
+    <Wrap>
+      {label && <div className="input-label">{label}</div>}
+      <div className="input">
+        <input autoFocus={autoFocus} value={value} type={type} onChange={(e) => onChange(e.target.value)} />
+        {endIcon && <div className="input-end-icon">{endIcon}</div>}
+      </div>
+    </Wrap>
   )
 }

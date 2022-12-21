@@ -87,7 +87,7 @@ const SafeHeader = ({
           </IconContainer>
           {/* <StyledButton size="md" disabled={!granted} onClick={() => onNewTransactionClick()}> */}
           <FilledButton disabled={!granted} onClick={() => setSendTxTypePopupOpen(true)}>
-            New transaction
+            Send funds
           </FilledButton>
         </ContainerButton>
         {!granted && <StyledLabel>READ ONLY</StyledLabel>}

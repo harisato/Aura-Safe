@@ -117,10 +117,23 @@ export const Wrapper = styled.div`
     line-height: 150%;
     letter-spacing: 0.05em;
     color: #98989b;
+    margin-top: 16px;
+  }
+  .tx-extra-info {
+    display: flex;
+    align-items: flex-start;
+    > div {
+      flex: 1;
+    }
+    > button {
+      margin-top: 4px;
+    }
+  }
+  .tx-sequence {
     margin-top: 24px;
   }
-  .tx-fee {
-    margin-bottom: 24px;
+  .tx-fee,
+  .tx-sequence {
     p {
       margin: 0;
     }
@@ -142,16 +155,42 @@ export const Wrapper = styled.div`
         margin-right: 4px;
       }
     }
-    .edit-fee-section {
+  }
+  .edit-fee-section {
+    margin-top: 8px;
+
+    button {
+      min-width: 88px !important;
+    }
+    > div:last-child {
       display: flex;
-      align-items: center;
-      margin-top: 8px;
-      > div:nth-child(1) {
-        margin-right: 16px;
+      justify-content: space-between;
+    }
+    .gas-fee {
+      display: flex;
+      justify-content: space-between;
+      margin: 0px -8px 16px;
+      > div {
+        flex: 1;
+        margin: 0px 8px;
       }
-      button {
-        min-width: 88px !important;
+      .tx-fee {
+        .title {
+          font-size: 16px;
+          line-height: 20px;
+        }
+        .fee {
+          height: 48px;
+          font-size: 14px;
+          line-height: 18px;
+        }
       }
+    }
+    .noti {
+      font-size: 12px;
+      line-height: 16px;
+      margin-right: 16px;
+      color: #b4b8c0;
     }
   }
 `

@@ -8,7 +8,8 @@ import TxExecutionInfo from '../components/TxExecutionInfo'
 import TxStatus from '../components/TxStatus'
 import { useState } from 'react'
 import TxDetail from '../components/TxDetail'
-export default function Transaction({ transaction }) {
+import TxSequence from '../components/TxSequence'
+export default function Transaction({ transaction, hideSeq }: { transaction: any; hideSeq?: boolean }) {
   const [txDetailLoaded, setTxDetailLoaded] = useState(false)
   if (!transaction) {
     return null
@@ -24,6 +25,11 @@ export default function Transaction({ transaction }) {
     >
       <StyledAccordionSummary>
         <StyledTransaction>
+          {hideSeq ? (
+            <TxSequence style={{ visibility: 'hidden' }} sequence={transaction.txSequence} />
+          ) : (
+            <TxSequence sequence={transaction.txSequence} />
+          )}
           <TxType type={transaction.txInfo.typeUrl} />
           <TxAmount amount={transaction.txInfo.amount} />
           <TxTime time={transaction.timestamp ? formatTimeInWords(transaction.timestamp) : 'Unknown'} />

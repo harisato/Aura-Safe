@@ -33,9 +33,38 @@ export const ColumnDisplayAccordionDetails = styled(AccordionDetails)`
   flex-flow: column;
 `
 
+export const AccordionWrapper = styled.div`
+  background: #24262e;
+  border: 1px solid #363843;
+  border-radius: 4px;
+  margin-bottom: 16px;
+  &.merged-tx {
+    > div:not(:first-child) {
+      border-top: 1px solid #404047 !important;
+    }
+    .notice {
+      font-weight: 600;
+      font-size: 14px;
+      line-height: 18px;
+      color: #ffffff;
+      background: #494c58;
+      padding: 8px 0px;
+      background: #494c58;
+      position: relative;
+      p {
+        margin: 0;
+        text-align: center;
+      }
+      > div {
+        position: absolute;
+        left: 16px;
+      }
+    }
+  }
+`
 export const NoPaddingAccordion = styled(Accordion)`
   &.MuiAccordion-root {
-    border-bottom: none !important;
+    border: none !important;
     .MuiAccordionDetails-root {
       padding: 0;
     }
@@ -211,6 +240,10 @@ export const StyledTransaction = styled.div`
   p {
     margin: 0;
   }
+  .tx-seq {
+    flex: unset;
+    margin-right: 8%;
+  }
   .tx-type,
   .tx-exe {
     display: flex;
@@ -377,7 +410,7 @@ export const DisclaimerContainer = styled(StyledTransaction)`
 export const TxDetailsContainer = styled.div<{ ownerRows?: number }>`
   ${willBeReplaced};
 
-  background-color: #484852 !important;
+  background-color: #24262e !important;
   column-gap: 1px;
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -393,7 +426,6 @@ export const TxDetailsContainer = styled.div<{ ownerRows?: number }>`
     }
   }
   & > div {
-    background-color: #0e0e0f;
     line-break: anywhere;
     overflow: hidden;
     word-break: break-all;
@@ -439,6 +471,7 @@ export const TxDetailsContainer = styled.div<{ ownerRows?: number }>`
 
   .tx-exe {
     padding: 16px;
+    border-left: 1px solid #484852;
   }
   .tx-action {
     display: flex;
@@ -547,6 +580,13 @@ export const ScrollableTransactionsContainer = styled(StyledScrollableBar)`
   .gap-div {
     height: 16px;
   }
+  .section-title {
+    font-weight: 600;
+    font-size: 20px;
+    line-height: 24px;
+    color: #ffffff;
+    margin: 0px 0px 16px;
+  }
 `
 export const Centered = styled.div<{ padding?: number }>`
   width: 100%;
@@ -563,9 +603,12 @@ export const HorizontallyCentered = styled(Centered)<{ isVisible: boolean }>`
 `
 
 export const StyledAccordionSummary = styled(AccordionSummary)`
-  border-bottom: 1px solid #525252 !important;
-  background-color: #262629 !important;
+  background-color: #24262e !important;
+  border: none !important;
   height: 52px;
+  &.Mui-expanded {
+    background-color: #363843 !important;
+  }
   .tx-nonce {
     margin: 0 16px 0 8px;
     min-width: 80px;

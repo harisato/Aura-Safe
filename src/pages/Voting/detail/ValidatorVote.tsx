@@ -7,7 +7,7 @@ import React, { ReactElement } from 'react'
 import Col from 'src/components/layout/Col'
 import DenseTable from 'src/components/Table/DenseTable'
 import { StyledTableCell, StyledTableRow } from 'src/components/TableVoting'
-import TabPanel, { a11yProps } from 'src/components/Tabs/TabPanel'
+import TabPanel, { a11yProps } from 'src/components/Tabs/FilterTab/TabPanel'
 import styled from 'styled-components'
 
 const TitleStyled = styled.div`

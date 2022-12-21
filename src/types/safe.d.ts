@@ -24,6 +24,8 @@ export interface IMSafeInfo {
   }[]
   txQueuedTag: string
   txHistoryTag: string
+  nextQueueSeq: string
+  sequence: string
 }
 
 export interface IMSafeResponse {

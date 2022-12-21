@@ -160,6 +160,8 @@ export const fetchMSafe =
     // remote (client-gateway)
     if (remoteSafeInfo) {
       safeInfo = await extractRemoteSafeInfo(remoteSafeInfo)
+      safeInfo.nextQueueSeq = mSafeInfo?.nextQueueSeq
+      safeInfo.sequence = mSafeInfo?.sequence
       const coinDecimal = getCoinDecimal()
       // If these polling timestamps have changed, fetch again
       const { txQueuedTag, txHistoryTag, balances } = currentSafeWithNames(state)

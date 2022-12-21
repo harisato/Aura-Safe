@@ -138,9 +138,12 @@ export const LinkButton = styled.button`
   padding: 0 !important;
   background-color: transparent !important;
   box-shadow: none !important;
-  color: #5ee6d0;
-  text-decoration: underline;
+  color: #2bbba3;
   cursor: pointer;
+  font-family: 'Inter';
+  font-weight: 600;
+  font-size: 12px;
+  line-height: 16px;
 `
 export const FilledButton = styled.button<{ disabled?: boolean }>`
   cursor: pointer;
@@ -177,8 +180,12 @@ export const FilledButton = styled.button<{ disabled?: boolean }>`
   }
   &.loading {
     pointer-events: unset;
+    cursor: wait;
     background: linear-gradient(0deg, rgba(0, 0, 0, 0.24), rgba(0, 0, 0, 0.24)),
       linear-gradient(94.25deg, #5ee6d0 4.18%, #bfc6ff 50.06%, #ffba69 93.26%);
+    > div > div:nth-child(2) {
+      border-color: #24262e #24262e #24262e transparent;
+    }
   }
   &.small {
     font-size: 12px;

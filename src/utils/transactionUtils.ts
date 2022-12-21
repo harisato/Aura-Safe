@@ -186,6 +186,7 @@ export const makeTxFromDetails = (txDetails: TransactionDetails): Transaction =>
 
   const tx: Transaction = {
     id: txDetails.txId,
+    txSequence: txDetails.txSequence || '-1',
     timestamp,
     txStatus: txDetails.txStatus,
     txInfo: txDetails.txInfo,
@@ -382,7 +383,7 @@ const makeTransactions = (list: ITransactionListItem[]): MTransactionListItem[] 
           confirmationsRequired: tx?.ConfirmationsRequired || 0,
           confirmationsSubmitted: tx?.Confirmations || 0,
           rejections: tx?.Rejections || 0,
-          nonce: tx?.MultisigTxId,
+          nonce: +tx?.Sequence,
           type: 'MULTISIG',
           missingSigners: null,
         },
@@ -391,6 +392,7 @@ const makeTransactions = (list: ITransactionListItem[]): MTransactionListItem[] 
         txHash: tx?.TxHash,
         timestamp: new Date(tx?.UpdatedAt).getTime(),
         txStatus: tx?.Status as TransactionStatus,
+        txSequence: tx?.Sequence || '-1',
         txInfo: {
           type: 'Transfer',
           typeUrl: tx?.TypeUrl,

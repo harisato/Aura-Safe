@@ -20,8 +20,15 @@ import VotePopup from './Vote'
 
 export default function TxActionModal() {
   const { open, txId, setOpen, action } = useContext(TxSignModalContext)
-  const allTxs = useSelector(txTransactions)
-  const txData = allTxs?.[txId]?.[0]
+  const allTxs = useSelector(txTransactions) || {}
+  let txData: any = null
+  for (const sequence of Object.keys(allTxs)) {
+    txData = allTxs[sequence].find((tx) => tx.id == txId)
+    if (txData) {
+      break
+    }
+  }
+
   const type = txData?.txInfo?.typeUrl
   const [isDisabled, setIsDisabled] = useState(false)
   const userWalletAddress = useSelector(userAccountSelector)

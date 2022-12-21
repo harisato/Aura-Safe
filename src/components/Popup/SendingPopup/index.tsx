@@ -207,14 +207,8 @@ const SendingPopup = ({ open, onClose, onOpen, defaultToken }: SendFundsProps): 
               Cancel
             </OutlinedNeutralButton>
             <FilledButton
-              disabled={
-                !selectedToken ||
-                !amount ||
-                !recipient ||
-                !!addressValidateMsg ||
-                !!amountValidateMsg ||
-                simulateLoading
-              }
+              disabled={!selectedToken || !amount || !recipient || !!addressValidateMsg || !!amountValidateMsg}
+              className={simulateLoading ? 'loading' : ''}
               onClick={createTx}
             >
               {simulateLoading ? <Loader content="Review" /> : 'Review'}

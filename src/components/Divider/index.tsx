@@ -5,8 +5,6 @@ import { Icon, Divider as DividerSRC } from '@aura/safe-react-components'
 const Wrapper = styled.div<{ rotateArrow?: boolean }>`
   display: flex;
   align-items: center;
-  margin: 8px 0;
-
   svg {
     margin: 0 12px 0 4px;
     transform: ${(props) => (props.rotateArrow ? 'rotate(180deg)' : 'unset')};

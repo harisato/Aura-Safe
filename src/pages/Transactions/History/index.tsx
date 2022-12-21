@@ -5,7 +5,14 @@ import { InfiniteScroll, INFINITE_SCROLL_CONTAINER } from 'src/components/Infini
 import Img from 'src/components/layout/Img'
 import { formatWithSchema } from 'src/utils/date'
 import NoTransactionsImage from 'src/assets/icons/no-transactions.svg'
-import { Centered, HorizontallyCentered, NoTransactions, ScrollableTransactionsContainer, SubTitle } from '../styled'
+import {
+  AccordionWrapper,
+  Centered,
+  HorizontallyCentered,
+  NoTransactions,
+  ScrollableTransactionsContainer,
+  SubTitle,
+} from '../styled'
 import Transaction from './Transaction'
 import { usePagedHistoryTransactions } from '../hooks/usePagedHistoryTransactions'
 export default function HistoryTransactions(): ReactElement {
@@ -26,6 +33,7 @@ export default function HistoryTransactions(): ReactElement {
     )
   }
 
+  console.log(transactions)
   return (
     <InfiniteScroll next={next} hasMore={hasMore}>
       <ScrollableTransactionsContainer id={INFINITE_SCROLL_CONTAINER}>
@@ -36,7 +44,11 @@ export default function HistoryTransactions(): ReactElement {
               <Fragment key={nonce}>
                 <SubTitle>{formatWithSchema(Number(nonce), 'MMM d, yyyy')}</SubTitle>
                 {txs.map((tx, index) => {
-                  return <Transaction key={index} transaction={tx} />
+                  return (
+                    <AccordionWrapper key={index}>
+                      <Transaction transaction={tx} />
+                    </AccordionWrapper>
+                  )
                 })}
                 <div className="gap-div"></div>
               </Fragment>
