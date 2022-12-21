@@ -144,59 +144,6 @@ export const getTxTo = ({ txInfo }: Pick<Transaction, 'txInfo'>): AddressEx | un
   }
 }
 
-// Our store does not match the details returned from the endpoint
-export const makeTxFromDetails = (txDetails: TransactionDetails): Transaction => {
-  const getMissingSigners = ({
-    signers,
-    confirmations,
-  }: MultisigExecutionDetails): MultisigExecutionInfo['missingSigners'] => {
-    const missingSigners = signers.filter(({ value }) => {
-      const hasConfirmed = confirmations?.some(({ signer }) => signer?.value === value)
-      return !hasConfirmed
-    })
-
-    return missingSigners.length ? missingSigners : null
-  }
-
-  const getMultisigExecutionInfo = ({
-    detailedExecutionInfo,
-  }: TransactionDetails): MultisigExecutionInfo | undefined => {
-    if (!isMultiSigExecutionDetails(detailedExecutionInfo)) return undefined
-
-    return {
-      type: detailedExecutionInfo.type,
-      nonce: detailedExecutionInfo.nonce,
-      confirmationsRequired: detailedExecutionInfo.confirmationsRequired,
-      confirmationsSubmitted: detailedExecutionInfo.confirmations?.length || 0,
-      missingSigners: getMissingSigners(detailedExecutionInfo),
-    }
-  }
-
-  const executionInfo: Transaction['executionInfo'] = isModuleExecutionInfo(txDetails.detailedExecutionInfo)
-    ? txDetails.detailedExecutionInfo
-    : getMultisigExecutionInfo(txDetails)
-
-  // Will only be used as a fallback whilst waiting on backend tx creation cache
-  const now = Date.now()
-  const timestamp = isTxQueued(txDetails.txStatus)
-    ? isMultiSigExecutionDetails(txDetails.detailedExecutionInfo)
-      ? txDetails.detailedExecutionInfo.submittedAt
-      : now
-    : txDetails.executedAt || now
-
-  const tx: Transaction = {
-    id: txDetails.txId,
-    txSequence: txDetails.txSequence || '-1',
-    timestamp,
-    txStatus: txDetails.txStatus,
-    txInfo: txDetails.txInfo,
-    executionInfo,
-    safeAppInfo: txDetails?.safeAppInfo || undefined,
-    txDetails,
-  }
-
-  return tx
-}
 
 export const isDeeplinkedTx = (): boolean => {
   const txMatch = matchPath(history.location.pathname, {
