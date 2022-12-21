@@ -63,7 +63,10 @@ export const usePagedQueuedTransactions = (): PagedQueuedTransactions => {
 
   const isLoading = typeof transactions === 'undefined' || typeof count === 'undefined'
 
-  transactions.sort((a, b) => +a[1][0].txSequence - +b[1][0].txSequence)
+  transactions.sort((a, b) => {
+    if (typeof a[1][0].txSequence == 'undefined' || typeof b[1][0].txSequence == 'undefined') return 0
+    return +a[1][0].txSequence - +b[1][0].txSequence
+  })
   return { count, isLoading, transactions, hasMore, next: nextPage }
 }
 
