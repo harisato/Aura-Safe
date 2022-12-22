@@ -5,12 +5,12 @@ import { calculateFee, GasPrice } from '@cosmjs/stargate'
 import BigNumber from 'bignumber.js'
 import calculateGasFee from 'src/logic/providers/utils/fee'
 
-const nativeCurrency = getNativeCurrency()
-
 export const validateFloatNumber = (value: any): boolean => {
   return !isNaN(parseFloat(value)) && isFinite(value)
 }
 export const formatNumber = (value: any): string => {
+  const nativeCurrency = getNativeCurrency()
+
   if (value == '' || value == 0) return value
   const valueString = String(value)
   const [integer, fractional] = valueString.split('.')
