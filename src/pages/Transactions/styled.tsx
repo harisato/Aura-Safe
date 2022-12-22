@@ -431,6 +431,7 @@ export const TxDetailsContainer = styled.div<{ ownerRows?: number }>`
   grid-auto-rows: minmax(min-content, max-content);
   grid-template-rows: [tx-summary] minmax(min-content, max-content) [tx-details] minmax(min-content, 1fr);
   width: 100%;
+  position: relative;
   .recipient {
     display: flex;
     align-items: center;
@@ -517,6 +518,23 @@ export const TxDetailsContainer = styled.div<{ ownerRows?: number }>`
       &.primary {
         background-color: ${({ theme }) => theme.colors.primary};
       }
+    }
+  }
+  .tx-sequence {
+    position: absolute;
+    display: flex;
+    top: 16px;
+    right: 16px;
+    > div {
+      cursor: pointer;
+      width: 32px;
+      height: 32px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    > div:first-child {
+      margin-right: 16px;
     }
   }
 `

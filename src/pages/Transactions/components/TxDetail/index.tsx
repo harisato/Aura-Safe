@@ -8,7 +8,6 @@ import { Centered, InlineEthHashInfo, TxDetailsContainer } from '../../styled'
 import { TxActions } from './Action'
 import TxMsg from './Message'
 import { TxOwners } from './Owner'
-
 export default function TxDetail({ transaction, isHistoryTx }) {
   const isOwner = useSelector(grantedSelector)
   const { data, loading } = useTransactionDetails(transaction.id, transaction.txHash, transaction.auraTxId)

@@ -2,7 +2,8 @@ import { ReactElement, useContext } from 'react'
 import { useSelector } from 'react-redux'
 import { OutlinedButton, OutlinedNeutralButton } from 'src/components/Button'
 
-import { Transaction } from 'src/logic/safe/store/models/types/gateway.d'
+import ArrowUpDownIcon from 'src/assets/icons/ArrowsDownUp.png'
+import TrashIcon from 'src/assets/icons/TrashSimple.svg'
 import { userAccountSelector } from 'src/logic/wallets/store/selectors'
 import styled from 'styled-components'
 import { TxSignModalContext } from '../../Queue'
@@ -34,23 +35,75 @@ export const TxActions = ({ transaction }: TxActionsProps): ReactElement => {
   const confirmationNeeded = transaction?.confirmationsRequired - transaction?.confirmations?.length
 
   if (isRejected) {
-    return <RedStyledLabel>You have rejected this transaction</RedStyledLabel>
+    return (
+      <>
+        <div className="tx-sequence">
+          <div>
+            <img src={TrashIcon} alt="icon" />
+          </div>
+          <div
+            onClick={() => {
+              setTxId(transaction.txId)
+              setAction('change-sequence')
+              setOpen(true)
+            }}
+          >
+            <img src={ArrowUpDownIcon} alt="icon" />
+          </div>
+        </div>
+        <RedStyledLabel>You have rejected this transaction</RedStyledLabel>
+      </>
+    )
   }
   if (confirmationNeeded <= 0) {
     return (
-      <OutlinedButton
-        onClick={() => {
-          setTxId(transaction.txId)
-          setAction('execute')
-          setOpen(true)
-        }}
-      >
-        Execute
-      </OutlinedButton>
+      <>
+        <OutlinedButton
+          onClick={() => {
+            setTxId(transaction.txId)
+            setAction('execute')
+            setOpen(true)
+          }}
+        >
+          Execute
+        </OutlinedButton>
+        <div className="tx-sequence">
+          <div>
+            <img src={TrashIcon} alt="icon" />
+          </div>
+          <div
+            onClick={() => {
+              setTxId(transaction.txId)
+              setAction('change-sequence')
+              setOpen(true)
+            }}
+          >
+            <img src={ArrowUpDownIcon} alt="icon" />
+          </div>
+        </div>
+      </>
     )
   }
   if (isConfirmed) {
-    return <StyledLabel>You have confirmed this transaction</StyledLabel>
+    return (
+      <>
+        <StyledLabel>You have confirmed this transaction</StyledLabel>
+        <div className="tx-sequence">
+          <div>
+            <img src={TrashIcon} alt="icon" />
+          </div>
+          <div
+            onClick={() => {
+              setTxId(transaction.txId)
+              setAction('change-sequence')
+              setOpen(true)
+            }}
+          >
+            <img src={ArrowUpDownIcon} alt="icon" />
+          </div>
+        </div>
+      </>
+    )
   } else {
     return (
       <>
@@ -73,6 +126,20 @@ export const TxActions = ({ transaction }: TxActionsProps): ReactElement => {
         >
           Confirm
         </OutlinedButton>
+        <div className="tx-sequence">
+          <div>
+            <img src={TrashIcon} alt="icon" />
+          </div>
+          <div
+            onClick={() => {
+              setTxId(transaction.txId)
+              setAction('change-sequence')
+              setOpen(true)
+            }}
+          >
+            <img src={ArrowUpDownIcon} alt="icon" />
+          </div>
+        </div>
       </>
     )
   }

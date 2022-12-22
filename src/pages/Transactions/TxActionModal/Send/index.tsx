@@ -73,12 +73,20 @@ export default function Execute({ open, onClose, data, sendTx, rejectTx, disable
   }
 
   const title =
-    action == 'confirm' ? 'Confirm transaction' : action == 'reject' ? 'Reject transaction' : 'Execute transaction'
+    action == 'confirm'
+      ? 'Confirm transaction'
+      : action == 'reject'
+      ? 'Reject transaction'
+      : action == 'change-sequence'
+      ? 'Reprioritize transaction'
+      : 'Execute transaction'
   const noti =
     action == 'confirm'
       ? 'You’re about to confirm a transaction and will have to sign it using your currently connected wallet.'
       : action == 'reject'
       ? 'You’re about to reject a transaction. This action cannot be undone. Please make sure before proceeding.'
+      : action == 'change-sequence'
+      ? 'Reprioritizing a transaction will delete the transaction itself and create another one with the same data so that you can modify the sequence. You and other owner(s) will have to resign the newly-created transaction.'
       : 'You’re about to execute a transaction and will have to confirm it with your currently connected wallet. Make sure you have enough funds in thís safe to fund the associated transaction amount and fee.'
   return (
     <>
