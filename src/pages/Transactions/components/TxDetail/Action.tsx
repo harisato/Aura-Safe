@@ -19,6 +19,9 @@ const StyledLabel = styled.span`
 const RedStyledLabel = styled.span`
   color: #e65e5e; ;
 `
+const YellowStyledLabel = styled.span`
+  color: rgb(255, 186, 105); ;
+`
 
 export const TxActions = ({ transaction }: TxActionsProps): ReactElement => {
   const currentUser = useSelector(userAccountSelector)
@@ -29,10 +32,16 @@ export const TxActions = ({ transaction }: TxActionsProps): ReactElement => {
   const isConfirmed = transaction.confirmations?.find((confirmation) => confirmation.signer.value === currentUser)
   if (
     typeof transaction?.confirmationsRequired == 'undefined' ||
-    typeof transaction?.confirmations?.length == 'undefined' ||
-    +currentSequence != +transaction.sequence
+    typeof transaction?.confirmations?.length == 'undefined'
   ) {
     return <></>
+  }
+  if (+currentSequence != +transaction.sequence) {
+    return (
+      <YellowStyledLabel>
+        Transaction with sequence <strong>{currentSequence}</strong> needs to be executed first
+      </YellowStyledLabel>
+    )
   }
   const confirmationNeeded = transaction?.confirmationsRequired - transaction?.confirmations?.length
 
