@@ -76,7 +76,7 @@ export default function QueueTransactions(): ReactElement {
                   {+nonce == +currentSequence && index == 0 ? (
                     <p className="section-title">Next</p>
                   ) : index <= 1 ? (
-                    <p className="section-title">Sequence</p>
+                    <p className="section-title">{`Queued - Transaction with sequence ${currentSequence} needs to be executed first`}</p>
                   ) : null}
                   <AccordionWrapper>
                     <Transaction transaction={txs[0]} />
@@ -87,7 +87,7 @@ export default function QueueTransactions(): ReactElement {
                   {+nonce == +currentSequence && index == 0 ? (
                     <p className="section-title">Next</p>
                   ) : index <= 1 ? (
-                    <p className="section-title">Sequence</p>
+                    <p className="section-title">{`Queued - Transaction with sequence ${currentSequence} needs to be executed first`}</p>
                   ) : null}
                   <AccordionWrapper className="merged-tx">
                     <div className="notice">

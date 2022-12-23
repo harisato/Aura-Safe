@@ -619,6 +619,9 @@ export const ScrollableTransactionsContainer = styled(StyledScrollableBar)`
     color: #ffffff;
     margin: 0px 0px 16px;
   }
+  .section-title:last-of-type {
+    margin-top: 32px;
+  }
 `
 export const Centered = styled.div<{ padding?: number }>`
   width: 100%;

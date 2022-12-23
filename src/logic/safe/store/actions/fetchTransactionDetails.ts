@@ -121,6 +121,7 @@ export const fetchTransactionDetailsById =
         rejectors: Data?.Rejectors?.map((re) => ({ logoUri: null, name: null, value: re.ownerAddress } as AddressEx)),
         extraDetails,
         autoClaimAmount: Data?.AutoClaimAmount,
+        sequence: Data?.Sequence,
       }
 
       dispatch(

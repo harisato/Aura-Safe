@@ -7,6 +7,7 @@ import TrashIcon from 'src/assets/icons/TrashSimple.svg'
 import { userAccountSelector } from 'src/logic/wallets/store/selectors'
 import styled from 'styled-components'
 import { TxSignModalContext } from '../../Queue'
+import { currentSafeWithNames } from 'src/logic/safe/store/selectors'
 
 type TxActionsProps = {
   transaction: any
@@ -23,12 +24,13 @@ export const TxActions = ({ transaction }: TxActionsProps): ReactElement => {
   const currentUser = useSelector(userAccountSelector)
 
   const { setOpen, setTxId, setAction } = useContext(TxSignModalContext)
-
+  const { sequence: currentSequence } = useSelector(currentSafeWithNames)
   const isRejected = transaction.rejectors?.find((rejector) => rejector.value === currentUser)
   const isConfirmed = transaction.confirmations?.find((confirmation) => confirmation.signer.value === currentUser)
   if (
     typeof transaction?.confirmationsRequired == 'undefined' ||
-    typeof transaction?.confirmations?.length == 'undefined'
+    typeof transaction?.confirmations?.length == 'undefined' ||
+    +currentSequence != +transaction.sequence
   ) {
     return <></>
   }
@@ -73,26 +75,6 @@ export const TxActions = ({ transaction }: TxActionsProps): ReactElement => {
         >
           Execute
         </OutlinedButton>
-        <div className="tx-sequence">
-          <div
-            onClick={() => {
-              setTxId(transaction.txId)
-              setAction('delete')
-              setOpen(true)
-            }}
-          >
-            <img src={TrashIcon} alt="icon" />
-          </div>
-          <div
-            onClick={() => {
-              setTxId(transaction.txId)
-              setAction('change-sequence')
-              setOpen(true)
-            }}
-          >
-            <img src={ArrowUpDownIcon} alt="icon" />
-          </div>
-        </div>
       </>
     )
   }
