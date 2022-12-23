@@ -762,7 +762,7 @@ export const ReviewTxPopupWrapper = styled.div`
     line-height: 150%;
     letter-spacing: 0.05em;
     color: #98989b;
-    margin-top: 24px;
+    margin-top: 16px;
   }
   .balance {
     background: #404047;

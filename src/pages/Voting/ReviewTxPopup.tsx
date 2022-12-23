@@ -4,7 +4,9 @@ import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { generatePath } from 'react-router-dom'
 
-import { LinkButton, OutlinedButton, OutlinedNeutralButton } from 'src/components/Button'
+import { FilledButton, LinkButton, OutlinedButton, OutlinedNeutralButton } from 'src/components/Button'
+import FeeAndSequence from 'src/components/FeeAndSequence'
+import Gap from 'src/components/Gap'
 import TextField from 'src/components/Input/TextField'
 import { Popup } from 'src/components/Popup'
 import Footer from 'src/components/Popup/Footer'
@@ -81,6 +83,7 @@ const ReviewTxPopup = ({ open, onClose, proposal, vote, onBack, gasUsed }: Revie
   const chainInfo = getChainInfo()
   const userWalletAddress = useSelector(userAccountSelector)
   const [openGasInput, setOpenGasInput] = useState<boolean>(false)
+  const [sequence, setSequence] = useState('0')
   useEffect(() => {
     if (gasUsed != '0') {
       setDefaultGas(gasUsed)
@@ -106,7 +109,7 @@ const ReviewTxPopup = ({ open, onClose, proposal, vote, onBack, gasUsed }: Revie
       voter: safeAddress,
     }
     try {
-      const signResult = await createMessage(chainId, safeAddress, MsgTypeUrl.Vote, voteData, _sendFee)
+      const signResult = await createMessage(chainId, safeAddress, MsgTypeUrl.Vote, voteData, _sendFee, sequence)
       if (!signResult) throw new Error()
       const signatures = toBase64(signResult.signatures[0])
       const bodyBytes = toBase64(signResult.bodyBytes)
@@ -169,14 +172,6 @@ const ReviewTxPopup = ({ open, onClose, proposal, vote, onBack, gasUsed }: Revie
       )
     }
   }
-  const recalculateFee = () => {
-    const gasFee =
-      manualGasLimit && chainDefaultGasPrice
-        ? calculateGasFee(+manualGasLimit, +chainDefaultGasPrice, decimal)
-        : chainDefaultGasPrice
-    setGasPriceFormatted(gasFee)
-    setOpenGasInput(!openGasInput)
-  }
 
   return (
     <Popup handleClose={onClose} open={open} title="Voting Popup">
@@ -194,24 +189,17 @@ const ReviewTxPopup = ({ open, onClose, proposal, vote, onBack, gasUsed }: Revie
           </div>
         </div>
 
-        <div className="tx-fee">
-          <p className="title">Transaction fee</p>
-          <div className="fee">
-            <div className="fee-amount">
-              <img alt={'nativeCurrencyLogoUri'} height={25} src={nativeCurrency.logoUri} />
-              <p>{`${gasPriceFormatted} ${nativeCurrency.symbol}`}</p>
-            </div>
-            <LinkButton onClick={() => setOpenGasInput(!openGasInput)}>Edit gas</LinkButton>
-          </div>
-          {openGasInput && (
-            <div className="edit-fee-section">
-              <TextField type="number" label="Gas Amount" value={manualGasLimit} onChange={setManualGasLimit} />
-              <OutlinedButton disabled={!manualGasLimit || +manualGasLimit < 1} onClick={recalculateFee}>
-                Apply
-              </OutlinedButton>
-            </div>
-          )}
-        </div>
+        <FeeAndSequence
+          open={openGasInput}
+          setOpen={setOpenGasInput}
+          manualGasLimit={manualGasLimit}
+          setManualGasLimit={setManualGasLimit}
+          gasPriceFormatted={gasPriceFormatted}
+          setGasPriceFormatted={setGasPriceFormatted}
+          sequence={sequence}
+          setSequence={setSequence}
+        />
+        <Gap height={24} />
         <div className="total-amount">
           <p className="title">Total Allocation Amount</p>
           <div className="amount">
@@ -225,14 +213,14 @@ const ReviewTxPopup = ({ open, onClose, proposal, vote, onBack, gasUsed }: Revie
       </ReviewTxPopupWrapper>
       <Footer>
         <OutlinedNeutralButton onClick={onBack}>Back</OutlinedNeutralButton>
-        <OutlinedButton
+        <FilledButton
           onClick={() => {
             signTransaction(safeAddress)
           }}
           disabled={isDisabled}
         >
           Submit
-        </OutlinedButton>
+        </FilledButton>
       </Footer>
     </Popup>
   )

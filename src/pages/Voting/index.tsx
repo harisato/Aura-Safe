@@ -45,21 +45,12 @@ function Voting(): ReactElement {
   const { count, isLoading, hasMore, next, transactions } = usePagedQueuedTransactions()
 
   const safeAddress = extractSafeAddress()
-  const allDelegations = useSelector(allDelegation)
   const [openVotingModal, setOpenVotingModal] = useState<boolean>(false)
   const [openWarningPopup, setOpenWarningPopup] = useState<boolean>(false)
   const chainId = _getChainId()
 
   const [proposals, setProposals] = useState<IProposal[]>([])
   const [selectedProposal, setSelectedProposal] = useState<IProposal | undefined>(undefined)
-  const [hasPendingTx, setHasPendingTx] = useState(false)
-
-  useEffect(() => {
-    if (transactions.length > 0) {
-      dispatch(enqueueSnackbar(NOTIFICATIONS.CREATE_SAFE_PENDING_EXECUTE_MSG))
-      setHasPendingTx(true)
-    }
-  }, [])
 
   useEffect(() => {
     getProposals(getInternalChainId()).then((response) => {
@@ -107,11 +98,7 @@ function Voting(): ReactElement {
         <StyledColumn sm={12} xs={12}>
           {proposals.slice(0, 4).map((proposal) => (
             <Col sm={6} xs={12} key={proposal.id}>
-              <ProposalsCard
-                proposal={proposal}
-                handleVote={() => onVoteButtonClick(proposal)}
-                disabled={hasPendingTx}
-              />
+              <ProposalsCard proposal={proposal} handleVote={() => onVoteButtonClick(proposal)} />
             </Col>
           ))}
         </StyledColumn>

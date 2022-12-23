@@ -1,6 +1,6 @@
 import { toBase64 } from '@cosmjs/encoding'
 import { coins, MsgVoteEncodeObject } from '@cosmjs/stargate'
-import { useContext } from 'react'
+import { useContext, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { FilledButton, OutlinedButton, OutlinedNeutralButton } from 'src/components/Button'
 import { Popup } from 'src/components/Popup'
@@ -21,6 +21,11 @@ import { formatWithSchema } from 'src/utils/date'
 import { TxSignModalContext } from '../../Queue'
 import { ReviewTxPopupWrapper } from '../../styled'
 import Amount from 'src/components/TxComponents/Amount'
+import EditSequence from '../EditSequence'
+import Gap from 'src/components/Gap'
+import { getNotice, getTitle } from '..'
+import { currentSafeWithNames } from 'src/logic/safe/store/selectors'
+import { DeleteButton, TxContent } from '../styles'
 
 const voteMapping = {
   1: 'Yes',
@@ -29,17 +34,20 @@ const voteMapping = {
   4: 'Nowithveto',
 }
 
-export default function Execute({ open, onClose, data, sendTx, rejectTx, disabled, setDisabled, confirmTxFromApi }) {
+export default function Execute({
+  open,
+  onClose,
+  data,
+  sendTx,
+  rejectTx,
+  disabled,
+  setDisabled,
+  confirmTxFromApi,
+  deleteTx,
+}) {
   const { action } = useContext(TxSignModalContext)
-
-  const title =
-    action == 'confirm' ? 'Confirm transaction' : action == 'reject' ? 'Reject transaction' : 'Execute transaction'
-  const noti =
-    action == 'confirm'
-      ? 'You’re about to confirm a transaction and will have to sign it using your currently connected wallet.'
-      : action == 'reject'
-      ? 'You’re about to reject a transaction. This action cannot be undone. Please make sure before proceeding.'
-      : 'You’re about to execute a transaction and will have to confirm it with your currently connected wallet. Make sure you have enough funds in thís safe to fund the associated transaction amount and fee.'
+  const [sequence, setSequence] = useState(data?.txSequence)
+  const { ethBalance: balance, nextQueueSeq, sequence: currentSequence } = useSelector(currentSafeWithNames)
   const userWalletAddress = useSelector(userAccountSelector)
   const dispatch = useDispatch()
 
@@ -60,7 +68,48 @@ export default function Execute({ open, onClose, data, sendTx, rejectTx, disable
     }
     try {
       dispatch(enqueueSnackbar(enhanceSnackbarForAction(NOTIFICATIONS.SIGN_TX_MSG)))
-      const signResult = await createMessage(chainId, safeAddress, MsgTypeUrl.Vote, voteData, sendFee)
+      const signResult = await createMessage(chainId, safeAddress, MsgTypeUrl.Vote, voteData, sendFee, data?.txSequence)
+      if (!signResult) throw new Error()
+      const signatures = toBase64(signResult.signatures[0])
+      const bodyBytes = toBase64(signResult.bodyBytes)
+      const authInfoBytes = toBase64(signResult.authInfoBytes)
+      const payload: ICreateSafeTransaction = {
+        internalChainId: getInternalChainId(),
+        creatorAddress: userWalletAddress,
+        signature: signatures,
+        bodyBytes: bodyBytes,
+        authInfoBytes: authInfoBytes,
+        from: safeAddress,
+        accountNumber: signResult.accountNumber,
+        sequence: signResult.sequence,
+        transactionId: data?.id,
+      }
+      confirmTxFromApi(payload, chainId, safeAddress)
+    } catch (error) {
+      setDisabled(false)
+      console.error(error)
+      dispatch(enqueueSnackbar(enhanceSnackbarForAction(NOTIFICATIONS.TX_REJECTED_MSG)))
+      onClose()
+    }
+  }
+  const changeTxSequence = async () => {
+    setDisabled(true)
+    const chainInfo = getChainInfo()
+    const safeAddress = extractSafeAddress()
+    const chainId = chainInfo.chainId
+    const denom = getCoinMinimalDenom()
+    const sendFee = {
+      amount: coins(data?.txDetails?.fee, denom),
+      gas: data?.txDetails?.gas.toString(),
+    }
+    const voteData: MsgVoteEncodeObject['value'] = {
+      option: data.txDetails?.txMessage[0]?.voteOption,
+      proposalId: data.txDetails?.extraDetails?.proposalDetail?.id,
+      voter: safeAddress,
+    }
+    try {
+      dispatch(enqueueSnackbar(enhanceSnackbarForAction(NOTIFICATIONS.SIGN_TX_MSG)))
+      const signResult = await createMessage(chainId, safeAddress, MsgTypeUrl.Vote, voteData, sendFee, sequence)
       if (!signResult) throw new Error()
       const signatures = toBase64(signResult.signatures[0])
       const bodyBytes = toBase64(signResult.bodyBytes)
@@ -88,7 +137,7 @@ export default function Execute({ open, onClose, data, sendTx, rejectTx, disable
   return (
     <>
       <Popup open={open} handleClose={onClose} title="">
-        <Header onClose={onClose} title={title} />
+        <Header onClose={onClose} title={getTitle(action)} />
         <ReviewTxPopupWrapper>
           <div className="tx-detail">
             <p className="proposal-title">{`Proposal #${data.txDetails?.extraDetails?.proposalDetail?.id} ${data.txDetails?.extraDetails?.proposalDetail?.title}`}</p>
@@ -107,19 +156,55 @@ export default function Execute({ open, onClose, data, sendTx, rejectTx, disable
               </p>
             </div>
           </div>
-          <Amount label="Total Allocation Amount" amount={formatNativeToken(+data.txDetails?.fee || 0)} />
-          <div className="notice">{noti}</div>
+          {action == 'delete' ? (
+            <TxContent>
+              <div>
+                <div className="label">Transaction fee</div>
+                <div className="value">{formatNativeToken(+data.txDetails?.fee)}</div>
+              </div>
+              <div>
+                <div className="label">Transaction sequence</div>
+                <div className="value">{data?.txSequence}</div>
+              </div>
+              <div className="divider"></div>
+              <div>
+                <div className="label">Total Allocation Amount</div>
+                <div className="value">{formatNativeToken(+data.txDetails?.fee || 0)}</div>
+              </div>
+            </TxContent>
+          ) : (
+            <>
+              {action == 'change-sequence' && (
+                <>
+                  <EditSequence defaultSequence={data?.txSequence} sequence={sequence} setSequence={setSequence} />
+                  <Gap height={16} />
+                </>
+              )}
+              <Amount label="Total Allocation Amount" amount={formatNativeToken(+data.txDetails?.fee || 0)} />
+            </>
+          )}
+          <div className="notice">{getNotice(action)}</div>
         </ReviewTxPopupWrapper>
         <Footer>
           <OutlinedNeutralButton onClick={onClose}>Back</OutlinedNeutralButton>
-          <FilledButton
-            onClick={() => {
-              action == 'confirm' ? confirmTx() : action == 'reject' ? rejectTx() : sendTx()
-            }}
-            disabled={disabled}
-          >
-            Submit
-          </FilledButton>
+          {action == 'delete' ? (
+            <DeleteButton onClick={deleteTx}>Delete</DeleteButton>
+          ) : (
+            <FilledButton
+              onClick={() => {
+                action == 'confirm'
+                  ? confirmTx()
+                  : action == 'reject'
+                  ? rejectTx()
+                  : action == 'change-sequence'
+                  ? changeTxSequence()
+                  : sendTx()
+              }}
+              disabled={disabled || +sequence < +currentSequence}
+            >
+              Submit
+            </FilledButton>
+          )}
         </Footer>
       </Popup>
     </>

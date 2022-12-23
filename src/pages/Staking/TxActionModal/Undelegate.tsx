@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import AddressInfo from 'src/components/AddressInfo'
 import { FilledButton, LinkButton, OutlinedButton, OutlinedNeutralButton } from 'src/components/Button'
 import Divider from 'src/components/Divider'
+import FeeAndSequence from 'src/components/FeeAndSequence'
 import Gap from 'src/components/Gap'
 import TextField from 'src/components/Input/TextField'
 import Footer from 'src/components/Popup/Footer'
@@ -59,16 +60,7 @@ export default function Undelegate({ validator, amount, onClose, createTxFromApi
   const [openGasInput, setOpenGasInput] = useState<boolean>(false)
   const [isDisabled, setDisabled] = useState(false)
   const chainInfo = getChainInfo()
-
-  const recalculateFee = () => {
-    const gasFee =
-      manualGasLimit && chainDefaultGasPrice
-        ? calculateGasFee(+manualGasLimit, +chainDefaultGasPrice, decimal)
-        : chainDefaultGasPrice
-    setGasPriceFormatted(gasFee)
-    setOpenGasInput(!openGasInput)
-  }
-
+  const [sequence, setSequence] = useState('0')
   const signTransaction = async () => {
     setDisabled(true)
     const chainId = chainInfo.chainId
@@ -80,7 +72,7 @@ export default function Undelegate({ validator, amount, onClose, createTxFromApi
     }
     try {
       dispatch(enqueueSnackbar(enhanceSnackbarForAction(NOTIFICATIONS.SIGN_TX_MSG)))
-      const signResult = await createMessage(chainId, safeAddress, MsgTypeUrl.Undelegate, Msg, _sendFee)
+      const signResult = await createMessage(chainId, safeAddress, MsgTypeUrl.Undelegate, Msg, _sendFee, sequence)
       if (!signResult) throw new Error()
       const signatures = toBase64(signResult.signatures[0])
       const bodyBytes = toBase64(signResult.bodyBytes)
@@ -122,24 +114,17 @@ export default function Undelegate({ validator, amount, onClose, createTxFromApi
         <Gap height={24} />
         <Amount amount={formatNativeCurrency(amount)} />
         <Divider />
-        <div className="tx-fee">
-          <p className="title">Transaction fee</p>
-          <div className="fee">
-            <div className="fee-amount">
-              <img alt={'nativeCurrencyLogoUri'} height={25} src={nativeCurrency.logoUri} />
-              <p>{`${formatNativeCurrency(gasPriceFormatted)}`}</p>
-            </div>
-            <LinkButton onClick={() => setOpenGasInput(!openGasInput)}>Edit gas</LinkButton>
-          </div>
-          {openGasInput && (
-            <div className="edit-fee-section">
-              <TextField type="number" label="Gas Amount" value={manualGasLimit} onChange={setManualGasLimit} />
-              <OutlinedButton disabled={!manualGasLimit || +manualGasLimit < 1} onClick={recalculateFee}>
-                Apply
-              </OutlinedButton>
-            </div>
-          )}
-        </div>
+        <FeeAndSequence
+          open={openGasInput}
+          setOpen={setOpenGasInput}
+          manualGasLimit={manualGasLimit}
+          setManualGasLimit={setManualGasLimit}
+          gasPriceFormatted={gasPriceFormatted}
+          setGasPriceFormatted={setGasPriceFormatted}
+          sequence={sequence}
+          setSequence={setSequence}
+        />
+        <Divider />
         <Amount amount={formatNativeCurrency(gasPriceFormatted)} label="Total Allocation Amount" />
         <div className="notice">
           You’re about to create a transaction and will have to confirm it with your currently connected wallet.

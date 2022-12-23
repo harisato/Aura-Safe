@@ -38,7 +38,13 @@ export const TxActions = ({ transaction }: TxActionsProps): ReactElement => {
     return (
       <>
         <div className="tx-sequence">
-          <div>
+          <div
+            onClick={() => {
+              setTxId(transaction.txId)
+              setAction('delete')
+              setOpen(true)
+            }}
+          >
             <img src={TrashIcon} alt="icon" />
           </div>
           <div
@@ -68,7 +74,13 @@ export const TxActions = ({ transaction }: TxActionsProps): ReactElement => {
           Execute
         </OutlinedButton>
         <div className="tx-sequence">
-          <div>
+          <div
+            onClick={() => {
+              setTxId(transaction.txId)
+              setAction('delete')
+              setOpen(true)
+            }}
+          >
             <img src={TrashIcon} alt="icon" />
           </div>
           <div
@@ -89,7 +101,13 @@ export const TxActions = ({ transaction }: TxActionsProps): ReactElement => {
       <>
         <StyledLabel>You have confirmed this transaction</StyledLabel>
         <div className="tx-sequence">
-          <div>
+          <div
+            onClick={() => {
+              setTxId(transaction.txId)
+              setAction('delete')
+              setOpen(true)
+            }}
+          >
             <img src={TrashIcon} alt="icon" />
           </div>
           <div
@@ -127,7 +145,13 @@ export const TxActions = ({ transaction }: TxActionsProps): ReactElement => {
           Confirm
         </OutlinedButton>
         <div className="tx-sequence">
-          <div>
+          <div
+            onClick={() => {
+              setTxId(transaction.txId)
+              setAction('delete')
+              setOpen(true)
+            }}
+          >
             <img src={TrashIcon} alt="icon" />
           </div>
           <div

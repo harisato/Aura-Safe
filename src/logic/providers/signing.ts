@@ -29,8 +29,8 @@ const signMessage = async (
   typeUrl: MsgTypeUrl,
   messages: any,
   fee: StdFee,
+  sequence?: string | undefined,
   memo?: string,
-  sequence?: string,
 ): Promise<any> => {
   const loadLastUsedProviderResult = await loadLastUsedProvider()
   const provider = loadLastUsedProviderResult

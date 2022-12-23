@@ -31,6 +31,7 @@ export const LocalTransactionStatus: Record<string, TransactionStatus> = {
   PENDING: 'PENDING',
   PENDING_FAILED: 'PENDING_FAILED',
   REPLACED: 'REPLACED',
+  DELETED: 'DELETED',
 }
 
 export type Transaction = TransactionSummary & {

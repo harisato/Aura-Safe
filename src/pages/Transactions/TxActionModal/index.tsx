@@ -8,7 +8,7 @@ import fetchTransactions from 'src/logic/safe/store/actions/transactions/fetchTr
 import { txTransactions } from 'src/logic/safe/store/selectors/gatewayTransactions'
 import { userAccountSelector } from 'src/logic/wallets/store/selectors'
 import { extractSafeAddress, generateSafeRoute, history, SAFE_ROUTES } from 'src/routes/routes'
-import { confirmSafeTransaction, rejectTransactionById, sendSafeTransaction } from 'src/services'
+import { confirmSafeTransaction, deleteTransactionById, rejectTransactionById, sendSafeTransaction } from 'src/services'
 import { TxSignModalContext } from '../Queue'
 import ClaimRewardPopup from './ClaimReward'
 import DelegatePopup from './Delegate'
@@ -106,6 +106,30 @@ export default function TxActionModal() {
       dispatch(enqueueSnackbar(NOTIFICATIONS.TX_FAILED_MSG))
     }
   }
+  const deleteTx = async () => {
+    try {
+      setIsDisabled(true)
+      const payload = {
+        id: txData.txDetails.txId,
+      }
+      const result = await deleteTransactionById(payload)
+      const { ErrorCode } = result
+
+      if (ErrorCode === 'SUCCESSFUL') {
+        dispatch(enqueueSnackbar(NOTIFICATIONS.TX_DELETED_MSG_SUCCESS))
+      } else {
+        dispatch(enqueueSnackbar(NOTIFICATIONS.TX_FAILED_MSG))
+        setIsDisabled(false)
+      }
+      const chainInfo = getChainInfo()
+      const chainId = chainInfo.chainId
+      dispatch(fetchTransactions(chainId, safeAddress))
+      setOpen(false)
+    } catch (error) {
+      setIsDisabled(false)
+      dispatch(enqueueSnackbar(NOTIFICATIONS.TX_FAILED_MSG))
+    }
+  }
 
   if (!txData || !open || !txId) return <></>
   if (type == MsgTypeUrl.Delegate) {
@@ -116,6 +140,7 @@ export default function TxActionModal() {
         data={txData}
         sendTx={sendTx}
         rejectTx={rejectTx}
+        deleteTx={deleteTx}
         disabled={isDisabled}
         setDisabled={setIsDisabled}
         confirmTxFromApi={confirmTxFromApi}
@@ -130,6 +155,7 @@ export default function TxActionModal() {
         data={txData}
         sendTx={sendTx}
         rejectTx={rejectTx}
+        deleteTx={deleteTx}
         disabled={isDisabled}
         setDisabled={setIsDisabled}
         confirmTxFromApi={confirmTxFromApi}
@@ -144,6 +170,7 @@ export default function TxActionModal() {
         data={txData}
         sendTx={sendTx}
         rejectTx={rejectTx}
+        deleteTx={deleteTx}
         disabled={isDisabled}
         setDisabled={setIsDisabled}
         confirmTxFromApi={confirmTxFromApi}
@@ -158,6 +185,7 @@ export default function TxActionModal() {
         data={txData}
         sendTx={sendTx}
         rejectTx={rejectTx}
+        deleteTx={deleteTx}
         disabled={isDisabled}
         setDisabled={setIsDisabled}
         confirmTxFromApi={confirmTxFromApi}
@@ -172,6 +200,7 @@ export default function TxActionModal() {
         data={txData}
         sendTx={sendTx}
         rejectTx={rejectTx}
+        deleteTx={deleteTx}
         disabled={isDisabled}
         setDisabled={setIsDisabled}
         confirmTxFromApi={confirmTxFromApi}
@@ -186,6 +215,7 @@ export default function TxActionModal() {
         data={txData}
         sendTx={sendTx}
         rejectTx={rejectTx}
+        deleteTx={deleteTx}
         disabled={isDisabled}
         setDisabled={setIsDisabled}
         confirmTxFromApi={confirmTxFromApi}
@@ -200,6 +230,7 @@ export default function TxActionModal() {
         data={txData}
         sendTx={sendTx}
         rejectTx={rejectTx}
+        deleteTx={deleteTx}
         disabled={isDisabled}
         setDisabled={setIsDisabled}
         confirmTxFromApi={confirmTxFromApi}
@@ -207,4 +238,34 @@ export default function TxActionModal() {
     )
   }
   return <></>
+}
+
+export const getTitle = (action) => {
+  switch (action) {
+    case 'confirm':
+      return 'Confirm transaction'
+    case 'reject':
+      return 'Reject transaction'
+    case 'change-sequence':
+      return 'Reprioritize transaction'
+    case 'delete':
+      return 'Delete transaction'
+
+    default:
+      return 'Execute transaction'
+  }
+}
+export const getNotice = (action) => {
+  switch (action) {
+    case 'confirm':
+      return 'You’re about to confirm a transaction and will have to sign it using your currently connected wallet.'
+    case 'reject':
+      return 'You’re about to reject a transaction. This action cannot be undone. Please make sure before proceeding.'
+    case 'change-sequence':
+      return 'Reprioritizing a transaction will delete the transaction itself and create another one with the same data so that you can modify the sequence. You and other owner(s) will have to resign the newly-created transaction.'
+    case 'delete':
+      return 'Deleting a transaction will mark the transaction as deleted and move it to transaction history. Other owner will see that you were the one who deleted the transaction.'
+    default:
+      return 'You’re about to execute a transaction and will have to confirm it with your currently connected wallet. Make sure you have enough funds in thís safe to fund the associated transaction amount and fee.'
+  }
 }

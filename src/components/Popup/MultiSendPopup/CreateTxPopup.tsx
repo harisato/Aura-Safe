@@ -6,10 +6,10 @@ import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { generatePath } from 'react-router-dom'
 import AddressInfo from 'src/components/AddressInfo'
-import { LinkButton, OutlinedButton, OutlinedNeutralButton } from 'src/components/Button'
+import { FilledButton, OutlinedButton, OutlinedNeutralButton } from 'src/components/Button'
 import Divider from 'src/components/Divider'
+import FeeAndSequence from 'src/components/FeeAndSequence'
 import Gap from 'src/components/Gap'
-import TextField from 'src/components/Input/TextField'
 import Amount from 'src/components/TxComponents/Amount'
 import {
   getChainDefaultGas,
@@ -62,34 +62,23 @@ export default function CreateTxPopup({
 }) {
   const safeAddress = extractSafeAddress()
   const userWalletAddress = useSelector(userAccountSelector)
-  const { ethBalance: balance } = useSelector(currentSafeWithNames)
+  const { ethBalance: balance, nextQueueSeq, sequence: currentSequence } = useSelector(currentSafeWithNames)
   const dispatch = useDispatch()
-  const nativeCurrency = getNativeCurrency()
   const denom = getCoinMinimalDenom()
-  const chainDefaultGas = getChainDefaultGas()
   const chainDefaultGasPrice = getChainDefaultGasPrice()
   const decimal = getCoinDecimal()
-  const [defaultGas, setDefaultGas] = useState(
-    chainDefaultGas.find((chain) => chain.typeUrl === MsgTypeUrl.Send)?.gasAmount || DEFAULT_GAS_LIMIT.toString(),
-  )
-  const gasFee =
-    defaultGas && chainDefaultGasPrice
-      ? calculateGasFee(+defaultGas, +chainDefaultGasPrice, decimal)
-      : chainDefaultGasPrice
-  const [manualGasLimit, setManualGasLimit] = useState<string | undefined>(defaultGas)
+  const [isDisabled, setDisabled] = useState(false)
+  const gasFee = chainDefaultGasPrice ? calculateGasFee(400000, +chainDefaultGasPrice, decimal) : chainDefaultGasPrice
+  const [manualGasLimit, setManualGasLimit] = useState<string | undefined>('400000')
   const [gasPriceFormatted, setGasPriceFormatted] = useState(gasFee)
   const [openGasInput, setOpenGasInput] = useState<boolean>(false)
-  const [isDisabled, setDisabled] = useState(false)
   const chainInfo = getChainInfo()
   const [totalAmount, setTotalAmount] = useState('0')
+  const [sequence, setSequence] = useState(nextQueueSeq)
+
   useEffect(() => {
     if (gasUsed != '0') {
-      setDefaultGas(gasUsed)
       setManualGasLimit(gasUsed)
-      const gasFee = chainDefaultGasPrice
-        ? calculateGasFee(+gasUsed, +chainDefaultGasPrice, decimal)
-        : chainDefaultGasPrice
-      setGasPriceFormatted(gasFee)
     }
   }, [gasUsed])
   useEffect(() => {
@@ -101,14 +90,6 @@ export default function CreateTxPopup({
     setTotalAmount(newTotalAmount.toString())
   }, [recipient])
 
-  const recalculateFee = () => {
-    const gasFee =
-      manualGasLimit && chainDefaultGasPrice
-        ? calculateGasFee(+manualGasLimit, +chainDefaultGasPrice, decimal)
-        : chainDefaultGasPrice
-    setGasPriceFormatted(gasFee)
-    setOpenGasInput(!openGasInput)
-  }
   const signTransaction = async () => {
     setDisabled(true)
     const chainId = chainInfo.chainId
@@ -136,7 +117,7 @@ export default function CreateTxPopup({
 
     try {
       dispatch(enqueueSnackbar(enhanceSnackbarForAction(NOTIFICATIONS.SIGN_TX_MSG)))
-      const signResult = await createMessage(chainId, safeAddress, MsgTypeUrl.MultiSend, Msg, _sendFee)
+      const signResult = await createMessage(chainId, safeAddress, MsgTypeUrl.MultiSend, Msg, _sendFee, sequence)
       if (!signResult) throw new Error()
       const signatures = toBase64(signResult.signatures[0])
       const bodyBytes = toBase64(signResult.bodyBytes)
@@ -174,6 +155,7 @@ export default function CreateTxPopup({
         history.push(txRoute)
         setDisabled(false)
       } else {
+        setDisabled(false)
         switch (ErrorCode) {
           case MESSAGES_CODE.E029.ErrorCode:
             dispatch(enqueueSnackbar(enhanceSnackbarForAction(NOTIFICATIONS.CREATE_SAFE_PENDING_EXECUTE_MSG)))
@@ -186,6 +168,7 @@ export default function CreateTxPopup({
       handleClose()
     } catch (error) {
       console.error(error)
+      setDisabled(false)
       handleClose()
       dispatch(
         enqueueSnackbar(
@@ -228,24 +211,18 @@ export default function CreateTxPopup({
         <Gap height={24} />
         <Amount label="Total Amount" amount={formatNativeCurrency(totalAmount)} />
         <Divider />
-        <div className="tx-fee">
-          <p className="title">Transaction fee</p>
-          <div className="fee">
-            <div className="fee-amount">
-              <img alt={'nativeCurrencyLogoUri'} height={25} src={nativeCurrency.logoUri} />
-              <p>{`${formatNativeCurrency(gasPriceFormatted)}`}</p>
-            </div>
-            <LinkButton onClick={() => setOpenGasInput(!openGasInput)}>Edit gas</LinkButton>
-          </div>
-          {openGasInput && (
-            <div className="edit-fee-section">
-              <TextField type="number" label="Gas Amount" value={manualGasLimit} onChange={setManualGasLimit} />
-              <OutlinedButton disabled={!manualGasLimit || +manualGasLimit < 1} onClick={recalculateFee}>
-                Apply
-              </OutlinedButton>
-            </div>
-          )}
-        </div>
+        <FeeAndSequence
+          open={openGasInput}
+          setOpen={setOpenGasInput}
+          manualGasLimit={manualGasLimit}
+          setManualGasLimit={setManualGasLimit}
+          gasPriceFormatted={gasPriceFormatted}
+          setGasPriceFormatted={setGasPriceFormatted}
+          sequence={sequence}
+          setSequence={setSequence}
+        />
+        <Divider />
+
         <Amount
           label="Total Allocation Amount"
           amount={formatNativeCurrency(new BigNumber(+totalAmount).plus(+gasPriceFormatted).toString())}
@@ -264,9 +241,9 @@ export default function CreateTxPopup({
         >
           Back
         </OutlinedNeutralButton>
-        <OutlinedButton onClick={signTransaction} disabled={isDisabled}>
+        <FilledButton onClick={signTransaction} disabled={isDisabled}>
           Submit
-        </OutlinedButton>
+        </FilledButton>
       </Footer>
     </Popup>
   )

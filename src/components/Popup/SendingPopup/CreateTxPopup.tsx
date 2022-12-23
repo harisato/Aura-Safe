@@ -1,14 +1,15 @@
 import { toBase64 } from '@cosmjs/encoding'
 import { coins, MsgSendEncodeObject } from '@cosmjs/stargate'
 import BigNumber from 'bignumber.js'
-import { useState, useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { generatePath } from 'react-router-dom'
 import AddressInfo from 'src/components/AddressInfo'
-import { FilledButton, LinkButton, OutlinedButton, OutlinedNeutralButton } from 'src/components/Button'
+import { FilledButton, OutlinedNeutralButton } from 'src/components/Button'
 import Divider from 'src/components/Divider'
+import FeeAndSequence from 'src/components/FeeAndSequence'
 import Gap from 'src/components/Gap'
-import TextField from 'src/components/Input/TextField'
+import Loader from 'src/components/Loader'
 import Amount from 'src/components/TxComponents/Amount'
 import {
   getChainDefaultGas,
@@ -17,7 +18,6 @@ import {
   getCoinDecimal,
   getCoinMinimalDenom,
   getInternalChainId,
-  getNativeCurrency,
 } from 'src/config'
 import { AddressBookEntry } from 'src/logic/addressBook/model/addressBook'
 import { enhanceSnackbarForAction, ERROR, NOTIFICATIONS } from 'src/logic/notifications'
@@ -45,8 +45,6 @@ import { calcFee, formatBigNumber, formatNativeCurrency } from 'src/utils'
 import { Popup } from '..'
 import Header from '../Header'
 import { Footer, Wrapper } from './styles'
-import ReloadIcon from 'src/assets/icons/reload.svg'
-import Loader from 'src/components/Loader'
 
 export default function CreateTxPopup({
   open,
@@ -65,58 +63,27 @@ export default function CreateTxPopup({
 }) {
   const safeAddress = extractSafeAddress()
   const userWalletAddress = useSelector(userAccountSelector)
-  const { ethBalance: balance, nextQueueSeq, sequence: currentSequence } = useSelector(currentSafeWithNames)
+  const { ethBalance: balance } = useSelector(currentSafeWithNames)
   const dispatch = useDispatch()
-  const nativeCurrency = getNativeCurrency()
   const denom = getCoinMinimalDenom()
-  const chainDefaultGas = getChainDefaultGas()
   const chainDefaultGasPrice = getChainDefaultGasPrice()
   const decimal = getCoinDecimal()
-  const [defaultGas, setDefaultGas] = useState(
-    chainDefaultGas.find((chain) => chain.typeUrl === MsgTypeUrl.Send)?.gasAmount || DEFAULT_GAS_LIMIT.toString(),
-  )
-  const gasFee =
-    defaultGas && chainDefaultGasPrice
-      ? calculateGasFee(+defaultGas, +chainDefaultGasPrice, decimal)
-      : chainDefaultGasPrice
-  const [manualGasLimit, setManualGasLimit] = useState<string | undefined>(defaultGas)
+  const gasFee = chainDefaultGasPrice ? calculateGasFee(400000, +chainDefaultGasPrice, decimal) : chainDefaultGasPrice
+  const [manualGasLimit, setManualGasLimit] = useState<string | undefined>('400000')
   const [gasPriceFormatted, setGasPriceFormatted] = useState(gasFee)
   const [openGasInput, setOpenGasInput] = useState<boolean>(false)
   const [isDisabled, setDisabled] = useState(false)
 
-  const [sequence, setSequence] = useState(nextQueueSeq)
+  const [sequence, setSequence] = useState('1')
 
   const chainInfo = getChainInfo()
+
   useEffect(() => {
     if (gasUsed != '0') {
-      setDefaultGas(gasUsed)
       setManualGasLimit(gasUsed)
-      const gasFee = chainDefaultGasPrice
-        ? calculateGasFee(+gasUsed, +chainDefaultGasPrice, decimal)
-        : chainDefaultGasPrice
-      setGasPriceFormatted(gasFee)
     }
   }, [gasUsed])
 
-  useEffect(() => {
-    recalculateFee()
-  }, [manualGasLimit])
-
-  useEffect(() => {
-    setSequence(nextQueueSeq)
-  }, [nextQueueSeq])
-
-  const recalculateFee = () => {
-    if (!manualGasLimit) {
-      setGasPriceFormatted(0)
-      return
-    }
-    const gasFee =
-      manualGasLimit && chainDefaultGasPrice
-        ? calculateGasFee(+manualGasLimit, +chainDefaultGasPrice, decimal)
-        : chainDefaultGasPrice
-    setGasPriceFormatted(gasFee)
-  }
   const signTransaction = async () => {
     setDisabled(true)
     const chainId = chainInfo.chainId
@@ -128,7 +95,7 @@ export default function CreateTxPopup({
     }
     try {
       dispatch(enqueueSnackbar(enhanceSnackbarForAction(NOTIFICATIONS.SIGN_TX_MSG)))
-      const signResult = await createMessage(chainId, safeAddress, MsgTypeUrl.Send, Msg, _sendFee, '', sequence)
+      const signResult = await createMessage(chainId, safeAddress, MsgTypeUrl.Send, Msg, _sendFee, sequence)
       if (!signResult) throw new Error()
       const signatures = toBase64(signResult.signatures[0])
       const bodyBytes = toBase64(signResult.bodyBytes)
@@ -207,71 +174,16 @@ export default function CreateTxPopup({
         <Amount amount={formatNativeCurrency(amount)} />
         <Divider />
 
-        {openGasInput ? (
-          <div className="edit-fee-section">
-            <div className="gas-fee">
-              <TextField type="number" label="Gas Amount" value={manualGasLimit} onChange={setManualGasLimit} />
-              <div className="tx-fee">
-                <p className="title">Transaction fee</p>
-                <div className="fee">
-                  <div className="fee-amount">
-                    <img alt={'nativeCurrencyLogoUri'} height={25} src={nativeCurrency.logoUri} />
-                    <p>{`${formatNativeCurrency(+gasPriceFormatted)}`}</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <TextField
-              endIcon={<img src={ReloadIcon} onClick={() => setSequence(nextQueueSeq)} alt="icon" />}
-              type="number"
-              label="Transaction sequence"
-              value={sequence}
-              onChange={setSequence}
-            />
-            <Gap height={16} />
-            <div>
-              {+sequence > +nextQueueSeq ? (
-                <div className="noti">
-                  Be aware that a transaction can only be executed after the execution of all other transactions with
-                  lower sequences.
-                </div>
-              ) : +sequence == +currentSequence ? (
-                <div className="noti">
-                  There are other pending transactions with this sequence. Be aware that only one can be executed.
-                </div>
-              ) : +sequence < +currentSequence ? (
-                <div className="noti">The chosen Tx sequence has already been executed.</div>
-              ) : (
-                <div></div>
-              )}
-              <FilledButton
-                disabled={!manualGasLimit || +manualGasLimit < 1 || +sequence < +currentSequence}
-                onClick={() => setOpenGasInput(false)}
-              >
-                Apply
-              </FilledButton>
-            </div>
-          </div>
-        ) : (
-          <div className="tx-extra-info">
-            <div>
-              <div className="tx-fee">
-                <p className="title">Transaction fee</p>
-                <div className="fee">
-                  <div className="fee-amount">
-                    <img alt={'nativeCurrencyLogoUri'} height={25} src={nativeCurrency.logoUri} />
-                    <p>{`${formatNativeCurrency(+gasPriceFormatted)}`}</p>
-                  </div>
-                </div>
-              </div>
-              <div className="tx-sequence">
-                <p className="title">Transaction sequence</p>
-                <div className="sequence">{sequence}</div>
-              </div>
-            </div>
-            <LinkButton onClick={() => setOpenGasInput(true)}>Advanced</LinkButton>
-          </div>
-        )}
+        <FeeAndSequence
+          open={openGasInput}
+          setOpen={setOpenGasInput}
+          manualGasLimit={manualGasLimit}
+          setManualGasLimit={setManualGasLimit}
+          gasPriceFormatted={gasPriceFormatted}
+          setGasPriceFormatted={setGasPriceFormatted}
+          sequence={sequence}
+          setSequence={setSequence}
+        />
         <Divider />
 
         <Amount

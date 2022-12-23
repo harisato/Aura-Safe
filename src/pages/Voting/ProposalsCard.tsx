@@ -95,10 +95,9 @@ const DotVoteStyled = styled.div`
 interface Props {
   handleVote?: () => void
   proposal: IProposal
-  disabled: boolean
 }
 
-function ProposalsCard({ handleVote, proposal, disabled }: Props): ReactElement {
+function ProposalsCard({ handleVote, proposal }: Props): ReactElement {
   const history = useHistory()
   const granted = useSelector(grantedSelector)
   const loaded = useSelector(loadedSelector)
@@ -199,7 +198,7 @@ function ProposalsCard({ handleVote, proposal, disabled }: Props): ReactElement 
               </Text>
             </StyledButtonDetail>
 
-            {!(loaded && !granted) && !disabled && (
+            {!(loaded && !granted) && (
               <StyledButton size="md" disabled={isEnded} onClick={handleVote}>
                 <Text size="lg" color="white">
                   Vote

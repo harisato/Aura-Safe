@@ -198,4 +198,41 @@ export const Wrapper = styled.div`
       }
     }
   }
+  .edit-fee-section {
+    margin-top: 8px;
+
+    button {
+      min-width: 88px !important;
+    }
+    > div:last-child {
+      display: flex;
+      justify-content: space-between;
+    }
+    .gas-fee {
+      display: flex;
+      justify-content: space-between;
+      margin: 0px -8px 16px;
+      > div {
+        flex: 1;
+        margin: 0px 8px;
+      }
+      .tx-fee {
+        .title {
+          font-size: 16px;
+          line-height: 20px;
+        }
+        .fee {
+          height: 48px;
+          font-size: 14px;
+          line-height: 18px;
+        }
+      }
+    }
+    .noti {
+      font-size: 12px;
+      line-height: 16px;
+      margin-right: 16px;
+      color: #b4b8c0;
+    }
+  }
 `

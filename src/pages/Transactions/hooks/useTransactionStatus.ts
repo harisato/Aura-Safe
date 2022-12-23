@@ -27,6 +27,9 @@ export const useTransactionStatus = (transaction: Transaction): TransactionStatu
       case LocalTransactionStatus.FAILED:
         setStatus({ color: '#D5625E', text: 'Failed' })
         break
+      case LocalTransactionStatus.DELETED:
+        setStatus({ color: '#D5625E', text: 'Deleted' })
+        break
       case LocalTransactionStatus.CANCELLED:
         setStatus({ color: '#D5625E ', text: 'Rejected' })
         break

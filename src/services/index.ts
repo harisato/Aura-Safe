@@ -194,6 +194,9 @@ export const getTxDetailById = async (
   return axios.get(url).then((res) => res.data)
 }
 
+export const deleteTransactionById = async (payload: any): Promise<IResponse<any>> => {
+  return axios.delete(`${baseUrl}/transaction/delete`, { data: payload }).then((res) => res.data)
+}
 export const rejectTransactionById = async (payload: any): Promise<IResponse<any>> => {
   return axios.post(`${baseUrl}/transaction/reject`, payload).then((res) => res.data)
 }

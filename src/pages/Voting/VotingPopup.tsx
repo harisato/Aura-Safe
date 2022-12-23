@@ -1,14 +1,13 @@
 import { useState } from 'react'
-import { OutlinedButton, OutlinedNeutralButton } from 'src/components/Button'
+import { FilledButton, OutlinedNeutralButton } from 'src/components/Button'
 import RadioButtons from 'src/components/Input/RadioGroup'
+import Loader from 'src/components/Loader'
 import { Popup } from 'src/components/Popup'
+import { MsgTypeUrl } from 'src/logic/providers/constants/constant'
+import { extractPrefixedSafeAddress, extractSafeAddress } from 'src/routes/routes'
 import { simulate } from 'src/services'
 import ReviewTxPopup from './ReviewTxPopup'
 import { VotingPopupWrapper } from './styledComponents'
-import { MsgTypeUrl } from 'src/logic/providers/constants/constant'
-import { extractPrefixedSafeAddress, extractSafeAddress } from 'src/routes/routes'
-import { Loader } from '@aura/safe-react-components'
-import { roundGasAmount } from 'src/utils'
 
 const voteMapping = {
   ['YES']: 1,
@@ -90,9 +89,9 @@ const VotingPopup = ({ proposal, openVotingModal, setOpenVotingModal }): React.R
           </div>
           <div className="buttons">
             <OutlinedNeutralButton onClick={onClose}>Cancel</OutlinedNeutralButton>
-            <OutlinedButton onClick={createTx} disabled={simualteLoading}>
-              {simualteLoading ? <Loader size="xs" /> : 'Confirm'}
-            </OutlinedButton>
+            <FilledButton onClick={createTx} className={simualteLoading ? 'loading' : ''}>
+              {simualteLoading ? <Loader content="Confirm" /> : 'Confirm'}
+            </FilledButton>
           </div>
         </VotingPopupWrapper>
       </Popup>

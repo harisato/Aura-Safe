@@ -62,6 +62,7 @@ enum NOTIFICATION_IDS {
   SAFE_CREATION_DUPLICATED,
   SOMETHING_WENT_WRONG,
   TX_REJECTED_MSG_SUCCESS,
+  TX_DELETED_MSG_SUCCESS,
 }
 
 export const NOTIFICATIONS: Record<NotificationId, Notification> = {
@@ -95,6 +96,10 @@ export const NOTIFICATIONS: Record<NotificationId, Notification> = {
   },
   TX_REJECTED_MSG_SUCCESS: {
     message: 'Transaction successfully rejected',
+    options: { variant: SUCCESS, persist: false, autoHideDuration: shortDuration },
+  },
+  TX_DELETED_MSG_SUCCESS: {
+    message: 'Transaction successfully deleted',
     options: { variant: SUCCESS, persist: false, autoHideDuration: shortDuration },
   },
   TX_EXECUTED_MSG: {
