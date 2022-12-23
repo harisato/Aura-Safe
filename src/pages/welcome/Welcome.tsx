@@ -16,10 +16,13 @@ import {
   StyledTextButton,
   StyledButtonBorder,
   StyledBorder,
+  ButtonContainer,
 } from './styles'
 import styled from 'styled-components'
 import plusIcon from './assets/plus.svg'
 import walletIcon from './assets/wallet.svg'
+import { FilledButton, OutlinedButton } from 'src/components/Button'
+import { useHistory } from 'react-router-dom'
 
 const TitleFont = styled(Title)`
   font-family: 'Inter';
@@ -28,6 +31,7 @@ const TextFont = styled(Text)`
   font-family: 'Inter';
 `
 function Welcome(): ReactElement {
+  const history = useHistory()
   return (
     <Page align="center">
       <Block>
@@ -55,14 +59,12 @@ function Welcome(): ReactElement {
                   Creating a Safe is totally free of charge.
                 </TextFont>
               </CardDescriptionContainer>
-              <StyledButton size="lg" variant="contained" component={Link} to={OPEN_SAFE_ROUTE}>
-                {/* <Button> */}
-                <StyledTextButton size="xl">
+              <FilledButton onClick={() => history.push(OPEN_SAFE_ROUTE)}>
+                <ButtonContainer>
                   <img src={plusIcon} />
-                  <span style={{ alignSelf: 'center', marginLeft: 5 }}> Create new Safe</span>
-                </StyledTextButton>
-                {/* </Button> */}
-              </StyledButton>
+                  <span> Create new Safe</span>
+                </ButtonContainer>
+              </FilledButton>
             </CardContentContainer>
             <Divider orientation="vertical" flexItem />
             <CardContentContainer>
@@ -75,12 +77,12 @@ function Welcome(): ReactElement {
                   Safe address.
                 </TextFont>
               </CardDescriptionContainer>
-              <StyledBorder>
-                <StyledButtonBorder iconSize="sm" size="lg" component={Link} to={LOAD_SAFE_ROUTE}>
+              <OutlinedButton onClick={() => history.push(LOAD_SAFE_ROUTE)}>
+                <ButtonContainer>
                   <img src={walletIcon} />
-                  <StyledButtonLabel size="xl">Add existing Safe</StyledButtonLabel>
-                </StyledButtonBorder>
-              </StyledBorder>
+                  <span> Add existing Safe</span>
+                </ButtonContainer>
+              </OutlinedButton>
             </CardContentContainer>
           </StyledCard>
         </CardsContainer>

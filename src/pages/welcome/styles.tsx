@@ -69,7 +69,15 @@ const StyledBorder = styled.div`
   background-origin: border-box;
   background-clip: content-box, border-box;
 `
-
+const ButtonContainer = styled.div`
+  display: flex;
+  min-width: 180px;
+  justify-content: center;
+  align-items: center;
+  > img {
+    margin: 0px 8px 0px 0px !important;
+  }
+`
 export {
   CardsContainer,
   StyledCard,
@@ -81,4 +89,5 @@ export {
   StyledTextButton,
   StyledButtonBorder,
   StyledBorder,
+  ButtonContainer,
 }

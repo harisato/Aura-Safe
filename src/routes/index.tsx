@@ -31,7 +31,7 @@ import { switchNetworkWithUrl } from 'src/utils/history'
 import { isDeeplinkedTx } from '../utils/transactionUtils'
 import { useAddressedRouteKey } from './safe/container/hooks/useAddressedRouteKey'
 
-const Welcome = React.lazy(() => import('./welcome/Welcome'))
+const Welcome = React.lazy(() => import('../pages/welcome/Welcome'))
 const CreateSafePage = React.lazy(() => import('./CreateSafePage/CreateSafePage'))
 const LoadSafePage = React.lazy(() => import('./LoadSafePage/LoadSafePage'))
 const AllowSafePage = React.lazy(() => import('./AllowSafePage/AllowSafePage'))

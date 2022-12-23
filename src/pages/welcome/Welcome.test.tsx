@@ -1,5 +1,5 @@
 import { render, fireEvent, screen } from 'src/utils/test-utils'
-import { LOAD_SAFE_ROUTE, OPEN_SAFE_ROUTE, ROOT_ROUTE } from '../routes'
+import { LOAD_SAFE_ROUTE, OPEN_SAFE_ROUTE, ROOT_ROUTE } from '../../routes/routes'
 import Welcome from './Welcome'
 
 describe('<Welcome>', () => {
