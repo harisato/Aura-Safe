@@ -20,9 +20,10 @@ import { TransactionDetailsPayload } from 'src/logic/safe/store/reducer/gatewayT
 import { getTransactionByAttribute } from 'src/logic/safe/store/selectors/gatewayTransactions'
 import { fetchSafeTransaction } from 'src/logic/safe/transactions/api/fetchSafeTransaction'
 import { extractSafeAddress } from 'src/routes/routes'
-import { getProposalDetail, getTxDetailById } from 'src/services'
+import { getAccountOnChain, getProposalDetail, getTxDetailById } from 'src/services'
 import { MESSAGES_CODE } from 'src/services/constant/message'
 import { AppReduxState } from 'src/store'
+import { SequenceResponse } from '@cosmjs/stargate'
 
 export const UPDATE_TRANSACTION_DETAILS = 'UPDATE_TRANSACTION_DETAILS'
 const updateTransactionDetails = createAction<TransactionDetailsPayload>(UPDATE_TRANSACTION_DETAILS)

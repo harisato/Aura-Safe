@@ -14,12 +14,13 @@ import { currentSafeWithNames } from '../selectors'
 import fetchTransactions from './transactions/fetchTransactions'
 import { fetchCollectibles } from 'src/logic/collectibles/store/actions/fetchCollectibles'
 import { currentChainId } from 'src/logic/config/store/selectors'
-import { getMSafeInfo } from 'src/services'
+import { getAccountOnChain, getMSafeInfo } from 'src/services'
 import { IMSafeInfo } from 'src/types/safe'
-import { getCoinDecimal, _getChainId } from 'src/config'
+import { getCoinDecimal, getInternalChainId, _getChainId } from 'src/config'
 import { fetchMSafeTokens } from 'src/logic/tokens/store/actions/fetchSafeTokens'
 import _ from 'lodash'
 import BigNumber from 'bignumber.js'
+import { SequenceResponse } from '@cosmjs/stargate'
 
 /**
  * Builds a Safe Record that will be added to the app's store
@@ -160,8 +161,10 @@ export const fetchMSafe =
     // remote (client-gateway)
     if (remoteSafeInfo) {
       safeInfo = await extractRemoteSafeInfo(remoteSafeInfo)
-      safeInfo.nextQueueSeq = mSafeInfo?.nextQueueSeq
-      safeInfo.sequence = mSafeInfo?.sequence
+      const onlineData: SequenceResponse = (await getAccountOnChain(safeAddress, getInternalChainId())).Data
+
+      safeInfo.nextQueueSeq = mSafeInfo?.nextQueueSeq || onlineData.sequence.toString()
+      safeInfo.sequence = mSafeInfo?.sequence || onlineData.sequence.toString()
       const coinDecimal = getCoinDecimal()
       // If these polling timestamps have changed, fetch again
       const { txQueuedTag, txHistoryTag, balances } = currentSafeWithNames(state)
