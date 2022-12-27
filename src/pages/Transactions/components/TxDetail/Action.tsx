@@ -1,6 +1,6 @@
 import { ReactElement, useContext } from 'react'
 import { useSelector } from 'react-redux'
-import { OutlinedButton, OutlinedNeutralButton } from 'src/components/Button'
+import { FilledButton, OutlinedButton, OutlinedNeutralButton } from 'src/components/Button'
 
 import ArrowUpDownIcon from 'src/assets/icons/ArrowsDownUp.png'
 import TrashIcon from 'src/assets/icons/TrashSimple.svg'
@@ -74,8 +74,8 @@ export const TxActions = ({ transaction }: TxActionsProps): ReactElement => {
   }
   if (confirmationNeeded <= 0) {
     return (
-      <>
-        <OutlinedButton
+      <div className="buttons">
+        <FilledButton
           onClick={() => {
             setTxId(transaction.txId)
             setAction('execute')
@@ -83,8 +83,8 @@ export const TxActions = ({ transaction }: TxActionsProps): ReactElement => {
           }}
         >
           Execute
-        </OutlinedButton>
-      </>
+        </FilledButton>
+      </div>
     )
   }
   if (isConfirmed) {
@@ -115,7 +115,7 @@ export const TxActions = ({ transaction }: TxActionsProps): ReactElement => {
     )
   } else {
     return (
-      <>
+      <div className="buttons">
         <OutlinedNeutralButton
           onClick={() => {
             setTxId(transaction.txId)
@@ -125,7 +125,7 @@ export const TxActions = ({ transaction }: TxActionsProps): ReactElement => {
         >
           Reject
         </OutlinedNeutralButton>
-        <OutlinedButton
+        <FilledButton
           style={{ marginLeft: 16 }}
           onClick={() => {
             setTxId(transaction.txId)
@@ -134,7 +134,7 @@ export const TxActions = ({ transaction }: TxActionsProps): ReactElement => {
           }}
         >
           Confirm
-        </OutlinedButton>
+        </FilledButton>
         <div className="tx-sequence">
           <div
             onClick={() => {
@@ -155,7 +155,7 @@ export const TxActions = ({ transaction }: TxActionsProps): ReactElement => {
             <img src={ArrowUpDownIcon} alt="icon" />
           </div>
         </div>
-      </>
+      </div>
     )
   }
 }

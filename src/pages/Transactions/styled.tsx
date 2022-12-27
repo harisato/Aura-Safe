@@ -492,6 +492,11 @@ export const TxDetailsContainer = styled.div<{ ownerRows?: number }>`
     display: flex;
     justify-content: center;
     align-items: center;
+    .buttons {
+      display: flex;
+      flex: 1;
+      justify-content: flex-end;
+    }
   }
 
   .tx-owners {
