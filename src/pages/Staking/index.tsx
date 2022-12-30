@@ -75,8 +75,8 @@ function Staking(props): ReactElement {
 
   const [simulateLoading, setSimulateLoading] = useState(false)
 
-  const handleChangeAction = (event) => {
-    setSelectedAction(event.target.value)
+  const handleChangeAction = (action) => {
+    setSelectedAction(action)
     setAmount('')
     setValidateMsg('')
     setValueDelegate('none')

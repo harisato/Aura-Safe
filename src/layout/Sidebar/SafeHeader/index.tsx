@@ -1,6 +1,7 @@
 import { CopyToClipboardBtn, ExplorerButton, FixedIcon, Icon, Identicon, Text } from '@aura/safe-react-components'
 import { useState } from 'react'
 import { FilledButton } from 'src/components/Button'
+import SplitButton from 'src/components/Button/SplitButton'
 import ButtonHelper from 'src/components/ButtonHelper'
 import FlexSpacer from 'src/components/FlexSpacer'
 import MultiSendPopup from 'src/components/Popup/MultiSendPopup'
@@ -86,9 +87,30 @@ const SafeHeader = ({
             {address && <ExplorerButton explorerUrl={getExplorerInfo(address)} />}
           </IconContainer>
           {/* <StyledButton size="md" disabled={!granted} onClick={() => onNewTransactionClick()}> */}
-          <FilledButton disabled={!granted} onClick={() => setSendTxTypePopupOpen(true)}>
+          {/* <FilledButton disabled={!granted} onClick={() => setSendTxTypePopupOpen(true)}>
             Send funds
-          </FilledButton>
+          </FilledButton> */}
+          <SplitButton
+            defaultLabel="Send funds"
+            defaultOnClick={() => {
+              setSendTxType('single-send')
+              setSendTxTypePopupOpen(false)
+            }}
+            options={[
+              {
+                label: 'Send',
+                onClick: () => {
+                  setSendTxType('single-send')
+                },
+              },
+              {
+                label: 'Multi Send',
+                onClick: () => {
+                  setSendTxType('multi-send')
+                },
+              },
+            ]}
+          />
         </ContainerButton>
         {!granted && <StyledLabel>READ ONLY</StyledLabel>}
       </Container>

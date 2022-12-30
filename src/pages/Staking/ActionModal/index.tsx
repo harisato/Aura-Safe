@@ -34,6 +34,7 @@ import { allValidator as allValidatorSelector } from 'src/logic/validator/store/
 import ModalUndelegate from './undelegate'
 import Loader from 'src/components/Loader'
 import { FilledButton, OutlinedNeutralButton } from 'src/components/Button'
+import SplitButton from 'src/components/Button/SplitButton'
 const StyledButtonSubmit = styled(Button)`
   border: 2px solid transparent;
   background-image: ${borderLinear};
@@ -215,9 +216,14 @@ export default function ModalStaking(props) {
             </FilledButton>
           )}
           {selectedAction === 'manage' && (
-            <>
-              <ButtonSelect selectedAction={selectedAction} handleChangeAction={handleChangeAction} />
-            </>
+            <SplitButton
+              defaultLabel="Undelegate"
+              defaultOnClick={() => handleChangeAction('undelegate')}
+              options={[
+                { label: 'Undelegate', onClick: () => handleChangeAction('undelegate') },
+                { label: 'Redelegate', onClick: () => handleChangeAction('redelegate') },
+              ]}
+            />
           )}
         </FotterModal>
       </Wrapper>
