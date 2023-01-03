@@ -20,6 +20,7 @@ import { createMessage } from 'src/logic/providers/signing'
 import { currentSafeWithNames } from 'src/logic/safe/store/selectors'
 import { userAccountSelector } from 'src/logic/wallets/store/selectors'
 import { extractSafeAddress } from 'src/routes/routes'
+import { changeTransactionSequenceById } from 'src/services'
 import { ICreateSafeTransaction } from 'src/types/transaction'
 import { formatNativeCurrency, formatNativeToken } from 'src/utils'
 import { getNotice, getTitle } from '..'
@@ -37,6 +38,7 @@ export default function Execute({
   disabled,
   setDisabled,
   confirmTxFromApi,
+  changeTxSeqFromApi,
   deleteTx,
 }) {
   const { action } = useContext(TxSignModalContext)
@@ -119,9 +121,9 @@ export default function Execute({
         from: safeAddress,
         accountNumber: signResult.accountNumber,
         sequence: signResult.sequence,
-        transactionId: data?.id,
+        oldTxId: data?.id,
       }
-      confirmTxFromApi(payload, chainId, safeAddress)
+      changeTxSeqFromApi(payload, chainId, safeAddress)
     } catch (error) {
       setDisabled(false)
       console.error(error)

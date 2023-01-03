@@ -28,6 +28,7 @@ export interface ICreateSafeTransaction {
   accountNumber: number
   sequence: number
   transactionId?: string
+  oldTxId?: string
 }
 
 export interface ITransactionListQuery {

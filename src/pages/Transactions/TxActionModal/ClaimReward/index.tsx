@@ -35,6 +35,7 @@ export default function Execute({
   disabled,
   setDisabled,
   confirmTxFromApi,
+  changeTxSeqFromApi,
   deleteTx,
 }) {
   const { action } = useContext(TxSignModalContext)
@@ -130,9 +131,9 @@ export default function Execute({
         from: safeAddress,
         accountNumber: signResult.accountNumber,
         sequence: signResult.sequence,
-        transactionId: data?.id,
+        oldTxId: data?.id,
       }
-      confirmTxFromApi(payload, chainId, safeAddress)
+      changeTxSeqFromApi(payload, chainId, safeAddress)
     } catch (error) {
       setDisabled(false)
       console.error(error)

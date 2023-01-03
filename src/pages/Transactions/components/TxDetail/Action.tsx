@@ -38,9 +38,31 @@ export const TxActions = ({ transaction }: TxActionsProps): ReactElement => {
   }
   if (+currentSequence != +transaction.sequence) {
     return (
-      <YellowStyledLabel>
-        Transaction with sequence <strong>{currentSequence}</strong> needs to be executed first
-      </YellowStyledLabel>
+      <>
+        <div className="tx-sequence">
+          <div
+            onClick={() => {
+              setTxId(transaction.txId)
+              setAction('delete')
+              setOpen(true)
+            }}
+          >
+            <img src={TrashIcon} alt="icon" />
+          </div>
+          <div
+            onClick={() => {
+              setTxId(transaction.txId)
+              setAction('change-sequence')
+              setOpen(true)
+            }}
+          >
+            <img src={ArrowUpDownIcon} alt="icon" />
+          </div>
+        </div>
+        <YellowStyledLabel>
+          Transaction with sequence <strong>{currentSequence}</strong> needs to be executed first
+        </YellowStyledLabel>
+      </>
     )
   }
   const confirmationNeeded = transaction?.confirmationsRequired - transaction?.confirmations?.length

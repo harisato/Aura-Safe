@@ -8,7 +8,13 @@ import fetchTransactions from 'src/logic/safe/store/actions/transactions/fetchTr
 import { txTransactions } from 'src/logic/safe/store/selectors/gatewayTransactions'
 import { userAccountSelector } from 'src/logic/wallets/store/selectors'
 import { extractSafeAddress, generateSafeRoute, history, SAFE_ROUTES } from 'src/routes/routes'
-import { confirmSafeTransaction, deleteTransactionById, rejectTransactionById, sendSafeTransaction } from 'src/services'
+import {
+  changeTransactionSequenceById,
+  confirmSafeTransaction,
+  deleteTransactionById,
+  rejectTransactionById,
+  sendSafeTransaction,
+} from 'src/services'
 import { TxSignModalContext } from '../Queue'
 import ClaimRewardPopup from './ClaimReward'
 import DelegatePopup from './Delegate'
@@ -36,6 +42,25 @@ export default function TxActionModal() {
   const safeAddress = extractSafeAddress()
   const confirmTxFromApi = async (data: any, chainId: any, safeAddress: any) => {
     const { ErrorCode } = await confirmSafeTransaction(data)
+    if (ErrorCode === 'SUCCESSFUL') {
+      history.push(
+        generateSafeRoute(SAFE_ROUTES.TRANSACTIONS_QUEUE, {
+          shortName: getShortName(),
+          safeAddress,
+        }),
+      )
+      dispatch(fetchTransactions(chainId, safeAddress, true))
+      // dispatch(fetchTransactionDetailsById({ transactionId: data.transactionId }))
+      setIsDisabled(false)
+      setOpen(false)
+      // window.location.reload()
+    } else {
+      setIsDisabled(false)
+      dispatch(enqueueSnackbar(enhanceSnackbarForAction(NOTIFICATIONS.TX_FAILED_MSG)))
+    }
+  }
+  const changeTxSeqFromApi = async (data: any, chainId: any, safeAddress: any) => {
+    const { ErrorCode } = await changeTransactionSequenceById(data)
     if (ErrorCode === 'SUCCESSFUL') {
       history.push(
         generateSafeRoute(SAFE_ROUTES.TRANSACTIONS_QUEUE, {
@@ -144,6 +169,7 @@ export default function TxActionModal() {
         disabled={isDisabled}
         setDisabled={setIsDisabled}
         confirmTxFromApi={confirmTxFromApi}
+        changeTxSeqFromApi={changeTxSeqFromApi}
       />
     )
   }
@@ -159,6 +185,7 @@ export default function TxActionModal() {
         disabled={isDisabled}
         setDisabled={setIsDisabled}
         confirmTxFromApi={confirmTxFromApi}
+        changeTxSeqFromApi={changeTxSeqFromApi}
       />
     )
   }
@@ -174,6 +201,7 @@ export default function TxActionModal() {
         disabled={isDisabled}
         setDisabled={setIsDisabled}
         confirmTxFromApi={confirmTxFromApi}
+        changeTxSeqFromApi={changeTxSeqFromApi}
       />
     )
   }
@@ -189,6 +217,7 @@ export default function TxActionModal() {
         disabled={isDisabled}
         setDisabled={setIsDisabled}
         confirmTxFromApi={confirmTxFromApi}
+        changeTxSeqFromApi={changeTxSeqFromApi}
       />
     )
   }
@@ -204,6 +233,7 @@ export default function TxActionModal() {
         disabled={isDisabled}
         setDisabled={setIsDisabled}
         confirmTxFromApi={confirmTxFromApi}
+        changeTxSeqFromApi={changeTxSeqFromApi}
       />
     )
   }
@@ -219,6 +249,7 @@ export default function TxActionModal() {
         disabled={isDisabled}
         setDisabled={setIsDisabled}
         confirmTxFromApi={confirmTxFromApi}
+        changeTxSeqFromApi={changeTxSeqFromApi}
       />
     )
   }
@@ -234,6 +265,7 @@ export default function TxActionModal() {
         disabled={isDisabled}
         setDisabled={setIsDisabled}
         confirmTxFromApi={confirmTxFromApi}
+        changeTxSeqFromApi={changeTxSeqFromApi}
       />
     )
   }
