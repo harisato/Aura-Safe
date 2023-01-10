@@ -15,6 +15,7 @@ import { IS_PRODUCTION } from 'src/utils/constants'
 import styled from 'styled-components'
 import SafeLogo from '../../assets/logoAura.svg'
 import NetworkSelector from '../NetworkSelector/NetworkSelector'
+import Notifications from '../Notifications'
 import Provider from '../Provider/Provider'
 import { styles, DevelopBanner } from './styles'
 import WalletPopup from './WalletPopup/WalletPopup'
@@ -64,7 +65,7 @@ const Layout = (props: any) => {
           <Divider />
         </div>
       )}
-
+      <Notifications />
       <Provider
         info={providerInfo}
         open={open}
