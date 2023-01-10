@@ -1,7 +1,4 @@
 import React, { ReactElement, useEffect, useState } from 'react'
-import BoxCard from 'src/components/BoxCard'
-import Block from 'src/components/layout/Block'
-import Col from 'src/components/layout/Col'
 import ActionModal from './ActionModal/index'
 import Undelegating from './Undelegating'
 import Validators from './Validators'
@@ -20,20 +17,18 @@ import { extractPrefixedSafeAddress, extractSafeAddress } from 'src/routes/route
 
 import { coin } from '@cosmjs/stargate'
 import { useDispatch, useSelector } from 'react-redux'
+import Icon from 'src/assets/icons/Stack.svg'
+import Breadcrumb from 'src/components/Breadcrumb'
 import { ConnectWalletModal } from 'src/components/ConnectWalletModal'
 import useConnectWallet from 'src/logic/hooks/useConnectWallet'
-import { NOTIFICATIONS } from 'src/logic/notifications'
-import enqueueSnackbar from 'src/logic/notifications/store/actions/enqueueSnackbar'
 import { MsgTypeUrl } from 'src/logic/providers/constants/constant'
 import { currentSafeWithNames } from 'src/logic/safe/store/selectors'
 import { loadedSelector } from 'src/logic/wallets/store/selectors'
 import { grantedSelector } from 'src/routes/safe/container/selector'
-import { formatBigNumber, formatNumber, roundGasAmount } from 'src/utils'
+import { formatBigNumber, formatNumber } from 'src/utils'
 import { usePagedQueuedTransactions } from '../Transactions/hooks/usePagedQueuedTransactions'
 import MyDelegation from './MyDelegation'
 import TxActionModal from './TxActionModal'
-import Breadcrumb from 'src/components/Breadcrumb'
-import Icon from 'src/assets/icons/Stack.svg'
 function Staking(props): ReactElement {
   const dispatch = useDispatch()
   const granted = useSelector(grantedSelector)

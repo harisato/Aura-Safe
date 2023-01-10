@@ -6,6 +6,18 @@ const Wrap = styled.div`
   background: linear-gradient(113.1deg, #5ee6d0 13.45%, #bfc6ff 50.33%, #ffba69 85.05%);
   border-radius: 8px;
   position: relative;
+  &.disabled {
+    background: #494c58;
+    * {
+      cursor: not-allowed;
+      pointer-events: unset;
+    }
+    > div:not(.options) {
+      pointer-events: unset;
+      cursor: not-allowed;
+      border-left: 1px solid #000;
+    }
+  }
   > button {
     cursor: pointer;
     background: transparent;
@@ -78,13 +90,14 @@ interface IProps {
   defaultLabel: string
   defaultOnClick: () => void
   options: IOption[]
+  disabled?: boolean
 }
-export default function SplitButton({ defaultLabel, defaultOnClick, options }: IProps) {
+export default function SplitButton({ defaultLabel, defaultOnClick, options, disabled }: IProps) {
   const [open, setOpen] = useState(false)
   return (
-    <Wrap>
-      <button onClick={defaultOnClick}>{defaultLabel}</button>
-      <div onClick={() => setOpen(!open)}>
+    <Wrap className={disabled ? 'disabled' : ''}>
+      <button onClick={() => (disabled ? null : defaultOnClick())}>{defaultLabel}</button>
+      <div onClick={() => (disabled ? null : setOpen(!open))}>
         <img src={Arrow} alt="" />
       </div>
       {open && (

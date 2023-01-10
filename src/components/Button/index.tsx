@@ -40,12 +40,12 @@ export const OutlinedButtonWrap = styled.button<{ disabled?: boolean }>`
   > div {
     padding: 10px 24px;
     border-radius: 8px;
-
+    display: flex;
     > i,
     img,
     svg,
     .icon {
-      margin: 0px -14px;
+      margin: 0px 8px 0px 0px;
     }
   }
 
@@ -68,12 +68,11 @@ export const OutlinedButtonWrap = styled.button<{ disabled?: boolean }>`
     > div {
       padding: 8px 16px;
       border-radius: 8px;
-
       > i,
       img,
       svg,
       .icon {
-        margin: 0px -8px;
+        margin: 0px 6px 0px 0px;
       }
     }
   }
@@ -97,7 +96,7 @@ export const OutlinedNeutralButton = styled.button<{ disabled?: boolean }>`
   img,
   svg,
   .icon {
-    margin: 0px -14px;
+    margin: 0px 8px 0px 0px;
   }
   &:disabled {
     cursor: not-allowed;
@@ -122,7 +121,7 @@ export const OutlinedNeutralButton = styled.button<{ disabled?: boolean }>`
     img,
     svg,
     .icon {
-      margin: 0px -8px;
+      margin: 0px 6px 0px 0px;
     }
   }
 `

@@ -91,6 +91,7 @@ const SafeHeader = ({
             Send funds
           </FilledButton> */}
           <SplitButton
+            disabled={!granted}
             defaultLabel="Send funds"
             defaultOnClick={() => {
               setSendTxType('single-send')

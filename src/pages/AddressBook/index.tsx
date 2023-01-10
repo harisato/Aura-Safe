@@ -1,4 +1,4 @@
-import { Breadcrumb, BreadcrumbElement, FixedIcon, Icon, Menu, Text } from '@aura/safe-react-components'
+import { FixedIcon, Icon, Menu, Text } from '@aura/safe-react-components'
 import { makeStyles } from '@material-ui/core/styles'
 import TableCell from '@material-ui/core/TableCell'
 import TableContainer from '@material-ui/core/TableContainer'
@@ -6,8 +6,10 @@ import TableRow from '@material-ui/core/TableRow'
 import cn from 'classnames'
 import { ReactElement, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import BreadcrumbIcon from 'src/assets/icons/BookBookmark.svg'
 
 import { useHistory } from 'react-router'
+import Breadcrumb from 'src/components/Breadcrumb'
 import ButtonGradient from 'src/components/ButtonGradient'
 import ButtonHelper from 'src/components/ButtonHelper'
 import Block from 'src/components/layout/Block'
@@ -24,23 +26,21 @@ import { currentNetworkAddressBook } from 'src/logic/addressBook/store/selectors
 import { currentChainId } from 'src/logic/config/store/selectors'
 import { safesAsList } from 'src/logic/safe/store/selectors'
 import { isUserAnOwnerOfAnySafe, sameAddress } from 'src/logic/wallets/ethAddresses'
-import {
-  AB_ADDRESS_ID,
-  AB_NAME_ID,
-  ADDRESS_BOOK_ROW_ID,
-  generateColumns,
-  SEND_ENTRY_BUTTON,
-} from 'src/pages/AddressBook/columns'
+import { AB_ADDRESS_ID, AB_NAME_ID, ADDRESS_BOOK_ROW_ID, generateColumns } from 'src/pages/AddressBook/columns'
 import { CreateEditEntryModal } from 'src/pages/AddressBook/CreateEditEntryModal'
 import { DeleteEntryModal } from 'src/pages/AddressBook/DeleteEntryModal'
 import { ExportEntriesModal } from 'src/pages/AddressBook/ExportEntriesModal'
 import SendModal from 'src/routes/safe/components/Balances/SendModal'
 import { grantedSelector } from 'src/routes/safe/container/selector'
-import { checksumAddress } from 'src/utils/checksumAddress'
 import { SAFE_EVENTS, useAnalytics } from 'src/utils/googleAnalytics'
 import { isValidAddress } from 'src/utils/isValidAddress'
 import ImportEntriesModal from './ImportEntriesModal'
 import { StyledButtonLink, styles } from './style'
+import ArrowDown from 'src/assets/icons/ArrowLineDown.svg'
+import ArrowUp from 'src/assets/icons/ArrowLineUp.svg'
+import Plus from 'src/assets/icons/Plus.svg'
+import Gap from 'src/components/Gap'
+import { OutlinedButton, OutlinedNeutralButton } from 'src/components/Button'
 const useStyles = makeStyles(styles)
 
 interface AddressBookSelectedEntry extends AddressBookEntry {
@@ -142,53 +142,44 @@ const AddressBookTable = (): ReactElement => {
     <>
       <Menu>
         <Col start="sm" sm={6} xs={12}>
-          <Breadcrumb>
-            <BreadcrumbElement
-              color="white"
-              iconType="addressBook"
-              text="Address Book"
-              counter={addressBook?.length.toString()}
-            />
-          </Breadcrumb>
+          <Breadcrumb title="Address Book" subtitleIcon={BreadcrumbIcon} subtitle="Address Book" />
         </Col>
         <Col end="sm" sm={6} xs={12}>
-          <StyledButtonLink
+          <OutlinedButton
+            className="small"
             onClick={() => {
               setSelectedEntry(initialEntryState)
               setExportEntriesModalOpen(true)
             }}
-            color="primary"
-            iconType="exportImg"
-            iconSize="sm"
-            textSize="sm"
           >
+            <img src={ArrowUp} alt="" />
             Export
-          </StyledButtonLink>
-          <StyledButtonLink
+          </OutlinedButton>
+          <Gap width={8} />
+          <OutlinedButton
+            className="small"
             onClick={() => {
               setImportEntryModalOpen(true)
             }}
-            color="primary"
-            iconType="importImg"
-            iconSize="sm"
-            textSize="sm"
           >
+            <img src={ArrowDown} alt="" />
             Import
-          </StyledButtonLink>
-          <StyledButtonLink
+          </OutlinedButton>
+          <Gap width={8} />
+
+          <OutlinedButton
+            className="small"
             onClick={() => {
               setSelectedEntry(initialEntryState)
               setEditCreateEntryModalOpen(true)
             }}
-            color="primary"
-            iconType="add"
-            iconSize="sm"
-            textSize="sm"
           >
+            <img src={Plus} alt="" />
             Create entry
-          </StyledButtonLink>
+          </OutlinedButton>
         </Col>
       </Menu>
+      <Gap height={16} />
       <Block className={classes.formContainer}>
         <TableContainer>
           <Table
@@ -270,18 +261,15 @@ const AddressBookTable = (): ReactElement => {
                           />
                         </ButtonHelper>
                         {granted ? (
-                          <ButtonGradient
-                            size="md"
+                          <OutlinedNeutralButton
                             onClick={() => {
                               setSelectedEntry({ entry: row })
                               setSendFundsModalOpen(true)
                             }}
                           >
                             <FixedIcon type="arrowSentWhite" />
-                            <Text size="lg" color="white">
-                              <span style={{ fontWeight: 500 }}>Send</span>
-                            </Text>
-                          </ButtonGradient>
+                            Send
+                          </OutlinedNeutralButton>
                         ) : null}
                       </Row>
                     </TableCell>
