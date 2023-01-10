@@ -36,36 +36,53 @@ export const TxActions = ({ transaction }: TxActionsProps): ReactElement => {
   ) {
     return <></>
   }
-  if (+currentSequence != +transaction.sequence) {
+
+  const confirmationNeeded = transaction?.confirmationsRequired - transaction?.confirmations?.length
+
+  if (confirmationNeeded <= 0) {
+    if (+currentSequence != +transaction.sequence) {
+      return (
+        <>
+          <div className="tx-sequence">
+            <div
+              onClick={() => {
+                setTxId(transaction.txId)
+                setAction('delete')
+                setOpen(true)
+              }}
+            >
+              <img src={TrashIcon} alt="icon" />
+            </div>
+            <div
+              onClick={() => {
+                setTxId(transaction.txId)
+                setAction('change-sequence')
+                setOpen(true)
+              }}
+            >
+              <img src={ArrowUpDownIcon} alt="icon" />
+            </div>
+          </div>
+          <YellowStyledLabel>
+            Transaction with sequence <strong>{currentSequence}</strong> needs to be executed first
+          </YellowStyledLabel>
+        </>
+      )
+    }
     return (
-      <>
-        <div className="tx-sequence">
-          <div
-            onClick={() => {
-              setTxId(transaction.txId)
-              setAction('delete')
-              setOpen(true)
-            }}
-          >
-            <img src={TrashIcon} alt="icon" />
-          </div>
-          <div
-            onClick={() => {
-              setTxId(transaction.txId)
-              setAction('change-sequence')
-              setOpen(true)
-            }}
-          >
-            <img src={ArrowUpDownIcon} alt="icon" />
-          </div>
-        </div>
-        <YellowStyledLabel>
-          Transaction with sequence <strong>{currentSequence}</strong> needs to be executed first
-        </YellowStyledLabel>
-      </>
+      <div className="buttons">
+        <FilledButton
+          onClick={() => {
+            setTxId(transaction.txId)
+            setAction('execute')
+            setOpen(true)
+          }}
+        >
+          Execute
+        </FilledButton>
+      </div>
     )
   }
-  const confirmationNeeded = transaction?.confirmationsRequired - transaction?.confirmations?.length
 
   if (isRejected) {
     return (
@@ -94,21 +111,7 @@ export const TxActions = ({ transaction }: TxActionsProps): ReactElement => {
       </>
     )
   }
-  if (confirmationNeeded <= 0) {
-    return (
-      <div className="buttons">
-        <FilledButton
-          onClick={() => {
-            setTxId(transaction.txId)
-            setAction('execute')
-            setOpen(true)
-          }}
-        >
-          Execute
-        </FilledButton>
-      </div>
-    )
-  }
+
   if (isConfirmed) {
     return (
       <>
@@ -135,49 +138,49 @@ export const TxActions = ({ transaction }: TxActionsProps): ReactElement => {
         </div>
       </>
     )
-  } else {
-    return (
-      <div className="buttons">
-        <OutlinedNeutralButton
+  }
+
+  return (
+    <div className="buttons">
+      <OutlinedNeutralButton
+        onClick={() => {
+          setTxId(transaction.txId)
+          setAction('reject')
+          setOpen(true)
+        }}
+      >
+        Reject
+      </OutlinedNeutralButton>
+      <FilledButton
+        style={{ marginLeft: 16 }}
+        onClick={() => {
+          setTxId(transaction.txId)
+          setAction('confirm')
+          setOpen(true)
+        }}
+      >
+        Confirm
+      </FilledButton>
+      <div className="tx-sequence">
+        <div
           onClick={() => {
             setTxId(transaction.txId)
-            setAction('reject')
+            setAction('delete')
             setOpen(true)
           }}
         >
-          Reject
-        </OutlinedNeutralButton>
-        <FilledButton
-          style={{ marginLeft: 16 }}
+          <img src={TrashIcon} alt="icon" />
+        </div>
+        <div
           onClick={() => {
             setTxId(transaction.txId)
-            setAction('confirm')
+            setAction('change-sequence')
             setOpen(true)
           }}
         >
-          Confirm
-        </FilledButton>
-        <div className="tx-sequence">
-          <div
-            onClick={() => {
-              setTxId(transaction.txId)
-              setAction('delete')
-              setOpen(true)
-            }}
-          >
-            <img src={TrashIcon} alt="icon" />
-          </div>
-          <div
-            onClick={() => {
-              setTxId(transaction.txId)
-              setAction('change-sequence')
-              setOpen(true)
-            }}
-          >
-            <img src={ArrowUpDownIcon} alt="icon" />
-          </div>
+          <img src={ArrowUpDownIcon} alt="icon" />
         </div>
       </div>
-    )
-  }
+    </div>
+  )
 }
