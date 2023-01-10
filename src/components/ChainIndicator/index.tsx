@@ -1,5 +1,5 @@
 import React from 'react'
-import { CircleDot } from 'src/layout/Header/components/CircleDot/CircleDot'
+import { CircleDot } from 'src/components/CircleDot/CircleDot'
 import { getChainById } from 'src/config'
 import { ChainId } from 'src/config/chain.d'
 import { Wrapper } from './styles'
