@@ -4,6 +4,7 @@ interface ILoaderProps {
   size?: number
   color?: string
   content?: any
+  style?: any
 }
 const Wrap = styled.div`
   position: relative;
@@ -40,9 +41,9 @@ const LoaderWrap = styled.div<ILoaderProps>`
     }
   }
 `
-export default function Loader({ size = 16, color = '#868A97', content }: ILoaderProps) {
+export default function Loader({ size = 16, color = '#868A97', content, style }: ILoaderProps) {
   return (
-    <Wrap>
+    <Wrap style={style}>
       <div className="content-mockup">{content}</div>
       <LoaderWrap size={size} color={color} />
     </Wrap>

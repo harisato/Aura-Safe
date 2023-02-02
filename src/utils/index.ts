@@ -4,6 +4,8 @@ import { MChainInfo } from 'src/services'
 import { calculateFee, GasPrice } from '@cosmjs/stargate'
 import BigNumber from 'bignumber.js'
 import calculateGasFee from 'src/logic/providers/utils/fee'
+import { useLocation } from 'react-router-dom'
+import { useMemo } from 'react'
 
 export const validateFloatNumber = (value: any): boolean => {
   return !isNaN(parseFloat(value)) && isFinite(value)
@@ -18,6 +20,9 @@ export const formatNumber = (value: any): string => {
   const parsedNumber = [integer, '.', fractional.slice(0, nativeCurrency.decimals || 6)].join('')
   return parsedNumber
   // return value == '' || value == 0 ? value : parseFloat((+value).toFixed(6)).toString()
+}
+export const shortAddress = (address: string): string => {
+  return address.slice(0, 6) + '...' + address.slice(address.length - 4, address.length)
 }
 export const isNumberKeyPress = (event): boolean => {
   if (event.key == '.') {
@@ -65,4 +70,10 @@ export const calcFee = (gasAmount) => {
   const _gasPrice = GasPrice.fromString(String(chainDefaultGasPrice).concat(denom))
   const _sendFee = calculateFee(Number(gasAmount), _gasPrice)
   return _sendFee
+}
+
+export const useQuery = () => {
+  const { search } = useLocation()
+
+  return useMemo(() => new URLSearchParams(search), [search])
 }

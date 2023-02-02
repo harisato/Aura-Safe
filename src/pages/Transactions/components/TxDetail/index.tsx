@@ -1,4 +1,5 @@
 import { Loader } from '@aura/safe-react-components'
+import { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { getExplorerInfo } from 'src/config'
 import { grantedSelector } from 'src/routes/safe/container/selector'
@@ -8,9 +9,17 @@ import { Centered, InlineEthHashInfo, TxDetailsContainer } from '../../styled'
 import { TxActions } from './Action'
 import TxMsg from './Message'
 import { TxOwners } from './Owner'
-export default function TxDetail({ transaction, isHistoryTx }) {
+export default function TxDetail({ transaction, isHistoryTx, shouldExpanded }) {
   const isOwner = useSelector(grantedSelector)
   const { data, loading } = useTransactionDetails(transaction.id, transaction.txHash, transaction.auraTxId)
+  const [isScrolled, setIsScrolled] = useState(false)
+  useEffect(() => {
+    if (shouldExpanded && data && !isScrolled) {
+      document.querySelector(`#tx-${transaction.id}`)?.scrollIntoView(true)
+      setIsScrolled(true)
+    }
+  }, [shouldExpanded, data])
+
   if (loading) {
     return (
       <Centered padding={20}>

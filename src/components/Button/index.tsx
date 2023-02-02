@@ -78,10 +78,10 @@ export const OutlinedButtonWrap = styled.button<{ disabled?: boolean }>`
   }
 `
 
-export const OutlinedNeutralButton = styled.button<{ disabled?: boolean }>`
+export const OutlinedNeutralButton = styled.button<{ disabled?: boolean; color?: string }>`
   background: transparent;
   cursor: pointer;
-  border: 1px solid #717582;
+  border: 1px solid ${(props) => (props.color ? props.color : '#717582')};
   border-radius: 8px;
   font-weight: 400;
   font-family: 'Inter';
@@ -89,7 +89,7 @@ export const OutlinedNeutralButton = styled.button<{ disabled?: boolean }>`
   line-height: 20px;
   text-align: center;
   letter-spacing: 0.01em;
-  color: #fff;
+  color: ${(props) => (props.color ? props.color : '#fff')};
   white-space: nowrap;
   padding: 10px 24px;
   > i,

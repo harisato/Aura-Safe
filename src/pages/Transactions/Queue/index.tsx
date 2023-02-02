@@ -18,6 +18,7 @@ import { currentSafeWithNames } from 'src/logic/safe/store/selectors'
 import { useDispatch, useSelector } from 'react-redux'
 import { fetchMSafe } from 'src/logic/safe/store/actions/fetchSafe'
 import { extractSafeAddress, extractSafeId } from 'src/routes/routes'
+import { useQuery } from 'src/utils'
 
 export const TxSignModalContext = createContext<{
   txId: string
@@ -43,6 +44,10 @@ export default function QueueTransactions(): ReactElement {
   const dispatch = useDispatch()
   const safeAddress = extractSafeAddress()
   const safeId = extractSafeId() as number
+
+  const queryParams = useQuery()
+  const transactionId = queryParams.get('transactionId')
+
   useEffect(() => {
     dispatch(fetchMSafe(safeAddress, safeId))
   }, [count])
@@ -65,50 +70,53 @@ export default function QueueTransactions(): ReactElement {
 
   return (
     <TxSignModalContext.Provider value={{ txId, setTxId, open, setOpen, action, setAction }}>
-      <InfiniteScroll next={next} hasMore={hasMore}>
-        <ScrollableTransactionsContainer id={INFINITE_SCROLL_CONTAINER}>
-          <div className="gap-div"></div>
-          {transactions &&
-            count !== 0 &&
-            transactions.map(([nonce, txs], index) => {
-              return txs.length == 1 ? (
-                <Fragment key={nonce}>
-                  {+nonce == +currentSequence && index == 0 ? (
-                    <p className="section-title">Next</p>
-                  ) : index <= 1 ? (
-                    <p className="section-title">{`Queued - Transaction with sequence ${currentSequence} needs to be executed first`}</p>
-                  ) : null}
-                  <AccordionWrapper>
-                    <Transaction transaction={txs[0]} />
-                  </AccordionWrapper>
-                </Fragment>
-              ) : (
-                <Fragment key={nonce}>
-                  {+nonce == +currentSequence && index == 0 ? (
-                    <p className="section-title">Next</p>
-                  ) : index <= 1 ? (
-                    <p className="section-title">{`Queued - Transaction with sequence ${currentSequence} needs to be executed first`}</p>
-                  ) : null}
-                  <AccordionWrapper className="merged-tx">
-                    <div className="notice">
-                      <div>{nonce}</div>
-                      <p>
-                        These transactions conflict as they use the same sequence. Excecuting one will automatically
-                        replace the other(s)
-                      </p>
-                    </div>
-                    {txs.map((tx, index) => (
-                      <Transaction hideSeq={true} key={tx.id} transaction={tx} />
-                    ))}
-                  </AccordionWrapper>
-                </Fragment>
-              )
-            })}
-          <HorizontallyCentered isVisible={isLoading}>
-            <Loader size="md" />
-          </HorizontallyCentered>
-        </ScrollableTransactionsContainer>
-      </InfiniteScroll>
+      <ScrollableTransactionsContainer>
+        <div className="gap-div"></div>
+        {transactions &&
+          count !== 0 &&
+          transactions.map(([nonce, txs], index) => {
+            return txs.length == 1 ? (
+              <Fragment key={nonce}>
+                {+nonce == +currentSequence && index == 0 ? (
+                  <p className="section-title">Next</p>
+                ) : index <= 1 ? (
+                  <p className="section-title">{`Queued - Transaction with sequence ${currentSequence} needs to be executed first`}</p>
+                ) : null}
+                <AccordionWrapper>
+                  <Transaction transaction={txs[0]} shouldExpanded={!!(transactionId && transactionId == txs[0].id)} />
+                </AccordionWrapper>
+              </Fragment>
+            ) : (
+              <Fragment key={nonce}>
+                {+nonce == +currentSequence && index == 0 ? (
+                  <p className="section-title">Next</p>
+                ) : index <= 1 ? (
+                  <p className="section-title">{`Queued - Transaction with sequence ${currentSequence} needs to be executed first`}</p>
+                ) : null}
+                <AccordionWrapper className="merged-tx">
+                  <div className="notice">
+                    <div>{nonce}</div>
+                    <p>
+                      These transactions conflict as they use the same sequence. Excecuting one will automatically
+                      replace the other(s)
+                    </p>
+                  </div>
+                  {txs.map((tx, index) => (
+                    <Transaction
+                      hideSeq={true}
+                      key={tx.id}
+                      shouldExpanded={!!(transactionId && transactionId == tx.id)}
+                      transaction={tx}
+                    />
+                  ))}
+                </AccordionWrapper>
+              </Fragment>
+            )
+          })}
+        <HorizontallyCentered isVisible={isLoading}>
+          <Loader size="md" />
+        </HorizontallyCentered>
+      </ScrollableTransactionsContainer>
       <TxActionModal />
     </TxSignModalContext.Provider>
   )

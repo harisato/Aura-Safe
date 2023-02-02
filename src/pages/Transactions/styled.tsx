@@ -5,6 +5,7 @@ export const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
   height: 100%;
+
   > .head {
     display: flex;
     justify-content: space-between;
@@ -269,6 +270,10 @@ export const StyledTransaction = styled.div<{ shouldBlur?: boolean }>`
   }
   .tx-exe {
     color: #98989b;
+    width: 260px;
+    > p {
+      white-space: nowrap;
+    }
   }
   .tx-amount {
     display: flex;
@@ -609,8 +614,7 @@ export const StyledScrollableBar = styled.div`
   scrollbar-width: thin;
 `
 
-export const ScrollableTransactionsContainer = styled(StyledScrollableBar)`
-  height: calc(100vh - 190px);
+export const ScrollableTransactionsContainer = styled.div`
   overflow-x: hidden;
   overflow-y: auto;
   width: 100%;

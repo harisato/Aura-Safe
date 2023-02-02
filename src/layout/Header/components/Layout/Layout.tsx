@@ -22,6 +22,7 @@ import WalletPopup from './WalletPopup/WalletPopup'
 
 const Wrap = styled.div`
   background: #131419;
+  height: 76px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -65,7 +66,7 @@ const Layout = (props: any) => {
           <Divider />
         </div>
       )}
-      <Notifications />
+      {/* <Notifications /> */}
       <Provider
         info={providerInfo}
         open={open}

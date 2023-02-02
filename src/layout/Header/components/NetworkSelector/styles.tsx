@@ -7,9 +7,9 @@ export const styles = createStyles({
   root: {
     alignItems: 'center',
     display: 'flex',
-    height: '100%',
+    height: '34px',
     justifyContent: 'center',
-    borderRadius: 4,
+    borderRadius: 6,
     marginLeft: '12px',
     padding: '4px 6px',
     background: '#222223',

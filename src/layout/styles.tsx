@@ -18,7 +18,7 @@ const HeaderWrapper = styled.nav`
 `
 
 const BodyWrapper = styled.div`
-  height: calc(100% - 52px);
+  height: calc(100% - 76px);
   width: 100%;
   display: flex;
   flex-direction: row;

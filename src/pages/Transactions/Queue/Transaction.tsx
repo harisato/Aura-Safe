@@ -1,21 +1,40 @@
-import { NoPaddingAccordion, StyledAccordionSummary, StyledTransaction } from '../styled'
 import { AccordionDetails } from '@aura/safe-react-components'
-import TxType from '../components/TxType'
-import TxAmount from '../components/TxAmount'
-import TxTime from '../components/TxTime'
+import { useEffect, useRef, useState } from 'react'
 import { formatTimeInWords } from 'src/utils/date'
-import TxExecutionInfo from '../components/TxExecutionInfo'
-import TxStatus from '../components/TxStatus'
-import { useState } from 'react'
+import TxAmount from '../components/TxAmount'
 import TxDetail from '../components/TxDetail'
+import TxExecutionInfo from '../components/TxExecutionInfo'
+import TxQuickAction from '../components/TxQuickAction'
 import TxSequence from '../components/TxSequence'
-export default function Transaction({ transaction, hideSeq }: { transaction: any; hideSeq?: boolean }) {
+import TxStatus from '../components/TxStatus'
+import TxTime from '../components/TxTime'
+import TxType from '../components/TxType'
+import { NoPaddingAccordion, StyledAccordionSummary, StyledTransaction } from '../styled'
+export default function Transaction({
+  transaction,
+  hideSeq,
+  shouldExpanded,
+}: {
+  transaction: any
+  hideSeq?: boolean
+  shouldExpanded?: boolean
+}) {
   const [txDetailLoaded, setTxDetailLoaded] = useState(false)
+
+  useEffect(() => {
+    if (shouldExpanded) {
+      setTxDetailLoaded(true)
+    }
+  }, [shouldExpanded])
+
   if (!transaction) {
     return null
   }
+
   return (
     <NoPaddingAccordion
+      id={`tx-${transaction.id}`}
+      defaultExpanded={shouldExpanded}
       onChange={() => setTxDetailLoaded(true)}
       TransitionProps={{
         mountOnEnter: false,
@@ -36,12 +55,14 @@ export default function Transaction({ transaction, hideSeq }: { transaction: any
           <TxExecutionInfo
             required={transaction.executionInfo.confirmationsRequired}
             submitted={transaction.executionInfo.confirmationsSubmitted}
+            rejected={transaction.executionInfo.rejections}
           />
+          <TxQuickAction transaction={transaction} />
           <TxStatus shouldDisplayDot transaction={transaction} />
         </StyledTransaction>
       </StyledAccordionSummary>
       <AccordionDetails>
-        {txDetailLoaded && <TxDetail transaction={transaction} isHistoryTx={false} />}
+        {txDetailLoaded && <TxDetail shouldExpanded={shouldExpanded} transaction={transaction} isHistoryTx={false} />}
       </AccordionDetails>
     </NoPaddingAccordion>
   )

@@ -15,8 +15,13 @@ import {
 } from '../styled'
 import Transaction from './Transaction'
 import { usePagedHistoryTransactions } from '../hooks/usePagedHistoryTransactions'
+import { useQuery } from 'src/utils'
 export default function HistoryTransactions(): ReactElement {
   const { count, isLoading, hasMore, next, transactions: historyTx } = usePagedHistoryTransactions()
+
+  const queryParams = useQuery()
+  const transactionId = queryParams.get('transactionId')
+
   if (count === 0 && isLoading) {
     return (
       <Centered>
@@ -34,36 +39,35 @@ export default function HistoryTransactions(): ReactElement {
   }
 
   return (
-    <InfiniteScroll next={next} hasMore={hasMore}>
-      <ScrollableTransactionsContainer id={INFINITE_SCROLL_CONTAINER}>
-        {historyTx &&
-          count !== 0 &&
-          historyTx.map(([nonce, txs], index) => {
-            return (
-              <Fragment key={nonce}>
-                <SubTitle>{formatWithSchema(Number(nonce), 'MMM d, yyyy')}</SubTitle>
-                {txs.map((tx, index, txs) => {
-                  return (
-                    <AccordionWrapper
-                      key={index}
-                      hasSameSeqTxAfter={txs[index].txSequence == txs[index + 1]?.txSequence}
-                      hasSameSeqTxBefore={txs[index].txSequence == txs[index - 1]?.txSequence}
-                      className="history-tx"
-                    >
-                      <Transaction
-                        transaction={tx}
-                        notFirstTx={index == 0 ? false : txs[index].txSequence == txs[index - 1].txSequence}
-                      />
-                    </AccordionWrapper>
-                  )
-                })}
-              </Fragment>
-            )
-          })}
-        <HorizontallyCentered isVisible={isLoading}>
-          <Loader size="md" />
-        </HorizontallyCentered>
-      </ScrollableTransactionsContainer>
-    </InfiniteScroll>
+    <ScrollableTransactionsContainer>
+      {historyTx &&
+        count !== 0 &&
+        historyTx.map(([nonce, txs], index) => {
+          return (
+            <Fragment key={nonce}>
+              <SubTitle>{formatWithSchema(Number(nonce), 'MMM d, yyyy')}</SubTitle>
+              {txs.map((tx, index, txs) => {
+                return (
+                  <AccordionWrapper
+                    key={index}
+                    hasSameSeqTxAfter={txs[index].txSequence == txs[index + 1]?.txSequence}
+                    hasSameSeqTxBefore={txs[index].txSequence == txs[index - 1]?.txSequence}
+                    className="history-tx"
+                  >
+                    <Transaction
+                      transaction={tx}
+                      notFirstTx={index == 0 ? false : txs[index].txSequence == txs[index - 1].txSequence}
+                      shouldExpanded={!!(transactionId && transactionId == tx.id)}
+                    />
+                  </AccordionWrapper>
+                )
+              })}
+            </Fragment>
+          )
+        })}
+      <HorizontallyCentered isVisible={isLoading}>
+        <Loader size="md" />
+      </HorizontallyCentered>
+    </ScrollableTransactionsContainer>
   )
 }

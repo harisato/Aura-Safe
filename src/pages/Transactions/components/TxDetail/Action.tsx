@@ -8,7 +8,7 @@ import { userAccountSelector } from 'src/logic/wallets/store/selectors'
 import styled from 'styled-components'
 import { TxSignModalContext } from '../../Queue'
 import { currentSafeWithNames } from 'src/logic/safe/store/selectors'
-
+import { Tooltip } from '@material-ui/core'
 type TxActionsProps = {
   transaction: any
 }
@@ -43,26 +43,6 @@ export const TxActions = ({ transaction }: TxActionsProps): ReactElement => {
     if (+currentSequence != +transaction.sequence) {
       return (
         <>
-          <div className="tx-sequence">
-            <div
-              onClick={() => {
-                setTxId(transaction.txId)
-                setAction('delete')
-                setOpen(true)
-              }}
-            >
-              <img src={TrashIcon} alt="icon" />
-            </div>
-            <div
-              onClick={() => {
-                setTxId(transaction.txId)
-                setAction('change-sequence')
-                setOpen(true)
-              }}
-            >
-              <img src={ArrowUpDownIcon} alt="icon" />
-            </div>
-          </div>
           <YellowStyledLabel>
             Transaction with sequence <strong>{currentSequence}</strong> needs to be executed first
           </YellowStyledLabel>
@@ -88,24 +68,28 @@ export const TxActions = ({ transaction }: TxActionsProps): ReactElement => {
     return (
       <>
         <div className="tx-sequence">
-          <div
-            onClick={() => {
-              setTxId(transaction.txId)
-              setAction('delete')
-              setOpen(true)
-            }}
-          >
-            <img src={TrashIcon} alt="icon" />
-          </div>
-          <div
-            onClick={() => {
-              setTxId(transaction.txId)
-              setAction('change-sequence')
-              setOpen(true)
-            }}
-          >
-            <img src={ArrowUpDownIcon} alt="icon" />
-          </div>
+          <Tooltip title="Delete transaction" placement="top" arrow>
+            <div
+              onClick={() => {
+                setTxId(transaction.txId)
+                setAction('delete')
+                setOpen(true)
+              }}
+            >
+              <img src={TrashIcon} alt="icon" />
+            </div>
+          </Tooltip>
+          <Tooltip title="Change transaction sequence" placement="top" arrow>
+            <div
+              onClick={() => {
+                setTxId(transaction.txId)
+                setAction('change-sequence')
+                setOpen(true)
+              }}
+            >
+              <img src={ArrowUpDownIcon} alt="icon" />
+            </div>
+          </Tooltip>
         </div>
         <RedStyledLabel>You have rejected this transaction</RedStyledLabel>
       </>
@@ -117,24 +101,28 @@ export const TxActions = ({ transaction }: TxActionsProps): ReactElement => {
       <>
         <StyledLabel>You have confirmed this transaction</StyledLabel>
         <div className="tx-sequence">
-          <div
-            onClick={() => {
-              setTxId(transaction.txId)
-              setAction('delete')
-              setOpen(true)
-            }}
-          >
-            <img src={TrashIcon} alt="icon" />
-          </div>
-          <div
-            onClick={() => {
-              setTxId(transaction.txId)
-              setAction('change-sequence')
-              setOpen(true)
-            }}
-          >
-            <img src={ArrowUpDownIcon} alt="icon" />
-          </div>
+          <Tooltip title="Delete transaction" placement="top" arrow>
+            <div
+              onClick={() => {
+                setTxId(transaction.txId)
+                setAction('delete')
+                setOpen(true)
+              }}
+            >
+              <img src={TrashIcon} alt="icon" />
+            </div>
+          </Tooltip>
+          <Tooltip title="Change transaction sequence" placement="top" arrow>
+            <div
+              onClick={() => {
+                setTxId(transaction.txId)
+                setAction('change-sequence')
+                setOpen(true)
+              }}
+            >
+              <img src={ArrowUpDownIcon} alt="icon" />
+            </div>
+          </Tooltip>
         </div>
       </>
     )
@@ -143,6 +131,7 @@ export const TxActions = ({ transaction }: TxActionsProps): ReactElement => {
   return (
     <div className="buttons">
       <OutlinedNeutralButton
+        color="#D5625E"
         onClick={() => {
           setTxId(transaction.txId)
           setAction('reject')
@@ -162,24 +151,28 @@ export const TxActions = ({ transaction }: TxActionsProps): ReactElement => {
         Confirm
       </FilledButton>
       <div className="tx-sequence">
-        <div
-          onClick={() => {
-            setTxId(transaction.txId)
-            setAction('delete')
-            setOpen(true)
-          }}
-        >
-          <img src={TrashIcon} alt="icon" />
-        </div>
-        <div
-          onClick={() => {
-            setTxId(transaction.txId)
-            setAction('change-sequence')
-            setOpen(true)
-          }}
-        >
-          <img src={ArrowUpDownIcon} alt="icon" />
-        </div>
+        <Tooltip title="Delete transaction" placement="top" arrow>
+          <div
+            onClick={() => {
+              setTxId(transaction.txId)
+              setAction('delete')
+              setOpen(true)
+            }}
+          >
+            <img src={TrashIcon} alt="icon" />
+          </div>
+        </Tooltip>
+        <Tooltip title="Change transaction sequence" placement="top" arrow>
+          <div
+            onClick={() => {
+              setTxId(transaction.txId)
+              setAction('change-sequence')
+              setOpen(true)
+            }}
+          >
+            <img src={ArrowUpDownIcon} alt="icon" />
+          </div>
+        </Tooltip>
       </div>
     </div>
   )

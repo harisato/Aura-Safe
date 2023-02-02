@@ -5,17 +5,24 @@ import TxStatus from '../components/TxStatus'
 import TxTime from '../components/TxTime'
 import TxType from '../components/TxType'
 import { NoPaddingAccordion, StyledAccordionSummary, StyledTransaction } from '../styled'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import TxDetail from '../components/TxDetail'
 import TxSequence from '../components/TxSequence'
-export default function Transaction({ transaction, notFirstTx }) {
+export default function Transaction({ transaction, notFirstTx, shouldExpanded }) {
   const [txDetailLoaded, setTxDetailLoaded] = useState(false)
+  useEffect(() => {
+    if (shouldExpanded) {
+      setTxDetailLoaded(true)
+    }
+  }, [shouldExpanded])
+
   if (!transaction) {
     return null
   }
   return (
     <NoPaddingAccordion
       onChange={() => setTxDetailLoaded(true)}
+      defaultExpanded={shouldExpanded}
       TransitionProps={{
         mountOnEnter: false,
         unmountOnExit: true,
@@ -35,7 +42,9 @@ export default function Transaction({ transaction, notFirstTx }) {
           <TxStatus transaction={transaction} />
         </StyledTransaction>
       </StyledAccordionSummary>
-      <AccordionDetails>{txDetailLoaded && <TxDetail transaction={transaction} isHistoryTx />}</AccordionDetails>
+      <AccordionDetails>
+        {txDetailLoaded && <TxDetail shouldExpanded={shouldExpanded} transaction={transaction} isHistoryTx />}
+      </AccordionDetails>
     </NoPaddingAccordion>
   )
 }

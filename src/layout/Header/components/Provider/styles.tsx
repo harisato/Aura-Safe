@@ -4,11 +4,6 @@ export const styles = () => ({
     alignItems: 'center',
     display: 'flex',
     height: '100%',
-    borderLeft: '1px solid #3E3F40',
-    borderRight: '1px solid #3E3F40',
-    [`@media (min-width: ${screenSm}px)`]: {
-      flexBasis: '256pxF',
-    },
   },
   provider: {
     alignItems: 'center',

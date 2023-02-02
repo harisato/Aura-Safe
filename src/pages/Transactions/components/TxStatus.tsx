@@ -13,6 +13,7 @@ const CircularProgressPainter = styled.div<{ color: string }>`
   color: ${({ color }) => color};
   > div {
     margin-right: 8px;
+    margin-top: -4px;
   }
   > p {
     font-weight: 600;

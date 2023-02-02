@@ -29,6 +29,7 @@ enum NOTIFICATION_IDS {
   TX_CREATE_FAILED_MSG,
   TX_TIMEOUT_MSG,
   TX_FAILED_MSG,
+  TX_CREATE_MSG,
   TX_PENDING_MSG,
   TX_WAITING_MSG,
   TX_CONFIRMATION_EXECUTED_MSG,
@@ -117,6 +118,10 @@ export const NOTIFICATIONS: Record<NotificationId, Notification> = {
   TX_FAILED_MSG: {
     message: 'Transaction failed',
     options: { variant: ERROR, persist: false, autoHideDuration: shortDuration },
+  },
+  TX_CREATE_MSG: {
+    message: 'Transaction is processed. Please wait a second',
+    options: { variant: INFO, persist: false, autoHideDuration: shortDuration },
   },
   TX_TIMEOUT_MSG: {
     message: 'Process timed out',

@@ -18,12 +18,7 @@ const TRANSACTION_TABS: Item[] = [
 
 const Transactions = (): ReactElement => {
   const history = useHistory()
-  const { path } = useRouteMatch()
   const [tab, setTab] = useState(0)
-  const { trackEvent } = useAnalytics()
-  useEffect(() => {
-    trackEvent(SAFE_EVENTS.TRANSACTIONS)
-  }, [trackEvent])
   useEffect(() => {
     switch (tab) {
       case 0:
@@ -35,7 +30,7 @@ const Transactions = (): ReactElement => {
     }
   }, [tab])
   const onTabChange = (path: string) => {
-    history.replace(generateSafeRoute(path, extractPrefixedSafeAddress()))
+    history.replace(generateSafeRoute(path, extractPrefixedSafeAddress()) + history.location.search)
   }
 
   return (
