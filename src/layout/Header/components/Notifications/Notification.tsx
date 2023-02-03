@@ -138,7 +138,7 @@ export default function Notification({ data, toggle, setMarkedNoti, isUnread }) 
                   >
                     See Transaction
                   </OutlinedButton>
-                  <img src={CheckCircle} alt="" />
+                 
                 </div>
               </>
             )
@@ -163,7 +163,7 @@ export default function Notification({ data, toggle, setMarkedNoti, isUnread }) 
                   >
                     Allow Safe
                   </OutlinedButton>
-                  <img src={CheckCircle} alt="" />
+                 
                 </div>
               </>
             )
@@ -184,7 +184,7 @@ export default function Notification({ data, toggle, setMarkedNoti, isUnread }) 
                   >
                     Go to Safe
                   </OutlinedButton>
-                  <img src={CheckCircle} alt="" />
+                 
                 </div>
               </>
             )
@@ -208,7 +208,7 @@ export default function Notification({ data, toggle, setMarkedNoti, isUnread }) 
                   >
                     See Transaction
                   </OutlinedButton>
-                  <img src={CheckCircle} alt="" />
+                 
                 </div>
               </>
             )
@@ -233,7 +233,7 @@ export default function Notification({ data, toggle, setMarkedNoti, isUnread }) 
                   >
                     See Transaction
                   </OutlinedButton>
-                  <img src={CheckCircle} alt="" />
+                 
                 </div>
               </>
             )
@@ -258,7 +258,7 @@ export default function Notification({ data, toggle, setMarkedNoti, isUnread }) 
                   >
                     See Transaction
                   </OutlinedButton>
-                  <img src={CheckCircle} alt="" />
+                 
                 </div>
               </>
             )
@@ -280,7 +280,7 @@ export default function Notification({ data, toggle, setMarkedNoti, isUnread }) 
                   >
                     Go to Voting
                   </OutlinedButton>
-                  <img src={CheckCircle} alt="" />
+                 
                 </div>
               </>
             )
@@ -291,7 +291,7 @@ export default function Notification({ data, toggle, setMarkedNoti, isUnread }) 
                 <div className="content">{`Unknown Notification`}</div>
                 <div className="action">
                   <OutlinedButton className="small">Call to action</OutlinedButton>
-                  <img src={CheckCircle} alt="" />
+                 
                 </div>
               </>
             )

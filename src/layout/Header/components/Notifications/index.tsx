@@ -26,6 +26,19 @@ const Wrap = styled.div`
   > img {
     cursor: pointer;
   }
+  .noti-badge {
+    position: absolute;
+    background-color: red;
+    top: calc(50% - 10px);
+    right: calc(50% - 10px);
+    transform: translate(50%, -50%);
+    font-size: 12px;
+    padding: 2px 4px;
+    border-radius: 50px;
+    min-width: 12px;
+    height: 16px;
+    text-align: center;
+  }
 `
 const NotiWrap = styled.div`
   width: 320px;
@@ -83,8 +96,11 @@ export default function Notifications() {
   const [markedNoti, setMarkedNoti] = useState([])
 
   const [seeAll, setSeeAll] = useState(false)
+  const [lasttimeOpen, setLasttimeOpen] = useState(new Date().getTime())
+  const [unreadNoti, setUnreadNoti] = useState(0)
 
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
+    setLasttimeOpen(new Date().getTime())
     setAnchorEl(event.currentTarget)
     toggle()
   }
@@ -137,10 +153,19 @@ export default function Notifications() {
       markNotiAsRead()
     }
   }, [open])
+
+  useEffect(() => {
+    const unread = allNotification.filter(
+      (n: any) => n.status == 'UNREAD' && !markedNoti.includes(n.id as never),
+    ).length
+    setUnreadNoti(unread)
+  }, [allNotification.length, markedNoti.length])
+
   return (
     <>
       <Wrap onClick={handleClick}>
         <img src={Bell} alt="" />
+        {unreadNoti == 0 ? null : <div className={`noti-badge`}>{unreadNoti}</div>}
       </Wrap>
       {open && (
         <Popper
