@@ -9,7 +9,7 @@ import Grow from '@material-ui/core/Grow'
 import List from '@material-ui/core/List'
 import Popper from '@material-ui/core/Popper'
 import { useStateHandler } from 'src/logic/hooks/useStateHandler'
-import { getAllNitifications } from 'src/services'
+import { getAllNotifications, markNotificationAsRead } from 'src/services'
 import { useSelector } from 'react-redux'
 import { userAccountSelector } from 'src/logic/wallets/store/selectors'
 import { OutlinedNeutralButton } from 'src/components/Button'
@@ -35,9 +35,17 @@ const NotiWrap = styled.div`
   border-radius: 4px;
   overflow-x: hidden;
   overflow-y: auto;
-  > .noti-wrapper {
+  &.show-all > .noti-wrapper {
     max-height: 650px;
+  }
+  > .noti-wrapper {
     overflow: auto;
+  }
+  .no-noti {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 32px;
   }
 `
 const Header = styled.div`
@@ -72,6 +80,7 @@ export default function Notifications() {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
 
   const [allNotification, setAllNotification] = useState([])
+  const [markedNoti, setMarkedNoti] = useState([])
 
   const [seeAll, setSeeAll] = useState(false)
 
@@ -80,11 +89,39 @@ export default function Notifications() {
     toggle()
   }
   const loadNotification = async () => {
-    const res = await getAllNitifications()
+    const res = await getAllNotifications()
     if (res.Data) {
       setAllNotification(res.Data)
     }
   }
+
+  const markNotiAsRead = async () => {
+    try {
+      if (markedNoti.length == 0) return
+      const res = await markNotificationAsRead(markedNoti)
+      if (res.Data) {
+        await loadNotification()
+        setMarkedNoti([])
+      }
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  const markAllAsRead = async () => {
+    const allNoti = allNotification.filter((n: any) => n.status == 'UNREAD').map((n: any) => n.id)
+    try {
+      if (allNoti.length == 0) return
+      const res = await markNotificationAsRead(allNoti)
+      if (res.Data) {
+        await loadNotification()
+        setMarkedNoti([])
+      }
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
   useEffect(() => {
     loadNotification()
     const win: any = window
@@ -94,6 +131,12 @@ export default function Notifications() {
     win.notificationIntervalId = setInterval(loadNotification, 30000)
     return () => clearInterval(win?.notificationIntervalId)
   }, [userWalletAddress])
+
+  useEffect(() => {
+    if (!open) {
+      markNotiAsRead()
+    }
+  }, [open])
   return (
     <>
       <Wrap onClick={handleClick}>
@@ -110,22 +153,46 @@ export default function Notifications() {
           {({ TransitionProps }) => (
             <Grow {...TransitionProps}>
               <ClickAwayListener mouseEvent="onClick" onClickAway={clickAway} touchEvent={false}>
-                <NotiWrap>
+                <NotiWrap className={seeAll ? 'show-all' : ''}>
                   <Header>
                     <p className="title">Notification</p>
-                    <div className="mark-all">
+                    <div className="mark-all" onClick={markAllAsRead}>
                       <p>Mark all read</p>
                       <img src={Checks} alt="" />
                     </div>
                   </Header>
                   <div className="noti-wrapper">
-                    {seeAll
-                      ? allNotification.map((notification, index) => {
-                          return <Notification key={index} toggle={toggle} data={notification} />
-                        })
-                      : allNotification.slice(0, 5).map((notification, index) => {
-                          return <Notification key={index} toggle={toggle} data={notification} />
-                        })}
+                    {allNotification.length == 0 ? (
+                      <div className="no-noti">No notifications yet</div>
+                    ) : seeAll ? (
+                      allNotification.map((notification: any, index) => {
+                        return (
+                          <Notification
+                            isUnread={
+                              markedNoti.includes(notification.id as never) ? false : notification.status == 'UNREAD'
+                            }
+                            key={index}
+                            toggle={toggle}
+                            data={notification}
+                            setMarkedNoti={setMarkedNoti}
+                          />
+                        )
+                      })
+                    ) : (
+                      allNotification.slice(0, 5).map((notification: any, index) => {
+                        return (
+                          <Notification
+                            isUnread={
+                              markedNoti.includes(notification.id as never) ? false : notification.status == 'UNREAD'
+                            }
+                            key={index}
+                            toggle={toggle}
+                            data={notification}
+                            setMarkedNoti={setMarkedNoti}
+                          />
+                        )
+                      })
+                    )}
                   </div>
                   {!seeAll && allNotification.length > 5 && (
                     <SeeAll>

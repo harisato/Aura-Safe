@@ -2,10 +2,10 @@ import styled from 'styled-components'
 import CheckCircle from 'src/assets/icons/CheckCircle.svg'
 import { useState } from 'react'
 import { setChainId } from 'src/logic/config/utils'
-import { getChainById, getChainInfo, getShortName } from 'src/config'
+import { getChainById, getChainInfo, getExplorerUriTemplate, getShortName } from 'src/config'
 import { THEME_DF } from 'src/services/constant/chainThemes'
 import { OutlinedButton } from 'src/components/Button'
-import { formatTimeInWords } from 'src/utils/date'
+import { formatDateTime, formatTimeInWords } from 'src/utils/date'
 import { getChains } from 'src/config/cache/chains'
 import { shortAddress } from 'src/utils'
 import {
@@ -17,6 +17,7 @@ import {
   SAFE_ROUTES,
 } from 'src/routes/routes'
 import { useHistory } from 'react-router-dom'
+import { evalTemplate } from 'src/config/utils'
 const Wrap = styled.div`
   padding: 16px 12px;
   border-bottom: 1px solid #363843;
@@ -67,16 +68,24 @@ const StyledDotChainName = styled.div`
   border-radius: 50%;
   margin-right: 5px;
 `
-export default function Notification({ data, toggle }) {
+export default function Notification({ data, toggle, setMarkedNoti, isUnread }) {
   const chainInfo = getChains().find((chain) => (chain as any).internalChainId == data.internalChainId)
   const currentChainInfo = getChainInfo()
-  const safeAddress = extractSafeAddress()
   const history = useHistory()
-  const [open, setOpen] = useState(false)
-
   const { backgroundColor } = chainInfo?.theme || THEME_DF
 
+  const handleVotingDetail = (proposalId) => {
+    const uri = getExplorerUriTemplate()['proposals']
+    window.open(evalTemplate(uri, { ['proposalsId']: proposalId }))
+  }
+
   const onActionClick = (event, data, action) => {
+    setMarkedNoti((cur) => {
+      if (!cur?.includes(data.id)) {
+        return [...cur, data.id]
+      }
+      return cur
+    })
     toggle && toggle()
     action && action()
     chainInfo?.chainId && chainInfo?.chainId != currentChainInfo?.chainId && setChainId(chainInfo?.chainId)
@@ -89,7 +98,17 @@ export default function Notification({ data, toggle }) {
   }
 
   return (
-    <Wrap className={data.status == 'UNREAD' ? '' : 'readed'}>
+    <Wrap
+      className={isUnread ? '' : 'readed'}
+      onClick={() =>
+        setMarkedNoti((cur) => {
+          if (!cur?.includes(data.id)) {
+            return [...cur, data.id]
+          }
+          return cur
+        })
+      }
+    >
       <div className="header">
         <div className="chain">
           <StyledDotChainName color={backgroundColor} />
@@ -238,6 +257,28 @@ export default function Notification({ data, toggle }) {
                     }
                   >
                     See Transaction
+                  </OutlinedButton>
+                  <img src={CheckCircle} alt="" />
+                </div>
+              </>
+            )
+          case 'START_VOTING_PERIOD':
+            return (
+              <>
+                <div className="content">
+                  Proposal{' '}
+                  <strong>
+                    #{data.proposalNumber}:{data.proposalName}
+                  </strong>{' '}
+                  is now available for voting until{' '}
+                  <strong>{formatDateTime(new Date(data.proposalEndDate).getTime())}</strong>.
+                </div>
+                <div className="action">
+                  <OutlinedButton
+                    className="small"
+                    onClick={(event) => onActionClick(event, data, handleVotingDetail(data.proposalNumber))}
+                  >
+                    Go to Voting
                   </OutlinedButton>
                   <img src={CheckCircle} alt="" />
                 </div>

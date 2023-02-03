@@ -224,10 +224,12 @@ export async function getAddress(safeAddress: string): Promise<IResponse<any>> {
   return axios.get(`${baseUrl}/user/${safeAddress}`).then((res) => res.data)
 }
 
-export async function getAllNitifications(): Promise<IResponse<any>> {
+export async function getAllNotifications(): Promise<IResponse<any>> {
   return axios.get(`${baseUrl}/notification`).then((res) => res.data)
 }
-
+export async function markNotificationAsRead(payload: string[]): Promise<IResponse<any>> {
+  return axios.post(`${baseUrl}/notification`, { notifications: payload }).then((res) => res.data)
+}
 export function auth(payload: any): Promise<IResponse<any>> {
   return axios.post(`${baseUrl}/auth`, payload).then((res) => res.data)
 }

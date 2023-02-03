@@ -66,7 +66,7 @@ const Layout = (props: any) => {
           <Divider />
         </div>
       )}
-      {/* <Notifications /> */}
+      <Notifications />
       <Provider
         info={providerInfo}
         open={open}
