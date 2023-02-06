@@ -131,6 +131,7 @@ export default function Notifications() {
       const res = await markNotificationAsRead(allNoti)
       if (res.Data) {
         await loadNotification()
+        setUnreadNoti(0)
         setMarkedNoti([])
       }
     } catch (error) {
