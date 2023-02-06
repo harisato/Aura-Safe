@@ -138,7 +138,6 @@ export default function Notification({ data, toggle, setMarkedNoti, isUnread }) 
                   >
                     See Transaction
                   </OutlinedButton>
-                 
                 </div>
               </>
             )
@@ -163,7 +162,6 @@ export default function Notification({ data, toggle, setMarkedNoti, isUnread }) 
                   >
                     Allow Safe
                   </OutlinedButton>
-                 
                 </div>
               </>
             )
@@ -184,7 +182,6 @@ export default function Notification({ data, toggle, setMarkedNoti, isUnread }) 
                   >
                     Go to Safe
                   </OutlinedButton>
-                 
                 </div>
               </>
             )
@@ -208,7 +205,6 @@ export default function Notification({ data, toggle, setMarkedNoti, isUnread }) 
                   >
                     See Transaction
                   </OutlinedButton>
-                 
                 </div>
               </>
             )
@@ -233,7 +229,6 @@ export default function Notification({ data, toggle, setMarkedNoti, isUnread }) 
                   >
                     See Transaction
                   </OutlinedButton>
-                 
                 </div>
               </>
             )
@@ -258,7 +253,6 @@ export default function Notification({ data, toggle, setMarkedNoti, isUnread }) 
                   >
                     See Transaction
                   </OutlinedButton>
-                 
                 </div>
               </>
             )
@@ -276,11 +270,14 @@ export default function Notification({ data, toggle, setMarkedNoti, isUnread }) 
                 <div className="action">
                   <OutlinedButton
                     className="small"
-                    onClick={(event) => onActionClick(event, data, handleVotingDetail(data.proposalNumber))}
+                    onClick={(event) =>
+                      onActionClick(event, data, () =>
+                        history.push(generateSafeRoute(SAFE_ROUTES.VOTING, routesSlug)),
+                      )
+                    }
                   >
                     Go to Voting
                   </OutlinedButton>
-                 
                 </div>
               </>
             )
@@ -291,7 +288,6 @@ export default function Notification({ data, toggle, setMarkedNoti, isUnread }) 
                 <div className="content">{`Unknown Notification`}</div>
                 <div className="action">
                   <OutlinedButton className="small">Call to action</OutlinedButton>
-                 
                 </div>
               </>
             )
