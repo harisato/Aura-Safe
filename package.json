@@ -39,7 +39,7 @@
     "prettier:fix": "yarn prettier --write",
     "prettier": "prettier './src/**/*.{js,jsx,ts,tsx}'",
     "release": "electron-builder --mac --linux --windows -p always",
-    "start": "rescripts start",
+    "start": "rescripts --openssl-legacy-provider start",
     "start:docker": "docker-compose build && docker-compose up",
     "test": "REACT_APP_ENV=test rescripts test --env=jsdom",
     "test:coverage": "REACT_APP_ENV=test yarn test --coverage --watchAll=false",
