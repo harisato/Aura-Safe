@@ -109,6 +109,11 @@ export default function Notifications() {
     toggle()
   }
   const loadNotification = async () => {
+    if (!userWalletAddress) {
+      setAllNotification([])
+      setUnreadNoti(0)
+      return
+    }
     const res = await getAllNotifications()
     if (res.Data) {
       setAllNotification(res.Data)
