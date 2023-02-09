@@ -52,6 +52,28 @@ export default function QueueTransactions(): ReactElement {
     dispatch(fetchMSafe(safeAddress, safeId))
   }, [count])
 
+  const expandTx = () => {
+    const elem = document.getElementById(`tx-${transactionId}`) as any
+    if (!elem) {
+      setTimeout(() => expandTx(), 500)
+    } else {
+      if (elem?.childNodes.length == 1) {
+        elem?.childNodes[0]?.click()
+      }
+      elem?.scrollIntoView(true)
+    }
+  }
+  useEffect(() => {
+    expandTx()
+  }, [transactionId])
+
+  useEffect(() => {
+    if (transactionId) {
+      const elem = document.getElementById(`tx-${transactionId}`) as any
+      elem?.scrollIntoView(true)
+    }
+  })
+
   if (count === 0 && isLoading) {
     return (
       <Centered>
@@ -83,7 +105,7 @@ export default function QueueTransactions(): ReactElement {
                   <p className="section-title">{`Queued - Transaction with sequence ${currentSequence} needs to be executed first`}</p>
                 ) : null}
                 <AccordionWrapper>
-                  <Transaction transaction={txs[0]} shouldExpanded={!!(transactionId && transactionId == txs[0].id)} />
+                  <Transaction transaction={txs[0]} />
                 </AccordionWrapper>
               </Fragment>
             ) : (
@@ -102,12 +124,7 @@ export default function QueueTransactions(): ReactElement {
                     </p>
                   </div>
                   {txs.map((tx, index) => (
-                    <Transaction
-                      hideSeq={true}
-                      key={tx.id}
-                      shouldExpanded={!!(transactionId && transactionId == tx.id)}
-                      transaction={tx}
-                    />
+                    <Transaction hideSeq={true} key={tx.id} transaction={tx} />
                   ))}
                 </AccordionWrapper>
               </Fragment>

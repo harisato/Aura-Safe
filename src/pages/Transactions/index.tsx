@@ -29,6 +29,15 @@ const Transactions = (): ReactElement => {
         break
     }
   }, [tab])
+
+  useEffect(() => {
+    if (history.location.pathname.includes('queue')) {
+      setTab(0)
+    } else {
+      setTab(1)
+    }
+  }, [history.location.pathname])
+
   const onTabChange = (path: string) => {
     history.replace(generateSafeRoute(path, extractPrefixedSafeAddress()) + history.location.search)
   }

@@ -54,12 +54,6 @@ const Wrap = styled.div`
     font-size: 12px;
     line-height: 16px;
     color: #b4b8c0;
-    > strong {
-      overflow: hidden;
-      max-width: 100%;
-      display: inline-block;
-      text-overflow: ellipsis;
-    }
   }
   .action {
     display: flex;
@@ -175,7 +169,7 @@ export default function Notification({ data, toggle, setMarkedNoti, isUnread }) 
             return (
               <>
                 <div className="content">
-                  <strong>{data.safeAddress}</strong> is now ready to use.
+                  <strong>{shortAddress(data.safeAddress)}</strong> is now ready to use.
                 </div>
                 <div className="action">
                   <OutlinedButton

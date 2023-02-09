@@ -22,6 +22,29 @@ export default function HistoryTransactions(): ReactElement {
   const queryParams = useQuery()
   const transactionId = queryParams.get('transactionId')
 
+  const expandTx = () => {
+    const elem = document.getElementById(`tx-${transactionId}`) as any
+    if (!elem) {
+      setTimeout(() => expandTx(), 500)
+    } else {
+      if (elem?.childNodes.length == 1) {
+        elem?.childNodes[0]?.click()
+      }
+      elem?.scrollIntoView(true)
+    }
+  }
+
+  useEffect(() => {
+    expandTx()
+  }, [transactionId])
+
+  useEffect(() => {
+    if (transactionId) {
+      const elem = document.getElementById(`tx-${transactionId}`) as any
+      elem?.scrollIntoView(true)
+    }
+  })
+
   if (count === 0 && isLoading) {
     return (
       <Centered>
@@ -57,7 +80,6 @@ export default function HistoryTransactions(): ReactElement {
                     <Transaction
                       transaction={tx}
                       notFirstTx={index == 0 ? false : txs[index].txSequence == txs[index - 1].txSequence}
-                      shouldExpanded={!!(transactionId && transactionId == tx.id)}
                     />
                   </AccordionWrapper>
                 )

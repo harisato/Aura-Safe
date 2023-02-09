@@ -9,16 +9,10 @@ import { Centered, InlineEthHashInfo, TxDetailsContainer } from '../../styled'
 import { TxActions } from './Action'
 import TxMsg from './Message'
 import { TxOwners } from './Owner'
-export default function TxDetail({ transaction, isHistoryTx, shouldExpanded }) {
+export default function TxDetail({ transaction, isHistoryTx }) {
   const isOwner = useSelector(grantedSelector)
   const { data, loading } = useTransactionDetails(transaction.id, transaction.txHash, transaction.auraTxId)
   const [isScrolled, setIsScrolled] = useState(false)
-  useEffect(() => {
-    if (shouldExpanded && data && !isScrolled) {
-      document.querySelector(`#tx-${transaction.id}`)?.scrollIntoView(true)
-      setIsScrolled(true)
-    }
-  }, [shouldExpanded, data])
 
   if (loading) {
     return (

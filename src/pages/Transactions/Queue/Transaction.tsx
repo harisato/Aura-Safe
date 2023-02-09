@@ -1,5 +1,5 @@
 import { AccordionDetails } from '@aura/safe-react-components'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { formatTimeInWords } from 'src/utils/date'
 import TxAmount from '../components/TxAmount'
 import TxDetail from '../components/TxDetail'
@@ -10,22 +10,8 @@ import TxStatus from '../components/TxStatus'
 import TxTime from '../components/TxTime'
 import TxType from '../components/TxType'
 import { NoPaddingAccordion, StyledAccordionSummary, StyledTransaction } from '../styled'
-export default function Transaction({
-  transaction,
-  hideSeq,
-  shouldExpanded,
-}: {
-  transaction: any
-  hideSeq?: boolean
-  shouldExpanded?: boolean
-}) {
+export default function Transaction({ transaction, hideSeq }: { transaction: any; hideSeq?: boolean }) {
   const [txDetailLoaded, setTxDetailLoaded] = useState(false)
-
-  useEffect(() => {
-    if (shouldExpanded) {
-      setTxDetailLoaded(true)
-    }
-  }, [shouldExpanded])
 
   if (!transaction) {
     return null
@@ -34,7 +20,6 @@ export default function Transaction({
   return (
     <NoPaddingAccordion
       id={`tx-${transaction.id}`}
-      defaultExpanded={shouldExpanded}
       onChange={() => setTxDetailLoaded(true)}
       TransitionProps={{
         mountOnEnter: false,
@@ -62,7 +47,7 @@ export default function Transaction({
         </StyledTransaction>
       </StyledAccordionSummary>
       <AccordionDetails>
-        {txDetailLoaded && <TxDetail shouldExpanded={shouldExpanded} transaction={transaction} isHistoryTx={false} />}
+        {txDetailLoaded && <TxDetail transaction={transaction} isHistoryTx={false} />}
       </AccordionDetails>
     </NoPaddingAccordion>
   )
