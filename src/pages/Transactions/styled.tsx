@@ -257,7 +257,8 @@ export const StyledTransaction = styled.div<{ shouldBlur?: boolean }>`
   }
   .tx-seq {
     flex: unset;
-    margin-right: 8%;
+    margin-right: 10%;
+    width: 0%;
   }
   .tx-type,
   .tx-exe {

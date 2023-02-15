@@ -65,7 +65,6 @@ export const calcFee = (gasAmount) => {
   const chainInfo = getChainInfo()
   const listChain = getChains()
   const chainDefaultGasPrice = getChainDefaultGasPrice()
-  console.log(chainDefaultGasPrice)
   const mChainInfo = listChain.find((x) => x.chainId === chainInfo.chainId) as MChainInfo
   const denom = mChainInfo?.denom || ''
   const _gasPrice = GasPrice.fromString(String(chainDefaultGasPrice).concat(denom))
