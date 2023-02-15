@@ -34,13 +34,19 @@ export function getExplorerUrl(
     case 'txHash':
       return getExplorerUrlTxHash(chainId, baseUrl)
     case 'address':
+      if (baseUrl.includes('canto')) {
+        return `${baseUrl.endsWith('/') ? baseUrl : baseUrl + '/'}accounts/{{address}}`
+      }
       return `${baseUrl.endsWith('/') ? baseUrl : baseUrl + '/'}account/{{address}}`
     case 'proposals':
       if (baseUrl.includes('aura')) {
         return `${baseUrl.endsWith('/') ? baseUrl : baseUrl + '/'}votings/{{proposalsId}}`
-      } else {
-        return `${baseUrl.endsWith('/') ? baseUrl : baseUrl + '/'}proposals/{{proposalsId}}`
       }
+      if (baseUrl.includes('canto')) {
+        return `${baseUrl.endsWith('/') ? baseUrl : baseUrl + '/'}votes/{{proposalsId}}`
+      }
+      return `${baseUrl.endsWith('/') ? baseUrl : baseUrl + '/'}proposals/{{proposalsId}}`
+
     case 'api':
       return `${
         baseUrl.endsWith('/') ? baseUrl : baseUrl + '/'
@@ -55,6 +61,7 @@ function getExplorerUrlTxHash(chainId: string, baseUrl: string): string {
     case 'evmos_9000-4':
       return `${baseUrl.endsWith('/') ? baseUrl : baseUrl + '/'}txs/{{txHash}}`
     case 'theta-testnet-001':
+    case 'canto_7700-1':
       return `${baseUrl.endsWith('/') ? baseUrl : baseUrl + '/'}transactions/{{txHash}}`
     default:
       return `${baseUrl.endsWith('/') ? baseUrl : baseUrl + '/'}transaction/{{txHash}}`
