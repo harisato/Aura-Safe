@@ -1,11 +1,11 @@
-# Aura Safe
+# Pyxis Safe
 
-Aura-Safe is a multi-signature platform for Cosmos-based blockchain.
+Pyxis Safe is a multi-signature platform for Cosmos-based blockchains.
 
-If you are familliar with [Gnosis-safe](https://gnosis-safe.io/) for Ethereum, we try to reuse as much as possible the UX of the gnosis web app as it is really clean and straightforward to use. However, the architecture design and workflow of Aura Safe is totally independent from Gnosis. Aura Safe works only with Cosmos-based blockchains.
+If you are familiar with [Safe (Previously Gnosis Safe)](https://safe.global/) for Ethereum, we tried to reuse as much as possible the UX of the Gnosis web-app as it is already clean and straightforward to use. However, the architecture design and workflow of Pyxis Safe is totally independent from Gnosis. Pyxis Safe works only with Cosmos-based blockchains.
 
 ## How to use
-Aura-Safe is still in development, you can check out the latest deployed Dev version in the Deployed environment section.
+Pyxis Safe is still in development, you can check out the latest deployed Dev version in the Deployed environment section.
 
 #### Prerequisites
 We use [yarn](https://yarnpkg.com/) in our infrastructure, so we decided to go with yarn in the README. Please install yarn globally if you haven't already.
@@ -26,11 +26,8 @@ yarn install
 ```bash
 npm start
  ```
-### 5. Add test-net to Keplr
-After the app is started, open browser's dev tool by press F12 button or right click then choose Inspect, then click on Console tab and follow the instruction [here](https://github.com/aura-nw/safe-react/blob/dev/CONNECT_KEPLR.md) to add Aura test-net to Keplr
-
 ## Setup for developments
-Aura-safe use Nodejs, please make sure installed it.
+Pyxis Safe uses Nodejs, so please make sure to installed it.
 
 ## Related repos
 
