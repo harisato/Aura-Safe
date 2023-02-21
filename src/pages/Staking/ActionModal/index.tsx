@@ -217,11 +217,11 @@ export default function ModalStaking(props) {
           )}
           {selectedAction === 'manage' && (
             <SplitButton
-              defaultLabel="Undelegate"
-              defaultOnClick={() => handleChangeAction('undelegate')}
+              defaultLabel="Delegate"
+              defaultOnClick={() => handleChangeAction('delegate')}
               options={[
-                { label: 'Undelegate', onClick: () => handleChangeAction('undelegate') },
                 { label: 'Redelegate', onClick: () => handleChangeAction('redelegate') },
+                { label: 'Undelegate', onClick: () => handleChangeAction('undelegate') },
               ]}
             />
           )}

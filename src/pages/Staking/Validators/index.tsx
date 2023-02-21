@@ -1,14 +1,15 @@
 import React, { ReactElement, useEffect, useState } from 'react'
 
-import AppBar from '@material-ui/core/AppBar'
 import { makeStyles } from '@material-ui/core/styles'
+import BigNumber from 'bignumber.js'
 import { OutlinedButton } from 'src/components/Button'
 import DenseTable, { StyledTableCell, StyledTableRow } from 'src/components/Table/DenseTable'
-import TabPanel, { a11yProps } from 'src/components/Tabs/FilterTab/TabPanel'
-import sreachIcon from '../assets/Shape.svg'
-import { ContainSearch, HeaderValidator, ImgRow, StyleSearch, TitleStyled, Wrap } from './styles'
 import Tabs from 'src/components/Tabs/FilterTab'
 import Tab from 'src/components/Tabs/FilterTab/Tab'
+import TabPanel, { a11yProps } from 'src/components/Tabs/FilterTab/TabPanel'
+import { getNativeCurrency } from 'src/config'
+import sreachIcon from '../assets/Shape.svg'
+import { ContainSearch, HeaderValidator, ImgRow, StyleSearch, TitleStyled, Wrap } from './styles'
 
 const useStyles = makeStyles({
   root: {
@@ -23,7 +24,7 @@ const useStyles = makeStyles({
 const ValidatorTable = (props) => {
   const { data, handleManageDelegate, value, disabledButton } = props
   const obj1 = new Intl.NumberFormat('en-US')
-
+  const nativeCurrency = getNativeCurrency()
   return (
     <DenseTable headers={['Rank', 'Validator', 'Voting Power', 'Commision', 'Uptime', ' ']}>
       {data?.map((row, index) => (
@@ -38,7 +39,11 @@ const ValidatorTable = (props) => {
             </ImgRow>
           </StyledTableCell>
           <StyledTableCell align="left">
-            <div>{obj1.format(row.votingPower.number)}</div>
+            <div>
+              {obj1.format(
+                +new BigNumber(row.votingPower.number).div(new BigNumber(10).pow(nativeCurrency.decimals)).toFixed(3),
+              )}
+            </div>
             <div style={{ color: 'rgba(134, 138, 151, 1)' }}>{row.votingPower.percentage} %</div>
           </StyledTableCell>
           <StyledTableCell align="left">
