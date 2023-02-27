@@ -59,9 +59,9 @@ export function getExplorerUrl(
 function getExplorerUrlTxHash(chainId: string, baseUrl: string): string {
   switch (chainId) {
     case 'evmos_9000-4':
+    case 'canto_7700-1':
       return `${baseUrl.endsWith('/') ? baseUrl : baseUrl + '/'}txs/{{txHash}}`
     case 'theta-testnet-001':
-    case 'canto_7700-1':
       return `${baseUrl.endsWith('/') ? baseUrl : baseUrl + '/'}transactions/{{txHash}}`
     default:
       return `${baseUrl.endsWith('/') ? baseUrl : baseUrl + '/'}transaction/{{txHash}}`

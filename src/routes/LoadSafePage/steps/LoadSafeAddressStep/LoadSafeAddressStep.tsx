@@ -185,7 +185,6 @@ export const loadSafeAddressStepValidations = (values: {
   [FIELD_SAFE_OWNER_LIST]: string
 }): Record<string, string> => {
   let errors = {}
-
   const safeAddress = values[FIELD_LOAD_SAFE_ADDRESS]
 
   if (!safeAddress) {
