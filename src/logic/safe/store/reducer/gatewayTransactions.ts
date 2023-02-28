@@ -71,7 +71,14 @@ export const gatewayTransactionsReducer = handleActions<GatewayTransactionsState
             newHistory[startOfDate].push(transaction)
             // pushing a newer transaction to the existing list messes the transactions order
             // this happens when most recent transactions are added to the existing txs in the store
-            newHistory[startOfDate] = newHistory[startOfDate].sort((a, b) => b.timestamp - a.timestamp)
+            newHistory[startOfDate] = newHistory[startOfDate]
+              .sort((a, b) => b.timestamp - a.timestamp)
+              .sort((a, b) => {
+                const aId = a.auraTxId ? +a.auraTxId : 0
+                const bId = b.auraTxId ? +b.auraTxId : 0
+                if (a.txSequence == b.txSequence) return bId - aId
+                return 0
+              })
           }
           return
         }

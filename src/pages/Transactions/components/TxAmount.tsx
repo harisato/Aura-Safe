@@ -11,7 +11,7 @@ export default function TxAmount({ amount = 0 }) {
           <p>{formatNativeToken(amount)}</p>
         </>
       ) : (
-        '-'
+        `-`
       )}
     </div>
   )
