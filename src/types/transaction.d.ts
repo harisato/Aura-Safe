@@ -58,6 +58,7 @@ export interface ITransactionListItem {
   Rejections: number
   TypeUrl?: string
   FinalAmount?: number
+  Timestamp?: number
 }
 
 export interface ISignature {

@@ -10,7 +10,6 @@ import TxDetail from '../components/TxDetail'
 import TxSequence from '../components/TxSequence'
 export default function Transaction({ transaction, notFirstTx }) {
   const [txDetailLoaded, setTxDetailLoaded] = useState(false)
-
   if (!transaction) {
     return null
   }

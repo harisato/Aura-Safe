@@ -92,7 +92,11 @@ export const fetchTransactionDetailsById =
       const transactionDetails: any = {
         txId: Data?.MultisigTxId?.toString() || null,
         auraTxId: Data?.AuraTxId?.toString() || null,
-        executedAt: Data.Executor ? new Date(Data.Executor.updatedAt).getTime() : null,
+        executedAt: Data.Timestamp
+          ? new Date(Data.Timestamp).getTime()
+          : Data.Executor
+          ? new Date(Data.Executor.updatedAt).getTime()
+          : null,
         createAt: Data.CreatedAt ? new Date(Data.CreatedAt).getTime() : null,
         txStatus: (Data.Status == '0' ? TransactionStatus.SUCCESS : Data.Status) as TransactionStatus,
         txMessage: Data?.Messages?.length ? Data?.Messages : [],

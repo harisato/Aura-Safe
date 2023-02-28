@@ -144,7 +144,6 @@ export const getTxTo = ({ txInfo }: Pick<Transaction, 'txInfo'>): AddressEx | un
   }
 }
 
-
 export const isDeeplinkedTx = (): boolean => {
   const txMatch = matchPath(history.location.pathname, {
     path: [SAFE_ROUTES.TRANSACTIONS_HISTORY, SAFE_ROUTES.TRANSACTIONS_QUEUE],
@@ -337,7 +336,7 @@ const makeTransactions = (list: ITransactionListItem[]): MTransactionListItem[] 
         id: tx?.MultisigTxId?.toString(),
         auraTxId: tx?.AuraTxId?.toString(),
         txHash: tx?.TxHash,
-        timestamp: new Date(tx?.UpdatedAt).getTime(),
+        timestamp: tx?.Timestamp ? new Date(tx?.Timestamp).getTime() : new Date(tx?.UpdatedAt).getTime(),
         txStatus: tx?.Status as TransactionStatus,
         txSequence: tx?.Sequence || '-1',
         txInfo: {

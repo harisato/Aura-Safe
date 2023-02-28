@@ -12,7 +12,6 @@ import { TxOwners } from './Owner'
 export default function TxDetail({ transaction, isHistoryTx }) {
   const isOwner = useSelector(grantedSelector)
   const { data, loading } = useTransactionDetails(transaction.id, transaction.txHash, transaction.auraTxId)
-  const [isScrolled, setIsScrolled] = useState(false)
 
   if (loading) {
     return (
@@ -21,7 +20,7 @@ export default function TxDetail({ transaction, isHistoryTx }) {
       </Centered>
     )
   }
-
+  
   if (!data) {
     return (
       <Centered padding={20}>
