@@ -34,17 +34,17 @@ export function getExplorerUrl(
     case 'txHash':
       return getExplorerUrlTxHash(chainId, baseUrl)
     case 'address':
-      if (baseUrl.includes('canto')) {
-        return `${baseUrl.endsWith('/') ? baseUrl : baseUrl + '/'}accounts/{{address}}`
-      }
+      // if (baseUrl.includes('canto')) {
+      //   return `${baseUrl.endsWith('/') ? baseUrl : baseUrl + '/'}accounts/{{address}}`
+      // }
       return `${baseUrl.endsWith('/') ? baseUrl : baseUrl + '/'}account/{{address}}`
     case 'proposals':
       if (baseUrl.includes('aura')) {
         return `${baseUrl.endsWith('/') ? baseUrl : baseUrl + '/'}votings/{{proposalsId}}`
       }
-      if (baseUrl.includes('canto')) {
-        return `${baseUrl.endsWith('/') ? baseUrl : baseUrl + '/'}votes/{{proposalsId}}`
-      }
+      // if (baseUrl.includes('canto')) {
+      //   return `${baseUrl.endsWith('/') ? baseUrl : baseUrl + '/'}votes/{{proposalsId}}`
+      // }
       return `${baseUrl.endsWith('/') ? baseUrl : baseUrl + '/'}proposals/{{proposalsId}}`
 
     case 'api':

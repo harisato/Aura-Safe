@@ -39,11 +39,7 @@ const ValidatorTable = (props) => {
             </ImgRow>
           </StyledTableCell>
           <StyledTableCell align="left">
-            <div>
-              {obj1.format(
-                +new BigNumber(row.votingPower.number).div(new BigNumber(10).pow(nativeCurrency.decimals)).toFixed(3),
-              )}
-            </div>
+            <div>{obj1.format(row.votingPower.number)}</div>
             <div style={{ color: 'rgba(134, 138, 151, 1)' }}>{row.votingPower.percentage} %</div>
           </StyledTableCell>
           <StyledTableCell align="left">
