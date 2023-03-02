@@ -1,11 +1,11 @@
-import styled from 'styled-components'
+import { InputAdornment } from '@material-ui/core'
 import MuiTextField from '@material-ui/core/TextField'
 import React from 'react'
-import { colorLinear } from 'src/theme/variables'
-import { formatNumber, isNumberKeyPress, validateFloatNumber } from 'src/utils'
-import { InputAdornment } from '@material-ui/core'
 import { FilledButton } from 'src/components/Button'
 import { getNativeCurrency } from 'src/config'
+import { colorLinear } from 'src/theme/variables'
+import { formatNumber, isNumberKeyPress } from 'src/utils'
+import styled from 'styled-components'
 
 export const StyledTextField = styled(MuiTextField)`
   width: 100%;

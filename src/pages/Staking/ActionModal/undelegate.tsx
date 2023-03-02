@@ -1,21 +1,9 @@
-import SelectValidator from '../SelectValidator'
-import {
-  TextGray,
-  BoxDelegate,
-  PaddingPopup,
-  InputAura,
-  StyledInputModal,
-  StyledButtonModal,
-  BorderInput,
-  BorderAura,
-  TextDisable,
-} from './styles'
-import { Text } from '@aura/safe-react-components'
-import Col from 'src/components/layout/Col'
 import { useEffect, useRef } from 'react'
-import { formatBigNumber } from 'src/utils'
-import AmountInput from 'src/components/Input/AmountInput'
 import Gap from 'src/components/Gap'
+import AmountInput from 'src/components/Input/AmountInput'
+import Col from 'src/components/layout/Col'
+import { formatBigNumber } from 'src/utils'
+import { BoxDelegate, PaddingPopup, TextGray } from './styles'
 
 export default function ModalUndelegate(props) {
   const { handleDelegatedAmount, nativeCurrency, handleMax, amount, dataDelegateOfUser, validateMsg } = props
