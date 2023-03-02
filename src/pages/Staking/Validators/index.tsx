@@ -39,14 +39,14 @@ const ValidatorTable = (props) => {
             </ImgRow>
           </StyledTableCell>
           <StyledTableCell align="left">
-            <div>{obj1.format(row.votingPower.number)}</div>
+            <div>{obj1.format(parseInt(row.votingPower.number))}</div>
             <div style={{ color: 'rgba(134, 138, 151, 1)' }}>{row.votingPower.percentage} %</div>
           </StyledTableCell>
           <StyledTableCell align="left">
             {parseFloat(row.commission.commission_rates.rate).toFixed(2)} %
           </StyledTableCell>
 
-          <StyledTableCell align="left">{row.uptime} %</StyledTableCell>
+          <StyledTableCell align="left">{+parseFloat(row.uptime).toFixed(2)} %</StyledTableCell>
           {value === 0 && !disabledButton ? (
             <StyledTableCell align="right">
               <OutlinedButton className="small" onClick={() => handleManageDelegate(row)}>
