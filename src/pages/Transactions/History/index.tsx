@@ -1,10 +1,11 @@
 import { Loader, Title } from '@aura/safe-react-components'
-import { ReactElement, Fragment, useState, useEffect } from 'react'
+import { Fragment, ReactElement, useEffect } from 'react'
 
-import { InfiniteScroll, INFINITE_SCROLL_CONTAINER } from 'src/components/InfiniteScroll'
-import Img from 'src/components/layout/Img'
-import { formatWithSchema } from 'src/utils/date'
 import NoTransactionsImage from 'src/assets/icons/no-transactions.svg'
+import Img from 'src/components/layout/Img'
+import { useQuery } from 'src/utils'
+import { formatWithSchema } from 'src/utils/date'
+import { usePagedHistoryTransactions } from '../../../utils/hooks/usePagedHistoryTransactions'
 import {
   AccordionWrapper,
   Centered,
@@ -14,8 +15,6 @@ import {
   SubTitle,
 } from '../styled'
 import Transaction from './Transaction'
-import { usePagedHistoryTransactions } from '../hooks/usePagedHistoryTransactions'
-import { useQuery } from 'src/utils'
 export default function HistoryTransactions(): ReactElement {
   const { count, isLoading, hasMore, next, transactions: historyTx } = usePagedHistoryTransactions()
 

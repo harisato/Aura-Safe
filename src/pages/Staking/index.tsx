@@ -26,7 +26,7 @@ import { currentSafeWithNames } from 'src/logic/safe/store/selectors'
 import { loadedSelector } from 'src/logic/wallets/store/selectors'
 import { grantedSelector } from 'src/routes/safe/container/selector'
 import { formatBigNumber, formatNumber } from 'src/utils'
-import { usePagedQueuedTransactions } from '../Transactions/hooks/usePagedQueuedTransactions'
+import { usePagedQueuedTransactions } from '../../utils/hooks/usePagedQueuedTransactions'
 import MyDelegation from './MyDelegation'
 import TxActionModal from './TxActionModal'
 function Staking(props): ReactElement {

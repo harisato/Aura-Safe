@@ -1,6 +1,6 @@
 import Loader from 'src/components/Loader'
 import styled from 'styled-components'
-import { useTransactionStatus } from '../hooks/useTransactionStatus'
+import { useTransactionStatus } from '../../../utils/hooks/useTransactionStatus'
 
 const SmallDot = styled.div`
   height: 4px;

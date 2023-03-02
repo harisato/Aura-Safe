@@ -3,7 +3,7 @@ import { ReactElement, createContext, useState, Fragment, useEffect } from 'reac
 
 import { InfiniteScroll, INFINITE_SCROLL_CONTAINER } from 'src/components/InfiniteScroll'
 import Img from 'src/components/layout/Img'
-import { usePagedQueuedTransactions } from '../hooks/usePagedQueuedTransactions'
+import { usePagedQueuedTransactions } from '../../../utils/hooks/usePagedQueuedTransactions'
 import {
   AccordionWrapper,
   Centered,
