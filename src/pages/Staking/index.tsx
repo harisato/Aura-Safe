@@ -176,7 +176,7 @@ function Staking(props): ReactElement {
 
   const handleSubmit = async (action) => {
     if (action === 'delegate') {
-      if (amount > formatBigNumber(availableBalance?.amount) || amount == 0) {
+      if (+amount > +formatBigNumber(availableBalance?.amount) || amount == 0) {
         setValidateMsg('Invalid amount! Please check and try again.')
         return
       }
@@ -207,7 +207,7 @@ function Staking(props): ReactElement {
     }
 
     if (action === 'redelegate') {
-      if (amount > formatBigNumber(dataDelegateOfUser?.delegation?.delegationBalance?.amount) || amount == 0) {
+      if (+amount > +formatBigNumber(dataDelegateOfUser?.delegation?.delegationBalance?.amount) || amount == 0) {
         setValidateMsg('Invalid amount! Please check and try again.')
         return
       }
@@ -240,7 +240,7 @@ function Staking(props): ReactElement {
     }
 
     if (action === 'undelegate') {
-      if (amount > formatBigNumber(dataDelegateOfUser?.delegation?.delegationBalance?.amount) || amount == 0) {
+      if (+amount > +formatBigNumber(dataDelegateOfUser?.delegation?.delegationBalance?.amount) || amount == 0) {
         setValidateMsg('Invalid amount! Please check and try again.')
         return
       }
