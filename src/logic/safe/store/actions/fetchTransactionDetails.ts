@@ -1,18 +1,7 @@
 import { createAction } from 'redux-actions'
 
-import {
-  AddressEx,
-  DetailedExecutionInfo,
-  MultisigConfirmation,
-  Operation,
-  SafeAppInfo,
-  TokenType,
-  TransactionData,
-  TransactionDetails,
-  TransactionStatus,
-  TransferDirection,
-} from '@gnosis.pm/safe-react-gateway-sdk'
-import { getCoinDecimal, getCoinSymbol, getInternalChainId } from 'src/config'
+import { AddressEx, MultisigConfirmation, TransactionStatus } from '@gnosis.pm/safe-react-gateway-sdk'
+import { getInternalChainId } from 'src/config'
 import { currentChainId } from 'src/logic/config/store/selectors'
 import { Dispatch } from 'src/logic/safe/store/actions/types'
 import { Transaction } from 'src/logic/safe/store/models/types/gateway.d'
@@ -20,10 +9,9 @@ import { TransactionDetailsPayload } from 'src/logic/safe/store/reducer/gatewayT
 import { getTransactionByAttribute } from 'src/logic/safe/store/selectors/gatewayTransactions'
 import { fetchSafeTransaction } from 'src/logic/safe/transactions/api/fetchSafeTransaction'
 import { extractSafeAddress } from 'src/routes/routes'
-import { getAccountOnChain, getProposalDetail, getTxDetailById } from 'src/services'
+import { getProposalDetail, getTxDetailById } from 'src/services'
 import { MESSAGES_CODE } from 'src/services/constant/message'
 import { AppReduxState } from 'src/store'
-import { SequenceResponse } from '@cosmjs/stargate'
 
 export const UPDATE_TRANSACTION_DETAILS = 'UPDATE_TRANSACTION_DETAILS'
 const updateTransactionDetails = createAction<TransactionDetailsPayload>(UPDATE_TRANSACTION_DETAILS)
