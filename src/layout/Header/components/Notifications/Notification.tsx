@@ -147,7 +147,7 @@ export default function Notification({ data, toggle, setMarkedNoti, isUnread }) 
                 <div className="content">
                   Owner <strong>{shortAddress(data.safeCreatorAddress)}</strong> has created a safe with you
                   {data.totalOwner > 2
-                    ? ` and ${2 - data.totalOwner} other ${2 - data.totalOwner > 3 ? ' owners' : 'owner'}`
+                    ? ` and ${data.totalOwner - 2} other ${data.totalOwner - 2 > 3 ? ' owners' : 'owner'}`
                     : ''}
                   .
                 </div>
@@ -156,7 +156,12 @@ export default function Notification({ data, toggle, setMarkedNoti, isUnread }) 
                     className="small"
                     onClick={(event) =>
                       onActionClick(event, data, () =>
-                        history.push(generateSafeRoute(ALLOW_SPECIFIC_SAFE_ROUTE, routesSlug)),
+                        history.push(
+                          generateSafeRoute(ALLOW_SPECIFIC_SAFE_ROUTE, {
+                            ...routesSlug,
+                            safeAddress: data.safeCreatorAddress,
+                          }),
+                        ),
                       )
                     }
                   >

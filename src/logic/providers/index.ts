@@ -77,6 +77,7 @@ export async function connectProvider(providerName: WALLETS_NAME, termContext: a
       }
     })
     .catch((e) => {
+      console.log(e)
       const message = e.message.toUpperCase()
 
       if (message.includes(KeplrErrors.NoChainInfo)) {

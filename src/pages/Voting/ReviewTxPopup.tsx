@@ -41,7 +41,7 @@ import { IProposal } from 'src/types/proposal'
 import { ICreateSafeTransaction } from 'src/types/transaction'
 import { calcFee } from 'src/utils'
 import { formatWithSchema } from 'src/utils/date'
-import { ReviewTxPopupWrapper } from './styledComponents'
+import { ReviewTxPopupWrapper } from './styles'
 
 const voteMapping = {
   ['YES']: 1,
