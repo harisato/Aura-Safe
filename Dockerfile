@@ -1,5 +1,4 @@
-FROM node:16-alpine as build
-# RUN apt-get update && apt-get install -y libusb-1.0-0 libusb-1.0-0-dev libudev-dev
+FROM ghcr.io/aura-nw/safe-react-base:1.0 as build
 
 WORKDIR /app
 # COPY package.json ./
