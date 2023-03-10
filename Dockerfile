@@ -3,7 +3,7 @@ FROM node:lts-alpine as build
 WORKDIR /app
 
 COPY package.json yarn.lock ./
-RUN yarn install --frozen-lockfile --network-concurrency 1 --prod 
+RUN yarn install --frozen-lockfile --network-concurrency 1
 
 COPY . .
 RUN yarn build
