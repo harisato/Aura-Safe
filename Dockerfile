@@ -4,7 +4,7 @@ WORKDIR /app
 
 COPY . .
 RUN yarn cache clean
-RUN yarn install --network-concurrency 1
+RUN yarn install --frozen-lockfile --network-concurrency 1
 
 RUN yarn run build
 
