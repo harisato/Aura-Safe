@@ -1,13 +1,10 @@
-FROM ghcr.io/aura-nw/safe-react-base:1.0 as build
+FROM node:16 as build
 
 WORKDIR /app
-# COPY package.json ./
-
-# COPY yarn.lock ./
 
 COPY . .
 RUN yarn cache clean
-RUN yarn install
+RUN yarn install --network-concurrency 1
 
 RUN yarn run build
 
