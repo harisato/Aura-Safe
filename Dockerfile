@@ -3,6 +3,7 @@ FROM node:16 as build
 WORKDIR /app
 
 COPY package.json yarn.lock ./
+COPY ./src/logic/contracts/artifacts/*.json ./src/logic/contracts/artifacts/
 RUN yarn install --frozen-lockfile --network-concurrency 1
 
 COPY . .
