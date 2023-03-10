@@ -1,13 +1,12 @@
-FROM node:16 as build
+FROM node:lts-alpine as build
 
 WORKDIR /app
 
+COPY package.json yarn.lock ./
+RUN yarn install --prod --frozen-lockfile --network-concurrency 1
+
 COPY . .
-RUN yarn cache clean
-RUN yarn install --frozen-lockfile --network-concurrency 1
-
-RUN yarn run build
-
+RUN yarn build
 
 FROM nginx:stable-alpine
 
