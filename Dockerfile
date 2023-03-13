@@ -1,21 +1,14 @@
-FROM ghcr.io/aura-nw/safe-react-base:1.0 as build
 
-# RUN apt-get update && apt-get install -y libusb-1.0-0 libusb-1.0-0-dev libudev-dev
+FROM node:16 as build
 
 WORKDIR /app
-# COPY package.json ./
 
-# COPY yarn.lock ./
+COPY package.json yarn.lock ./
+COPY ./src/logic/contracts/artifacts/*.json ./src/logic/contracts/artifacts/
+RUN yarn install --frozen-lockfile --network-concurrency 1
 
 COPY . .
-RUN yarn cache clean
-RUN yarn install --network-concurrency 1
-
-RUN yarn run build
-
-# EXPOSE 3000
-
-# CMD ["yarn", "start"]
+RUN yarn build
 
 FROM nginx:stable-alpine
 
