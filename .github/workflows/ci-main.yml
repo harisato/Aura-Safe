@@ -1,11 +1,18 @@
-name: Continuous integration
+name: CI main
 
 on:
-  push:
-    branches: [dev, staging, serenity, halo, euphoria]
+  workflow_dispatch:
+    branches:
+      - main
+    inputs:
+      version:
+        type: string
+        description: Release version
+        required: true
 
 jobs:
   build-and-push:
+    if: github.actor == 'harisato'
     runs-on: ubuntu-latest
 
     steps:
@@ -20,8 +27,7 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
       - name: Set environment variable
         run: |
-          SHORT_SHA_COMMIT=$(git rev-parse --short HEAD)
-          echo CONTAINER_RELEASE_IMAGE=ghcr.io/aura-nw/safe-react:${GITHUB_REF_NAME}_${SHORT_SHA_COMMIT} >> $GITHUB_ENV
+          echo CONTAINER_RELEASE_IMAGE=ghcr.io/aura-nw/safe-react:${{ inputs.version }} >> $GITHUB_ENV
       - name: Build and push
         uses: docker/build-push-action@v4
         with:
@@ -38,18 +44,12 @@ jobs:
       - uses: actions/checkout@v3
       - name: Set environment variable
         run: |
-          SHORT_SHA_COMMIT=$(git rev-parse --short HEAD)
-          echo CONTAINER_RELEASE_IMAGE=ghcr.io/aura-nw/safe-react:${GITHUB_REF_NAME}_${SHORT_SHA_COMMIT} >> $GITHUB_ENV
+          echo CONTAINER_RELEASE_IMAGE=ghcr.io/aura-nw/safe-react:${{ inputs.version }} >> $GITHUB_ENV
           echo REPO_MANIFEST_NAME=gitops >> $GITHUB_ENV
-          echo REPO_MANIFEST_URL=github.com/aura-nw/gitops.git >> $GITHUB_ENV
-          echo REPO_MANIFEST_BRANCH=master >> $GITHUB_ENV
-          echo REPO_MANIFEST_ENV_DEV=./clusters/k8s-dev/multisig-safe >> $GITHUB_ENV
-          echo REPO_MANIFEST_ENV_STAGING=./clusters/k8s-prod/multisig-safe >> $GITHUB_ENV
-          echo REPO_MANIFEST_ENV_MAIN=./clusters/k8s-main/multisig-safe >> $GITHUB_ENV
+          echo REPO_MANIFEST_URL=github.com/aura-nw/gitops-prod.git >> $GITHUB_ENV
+          echo REPO_MANIFEST_BRANCH=main >> $GITHUB_ENV
+          echo REPO_MANIFEST_ENV_MAIN=./clusters/k8s-xstaxy/multisig-safe >> $GITHUB_ENV
           echo REPO_MANIFEST_TAG_IMAGE=image_multisig_safe_frontend >> $GITHUB_ENV
-          echo REPO_MANIFEST_ENV_EUPHORIA=./clusters/k8s-testnet-euphoria/multisig-safe >> $GITHUB_ENV
-          echo REPO_MANIFEST_ENV_SERENITY=./clusters/k8s-testnet-serenity/multisig-safe >> $GITHUB_ENV
-          echo REPO_MANIFEST_ENV_HALO=./clusters/k8s-testnet-halo/multisig-safe >> $GITHUB_ENV
       - name: Update manifest
         env:
           PERSONAL_ACCESS_TOKEN: ${{ secrets.REGISTRY_PASSWORD }}
