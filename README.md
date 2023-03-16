@@ -13,7 +13,7 @@ To stay up-to-date with Pyxis Safe's latest features and improvements, you can e
 
 ## **Prerequisites**
 
-In our infrastructure, we have opted to use `[yarn](https://yarnpkg.com/)` and `[npm](https://docs.npmjs.com/cli/v8/commands/npm-install)`. If you haven't already installed `yarn` globally, we highly recommend doing so to ensure a proper deployment.
+In our infrastructure, we have opted to use [yarn](https://yarnpkg.com/) and [npm](https://docs.npmjs.com/cli/v8/commands/npm-install). If you haven't already installed `yarn` globally, we highly recommend doing so to ensure a proper deployment.
 
 ## Deploying
 
