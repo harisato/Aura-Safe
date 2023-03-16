@@ -1,5 +1,8 @@
 # Pyxis Safe
 
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://github.com/aura-nw/Aura-Safe/blob/main/LICENSE.md)
+![GitHub package.json version (branch)](https://img.shields.io/github/package-json/v/aura-nw/Aura-Safe)
+
 Pyxis Safe is a multi-signature platform for Cosmos-based blockchains.
 
 If you are familiar with [Safe (Previously Gnosis Safe)](https://safe.global/) for Ethereum, we tried to reuse as much as possible the UX of the Gnosis web-app as it is already clean and straightforward to use. However, the architecture design and workflow of Pyxis Safe is totally different from Gnosis. Pyxis Safe only works with Cosmos-based blockchains.
