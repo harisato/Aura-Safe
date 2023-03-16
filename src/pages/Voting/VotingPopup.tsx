@@ -7,7 +7,7 @@ import { MsgTypeUrl } from 'src/logic/providers/constants/constant'
 import { extractPrefixedSafeAddress, extractSafeAddress } from 'src/routes/routes'
 import { simulate } from 'src/services'
 import ReviewTxPopup from './ReviewTxPopup'
-import { VotingPopupWrapper } from './styles'
+import { VotingPopupWrapper } from './styledComponents'
 
 const voteMapping = {
   ['YES']: 1,

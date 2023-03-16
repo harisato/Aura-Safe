@@ -1,23 +1,20 @@
 import { withStyles } from '@material-ui/core/styles'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
-import { Link, useLocation } from 'react-router-dom'
-import Col from 'src/components/layout/Col'
+import { Link } from 'react-router-dom'
 import Divider from 'src/components/layout/Divider'
 import Img from 'src/components/layout/Img'
-import Row from 'src/components/layout/Row'
 import Spacer from 'src/components/Spacer'
 import WalletSwitch from 'src/components/WalletSwitch'
 import { useStateHandler } from 'src/logic/hooks/useStateHandler'
 import { shouldSwitchWalletChain } from 'src/logic/wallets/store/selectors'
 import { WELCOME_ROUTE } from 'src/routes/routes'
-import { IS_PRODUCTION } from 'src/utils/constants'
 import styled from 'styled-components'
 import SafeLogo from '../../assets/logoAura.svg'
 import NetworkSelector from '../NetworkSelector/NetworkSelector'
 import Notifications from '../Notifications'
 import Provider from '../Provider/Provider'
-import { styles, DevelopBanner } from './styles'
+import { DevelopBanner, styles } from './styles'
 import WalletPopup from './WalletPopup/WalletPopup'
 
 const Wrap = styled.div`
@@ -45,9 +42,18 @@ const Layout = (props: any) => {
   const { clickAway, open, toggle } = useStateHandler()
   const { clickAway: clickAwayNetworks, open: openNetworks, toggle: toggleNetworks } = useStateHandler()
   const isWrongChain = useSelector(shouldSwitchWalletChain)
+  const [isProduction, setIsProduction] = useState(false)
   useEffect(() => {
     clickAway()
   }, [showConnect])
+
+  useEffect(() => {
+    fetch('config.json')
+      .then((res) => res.json())
+      .then((config: any) => {
+        setIsProduction(config['environment'] == 'production')
+      })
+  }, [])
 
   return (
     <Wrap>
@@ -55,7 +61,7 @@ const Layout = (props: any) => {
         <Link to={WELCOME_ROUTE} className={classes.link}>
           <Img alt="Aura Safe" height={42} src={SafeLogo} testId="heading-gnosis-logo" />
         </Link>
-        {!IS_PRODUCTION && <DevelopBanner>Testnet Only</DevelopBanner>}
+        {!isProduction && <DevelopBanner>Testnet Only</DevelopBanner>}
       </LogoContainer>
 
       <Spacer />

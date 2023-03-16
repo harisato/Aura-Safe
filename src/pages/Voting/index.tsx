@@ -1,7 +1,6 @@
 import { Loader, Text } from '@aura/safe-react-components'
 import { ReactElement, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import Icon from 'src/assets/icons/Stamp.svg'
 import BoxCard from 'src/components/BoxCard'
 import Breadcrumb from 'src/components/Breadcrumb'
 import { ConnectWalletModal } from 'src/components/ConnectWalletModal'
@@ -12,7 +11,10 @@ import StatusCard from 'src/components/StatusCard'
 import DenseTable, { StyledTableCell, StyledTableRow } from 'src/components/Table/DenseTable'
 import { getChainInfo, getExplorerUriTemplate, getInternalChainId, _getChainId } from 'src/config'
 import { evalTemplate } from 'src/config/utils'
+import { allDelegation } from 'src/logic/delegation/store/selectors'
 import useConnectWallet from 'src/logic/hooks/useConnectWallet'
+import { NOTIFICATIONS } from 'src/logic/notifications'
+import enqueueSnackbar from 'src/logic/notifications/store/actions/enqueueSnackbar'
 import addProposals from 'src/logic/proposal/store/actions/addProposal'
 import { loadedSelector } from 'src/logic/wallets/store/selectors'
 import { extractSafeAddress } from 'src/routes/routes'
@@ -22,8 +24,9 @@ import { calcBalance } from 'src/utils/calc'
 import { formatDateTimeDivider } from 'src/utils/date'
 import { usePagedQueuedTransactions } from '../../utils/hooks/usePagedQueuedTransactions'
 import ProposalsCard from './ProposalsCard'
-import { GreenText, ProposalsSection, StyledBlock, StyledColumn, TitleNumberStyled } from './styles'
+import { ProposalsSection, StyledBlock, StyledColumn, TitleNumberStyled } from './styledComponents'
 import VotingModal from './VotingPopup'
+import Icon from 'src/assets/icons/Stamp.svg'
 const parseBalance = (balance: IProposal['totalDeposit'], chainInfo: MChainInfo) => {
   const symbol = chainInfo.nativeCurrency.symbol
   const amount = calcBalance(balance[0].amount, chainInfo.nativeCurrency.decimals)
@@ -111,7 +114,9 @@ function Voting(): ReactElement {
                     {row.id}
                   </StyledTableCell>
                   <StyledTableCell align="left" onClick={() => handleDetail(row.id)}>
-                    <GreenText>{row.title}</GreenText>
+                    <Text size="lg" color="linkAura">
+                      {row.title}
+                    </Text>
                   </StyledTableCell>
                   <StyledTableCell align="left">
                     <StatusCard status={row.status} showDot />
@@ -120,8 +125,10 @@ function Voting(): ReactElement {
                   <StyledTableCell align="left">{formatDateTimeDivider(row.votingEnd)}</StyledTableCell>
                   <StyledTableCell align="left">
                     <div style={{ display: 'flex' }}>
-                      {parseFloat(parseBalance(row.totalDeposit, chainInfo).amount)}&ensp;
-                      <GreenText>{parseBalance(row.totalDeposit, chainInfo).symbol}</GreenText>
+                      {parseBalance(row.totalDeposit, chainInfo).amount}&ensp;
+                      <Text size="lg" color="linkAura">
+                        {parseBalance(row.totalDeposit, chainInfo).symbol}
+                      </Text>
                     </div>
                   </StyledTableCell>
                 </StyledTableRow>

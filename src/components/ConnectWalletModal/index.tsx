@@ -37,9 +37,7 @@ export const ConnectWalletModal = ({ isOpen, onClose }: Props): React.ReactEleme
           .then((res) => {
             onClose()
           })
-          .catch((e) => {
-            console.log(e)
-
+          .catch(() => {
             store.dispatch(enqueueSnackbar(enhanceSnackbarForAction(NOTIFICATIONS.CONNECT_WALLET_ERROR_MSG)))
           })
       } catch (e) {
