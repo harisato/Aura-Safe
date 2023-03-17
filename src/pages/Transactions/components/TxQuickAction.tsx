@@ -13,7 +13,6 @@ import { MsgTypeUrl } from 'src/logic/providers/constants/constant'
 import { createMessage } from 'src/logic/providers/signing'
 import { fetchTransactionDetailsById } from 'src/logic/safe/store/actions/fetchTransactionDetails'
 import fetchTransactions from 'src/logic/safe/store/actions/transactions/fetchTransactions'
-import { currentSafeWithNames } from 'src/logic/safe/store/selectors'
 import { getTransactionByAttribute } from 'src/logic/safe/store/selectors/gatewayTransactions'
 import { userAccountSelector } from 'src/logic/wallets/store/selectors'
 import { extractSafeAddress, generateSafeRoute, history, SAFE_ROUTES } from 'src/routes/routes'
@@ -31,7 +30,7 @@ const Wrap = styled.div`
   }
 `
 
-export default function TxQuickAction({ transaction }) {
+export default function TxQuickAction({ transaction, curSeq }) {
   const userWalletAddress = useSelector(userAccountSelector)
 
   const chainInfo = getChainInfo()
@@ -45,7 +44,6 @@ export default function TxQuickAction({ transaction }) {
   )
   const dispatch = useDispatch()
 
-  const { sequence: currentSequence } = useSelector(currentSafeWithNames)
   const confirmTxFromApi = async (data: any, chainId: any, safeAddress: any) => {
     const { ErrorCode } = await confirmSafeTransaction(data)
     if (ErrorCode === 'SUCCESSFUL') {
@@ -263,7 +261,7 @@ export default function TxQuickAction({ transaction }) {
   }
 
   if (transaction?.executionInfo?.confirmationsRequired <= transaction?.executionInfo?.confirmationsSubmitted.length) {
-    if (+currentSequence != +transaction.txSequence) {
+    if (+curSeq != +transaction.txSequence || transaction.txStatus == 'PENDING') {
       return <Wrap></Wrap>
     }
     return (

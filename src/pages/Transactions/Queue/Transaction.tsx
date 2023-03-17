@@ -10,7 +10,15 @@ import TxStatus from '../components/TxStatus'
 import TxTime from '../components/TxTime'
 import TxType from '../components/TxType'
 import { NoPaddingAccordion, StyledAccordionSummary, StyledTransaction } from '../styled'
-export default function Transaction({ transaction, hideSeq }: { transaction: any; hideSeq?: boolean }) {
+export default function Transaction({
+  transaction,
+  hideSeq,
+  curSeq,
+}: {
+  transaction: any
+  hideSeq?: boolean
+  curSeq: string
+}) {
   const [txDetailLoaded, setTxDetailLoaded] = useState(false)
 
   if (!transaction) {
@@ -42,7 +50,7 @@ export default function Transaction({ transaction, hideSeq }: { transaction: any
             submitted={transaction.executionInfo.confirmationsSubmitted}
             rejected={transaction.executionInfo.rejections}
           />
-          <TxQuickAction transaction={transaction} />
+          <TxQuickAction transaction={transaction} curSeq={curSeq} />
           <TxStatus shouldDisplayDot transaction={transaction} />
         </StyledTransaction>
       </StyledAccordionSummary>

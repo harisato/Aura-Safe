@@ -41,12 +41,17 @@ export default function QueueTransactions(): ReactElement {
   const [txId, setTxId] = useState<string>('')
   const [action, setAction] = useState<string>('')
   const [open, setOpen] = useState<boolean>(false)
+  const [curSeq, setCurSeq] = useState<string>(currentSequence)
   const dispatch = useDispatch()
   const safeAddress = extractSafeAddress()
   const safeId = extractSafeId() as number
 
   const queryParams = useQuery()
   const transactionId = queryParams.get('transactionId')
+
+  useEffect(() => {
+    setCurSeq(currentSequence)
+  }, [transactions.length])
 
   useEffect(() => {
     dispatch(fetchMSafe(safeAddress, safeId))
@@ -99,21 +104,21 @@ export default function QueueTransactions(): ReactElement {
           transactions.map(([nonce, txs], index) => {
             return txs.length == 1 ? (
               <Fragment key={nonce}>
-                {+nonce == +currentSequence && index == 0 ? (
+                {+nonce == +curSeq && index == 0 ? (
                   <p className="section-title">Next</p>
                 ) : index <= 1 ? (
-                  <p className="section-title">{`Queued - Transaction with sequence ${currentSequence} needs to be executed first`}</p>
+                  <p className="section-title">{`Queued - Transaction with sequence ${curSeq} needs to be executed first`}</p>
                 ) : null}
                 <AccordionWrapper>
-                  <Transaction transaction={txs[0]} />
+                  <Transaction transaction={txs[0]} curSeq={curSeq} />
                 </AccordionWrapper>
               </Fragment>
             ) : (
               <Fragment key={nonce}>
-                {+nonce == +currentSequence && index == 0 ? (
+                {+nonce == +curSeq && index == 0 ? (
                   <p className="section-title">Next</p>
                 ) : index <= 1 ? (
-                  <p className="section-title">{`Queued - Transaction with sequence ${currentSequence} needs to be executed first`}</p>
+                  <p className="section-title">{`Queued - Transaction with sequence ${curSeq} needs to be executed first`}</p>
                 ) : null}
                 <AccordionWrapper className="merged-tx">
                   <div className="notice">
@@ -124,7 +129,7 @@ export default function QueueTransactions(): ReactElement {
                     </p>
                   </div>
                   {txs.map((tx, index) => (
-                    <Transaction hideSeq={true} key={tx.id} transaction={tx} />
+                    <Transaction hideSeq={true} key={tx.id} transaction={tx} curSeq={curSeq} />
                   ))}
                 </AccordionWrapper>
               </Fragment>
