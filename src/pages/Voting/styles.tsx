@@ -22,6 +22,15 @@ export const TitleNumberStyled = styled.div`
   line-height: 26px;
   color: white;
   align-self: start;
+  margin-bottom: 16px;
+`
+
+export const GreenText = styled.div`
+  color: #5ee6d0;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  display: flex;
+  white-space: pre-wrap;
 `
 
 export const VotingPopupWrapper = styled.div`
