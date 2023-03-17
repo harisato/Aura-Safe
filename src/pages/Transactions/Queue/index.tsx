@@ -110,7 +110,7 @@ export default function QueueTransactions(): ReactElement {
                   <p className="section-title">{`Queued - Transaction with sequence ${curSeq} needs to be executed first`}</p>
                 ) : null}
                 <AccordionWrapper>
-                  <Transaction transaction={txs[0]} />
+                  <Transaction transaction={txs[0]} curSeq={curSeq} />
                 </AccordionWrapper>
               </Fragment>
             ) : (
@@ -129,7 +129,7 @@ export default function QueueTransactions(): ReactElement {
                     </p>
                   </div>
                   {txs.map((tx, index) => (
-                    <Transaction hideSeq={true} key={tx.id} transaction={tx} />
+                    <Transaction hideSeq={true} key={tx.id} transaction={tx} curSeq={curSeq} />
                   ))}
                 </AccordionWrapper>
               </Fragment>
