@@ -46,7 +46,6 @@ export default function FeeAndSequence({
         : +chainDefaultGasPrice
     setGasPriceFormatted(gasFee)
   }
-
   if (open) {
     return (
       <Wrap>
@@ -71,7 +70,9 @@ export default function FeeAndSequence({
         />
         <Gap height={16} />
         <div>
-          {+sequence < +currentSequence ? (
+          {sequence == '' ? (
+            <div className="noti">Please enter a sequence number.</div>
+          ) : +sequence < +currentSequence ? (
             <div className="noti">The chosen Tx sequence has already been executed.</div>
           ) : transactions.some(([nonce, txs]) => +nonce == +sequence) ? (
             <div className="noti">
