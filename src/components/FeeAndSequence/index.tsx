@@ -9,6 +9,7 @@ import ReloadIcon from 'src/assets/icons/reload.svg'
 import { Info, Wrap } from './styles'
 import { useState, useEffect } from 'react'
 import calculateGasFee from 'src/logic/providers/utils/fee'
+import { usePagedQueuedTransactions } from 'src/utils/hooks/usePagedQueuedTransactions'
 
 export default function FeeAndSequence({
   open,
@@ -21,6 +22,8 @@ export default function FeeAndSequence({
   setSequence,
 }) {
   const { nextQueueSeq, sequence: currentSequence } = useSelector(currentSafeWithNames)
+  const { count, isLoading, hasMore, next, transactions } = usePagedQueuedTransactions()
+
   const nativeCurrency = getNativeCurrency()
   const chainDefaultGasPrice = getChainDefaultGasPrice()
   const decimal = getCoinDecimal()
@@ -68,20 +71,21 @@ export default function FeeAndSequence({
         />
         <Gap height={16} />
         <div>
-          {+sequence > +nextQueueSeq ? (
+          {+sequence < +currentSequence ? (
+            <div className="noti">The chosen Tx sequence has already been executed.</div>
+          ) : transactions.some(([nonce, txs]) => +nonce == +sequence) ? (
+            <div className="noti">
+              There are other pending transactions with this sequence. Be aware that only one can be executed.
+            </div>
+          ) : +sequence > +nextQueueSeq ? (
             <div className="noti">
               Be aware that a transaction can only be executed after the execution of all other transactions with lower
               sequences.
             </div>
-          ) : +sequence == +currentSequence ? (
-            <div className="noti">
-              There are other pending transactions with this sequence. Be aware that only one can be executed.
-            </div>
-          ) : +sequence < +currentSequence ? (
-            <div className="noti">The chosen Tx sequence has already been executed.</div>
           ) : (
             <div></div>
           )}
+
           <FilledButton
             disabled={!manualGasLimit || +manualGasLimit < 1 || +sequence < +currentSequence}
             onClick={() => setOpen(false)}
