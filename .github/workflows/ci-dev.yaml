@@ -1,8 +1,8 @@
-name: Continuous integration
+name: CI dev
 
 on:
   push:
-    branches: [euphoria]
+    branches: [dev, serenity]
 
 jobs:
   build-and-push:
@@ -26,8 +26,6 @@ jobs:
         uses: docker/build-push-action@v4
         with:
           context: .
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
           push: true
           tags: |
             ${{ env.CONTAINER_RELEASE_IMAGE }}
