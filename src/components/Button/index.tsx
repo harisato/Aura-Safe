@@ -173,7 +173,7 @@ export const FilledButton = styled.button<{ disabled?: boolean }>`
     background: linear-gradient(0deg, rgba(255, 255, 255, 0.44), rgba(255, 255, 255, 0.44)),
       linear-gradient(113.1deg, #5ee6d0 13.45%, #bfc6ff 50.33%, #ffba69 85.05%);
   }
-  &:active {
+  &:not(:disabled):active {
     background: linear-gradient(0deg, rgba(0, 0, 0, 0.24), rgba(0, 0, 0, 0.24)),
       linear-gradient(94.25deg, #5ee6d0 4.18%, #bfc6ff 50.06%, #ffba69 93.26%);
   }
