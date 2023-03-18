@@ -119,7 +119,6 @@ export default function ModalStaking(props) {
       </Popup>
     )
   }
-  console.log(nativeCurrency)
 
   return (
     <Popup title="" open={modalIsOpen} handleClose={handleClose}>
