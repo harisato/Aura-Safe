@@ -66,11 +66,11 @@ export default function FeeAndSequence({
           type="number"
           label="Transaction sequence"
           value={sequence}
-          onChange={setSequence}
+          onChange={(s) => (+s < 0 ? '' : setSequence(s))}
         />
         <Gap height={16} />
         <div>
-          {sequence == '' ? (
+          {!sequence || sequence.trim().length == 0 ? (
             <div className="noti">Please enter a sequence number.</div>
           ) : +sequence < +currentSequence ? (
             <div className="noti">The chosen Tx sequence has already been executed.</div>
