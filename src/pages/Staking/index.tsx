@@ -141,7 +141,10 @@ function Staking(props): ReactElement {
     try {
       numberOfDelegator = await getNumberOfDelegator(address)
     } catch (error) {}
-    setDataDelegateOfUser({ ...res.Data, validator: { ...res.Data.validator, delegators: numberOfDelegator || '??' } })
+    setDataDelegateOfUser({
+      ...res.Data,
+      validator: { ...res.Data.validator, delegators: numberOfDelegator?.pagination?.total || '??' },
+    })
   }
 
   const handleManage = async (item) => {
