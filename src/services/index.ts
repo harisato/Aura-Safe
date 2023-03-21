@@ -4,7 +4,7 @@ import axios from 'axios'
 import { getChainInfo } from 'src/config'
 import { WalletKey } from 'src/logic/keplr/keplr'
 import { CHAIN_THEMES, THEME_DF } from 'src/services/constant/chainThemes'
-import { getExplorerUrl } from 'src/services/data/environment'
+import { getExplorerUrl, getGatewayUrl } from 'src/services/data/environment'
 import { IProposal, IProposalRes } from 'src/types/proposal'
 import {
   ICreateSafeTransaction,
@@ -259,10 +259,15 @@ export function getAllUnDelegateOfUser(internalChainId: any, delegatorAddress: a
 export function getDelegateOfUser(dataSend: any): Promise<IResponse<any>> {
   return axios.get(`${baseUrl}/distribution/delegation?${dataSend}`).then((res) => res.data)
 }
-export function getNumberOfDelegator(validatorId: any): Promise<IResponse<any>> {
-  const chainInfo = getChainInfo() as any
+export async function getNumberOfDelegator(validatorId: any): Promise<IResponse<any>> {
+  const currentChainInfo = getChainInfo() as any
+  const { chainInfo } = await getGatewayUrl()
   return axios
-    .get(`${chainInfo.lcd}/cosmos/staking/v1beta1/validators/${validatorId}/delegations?pagination.count_total=true`)
+    .get(
+      `${
+        chainInfo.find((chain) => chain.chainId == currentChainInfo.chainId)?.rest
+      }/cosmos/staking/v1beta1/validators/${validatorId}/delegations?pagination.count_total=true`,
+    )
     .then((res) => res.data)
 }
 
