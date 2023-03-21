@@ -1,34 +1,32 @@
-import React, { useCallback } from 'react'
 import { Loader } from '@aura/safe-react-components'
-import { useEffect } from 'react'
+import React, { useCallback, useEffect } from 'react'
 import { useSelector } from 'react-redux'
 import { matchPath, Redirect, Route, Switch, useLocation } from 'react-router-dom'
 
 import { LoadingContainer } from 'src/components/LoaderContainer'
-import { useAnalytics } from 'src/utils/googleAnalytics'
+import { getShortName } from 'src/config'
+import { setChainId } from 'src/logic/config/utils'
 import { lastViewedSafe } from 'src/logic/currentSession/store/selectors'
+import { useAnalytics } from 'src/utils/googleAnalytics'
+import { isDeeplinkedTx } from '../utils/transactionUtils'
 import {
-  generateSafeRoute,
-  getPrefixedSafeAddressSlug,
-  LOAD_SPECIFIC_SAFE_ROUTE,
-  OPEN_SAFE_ROUTE,
   ADDRESSED_ROUTE,
-  SAFE_ROUTES,
-  WELCOME_ROUTE,
-  hasPrefixedSafeAddressInUrl,
-  ROOT_ROUTE,
-  LOAD_SAFE_ROUTE,
-  getNetworkRootRoutes,
-  TRANSACTION_ID_SLUG,
   ALLOW_SAFE_ROUTE,
   ALLOW_SPECIFIC_SAFE_ROUTE,
   CANCEL_SAFE_ROUTE,
   CANCEL_SPECIFIC_SAFE_ROUTE,
+  generateSafeRoute,
+  getNetworkRootRoutes,
+  getPrefixedSafeAddressSlug,
+  hasPrefixedSafeAddressInUrl,
+  LOAD_SAFE_ROUTE,
+  LOAD_SPECIFIC_SAFE_ROUTE,
+  OPEN_SAFE_ROUTE,
+  ROOT_ROUTE,
+  SAFE_ROUTES,
+  TRANSACTION_ID_SLUG,
+  WELCOME_ROUTE,
 } from './routes'
-import { getShortName } from 'src/config'
-import { setChainId } from 'src/logic/config/utils'
-import { switchNetworkWithUrl } from 'src/utils/history'
-import { isDeeplinkedTx } from '../utils/transactionUtils'
 import { useAddressedRouteKey } from './safe/container/hooks/useAddressedRouteKey'
 
 const Welcome = React.lazy(() => import('../pages/welcome/Welcome'))
