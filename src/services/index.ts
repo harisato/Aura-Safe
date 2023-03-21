@@ -1,6 +1,7 @@
 import { SequenceResponse } from '@cosmjs/stargate'
 import { ChainInfo, TransferDirection } from '@gnosis.pm/safe-react-gateway-sdk'
 import axios from 'axios'
+import { getChainInfo } from 'src/config'
 import { WalletKey } from 'src/logic/keplr/keplr'
 import { CHAIN_THEMES, THEME_DF } from 'src/services/constant/chainThemes'
 import { getExplorerUrl } from 'src/services/data/environment'
@@ -75,6 +76,7 @@ export function getMChainsConfig(): Promise<MChainInfo[]> {
         gasPrice: string
         defaultGas: GasPriceDefault[]
         tokenImg: string
+        rest: string
       }) => {
         return {
           transactionService: null,
@@ -90,6 +92,7 @@ export function getMChainsConfig(): Promise<MChainInfo[]> {
             authentication: '',
             value: e.rpc,
           },
+          lcd: e.rest,
           safeAppsRpcUri: {
             authentication: '',
             value: e.rpc,
@@ -255,6 +258,12 @@ export function getAllUnDelegateOfUser(internalChainId: any, delegatorAddress: a
 
 export function getDelegateOfUser(dataSend: any): Promise<IResponse<any>> {
   return axios.get(`${baseUrl}/distribution/delegation?${dataSend}`).then((res) => res.data)
+}
+export function getNumberOfDelegator(validatorId: any): Promise<IResponse<any>> {
+  const chainInfo = getChainInfo() as any
+  return axios
+    .get(`${chainInfo.lcd}/cosmos/staking/v1beta1/validators/${validatorId}/delegations?pagination.count_total=true`)
+    .then((res) => res.data)
 }
 
 export function clamRewards(internalChainId: any, delegatorAddress: any): Promise<IResponse<any>> {

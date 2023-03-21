@@ -35,6 +35,7 @@ import ModalUndelegate from './undelegate'
 import Loader from 'src/components/Loader'
 import { FilledButton, OutlinedNeutralButton } from 'src/components/Button'
 import SplitButton from 'src/components/Button/SplitButton'
+import BigNumber from 'bignumber.js'
 const StyledButtonSubmit = styled(Button)`
   border: 2px solid transparent;
   background-image: ${borderLinear};
@@ -77,7 +78,7 @@ export default function ModalStaking(props) {
   const [arrRedelegate, setArrDelegate] = useState([])
   const allValidatorData = useSelector(allValidatorSelector)
   const [loadingSimulate, setLoadingSimulate] = useState(false)
-
+  const obj1 = new Intl.NumberFormat('en-US')
   useEffect(() => {
     if (!modalIsOpen || validateMsg) {
       setLoadingSimulate(false)
@@ -135,8 +136,15 @@ export default function ModalStaking(props) {
           <BoxVotingPower>
             <TextPower>
               Voting power -{' '}
-              {parseFloat(Number(dataDelegateOfUser?.validator?.votingPower?.percent_voting_power).toFixed(2)) || 0}% (0{' '}
-              <TextGray>{nativeCurrency.symbol}</TextGray> )
+              {parseFloat(Number(dataDelegateOfUser?.validator?.votingPower?.percent_voting_power).toFixed(2)) || 0}% (
+              {obj1.format(
+                parseInt(
+                  new BigNumber(dataDelegateOfUser?.validator?.votingPower?.tokens?.amount)
+                    .div(new BigNumber(10).pow(nativeCurrency.decimals))
+                    .toString(),
+                ),
+              )}{' '}
+              <TextGray>{dataDelegateOfUser?.validator?.votingPower?.tokens?.denom}</TextGray> )
             </TextPower>
             <TextDelegators>Delegators - {dataDelegateOfUser?.validator?.delegators || 0}</TextDelegators>
           </BoxVotingPower>

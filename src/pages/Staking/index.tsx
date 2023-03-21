@@ -9,6 +9,7 @@ import {
   getAllUnDelegateOfUser,
   getAllValidator,
   getDelegateOfUser,
+  getNumberOfDelegator,
   simulate,
 } from 'src/services/index'
 
@@ -136,7 +137,14 @@ function Staking(props): ReactElement {
       delegatorAddress: SafeAddress,
     }
     const res = await getDelegateOfUser(queryString.stringify(dataSend))
-    setDataDelegateOfUser(res.Data)
+    let numberOfDelegator
+    try {
+      numberOfDelegator = await getNumberOfDelegator(address)
+    } catch (error) {}
+    setDataDelegateOfUser({
+      ...res.Data,
+      validator: { ...res.Data.validator, delegators: numberOfDelegator?.pagination?.total || '??' },
+    })
   }
 
   const handleManage = async (item) => {
