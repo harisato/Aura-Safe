@@ -44,10 +44,14 @@ export const formatBigNumber = (amount, isMulti = false) => {
   const nativeCurrency = getNativeCurrency()
   if (isNaN(amount)) return '0'
   return isMulti
-    ? new BigNumber(amount).times(new BigNumber(10).pow(nativeCurrency.decimals)).toFixed()
-    : new BigNumber(
-        new BigNumber(amount).div(new BigNumber(10).pow(nativeCurrency.decimals)).toFixed(nativeCurrency.decimals),
-      ).toFixed()
+    ? formatWithComma(Number(new BigNumber(amount).times(new BigNumber(10).pow(nativeCurrency.decimals)).toFixed()))
+    : formatWithComma(
+        Number(
+          new BigNumber(
+            new BigNumber(amount).div(new BigNumber(10).pow(nativeCurrency.decimals)).toFixed(nativeCurrency.decimals),
+          ).toFixed(),
+        ),
+      )
 }
 export const formatNativeToken = (amount) => {
   const nativeCurrency = getNativeCurrency()
@@ -62,7 +66,7 @@ export const formatNativeToken = (amount) => {
 export const formatNativeCurrency = (amount) => {
   const nativeCurrency = getNativeCurrency()
   return `${formatWithComma(
-    Number(new BigNumber(new BigNumber(+amount).toFixed(+nativeCurrency.decimals, 2)).toFixed()),
+    Number(new BigNumber(new BigNumber(+amount).toFixed(+nativeCurrency.decimals)).toFixed()),
   )} ${nativeCurrency.symbol}`
 }
 export const formatWithComma = (amount): string => {
