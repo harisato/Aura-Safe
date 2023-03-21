@@ -260,9 +260,14 @@ export function getDelegateOfUser(dataSend: any): Promise<IResponse<any>> {
   return axios.get(`${baseUrl}/distribution/delegation?${dataSend}`).then((res) => res.data)
 }
 export async function getNumberOfDelegator(validatorId: any): Promise<IResponse<any>> {
+  const currentChainInfo = getChainInfo() as any
   const { chainInfo } = await getGatewayUrl()
   return axios
-    .get(`${chainInfo[0].rest}cosmos/staking/v1beta1/validators/${validatorId}/delegations?pagination.count_total=true`)
+    .get(
+      `${
+        chainInfo.find((chain) => chain.chainId == currentChainInfo.chainId)?.rest
+      }/cosmos/staking/v1beta1/validators/${validatorId}/delegations?pagination.count_total=true`,
+    )
     .then((res) => res.data)
 }
 
