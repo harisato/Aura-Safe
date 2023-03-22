@@ -70,6 +70,7 @@ export const formatNativeCurrency = (amount) => {
   )} ${nativeCurrency.symbol}`
 }
 export const formatWithComma = (amount): string => {
+  return amount
   const intl = new Intl.NumberFormat('en-US')
   return intl.format(amount)
 }
