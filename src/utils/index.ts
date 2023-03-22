@@ -44,15 +44,12 @@ export const formatBigNumber = (amount, isMulti = false) => {
   const nativeCurrency = getNativeCurrency()
   if (isNaN(amount)) return '0'
   return isMulti
-    ? formatWithComma(Number(new BigNumber(amount).times(new BigNumber(10).pow(nativeCurrency.decimals)).toFixed()))
-    : formatWithComma(
-        Number(
-          new BigNumber(
-            new BigNumber(amount).div(new BigNumber(10).pow(nativeCurrency.decimals)).toFixed(nativeCurrency.decimals),
-          ).toFixed(),
-        ),
-      )
+    ? new BigNumber(amount).times(new BigNumber(10).pow(nativeCurrency.decimals)).toFixed()
+    : new BigNumber(
+        new BigNumber(amount).div(new BigNumber(10).pow(nativeCurrency.decimals)).toFixed(nativeCurrency.decimals),
+      ).toFixed()
 }
+
 export const formatNativeToken = (amount) => {
   const nativeCurrency = getNativeCurrency()
   return `${formatWithComma(
@@ -73,6 +70,7 @@ export const formatWithComma = (amount): string => {
   const intl = new Intl.NumberFormat('en-US')
   return intl.format(amount)
 }
+
 export const calcFee = (gasAmount) => {
   const chainInfo = getChainInfo()
   const listChain = getChains()

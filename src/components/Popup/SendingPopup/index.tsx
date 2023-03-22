@@ -83,7 +83,7 @@ const SendingPopup = ({ open, onClose, onOpen, defaultToken }: SendFundsProps): 
     setAmountValidateMsg('')
     if (selectedToken) {
       const tokenbalance = tokens.find((t) => t.address == selectedToken)?.balance?.tokenBalance
-      if (tokenbalance && amount > tokenbalance) {
+      if (tokenbalance && +amount > +tokenbalance) {
         setAmountValidateMsg('Given amount is greater than available balance.')
       }
     }

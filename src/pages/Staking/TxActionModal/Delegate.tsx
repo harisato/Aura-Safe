@@ -3,21 +3,18 @@ import { coin, MsgDelegateEncodeObject } from '@cosmjs/stargate'
 import { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import AddressInfo from 'src/components/AddressInfo'
-import { FilledButton, LinkButton, OutlinedButton, OutlinedNeutralButton } from 'src/components/Button'
+import { FilledButton, OutlinedNeutralButton } from 'src/components/Button'
 import Divider from 'src/components/Divider'
 import FeeAndSequence from 'src/components/FeeAndSequence'
 import Gap from 'src/components/Gap'
-import TextField from 'src/components/Input/TextField'
 import Footer from 'src/components/Popup/Footer'
 import Amount from 'src/components/TxComponents/Amount'
 import {
-  getChainDefaultGas,
   getChainDefaultGasPrice,
   getChainInfo,
   getCoinDecimal,
   getCoinMinimalDenom,
   getInternalChainId,
-  getNativeCurrency,
 } from 'src/config'
 import { allDelegation } from 'src/logic/delegation/store/selectors'
 import { enhanceSnackbarForAction, NOTIFICATIONS } from 'src/logic/notifications'
@@ -28,7 +25,6 @@ import calculateGasFee from 'src/logic/providers/utils/fee'
 import { currentSafeWithNames } from 'src/logic/safe/store/selectors'
 import { userAccountSelector } from 'src/logic/wallets/store/selectors'
 import { extractSafeAddress } from 'src/routes/routes'
-import { DEFAULT_GAS_LIMIT } from 'src/services/constant/common'
 import { ICreateSafeTransaction } from 'src/types/transaction'
 import { calcFee, formatBigNumber, formatNativeCurrency, formatNativeToken } from 'src/utils'
 import { Wrapper } from './style'
