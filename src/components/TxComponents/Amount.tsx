@@ -1,5 +1,4 @@
 import { getNativeCurrency } from 'src/config'
-import { formatNativeCurrency, formatNativeToken } from 'src/utils'
 
 export default function Amount({ label = 'Amount', amount = '0' }: { label?: string; amount?: string }) {
   const nativeCurrency = getNativeCurrency()
