@@ -3,7 +3,7 @@ import { FilledButton, OutlinedButton } from 'src/components/Button'
 import Gap from 'src/components/Gap'
 import Loader from 'src/components/Loader'
 import DenseTable, { StyledTableCell, StyledTableRow } from 'src/components/Table/DenseTable'
-import { formatBigNumber } from 'src/utils'
+import { formatBigNumber, formatNativeCurrency } from 'src/utils'
 import { Wrapper } from './style'
 
 export default function MyDelegation(props): ReactElement {
@@ -43,15 +43,14 @@ export default function MyDelegation(props): ReactElement {
           <div>
             <p className="label">Available Balance:</p>
             <p className="amount">
-              {availableBalance?.amount ? formatBigNumber(availableBalance?.amount) : 0}{' '}
-              <span>{nativeCurrency.symbol}</span>
+              {formatNativeCurrency(availableBalance?.amount ? formatBigNumber(availableBalance?.amount) : 0)}
             </p>
           </div>
           <Gap height={8} />
           <div>
             <p className="label">Total Staked:</p>
             <p className="amount">
-              {totalStake?.amount ? formatBigNumber(totalStake?.amount) : 0} <span>{nativeCurrency.symbol}</span>
+              {formatNativeCurrency(totalStake?.amount ? formatBigNumber(totalStake?.amount) : 0)}
             </p>
           </div>
         </div>
@@ -61,14 +60,13 @@ export default function MyDelegation(props): ReactElement {
               <Loader
                 content={
                   <span style={{ fontWeight: 600 }}>
-                    Claim Reward: {rewardAmount[0] ? formatBigNumber(rewardAmount[0]?.amount) : 0}{' '}
-                    {nativeCurrency.symbol}
+                    Claim Reward: {formatNativeCurrency(rewardAmount[0] ? formatBigNumber(rewardAmount[0]?.amount) : 0)}
                   </span>
                 }
               />
             ) : (
               <span style={{ fontWeight: 600 }}>
-                Claim Reward: {rewardAmount[0] ? formatBigNumber(rewardAmount[0]?.amount) : 0} {nativeCurrency.symbol}
+                Claim Reward: {formatNativeCurrency(rewardAmount[0] ? formatBigNumber(rewardAmount[0]?.amount) : 0)}
               </span>
             )}
           </FilledButton>
@@ -88,9 +86,7 @@ export default function MyDelegation(props): ReactElement {
                   </div>
                 </StyledTableCell>
                 <StyledTableCell align="left">
-                  <div>
-                    {formatBigNumber(row?.balance?.amount)} {nativeCurrency.symbol}
-                  </div>
+                  <div>{formatNativeCurrency(formatBigNumber(row?.balance?.amount))}</div>
                 </StyledTableCell>
                 <StyledTableCell align="left">{row?.reward?.length > 0 ? 'Yes' : 'No'}</StyledTableCell>
                 <StyledTableCell align="right">

@@ -31,7 +31,7 @@ export const useTransactionStatus = (transaction: Transaction): TransactionStatu
         setStatus({ color: '#D5625E', text: 'Deleted' })
         break
       case LocalTransactionStatus.CANCELLED:
-        setStatus({ color: '#D5625E ', text: 'Rejected' })
+        setStatus({ color: '#D5625E', text: 'Rejected' })
         break
       case LocalTransactionStatus.REPLACED:
         setStatus({ color: '#CCD0D5', text: 'Replaced' })
@@ -42,8 +42,10 @@ export const useTransactionStatus = (transaction: Transaction): TransactionStatu
         setStatus({ color: '#0F82C5 ', text })
         break
       case LocalTransactionStatus.AWAITING_EXECUTION:
-      case LocalTransactionStatus.PENDING_FAILED:
         setStatus({ color: '#FFBA69', text: 'Needs execution' })
+        break
+      case LocalTransactionStatus.PENDING_FAILED:
+        setStatus({ color: '#FFBA69', text: 'Pending failed' })
         break
       case LocalTransactionStatus.PENDING:
         setStatus({ color: '#FFAE51', text: 'Pending' })
