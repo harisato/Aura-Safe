@@ -3,7 +3,7 @@ import { useEffect, useRef } from 'react'
 import Gap from 'src/components/Gap'
 import AmountInput from 'src/components/Input/AmountInput'
 import Col from 'src/components/layout/Col'
-import { formatBigNumber } from 'src/utils'
+import { formatBigNumber, formatNativeCurrency } from 'src/utils'
 import SelectValidator from '../SelectValidator'
 import {
   BorderAura,
@@ -54,8 +54,11 @@ export default function ModalRedelegate(props) {
             <Col sm={7} xs={12}>
               <p>
                 Available for redelegation{'  '}
-                <strong>{formatBigNumber(dataDelegateOfUser?.delegation?.delegationBalance?.amount || 0)}</strong>{' '}
-                <TextGray>{nativeCurrency.symbol}</TextGray>
+                <strong>
+                  {formatNativeCurrency(
+                    formatBigNumber(dataDelegateOfUser?.delegation?.delegationBalance?.amount || 0),
+                  )}
+                </strong>
               </p>
             </Col>
             <Gap height={8} />

@@ -2,7 +2,7 @@ import NotificationPopup from 'src/components/NotificationPopup'
 import { TextNotiStyled, TextGray, TextDelegateNoti, BoxDelegate } from './styles'
 import { Text } from '@aura/safe-react-components'
 import Col from 'src/components/layout/Col'
-import { formatBigNumber } from 'src/utils'
+import { formatBigNumber, formatNativeCurrency } from 'src/utils'
 
 export default function ManageModal(props) {
   const { nativeCurrency, itemDelegate, availableBalance, dataDelegateOfUser } = props
@@ -30,8 +30,7 @@ export default function ManageModal(props) {
               <TextGray>My delegation</TextGray>
             </Col>
             <p>
-              {formatBigNumber(dataDelegateOfUser?.delegation?.delegationBalance?.amount) || 0}{' '}
-              <TextGray>{nativeCurrency.symbol}</TextGray>
+              {formatNativeCurrency(formatBigNumber(dataDelegateOfUser?.delegation?.delegationBalance?.amount) || 0)}
             </p>
           </BoxDelegate>
           <BoxDelegate>
@@ -51,8 +50,7 @@ export default function ManageModal(props) {
             </Col>
 
             <p>
-              {formatBigNumber(dataDelegateOfUser?.delegation?.delegatableBalance?.amount || 0)}{' '}
-              <TextGray>{nativeCurrency.symbol}</TextGray>
+              {formatNativeCurrency(formatBigNumber(dataDelegateOfUser?.delegation?.delegatableBalance?.amount || 0))}
             </p>
           </BoxDelegate>
           <BoxDelegate>
@@ -60,10 +58,7 @@ export default function ManageModal(props) {
               <TextGray>Total Reward</TextGray>
             </Col>
 
-            <p>
-              {formatBigNumber(dataDelegateOfUser?.delegation?.claimedReward?.amount || 0)}{' '}
-              <TextGray>{nativeCurrency.symbol}</TextGray>
-            </p>
+            <p>{formatNativeCurrency(formatBigNumber(dataDelegateOfUser?.delegation?.claimedReward?.amount || 0))}</p>
           </BoxDelegate>
         </Col>
       </div>
