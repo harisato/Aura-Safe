@@ -26,14 +26,17 @@ const WalletSwitch = ({ openConnectWallet }: { openConnectWallet?: () => void })
             return
           }
 
-          connectProvider(lastUsedProvider as WALLETS_NAME, termContext).catch(() => {
+          connectProvider(lastUsedProvider as WALLETS_NAME, termContext).catch((error) => {
+            console.error('error 2', error)
+
             store.dispatch(enqueueSnackbar(enhanceSnackbarForAction(NOTIFICATIONS.CONNECT_WALLET_ERROR_MSG)))
           })
         } else {
           openConnectWallet && openConnectWallet()
         }
       })
-      .catch(() => {
+      .catch((error) => {
+        console.error('error 1', error)
         store.dispatch(enqueueSnackbar(enhanceSnackbarForAction(NOTIFICATIONS.CONNECT_WALLET_ERROR_MSG)))
       })
   }, [openConnectWallet])
