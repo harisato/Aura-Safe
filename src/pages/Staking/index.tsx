@@ -86,7 +86,7 @@ function Staking(props): ReactElement {
     setValidateMsg(undefined)
     const value = formatNumber(v)
     setAmount(value)
-    if (value > formatBigNumber(dataDelegateOfUser?.delegation?.delegationBalance?.amount)) {
+    if (+value > +formatBigNumber(dataDelegateOfUser?.delegation?.delegationBalance?.amount)) {
       setValidateMsg('Given amount is greater than available balance!')
     }
   }

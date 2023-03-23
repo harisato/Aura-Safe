@@ -4,7 +4,7 @@ import { ReactElement, useEffect, useState } from 'react'
 import Col from 'src/components/layout/Col'
 import DenseTable, { StyledTableCell, StyledTableRow } from 'src/components/Table/DenseTable'
 import { getNativeCurrency } from 'src/config'
-import { formatBigNumber } from 'src/utils'
+import { formatBigNumber, formatNativeCurrency } from 'src/utils'
 import { formatTimeInWords, getUTCStartOfDate } from 'src/utils/date'
 import styled from 'styled-components'
 
@@ -80,9 +80,7 @@ function Undelegating(props): ReactElement {
                 <Col end="lg" sm={2} xs={12}>
                   <div>
                     <TotalDelegate>
-                      <div>
-                        {formatBigNumber(item?.balance || 0)} {nativeCurrency.symbol}
-                      </div>
+                      <div>{formatNativeCurrency(formatBigNumber(item?.balance || 0))}</div>
                     </TotalDelegate>
                     <div style={{ fontSize: 12, color: '#868A97' }}>
                       {formatTimeInWords(getUTCStartOfDate(item?.completionTime))}

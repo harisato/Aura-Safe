@@ -2,7 +2,7 @@ import { useEffect, useRef } from 'react'
 import Gap from 'src/components/Gap'
 import AmountInput from 'src/components/Input/AmountInput'
 import Col from 'src/components/layout/Col'
-import { formatBigNumber } from 'src/utils'
+import { formatBigNumber, formatNativeCurrency } from 'src/utils'
 import { BoxDelegate, PaddingPopup, TextGray } from './styles'
 
 export default function ModalUndelegate(props) {
@@ -19,8 +19,11 @@ export default function ModalUndelegate(props) {
             <Col sm={7} xs={12}>
               <p>
                 Available for undelegation{'  '}
-                <strong>{formatBigNumber(dataDelegateOfUser?.delegation?.delegationBalance?.amount || 0)}</strong>{' '}
-                <TextGray>{nativeCurrency.symbol}</TextGray>
+                <strong>
+                  {formatNativeCurrency(
+                    formatBigNumber(dataDelegateOfUser?.delegation?.delegationBalance?.amount || 0),
+                  )}
+                </strong>
               </p>
             </Col>
             <Gap height={8} />
