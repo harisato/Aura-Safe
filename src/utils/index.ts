@@ -67,8 +67,12 @@ export const formatNativeCurrency = (amount) => {
   )} ${nativeCurrency.symbol}`
 }
 export const formatWithComma = (amount): string => {
-  const intl = new Intl.NumberFormat('en-US')
-  return intl.format(amount)
+  if (+amount > 1) {
+    const intl = new Intl.NumberFormat('en-US')
+    return intl.format(amount)
+  } else {
+    return amount?.toString()
+  }
 }
 
 export const calcFee = (gasAmount) => {
