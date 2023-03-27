@@ -5,7 +5,7 @@ import { FEATURES } from '@gnosis.pm/safe-react-gateway-sdk'
 
 import { getShortName } from 'src/config'
 import { ListItemType } from 'src/components/List'
-import ListIcon from 'src/components/List/ListIcon'
+import ListIcon from 'src/layout/Sidebar/ListIcon'
 import { currentSafeFeaturesEnabled, currentSafeWithNames } from 'src/logic/safe/store/selectors'
 import { grantedSelector } from 'src/routes/safe/container/selector'
 import {
@@ -56,20 +56,6 @@ const useSidebarItems = (): ListItemType[] => {
       safeAddress,
     })
 
-    const assetsSubItems = [
-      makeEntryItem({
-        label: 'Coins',
-        iconType: 'coinAura',
-        href: currentSafeRoutes.ASSETS_BALANCES,
-      }),
-      makeEntryItem({
-        disabled: true, // !isCollectiblesEnabled,
-        label: 'Collectibles',
-        iconType: 'collectibles',
-        href: currentSafeRoutes.ASSETS_BALANCES_COLLECTIBLES,
-      }),
-    ]
-
     const settingsSubItems = [
       makeEntryItem({
         label: 'Safe Details',
@@ -77,37 +63,15 @@ const useSidebarItems = (): ListItemType[] => {
         iconType: 'info',
         href: currentSafeRoutes.SETTINGS_DETAILS,
       }),
+    ]
+    const smartContractSubItems = [
       makeEntryItem({
-        label: 'Appearance',
-        iconType: 'eye',
-        href: currentSafeRoutes.SETTINGS_APPEARANCE,
-        disabled: true,
+        label: 'Contract Interaction',
+        badge: needsUpdate && granted,
+        iconType: 'info',
+        href: currentSafeRoutes.CONTRACT_INTERACTION,
       }),
-      makeEntryItem({
-        label: 'Owners',
-        iconType: 'owners',
-        href: currentSafeRoutes.SETTINGS_OWNERS,
-        disabled: true,
-      }),
-      makeEntryItem({
-        label: 'Policies',
-        iconType: 'requiredConfirmations',
-        href: currentSafeRoutes.SETTINGS_POLICIES,
-        disabled: true,
-      }),
-      makeEntryItem({
-        disabled: true, // !isSpendingLimitEnabled,
-        label: 'Spending Limit',
-        iconType: 'fuelIndicator',
-        href: currentSafeRoutes.SETTINGS_SPENDING_LIMIT,
-      }),
-      makeEntryItem({
-        label: 'Advanced',
-        iconType: 'settingsTool',
-        href: currentSafeRoutes.SETTINGS_ADVANCED,
-        disabled: true,
-      }),
-    ].filter(Boolean)
+    ]
 
     return [
       makeEntryItem({
@@ -132,6 +96,12 @@ const useSidebarItems = (): ListItemType[] => {
         label: 'Voting',
         iconType: 'votingAura',
         href: currentSafeRoutes.VOTING,
+      }),
+      makeEntryItem({
+        label: 'Smart Contract',
+        iconType: 'smartContractAura',
+        href: currentSafeRoutes.CONTRACT_INTERACTION,
+        subItems: smartContractSubItems,
       }),
       makeEntryItem({
         label: 'Address Book',

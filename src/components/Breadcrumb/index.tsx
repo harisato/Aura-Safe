@@ -12,7 +12,7 @@ const Wrap = styled.div<{ icon: any }>`
     font-size: 32px;
     line-height: 40px;
     color: #ffffff;
-    margin: 0;
+    margin: 0px 0px 8px;
   }
   .breadcrumb-subtitle {
     margin: 0;

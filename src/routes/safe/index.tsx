@@ -11,6 +11,7 @@ import { extractPrefixedSafeAddress, generateSafeRoute, SAFE_ROUTES } from 'src/
 import { SAFE_POLLING_INTERVAL } from 'src/utils/constants'
 import { wrapInSuspense } from 'src/utils/wrapInSuspense'
 import SafeLoadError from './components/SafeLoadError'
+import ContractInteraction from 'src/pages/SmartContract/ContractInteraction'
 
 export const BALANCES_TAB_BTN_TEST_ID = 'balances-tab-btn'
 export const SETTINGS_TAB_BTN_TEST_ID = 'settings-tab-btn'
@@ -99,6 +100,11 @@ const Container = (): React.ReactElement => {
             SAFE_ROUTES.TRANSACTIONS_SINGULAR,
           ]}
           render={() => wrapInSuspense(<Transaction />, null)}
+        />
+        <Route
+          exact
+          path={SAFE_ROUTES.CONTRACT_INTERACTION}
+          render={() => wrapInSuspense(<ContractInteraction />, null)}
         />
         <Route exact path={SAFE_ROUTES.STAKING} render={() => wrapInSuspense(<Staking />, null)} />
         <Route exact path={SAFE_ROUTES.VOTING} render={() => wrapInSuspense(<Voting />, null)} />

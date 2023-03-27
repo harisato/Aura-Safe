@@ -87,6 +87,7 @@ export default function TextField({
   type = 'text',
   autoFocus,
   endIcon,
+  placeholder,
 }: {
   label: string
   value: any
@@ -94,12 +95,19 @@ export default function TextField({
   type?: React.HTMLInputTypeAttribute
   autoFocus?: boolean
   endIcon?: any
+  placeholder?: string
 }) {
   return (
     <Wrap>
       {label && <div className="input-label">{label}</div>}
       <div className="input">
-        <input autoFocus={autoFocus} value={value} type={type} onChange={(e) => onChange(e.target.value)} />
+        <input
+          placeholder={placeholder}
+          autoFocus={autoFocus}
+          value={value}
+          type={type}
+          onChange={(e) => onChange(e.target.value)}
+        />
         {endIcon && <div className="input-end-icon">{endIcon}</div>}
       </div>
     </Wrap>

@@ -20,24 +20,35 @@ const StyledTextArea = styled.textarea`
     border: 1px solid transparent;
   }
 `
+const Label = styled.div`
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 20px;
+  margin-bottom: 8px;
+`
 export default function TextArea({
   value,
   onChange,
   rows = 5,
   placeholder,
+  label,
 }: {
   value: string
   onChange: any
   rows?: number
   placeholder?: string
+  label?: string
 }) {
   return (
-    <StyledTextArea
-      placeholder={placeholder}
-      spellCheck={false}
-      rows={rows}
-      value={value}
-      onChange={(event) => onChange(event.target.value)}
-    />
+    <>
+      {label && <Label>{label}</Label>}
+      <StyledTextArea
+        placeholder={placeholder}
+        spellCheck={false}
+        rows={rows}
+        value={value}
+        onChange={(event) => onChange(event.target.value)}
+      />
+    </>
   )
 }

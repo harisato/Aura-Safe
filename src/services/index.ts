@@ -287,3 +287,6 @@ export async function getProposalDetail(
 ): Promise<IResponse<IProposal>> {
   return axios.get(`${baseUrl}/gov/${internalChainId}/proposals/${proposalId}`).then((res) => res.data)
 }
+export async function getContract(contractAddress: string, internalChainId: any): Promise<IResponse<any>> {
+  return axios.get(`${baseUrl}/contract/${contractAddress}?internalChainId=${internalChainId}`).then((res) => res.data)
+}
