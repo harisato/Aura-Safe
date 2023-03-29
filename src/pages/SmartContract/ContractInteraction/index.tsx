@@ -29,16 +29,7 @@ const Wrap = styled.div`
 `
 
 function ContractInteraction(props): ReactElement {
-  const dispatch = useDispatch()
-  const granted = useSelector(grantedSelector)
-  const { safeId } = extractPrefixedSafeAddress()
-  const denom = getCoinMinimalDenom()
-  const { connectWalletState, onConnectWalletShow, onConnectWalletHide } = useConnectWallet()
-  const currentSafeData = useSelector(currentSafeWithNames)
-  const nativeCurrency = getNativeCurrency()
   const internalChainId = getInternalChainId()
-  const SafeAddress = extractSafeAddress()
-
   const [contractAddress, setContractAddress] = useState('')
   const [abi, setAbi] = useState('')
   const [contractData, setContractData] = useState(null)

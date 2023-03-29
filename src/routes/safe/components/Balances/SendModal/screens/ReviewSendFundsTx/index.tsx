@@ -192,7 +192,7 @@ const ReviewSendFundsTx = ({ onClose, onPrev, tx }: ReviewTxProps): React.ReactE
 
       const signerData: SignerData = {
         accountNumber: onlineData.accountNumber,
-        sequence: onlineData.sequence,
+        sequence: onlineData?.sequence,
         chainId: chainId,
       }
 
@@ -223,7 +223,7 @@ const ReviewSendFundsTx = ({ onClose, onPrev, tx }: ReviewTxProps): React.ReactE
           bodyBytes: bodyBytes,
           authInfoBytes: authInfoBytes,
           accountNumber: onlineData.accountNumber,
-          sequence: onlineData.sequence,
+          sequence: onlineData?.sequence,
         }
 
         createTxFromApi(data)

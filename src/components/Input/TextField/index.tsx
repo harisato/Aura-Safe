@@ -57,6 +57,9 @@ const Wrap = styled.div`
     padding: 14px 16px;
     display: flex;
     align-items: center;
+    &.error-input {
+      border-color: #bf2525;
+    }
     input {
       background: #24262e;
       font-weight: 400;
@@ -79,6 +82,11 @@ const Wrap = styled.div`
     align-items: center;
     cursor: pointer;
   }
+  .error-msg {
+    color: #bf2525;
+    font-size: 12px;
+    margin-top: 6px;
+  }
 `
 export default function TextField({
   label,
@@ -88,6 +96,8 @@ export default function TextField({
   autoFocus,
   endIcon,
   placeholder,
+  required,
+  errorMsg,
 }: {
   label: string
   value: any
@@ -96,11 +106,18 @@ export default function TextField({
   autoFocus?: boolean
   endIcon?: any
   placeholder?: string
+  required?: boolean
+  errorMsg?: string
 }) {
   return (
     <Wrap>
-      {label && <div className="input-label">{label}</div>}
-      <div className="input">
+      {label && (
+        <div className="input-label">
+          {label}
+          {required && <span style={{ color: '#bf2525' }}>*</span>}
+        </div>
+      )}
+      <div className={`${errorMsg ? 'error-input' : ''} input`}>
         <input
           placeholder={placeholder}
           autoFocus={autoFocus}
@@ -110,6 +127,7 @@ export default function TextField({
         />
         {endIcon && <div className="input-end-icon">{endIcon}</div>}
       </div>
+      {errorMsg && <div className="error-msg">{errorMsg}</div>}
     </Wrap>
   )
 }

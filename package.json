@@ -39,7 +39,7 @@
     "prettier:fix": "yarn prettier --write",
     "prettier": "prettier './src/**/*.{js,jsx,ts,tsx}'",
     "release": "electron-builder --mac --linux --windows -p always",
-    "start": "rescripts --openssl-legacy-provider start",
+    "start": "rescripts start",
     "start:docker": "docker-compose build && docker-compose up",
     "test": "REACT_APP_ENV=test rescripts test --env=jsdom",
     "test:coverage": "REACT_APP_ENV=test yarn test --coverage --watchAll=false",
@@ -207,6 +207,7 @@
     "history": "4.10.1",
     "immutable": "4.0.0-rc.12",
     "js-cookie": "^3.0.0",
+    "jsonschema": "^1.4.1",
     "lodash": "^4.17.21",
     "marked-react": "^1.3.0",
     "notistack": "https://github.com/gnosis/notistack.git#v0.9.5",
@@ -221,7 +222,6 @@
     "react-ga": "3.3.0",
     "react-intersection-observer": "^8.32.0",
     "react-papaparse": "^3.16.1",
-    "react-qr-reader": "^2.2.1",
     "react-redux": "7.2.4",
     "react-router-dom": "5.2.0",
     "react-scripts": "^4.0.1",
@@ -290,7 +290,6 @@
     "sass": "^1.32.0",
     "typechain": "^5.1.2",
     "typescript": "^4.3.5",
-    "usb-detection": "^4.10.0",
     "wait-on": "^6.0.0"
   }
 }

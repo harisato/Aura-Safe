@@ -163,8 +163,8 @@ export const fetchMSafe =
       safeInfo = await extractRemoteSafeInfo(remoteSafeInfo)
       const onlineData: SequenceResponse = (await getAccountOnChain(safeAddress, getInternalChainId())).Data
 
-      safeInfo.nextQueueSeq = mSafeInfo?.nextQueueSeq || onlineData.sequence?.toString()
-      safeInfo.sequence = mSafeInfo?.sequence || onlineData.sequence?.toString()
+      safeInfo.nextQueueSeq = mSafeInfo?.nextQueueSeq || onlineData?.sequence?.toString()
+      safeInfo.sequence = mSafeInfo?.sequence || onlineData?.sequence?.toString()
       const coinDecimal = getCoinDecimal()
       // If these polling timestamps have changed, fetch again
       const { txQueuedTag, txHistoryTag, balances } = currentSafeWithNames(state)
