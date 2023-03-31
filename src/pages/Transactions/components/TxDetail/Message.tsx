@@ -24,6 +24,21 @@ export default function TxMsg({ tx, txDetail }) {
   const type = tx.txInfo.typeUrl
   const amount = formatNativeToken(txDetail.txMessage[0]?.amount || 0)
   if (!txDetail) return null
+  if (type == MsgTypeUrl.ExecuteContract) {
+    return (
+      <div className="tx-msg">
+        <strong>Contract address:</strong>
+        <AddressInfo address={txDetail?.txMessage[0]?.contractAddress} showAvatar={false} showName={false} />
+        <div className="function-name">{txDetail?.txMessage[0].contractFunction}</div>
+        {Object.keys(JSON.parse(txDetail?.txMessage[0].contractArgs))?.map((key, index) => (
+          <div className="field" key={index}>
+            <div className="field__label">{key}:</div>
+            <div className="field__data">{JSON.parse(txDetail?.txMessage[0].contractArgs)[key]}</div>
+          </div>
+        ))}
+      </div>
+    )
+  }
   if (type == MsgTypeUrl.Delegate) {
     return (
       <div className="tx-msg">

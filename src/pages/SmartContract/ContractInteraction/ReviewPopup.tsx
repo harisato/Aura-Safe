@@ -153,7 +153,7 @@ export default function ReviewPopup({ open, setOpen, gasUsed, data, contractData
           Balance: <strong>{formatNativeCurrency(balance)}</strong>
         </div>
         <Divider withArrow />
-        <AddressInfo address={safeAddress} showAvatar={false} showName={false} />
+        <AddressInfo address={contractData.contractAddress} showAvatar={false} showName={false} />
         <div className="function-name">{contractData.selectedFunction}</div>
         {Object.keys(data)?.map((key, index) => (
           <div className="field" key={index}>

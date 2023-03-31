@@ -17,6 +17,7 @@ import {
 } from 'src/services'
 import { TxSignModalContext } from '../Queue'
 import ClaimRewardPopup from './ClaimReward'
+import ContractInteractionPopup from './ContractInteraction'
 import DelegatePopup from './Delegate'
 import MultiSendPopup from './MultiSend'
 import RedelegatePopup from './Redelegate'
@@ -155,8 +156,23 @@ export default function TxActionModal() {
       dispatch(enqueueSnackbar(NOTIFICATIONS.TX_FAILED_MSG))
     }
   }
-
   if (!txData || !open || !txId) return <></>
+  if (type == MsgTypeUrl.ExecuteContract) {
+    return (
+      <ContractInteractionPopup
+        open={open}
+        onClose={() => setOpen(false)}
+        data={txData}
+        sendTx={sendTx}
+        rejectTx={rejectTx}
+        deleteTx={deleteTx}
+        disabled={isDisabled}
+        setDisabled={setIsDisabled}
+        confirmTxFromApi={confirmTxFromApi}
+        changeTxSeqFromApi={changeTxSeqFromApi}
+      />
+    )
+  }
   if (type == MsgTypeUrl.Delegate) {
     return (
       <DelegatePopup

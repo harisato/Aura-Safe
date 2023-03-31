@@ -1,7 +1,7 @@
 import styled from 'styled-components'
 
 export const Wrap = styled.div`
-  width: 500px;
+  width: 540px;
   padding: 24px;
   .label {
     font-size: 12px;

@@ -484,6 +484,23 @@ export const TxDetailsContainer = styled.div<{ ownerRows?: number }>`
         margin-bottom: 0px;
       }
     }
+    .function-name {
+      font-weight: 600;
+      font-size: 12px;
+      line-height: 16px;
+      color: #b4b8c0;
+    }
+    .field__label {
+      font-weight: 400;
+      font-size: 12px;
+      line-height: 16px;
+      color: #b4b8c0;
+    }
+    .field__data {
+      font-weight: 400;
+      font-size: 12px;
+      line-height: 16px;
+    }
   }
 
   .tx-share {
@@ -675,7 +692,7 @@ export const NoTransactions = styled.div`
 
 export const ReviewTxPopupWrapper = styled.div`
   padding: 24px;
-  width: 482px;
+  width: 540px;
   .recipient {
     display: flex;
     align-items: center;
@@ -786,5 +803,25 @@ export const ReviewTxPopupWrapper = styled.div`
     width: fit-content;
     margin-left: 38px;
     margin-top: 4px;
+  }
+
+  .function-name {
+    font-weight: 600;
+    font-size: 12px;
+    line-height: 16px;
+    color: #b4b8c0;
+    margin-top: 8px;
+  }
+  .field__label {
+    font-weight: 400;
+    font-size: 12px;
+    line-height: 16px;
+    color: #b4b8c0;
+    margin-top: 6px;
+  }
+  .field__data {
+    font-weight: 400;
+    font-size: 12px;
+    line-height: 16px;
   }
 `
