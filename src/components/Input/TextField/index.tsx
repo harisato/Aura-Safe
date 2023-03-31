@@ -1,48 +1,13 @@
-import styled from 'styled-components'
-import MuiTextField from '@material-ui/core/TextField'
-import React from 'react'
+import React, { useState } from 'react'
 import { colorLinear } from 'src/theme/variables'
-import { formatNumber, isNumberKeyPress, validateFloatNumber } from 'src/utils'
-
-export const StyledTextField = styled(MuiTextField)`
-  width: 100%;
-  > label {
-    z-index: 1;
-    font-size: 14px;
-    transform: translate(12px, 18px) scale(1);
-  }
-  .MuiInputLabel-filled.MuiInputLabel-shrink {
-    transform: translate(12px, 8px) scale(0.85);
-    height: 16px;
-  }
-  .MuiInputLabel-filled.MuiInputLabel-shrink.Mui-focused {
-    color: #5ee6d0;
-  }
-  > div {
-    background: #24262e;
-    border: 1px solid #494c58;
-    color: #fff;
-    border-radius: 8px;
-    &:hover {
-      background: #24262e;
+import styled from 'styled-components'
+const Wrap = styled.div`
+  &.focused {
+    .input {
+      background: linear-gradient(#24262e, #24262e) padding-box, ${colorLinear} border-box;
+      border: 1px solid transparent;
     }
   }
-  > div.Mui-focused {
-    background: linear-gradient(#24262e, #24262e) padding-box, ${colorLinear} border-box;
-    border: 1px solid transparent;
-  }
-  input {
-    color: #fff;
-    padding: 22px 12px 8px;
-    height: 18px;
-    font-size: 14px;
-  }
-  > div::after,
-  > div::before {
-    display: none;
-  }
-`
-const Wrap = styled.div`
   width: 100%;
   .input-label {
     font-weight: 400;
@@ -109,8 +74,9 @@ export default function TextField({
   required?: boolean
   errorMsg?: string
 }) {
+  const [isFocus, setIsFocus] = useState(false)
   return (
-    <Wrap>
+    <Wrap className={isFocus ? 'focused' : ''}>
       {label && (
         <div className="input-label">
           {label}
@@ -124,6 +90,8 @@ export default function TextField({
           value={value}
           type={type}
           onChange={(e) => onChange(e.target.value)}
+          onFocus={() => setIsFocus(true)}
+          onBlur={() => setIsFocus(false)}
         />
         {endIcon && <div className="input-end-icon">{endIcon}</div>}
       </div>

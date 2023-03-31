@@ -1,6 +1,5 @@
-import { CopyToClipboardBtn, ExplorerButton, FixedIcon, Icon, Identicon, Text } from '@aura/safe-react-components'
+import { CopyToClipboardBtn, ExplorerButton, Icon, Identicon } from '@aura/safe-react-components'
 import { useState } from 'react'
-import { FilledButton } from 'src/components/Button'
 import SplitButton from 'src/components/Button/SplitButton'
 import ButtonHelper from 'src/components/ButtonHelper'
 import FlexSpacer from 'src/components/FlexSpacer'
@@ -15,7 +14,6 @@ import {
   ContainerButton,
   IconContainer,
   IdenticonContainer,
-  StyledButton,
   StyledDotChainName,
   StyledIcon,
   StyledIdenticonContainer,

@@ -1,20 +1,19 @@
 import { ReactElement, useEffect, useState } from 'react'
-import { getCoinMinimalDenom, getInternalChainId, getNativeCurrency } from 'src/config'
-import { extractPrefixedSafeAddress, extractSafeAddress } from 'src/routes/routes'
-import { useDispatch, useSelector } from 'react-redux'
-import useConnectWallet from 'src/logic/hooks/useConnectWallet'
-import { currentSafeWithNames } from 'src/logic/safe/store/selectors'
-import { grantedSelector } from 'src/routes/safe/container/selector'
-import Breadcrumb from 'src/components/Breadcrumb'
 import Icon from 'src/assets/icons/FileText.svg'
-import styled from 'styled-components'
-import TextField from 'src/components/Input/TextField'
-import TextArea from 'src/components/Input/TextArea'
+import Breadcrumb from 'src/components/Breadcrumb'
 import Gap from 'src/components/Gap'
-import { isValidAddress } from 'src/utils/isValidAddress'
+import TextArea from 'src/components/Input/TextArea'
+import TextField from 'src/components/Input/TextField'
+import { getInternalChainId } from 'src/config'
 import { getContract } from 'src/services'
+import { isValidAddress } from 'src/utils/isValidAddress'
+import styled from 'styled-components'
 import Contract from './Contract'
-
+import Check from 'src/assets/icons/check.svg'
+import Alert from 'src/assets/icons/alert.svg'
+import Tooltip from 'src/components/Tooltip'
+import { Validator } from 'jsonschema'
+import { makeSchemaInput } from 'src/components/JsonschemaForm/utils'
 const Wrap = styled.div`
   background: #24262e;
   border-radius: 8px;
@@ -32,20 +31,82 @@ function ContractInteraction(props): ReactElement {
   const internalChainId = getInternalChainId()
   const [contractAddress, setContractAddress] = useState('')
   const [abi, setAbi] = useState('')
-  const [contractData, setContractData] = useState(null)
+  const [contractData, setContractData] = useState({})
+  const [isVerifiedContract, setIsVerifiedContract] = useState<boolean | null>(null)
+  const [isValidAbi, setIsValidAbi] = useState<boolean | null>(null)
 
   const getContractDetail = async () => {
     const { Data } = await getContract(contractAddress, internalChainId)
-    if (Data) {
+    if (Data && !isValidAbi) {
       setContractData(Data)
+      setIsVerifiedContract(Data.verification)
     }
   }
   useEffect(() => {
+    setIsVerifiedContract(null)
+    setContractData({})
+    setAbi('')
+    if (!contractAddress) {
+      return
+    }
     const isValid = isValidAddress(contractAddress)
     if (isValid) {
       getContractDetail()
+    } else {
+      setIsVerifiedContract(false)
     }
   }, [contractAddress])
+
+  useEffect(() => {
+    try {
+      setIsValidAbi(null)
+      if (!abi) return
+      const schema = JSON.parse(abi)
+      const jsValidator = new Validator()
+      jsValidator.addSchema(schema)
+      makeSchemaInput(jsValidator)
+      setIsValidAbi(true)
+      setContractData((prevState) => ({
+        ...prevState,
+        executeMsgSchema: abi,
+      }))
+    } catch (error) {
+      setIsValidAbi(false)
+      if (!isVerifiedContract) {
+        setContractData({})
+      }
+      console.log('eerrrorr', error)
+    }
+  }, [abi])
+
+  const getContractStatus = () => {
+    if (isVerifiedContract) {
+      return (
+        <Tooltip tooltip="This contract is verified">
+          <img src={Check} alt="" />
+        </Tooltip>
+      )
+    }
+    return (
+      <Tooltip tooltip="This contract is not verified">
+        <img src={Alert} alt="" />
+      </Tooltip>
+    )
+  }
+  const getAbiStatus = () => {
+    if (isValidAbi) {
+      return (
+        <Tooltip tooltip="This abi is valid">
+          <img src={Check} alt="" />
+        </Tooltip>
+      )
+    }
+    return (
+      <Tooltip tooltip="This abi is invalid">
+        <img src={Alert} alt="" />
+      </Tooltip>
+    )
+  }
 
   return (
     <>
@@ -56,11 +117,18 @@ function ContractInteraction(props): ReactElement {
           placeholder="Input contract address"
           label="Contract Address"
           value={contractAddress}
-          onChange={setContractAddress}
+          onChange={(value) => setContractAddress(value.trim())}
+          endIcon={isVerifiedContract != null ? getContractStatus() : null}
           autoFocus={true}
         />
         <Gap height={16} />
-        <TextArea label="ABI" placeholder="Input text" value={abi} onChange={setAbi} />
+        <TextArea
+          label="ABI"
+          placeholder="Input text"
+          value={abi}
+          onChange={setAbi}
+          endIcon={isValidAbi != null ? getAbiStatus() : null}
+        />
         {contractData && <Contract contractData={contractData} />}
       </Wrap>
     </>

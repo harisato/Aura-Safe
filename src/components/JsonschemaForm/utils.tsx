@@ -1,18 +1,22 @@
 import { Schema, Validator } from 'jsonschema'
 
 export function makeSchemaInput(validator: Validator): any[] {
-  const result = validator.schemas['/'].oneOf
-    ?.map((msg) => {
-      try {
-        const properties = getProperties(msg, validator)
-        return properties
-      } catch (e) {
-        return null
-      }
-    })
-    .filter((list) => list && list?.fieldName !== 'upload_logo') // ignore case upload_logo - CW20
+  try {
+    const result = validator.schemas['/'].oneOf
+      ?.map((msg) => {
+        try {
+          const properties = getProperties(msg, validator)
+          return properties
+        } catch (e) {
+          return null
+        }
+      })
+      .filter((list) => list && list?.fieldName !== 'upload_logo') // ignore case upload_logo - CW20
 
-  return result || []
+    return result || []
+  } catch (error) {
+    throw new Error(error)
+  }
 }
 export function getProperties(schema: Schema, validator: Validator) {
   try {
@@ -40,6 +44,7 @@ export function getProperties(schema: Schema, validator: Validator) {
     }
   } catch (error) {
     console.error('e45', error)
+    throw new Error(error)
   }
 }
 
@@ -54,27 +59,35 @@ function getRef(rootSchemas, ref: string) {
 }
 
 function getRefType(rootSchema, ref: string): string | string[] {
-  if (ref && rootSchema) {
-    if (rootSchema && rootSchema[`/${ref}`]) {
-      const _ref = rootSchema[`/${ref}`]
-      const type = _ref.type
-      if (type === 'object') {
+  try {
+    if (ref && rootSchema) {
+      if (rootSchema && rootSchema[`/${ref}`]) {
+        const _ref = rootSchema[`/${ref}`]
+        const type = _ref.type
+        if (type === 'object') {
+        }
+        return rootSchema[`/${ref}`].type
       }
-      return rootSchema[`/${ref}`].type
     }
-  }
 
-  return 'any'
+    return 'any'
+  } catch (error) {
+    throw new Error(error)
+  }
 }
 
 function getType(rootSchema, schema) {
-  const { $ref: ref, type: _type } = schema
-  const isBinary = ref === '#/definitions/Binary'
+  try {
+    const { $ref: ref, type: _type } = schema
+    const isBinary = ref === '#/definitions/Binary'
 
-  const type = ref ? getRefType(rootSchema, ref) : _type
+    const type = ref ? getRefType(rootSchema, ref) : _type
 
-  return {
-    type: type || 'any',
-    isBinary,
+    return {
+      type: type || 'any',
+      isBinary,
+    }
+  } catch (error) {
+    throw new Error(error)
   }
 }
