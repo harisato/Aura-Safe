@@ -12,12 +12,12 @@ export function makeSchemaInput(validator: Validator): any[] {
         }
       })
       .filter((list) => list && list?.fieldName !== 'upload_logo') // ignore case upload_logo - CW20
-
     return result || []
   } catch (error) {
     throw new Error(error)
   }
 }
+
 export function getProperties(schema: Schema, validator: Validator) {
   try {
     const fieldName = Object.keys(schema.properties || {}).at(0)

@@ -14,6 +14,7 @@ import Alert from 'src/assets/icons/alert.svg'
 import Tooltip from 'src/components/Tooltip'
 import { Validator } from 'jsonschema'
 import { makeSchemaInput } from 'src/components/JsonschemaForm/utils'
+import Loader from 'src/components/Loader'
 const Wrap = styled.div`
   background: #24262e;
   border-radius: 8px;
@@ -32,14 +33,18 @@ function ContractInteraction(props): ReactElement {
   const [contractAddress, setContractAddress] = useState('')
   const [abi, setAbi] = useState('')
   const [contractData, setContractData] = useState({})
-  const [isVerifiedContract, setIsVerifiedContract] = useState<boolean | null>(null)
-  const [isValidAbi, setIsValidAbi] = useState<boolean | null>(null)
+  const [isVerifiedContract, setIsVerifiedContract] = useState<string | null>(null)
+  const [isValidAbi, setIsValidAbi] = useState<string | null>(null)
 
   const getContractDetail = async () => {
+    setIsVerifiedContract('loading')
     const { Data } = await getContract(contractAddress, internalChainId)
-    if (Data && !isValidAbi) {
+    if (Data && (isValidAbi == 'false' || isValidAbi == null)) {
       setContractData(Data)
-      setIsVerifiedContract(Data.verification)
+      setIsVerifiedContract(Data.verification ? 'true' : 'false')
+    } else {
+      setContractData({})
+      setIsVerifiedContract('false')
     }
   }
   useEffect(() => {
@@ -53,7 +58,7 @@ function ContractInteraction(props): ReactElement {
     if (isValid) {
       getContractDetail()
     } else {
-      setIsVerifiedContract(false)
+      setIsVerifiedContract('false')
     }
   }, [contractAddress])
 
@@ -65,14 +70,14 @@ function ContractInteraction(props): ReactElement {
       const jsValidator = new Validator()
       jsValidator.addSchema(schema)
       makeSchemaInput(jsValidator)
-      setIsValidAbi(true)
+      setIsValidAbi('true')
       setContractData((prevState) => ({
         ...prevState,
         executeMsgSchema: abi,
       }))
     } catch (error) {
-      setIsValidAbi(false)
-      if (!isVerifiedContract) {
+      setIsValidAbi('false')
+      if (isVerifiedContract == 'false') {
         setContractData({})
       }
       console.log('eerrrorr', error)
@@ -80,7 +85,10 @@ function ContractInteraction(props): ReactElement {
   }, [abi])
 
   const getContractStatus = () => {
-    if (isVerifiedContract) {
+    if (isVerifiedContract == 'loading') {
+      return <Loader size={14} />
+    }
+    if (isVerifiedContract == 'true') {
       return (
         <Tooltip tooltip="This contract is verified">
           <img src={Check} alt="" />
@@ -94,7 +102,7 @@ function ContractInteraction(props): ReactElement {
     )
   }
   const getAbiStatus = () => {
-    if (isValidAbi) {
+    if (isValidAbi == 'true') {
       return (
         <Tooltip tooltip="This abi is valid">
           <img src={Check} alt="" />
