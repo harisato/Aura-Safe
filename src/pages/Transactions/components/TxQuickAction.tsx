@@ -45,7 +45,8 @@ export default function TxQuickAction({ transaction, curSeq }) {
   const dispatch = useDispatch()
 
   const confirmTxFromApi = async (data: any, chainId: any, safeAddress: any) => {
-    const { ErrorCode } = await confirmSafeTransaction(data)
+    const result = await confirmSafeTransaction(data)
+    const { ErrorCode } = result
     if (ErrorCode === 'SUCCESSFUL') {
       history.push(
         generateSafeRoute(SAFE_ROUTES.TRANSACTIONS_QUEUE, {
@@ -57,7 +58,18 @@ export default function TxQuickAction({ transaction, curSeq }) {
       setLoading(false)
     } else {
       setLoading(false)
-      dispatch(enqueueSnackbar(enhanceSnackbarForAction(NOTIFICATIONS.TX_FAILED_MSG)))
+      dispatch(
+        enqueueSnackbar(
+          enhanceSnackbarForAction(
+            result?.Message
+              ? {
+                  message: result?.Message,
+                  options: { variant: 'error', persist: false, autoHideDuration: 5000, preventDuplicate: true },
+                }
+              : NOTIFICATIONS.TX_FAILED_MSG,
+          ),
+        ),
+      )
     }
   }
 
@@ -198,8 +210,18 @@ export default function TxQuickAction({ transaction, curSeq }) {
       confirmTxFromApi(payload, chainId, safeAddress)
     } catch (error) {
       setLoading(false)
-      console.error(error)
-      dispatch(enqueueSnackbar(enhanceSnackbarForAction(NOTIFICATIONS.TX_REJECTED_MSG)))
+      dispatch(
+        enqueueSnackbar(
+          enhanceSnackbarForAction(
+            error?.message
+              ? {
+                  message: error?.message,
+                  options: { variant: 'error', persist: false, autoHideDuration: 5000, preventDuplicate: true },
+                }
+              : NOTIFICATIONS.TX_REJECTED_MSG,
+          ),
+        ),
+      )
     }
   }
 
@@ -219,7 +241,16 @@ export default function TxQuickAction({ transaction, curSeq }) {
       if (ErrorCode === 'SUCCESSFUL') {
         dispatch(enqueueSnackbar(NOTIFICATIONS.TX_REJECTED_MSG_SUCCESS))
       } else {
-        dispatch(enqueueSnackbar(NOTIFICATIONS.TX_FAILED_MSG))
+        dispatch(
+          enqueueSnackbar(
+            result?.Message
+              ? {
+                  message: result?.Message,
+                  options: { variant: 'error', persist: false, autoHideDuration: 5000, preventDuplicate: true },
+                }
+              : NOTIFICATIONS.TX_FAILED_MSG,
+          ),
+        )
       }
       setLoading(false)
       const chainInfo = getChainInfo()
@@ -227,7 +258,16 @@ export default function TxQuickAction({ transaction, curSeq }) {
       dispatch(fetchTransactions(chainId, safeAddress))
     } catch (error) {
       setLoading(false)
-      dispatch(enqueueSnackbar(NOTIFICATIONS.TX_FAILED_MSG))
+      dispatch(
+        enqueueSnackbar(
+          error?.message
+            ? {
+                message: error?.message,
+                options: { variant: 'error', persist: false, autoHideDuration: 5000, preventDuplicate: true },
+              }
+            : NOTIFICATIONS.TX_FAILED_MSG,
+        ),
+      )
     }
   }
 
@@ -248,7 +288,16 @@ export default function TxQuickAction({ transaction, curSeq }) {
       if (ErrorCode === 'SUCCESSFUL') {
         dispatch(enqueueSnackbar(NOTIFICATIONS.TX_EXECUTED_MSG))
       } else {
-        dispatch(enqueueSnackbar(NOTIFICATIONS.TX_FAILED_MSG))
+        dispatch(
+          enqueueSnackbar(
+            result?.Message
+              ? {
+                  message: result?.Message,
+                  options: { variant: 'error', persist: false, autoHideDuration: 5000, preventDuplicate: true },
+                }
+              : NOTIFICATIONS.TX_FAILED_MSG,
+          ),
+        )
       }
       setLoading(false)
       const chainInfo = getChainInfo()
@@ -256,7 +305,16 @@ export default function TxQuickAction({ transaction, curSeq }) {
       dispatch(fetchTransactions(chainId, safeAddress))
     } catch (error) {
       setLoading(false)
-      dispatch(enqueueSnackbar(NOTIFICATIONS.TX_FAILED_MSG))
+      dispatch(
+        enqueueSnackbar(
+          error?.message
+            ? {
+                message: error?.message,
+                options: { variant: 'error', persist: false, autoHideDuration: 5000, preventDuplicate: true },
+              }
+            : NOTIFICATIONS.TX_FAILED_MSG,
+        ),
+      )
     }
   }
 

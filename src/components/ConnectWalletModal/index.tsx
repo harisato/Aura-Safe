@@ -39,11 +39,32 @@ export const ConnectWalletModal = ({ isOpen, onClose }: Props): React.ReactEleme
           })
           .catch((error) => {
             console.error('error 3', error)
-            store.dispatch(enqueueSnackbar(enhanceSnackbarForAction(NOTIFICATIONS.CONNECT_WALLET_ERROR_MSG)))
+            store.dispatch(
+              enqueueSnackbar(
+                enhanceSnackbarForAction(
+                  error?.message
+                    ? {
+                        message: error?.message,
+                        options: { variant: 'error', persist: false, autoHideDuration: 5000, preventDuplicate: true },
+                      }
+                    : NOTIFICATIONS.CONNECT_WALLET_ERROR_MSG,
+                ),
+              ),
+            )
           })
-      } catch (e) {
-        store.dispatch(enqueueSnackbar(enhanceSnackbarForAction(NOTIFICATIONS.CONNECT_WALLET_ERROR_MSG)))
-        console.log(e)
+      } catch (error) {
+        store.dispatch(
+          enqueueSnackbar(
+            enhanceSnackbarForAction(
+              error?.message
+                ? {
+                    message: error?.message,
+                    options: { variant: 'error', persist: false, autoHideDuration: 5000, preventDuplicate: true },
+                  }
+                : NOTIFICATIONS.CONNECT_WALLET_ERROR_MSG,
+            ),
+          ),
+        )
       }
     },
     [onClose],

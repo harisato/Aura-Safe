@@ -104,7 +104,14 @@ const ReviewVoteTx = ({ onClose, votingTx }: ReviewVotingTxProps): React.ReactEl
     const _sendFee = calculateFee(Number(manualGasLimit || defaultGas || DEFAULT_GAS_LIMIT), _gasPrice)
 
     if (!(votingTx && safeAddress)) {
-      dispatch(enqueueSnackbar(enhanceSnackbarForAction(NOTIFICATIONS.TX_REJECTED_MSG)))
+      dispatch(
+        enqueueSnackbar(
+          enhanceSnackbarForAction({
+            message: 'Missing voting transaction or safe address',
+            options: { variant: 'error', persist: false, autoHideDuration: 5000, preventDuplicate: true },
+          }),
+        ),
+      )
       return
     }
 
@@ -137,10 +144,20 @@ const ReviewVoteTx = ({ onClose, votingTx }: ReviewVotingTxProps): React.ReactEl
       .catch((error) => {
         console.log('error', error)
 
-        dispatch(enqueueSnackbar(enhanceSnackbarForAction(NOTIFICATIONS.TX_REJECTED_MSG)))
+        dispatch(
+          enqueueSnackbar(
+            enhanceSnackbarForAction(
+              error?.message
+                ? {
+                    message: error?.message,
+                    options: { variant: 'error', persist: false, autoHideDuration: 5000, preventDuplicate: true },
+                  }
+                : NOTIFICATIONS.TX_REJECTED_MSG,
+            ),
+          ),
+        )
         onClose()
       })
-
   }
 
   const createTxFromApi = async (data: any) => {
@@ -165,7 +182,18 @@ const ReviewVoteTx = ({ onClose, votingTx }: ReviewVotingTxProps): React.ReactEl
               dispatch(enqueueSnackbar(enhanceSnackbarForAction(NOTIFICATIONS.CREATE_SAFE_PENDING_EXECUTE_MSG)))
               break
             default:
-              dispatch(enqueueSnackbar(enhanceSnackbarForAction(NOTIFICATIONS.TX_FAILED_MSG)))
+              dispatch(
+                enqueueSnackbar(
+                  enhanceSnackbarForAction(
+                    e?.Message
+                      ? {
+                          message: e?.Message,
+                          options: { variant: 'error', persist: false, autoHideDuration: 5000, preventDuplicate: true },
+                        }
+                      : NOTIFICATIONS.TX_FAILED_MSG,
+                  ),
+                ),
+              )
               break
           }
         }

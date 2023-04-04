@@ -144,7 +144,7 @@ function Allow(): ReactElement {
         dispatch(
           enqueueSnackbar(
             enhanceSnackbarForAction({
-              message: 'Can not load Safe',
+              message: error.message,
               options: { variant: ERROR, persist: false, autoHideDuration: 5000 },
             }),
           ),

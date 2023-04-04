@@ -28,8 +28,18 @@ const WalletSwitch = ({ openConnectWallet }: { openConnectWallet?: () => void })
 
           connectProvider(lastUsedProvider as WALLETS_NAME, termContext).catch((error) => {
             console.error('error 2', error)
-
-            store.dispatch(enqueueSnackbar(enhanceSnackbarForAction(NOTIFICATIONS.CONNECT_WALLET_ERROR_MSG)))
+            store.dispatch(
+              enqueueSnackbar(
+                enhanceSnackbarForAction(
+                  error?.message
+                    ? {
+                        message: error?.message,
+                        options: { variant: 'error', persist: false, autoHideDuration: 5000, preventDuplicate: true },
+                      }
+                    : NOTIFICATIONS.CONNECT_WALLET_ERROR_MSG,
+                ),
+              ),
+            )
           })
         } else {
           openConnectWallet && openConnectWallet()
@@ -37,7 +47,18 @@ const WalletSwitch = ({ openConnectWallet }: { openConnectWallet?: () => void })
       })
       .catch((error) => {
         console.error('error 1', error)
-        store.dispatch(enqueueSnackbar(enhanceSnackbarForAction(NOTIFICATIONS.CONNECT_WALLET_ERROR_MSG)))
+        store.dispatch(
+          enqueueSnackbar(
+            enhanceSnackbarForAction(
+              error?.message
+                ? {
+                    message: error?.message,
+                    options: { variant: 'error', persist: false, autoHideDuration: 5000, preventDuplicate: true },
+                  }
+                : NOTIFICATIONS.CONNECT_WALLET_ERROR_MSG,
+            ),
+          ),
+        )
       })
   }, [openConnectWallet])
 
