@@ -104,13 +104,13 @@ function ContractInteraction(props): ReactElement {
   const getAbiStatus = () => {
     if (isValidAbi == 'true') {
       return (
-        <Tooltip tooltip="This abi is valid">
+        <Tooltip tooltip="This schema is valid">
           <img src={Check} alt="" />
         </Tooltip>
       )
     }
     return (
-      <Tooltip tooltip="This abi is invalid">
+      <Tooltip tooltip="This schema is invalid">
         <img src={Alert} alt="" />
       </Tooltip>
     )
@@ -131,7 +131,7 @@ function ContractInteraction(props): ReactElement {
         />
         <Gap height={16} />
         <TextArea
-          label="ABI"
+          label="Contract Execution Schema"
           placeholder="Input text"
           value={abi}
           onChange={setAbi}
