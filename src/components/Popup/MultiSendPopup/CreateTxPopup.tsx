@@ -135,8 +135,18 @@ export default function CreateTxPopup({
       createTxFromApi(data)
     } catch (error) {
       setDisabled(false)
-      console.error(error)
-      dispatch(enqueueSnackbar(enhanceSnackbarForAction(NOTIFICATIONS.TX_REJECTED_MSG)))
+      dispatch(
+        enqueueSnackbar(
+          enhanceSnackbarForAction(
+            error?.message
+              ? {
+                  message: error?.message,
+                  options: { variant: 'error', persist: false, autoHideDuration: 5000, preventDuplicate: true },
+                }
+              : NOTIFICATIONS.TX_REJECTED_MSG,
+          ),
+        ),
+      )
       handleClose()
     }
   }
@@ -161,7 +171,18 @@ export default function CreateTxPopup({
             dispatch(enqueueSnackbar(enhanceSnackbarForAction(NOTIFICATIONS.CREATE_SAFE_PENDING_EXECUTE_MSG)))
             break
           default:
-            dispatch(enqueueSnackbar(enhanceSnackbarForAction(NOTIFICATIONS.TX_FAILED_MSG)))
+            dispatch(
+              enqueueSnackbar(
+                enhanceSnackbarForAction(
+                  result?.Message
+                    ? {
+                        message: result?.Message,
+                        options: { variant: 'error', persist: false, autoHideDuration: 5000, preventDuplicate: true },
+                      }
+                    : NOTIFICATIONS.TX_FAILED_MSG,
+                ),
+              ),
+            )
             break
         }
       }

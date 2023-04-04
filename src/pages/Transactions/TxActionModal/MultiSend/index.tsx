@@ -94,7 +94,18 @@ export default function Execute({
     } catch (error) {
       setDisabled(false)
       console.error(error)
-      dispatch(enqueueSnackbar(enhanceSnackbarForAction(NOTIFICATIONS.TX_REJECTED_MSG)))
+      dispatch(
+        enqueueSnackbar(
+          enhanceSnackbarForAction(
+            error?.message
+              ? {
+                  message: error?.message,
+                  options: { variant: 'error', persist: false, autoHideDuration: 5000, preventDuplicate: true },
+                }
+              : NOTIFICATIONS.TX_REJECTED_MSG,
+          ),
+        ),
+      )
       onClose()
     }
   }
@@ -139,7 +150,18 @@ export default function Execute({
     } catch (error) {
       setDisabled(false)
       console.error(error)
-      dispatch(enqueueSnackbar(enhanceSnackbarForAction(NOTIFICATIONS.TX_REJECTED_MSG)))
+      dispatch(
+        enqueueSnackbar(
+          enhanceSnackbarForAction(
+            error?.message
+              ? {
+                  message: error?.message,
+                  options: { variant: 'error', persist: false, autoHideDuration: 5000, preventDuplicate: true },
+                }
+              : NOTIFICATIONS.TX_REJECTED_MSG,
+          ),
+        ),
+      )
       onClose()
     }
   }

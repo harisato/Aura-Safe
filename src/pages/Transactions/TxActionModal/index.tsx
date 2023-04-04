@@ -41,7 +41,8 @@ export default function TxActionModal() {
   const dispatch = useDispatch()
   const safeAddress = extractSafeAddress()
   const confirmTxFromApi = async (data: any, chainId: any, safeAddress: any) => {
-    const { ErrorCode } = await confirmSafeTransaction(data)
+    const result = await confirmSafeTransaction(data)
+    const { ErrorCode } = result
     if (ErrorCode === 'SUCCESSFUL') {
       history.push(
         generateSafeRoute(SAFE_ROUTES.TRANSACTIONS_QUEUE, {
@@ -56,11 +57,23 @@ export default function TxActionModal() {
       // window.location.reload()
     } else {
       setIsDisabled(false)
-      dispatch(enqueueSnackbar(enhanceSnackbarForAction(NOTIFICATIONS.TX_FAILED_MSG)))
+      dispatch(
+        enqueueSnackbar(
+          enhanceSnackbarForAction(
+            result?.Message
+              ? {
+                  message: result?.Message,
+                  options: { variant: 'error', persist: false, autoHideDuration: 5000, preventDuplicate: true },
+                }
+              : NOTIFICATIONS.TX_FAILED_MSG,
+          ),
+        ),
+      )
     }
   }
   const changeTxSeqFromApi = async (data: any, chainId: any, safeAddress: any) => {
-    const { ErrorCode } = await changeTransactionSequenceById(data)
+    const result = await changeTransactionSequenceById(data)
+    const { ErrorCode } = result
     if (ErrorCode === 'SUCCESSFUL') {
       history.push(
         generateSafeRoute(SAFE_ROUTES.TRANSACTIONS_QUEUE, {
@@ -75,7 +88,18 @@ export default function TxActionModal() {
       // window.location.reload()
     } else {
       setIsDisabled(false)
-      dispatch(enqueueSnackbar(enhanceSnackbarForAction(NOTIFICATIONS.TX_FAILED_MSG)))
+      dispatch(
+        enqueueSnackbar(
+          enhanceSnackbarForAction(
+            result?.Message
+              ? {
+                  message: result?.Message,
+                  options: { variant: 'error', persist: false, autoHideDuration: 5000, preventDuplicate: true },
+                }
+              : NOTIFICATIONS.TX_FAILED_MSG,
+          ),
+        ),
+      )
     }
   }
 
@@ -93,7 +117,16 @@ export default function TxActionModal() {
       if (ErrorCode === 'SUCCESSFUL') {
         dispatch(enqueueSnackbar(NOTIFICATIONS.TX_EXECUTED_MSG))
       } else {
-        dispatch(enqueueSnackbar(NOTIFICATIONS.TX_FAILED_MSG))
+        dispatch(
+          enqueueSnackbar(
+            result?.Message
+              ? {
+                  message: result?.Message,
+                  options: { variant: 'error', persist: false, autoHideDuration: 5000, preventDuplicate: true },
+                }
+              : NOTIFICATIONS.TX_FAILED_MSG,
+          ),
+        )
         setIsDisabled(false)
       }
       const chainInfo = getChainInfo()
@@ -102,7 +135,16 @@ export default function TxActionModal() {
       setOpen(false)
     } catch (error) {
       setIsDisabled(false)
-      dispatch(enqueueSnackbar(NOTIFICATIONS.TX_FAILED_MSG))
+      dispatch(
+        enqueueSnackbar(
+          error?.message
+            ? {
+                message: error?.message,
+                options: { variant: 'error', persist: false, autoHideDuration: 5000, preventDuplicate: true },
+              }
+            : NOTIFICATIONS.TX_FAILED_MSG,
+        ),
+      )
     }
   }
 
@@ -119,7 +161,16 @@ export default function TxActionModal() {
       if (ErrorCode === 'SUCCESSFUL') {
         dispatch(enqueueSnackbar(NOTIFICATIONS.TX_REJECTED_MSG_SUCCESS))
       } else {
-        dispatch(enqueueSnackbar(NOTIFICATIONS.TX_FAILED_MSG))
+        dispatch(
+          enqueueSnackbar(
+            result?.Message
+              ? {
+                  message: result?.Message,
+                  options: { variant: 'error', persist: false, autoHideDuration: 5000, preventDuplicate: true },
+                }
+              : NOTIFICATIONS.TX_FAILED_MSG,
+          ),
+        )
         setIsDisabled(false)
       }
       const chainInfo = getChainInfo()
@@ -128,7 +179,16 @@ export default function TxActionModal() {
       setOpen(false)
     } catch (error) {
       setIsDisabled(false)
-      dispatch(enqueueSnackbar(NOTIFICATIONS.TX_FAILED_MSG))
+      dispatch(
+        enqueueSnackbar(
+          error?.message
+            ? {
+                message: error?.message,
+                options: { variant: 'error', persist: false, autoHideDuration: 5000, preventDuplicate: true },
+              }
+            : NOTIFICATIONS.TX_FAILED_MSG,
+        ),
+      )
     }
   }
   const deleteTx = async () => {
@@ -143,7 +203,16 @@ export default function TxActionModal() {
       if (ErrorCode === 'SUCCESSFUL') {
         dispatch(enqueueSnackbar(NOTIFICATIONS.TX_DELETED_MSG_SUCCESS))
       } else {
-        dispatch(enqueueSnackbar(NOTIFICATIONS.TX_FAILED_MSG))
+        dispatch(
+          enqueueSnackbar(
+            result?.Message
+              ? {
+                  message: result?.Message,
+                  options: { variant: 'error', persist: false, autoHideDuration: 5000, preventDuplicate: true },
+                }
+              : NOTIFICATIONS.TX_FAILED_MSG,
+          ),
+        )
         setIsDisabled(false)
       }
       const chainInfo = getChainInfo()
@@ -152,7 +221,16 @@ export default function TxActionModal() {
       setOpen(false)
     } catch (error) {
       setIsDisabled(false)
-      dispatch(enqueueSnackbar(NOTIFICATIONS.TX_FAILED_MSG))
+      dispatch(
+        enqueueSnackbar(
+          error?.message
+            ? {
+                message: error?.message,
+                options: { variant: 'error', persist: false, autoHideDuration: 5000, preventDuplicate: true },
+              }
+            : NOTIFICATIONS.TX_FAILED_MSG,
+        ),
+      )
     }
   }
 

@@ -163,7 +163,7 @@ const ReviewSendFundsTx = ({ onClose, onPrev, tx }: ReviewTxProps): React.ReactE
           ? Math.floor(Number(tx?.amount) * Math.pow(10, 18)).toString() || ''
           : Math.floor(Number(tx?.amount) * Math.pow(10, 6)).toString() || ''
 
-      const signingInstruction = await(async () => {
+      const signingInstruction = await (async () => {
         // get account on chain from API
         const { Data: accountOnChainResult } = await getAccountOnChain(safeAddress, getInternalChainId())
         // const accountOnChain = await client.getAccount(safeAddress)
@@ -228,7 +228,18 @@ const ReviewSendFundsTx = ({ onClose, onPrev, tx }: ReviewTxProps): React.ReactE
 
         createTxFromApi(data)
       } catch (error) {
-        dispatch(enqueueSnackbar(enhanceSnackbarForAction(NOTIFICATIONS.TX_REJECTED_MSG)))
+        dispatch(
+          enqueueSnackbar(
+            enhanceSnackbarForAction(
+              error?.message
+                ? {
+                    message: error?.message,
+                    options: { variant: 'error', persist: false, autoHideDuration: 5000, preventDuplicate: true },
+                  }
+                : NOTIFICATIONS.TX_REJECTED_MSG,
+            ),
+          ),
+        )
         onClose()
       }
     }
@@ -256,7 +267,18 @@ const ReviewSendFundsTx = ({ onClose, onPrev, tx }: ReviewTxProps): React.ReactE
               dispatch(enqueueSnackbar(enhanceSnackbarForAction(NOTIFICATIONS.CREATE_SAFE_PENDING_EXECUTE_MSG)))
               break
             default:
-              dispatch(enqueueSnackbar(enhanceSnackbarForAction(NOTIFICATIONS.TX_FAILED_MSG)))
+              dispatch(
+                enqueueSnackbar(
+                  enhanceSnackbarForAction(
+                    e?.Message
+                      ? {
+                          message: e?.Message,
+                          options: { variant: 'error', persist: false, autoHideDuration: 5000, preventDuplicate: true },
+                        }
+                      : NOTIFICATIONS.TX_FAILED_MSG,
+                  ),
+                ),
+              )
               break
           }
         }
