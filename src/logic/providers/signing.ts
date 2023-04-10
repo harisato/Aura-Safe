@@ -1,4 +1,5 @@
 import { SequenceResponse, SignerData, SigningStargateClient, StdFee } from '@cosmjs/stargate'
+import { SigningCosmWasmClient } from '@cosmjs/cosmwasm-stargate'
 import { KeplrIntereactionOptions } from '@keplr-wallet/types'
 import _ from 'lodash'
 import { getChainInfo, getInternalChainId } from 'src/config'
@@ -32,38 +33,96 @@ const signMessage = async (
   sequence?: string | undefined,
   memo?: string,
 ): Promise<any> => {
-  const loadLastUsedProviderResult = await loadLastUsedProvider()
-  const provider = loadLastUsedProviderResult
-    ? await getProvider(loadLastUsedProviderResult as WALLETS_NAME)
-    : undefined
-  if (!provider) return
-  provider.defaultOptions = getDefaultOptions()
-  const offlineSignerOnlyAmino = window.getOfflineSignerOnlyAmino
-  if (offlineSignerOnlyAmino) {
-    const signer = await offlineSignerOnlyAmino(chainId)
-    const chainInfo = getChainInfo()
-    if (!signer) return
-    const account = await signer.getAccounts()
-    const client = await SigningStargateClient.offline(signer)
-    // const onlineData = await onlineClient.getSequence(safeAddress)
-    const onlineData: SequenceResponse = (await getAccountOnChain(safeAddress, getInternalChainId())).Data
-    const signerData: SignerData = {
-      accountNumber: onlineData.accountNumber,
-      sequence: sequence ? +sequence : onlineData.sequence,
-      chainId,
+  try {
+    const loadLastUsedProviderResult = await loadLastUsedProvider()
+    const provider = loadLastUsedProviderResult
+      ? await getProvider(loadLastUsedProviderResult as WALLETS_NAME)
+      : undefined
+    if (!provider) return
+    provider.defaultOptions = getDefaultOptions()
+    const offlineSignerOnlyAmino = window.getOfflineSignerOnlyAmino
+    if (offlineSignerOnlyAmino) {
+      const signer = await offlineSignerOnlyAmino(chainId)
+      const chainInfo = getChainInfo()
+      if (!signer) return
+      const account = await signer.getAccounts()
+      const client = await SigningStargateClient.offline(signer)
+      // const onlineData = await onlineClient.getSequence(safeAddress)
+      const onlineData: SequenceResponse = (await getAccountOnChain(safeAddress, getInternalChainId())).Data
+      const signerData: SignerData = {
+        accountNumber: onlineData.accountNumber,
+        sequence: sequence ? +sequence : onlineData?.sequence,
+        chainId,
+      }
+      const signerAddress = _.get(account, '[0].address')
+      if (!(signerAddress && messages && fee && signerData)) {
+        return undefined
+      }
+      ;(window as any).signObject = messages?.[0]?.typeUrl
+        ? { signerAddress, messages, fee, memo, signerData }
+        : { signerAddress, messages: [{ typeUrl, value: messages }], fee, memo, signerData }
+      const respone = messages?.[0]?.typeUrl
+        ? await client.sign(signerAddress, messages, fee, memo || '', signerData)
+        : await client.sign(signerAddress, [{ typeUrl, value: messages }], fee, memo || '', signerData)
+      return {
+        ...respone,
+        accountNumber: onlineData.accountNumber,
+        sequence: sequence ? +sequence : onlineData?.sequence,
+      }
     }
-    const signerAddress = _.get(account, '[0].address')
-    if (!(signerAddress && messages && fee && signerData)) {
-      return undefined
-    }
-    ;(window as any).signObject = messages?.[0]?.typeUrl
-      ? { signerAddress, messages, fee, memo, signerData }
-      : { signerAddress, messages: [{ typeUrl, value: messages }], fee, memo, signerData }
-    const respone = messages?.[0]?.typeUrl
-      ? await client.sign(signerAddress, messages, fee, memo || '', signerData)
-      : await client.sign(signerAddress, [{ typeUrl, value: messages }], fee, memo || '', signerData)
-    return { ...respone, accountNumber: onlineData.accountNumber, sequence: sequence ? +sequence : onlineData.sequence }
+    return undefined
+  } catch (error) {
+    throw new Error(error)
   }
-  return undefined
+}
+
+export const signCosWasmMessage = async (
+  chainId: string,
+  safeAddress: string,
+  typeUrl: MsgTypeUrl,
+  messages: any,
+  fee: StdFee,
+  sequence?: string | undefined,
+  memo?: string,
+): Promise<any> => {
+  try {
+    const loadLastUsedProviderResult = await loadLastUsedProvider()
+    const provider = loadLastUsedProviderResult
+      ? await getProvider(loadLastUsedProviderResult as WALLETS_NAME)
+      : undefined
+    if (!provider) return
+    provider.defaultOptions = getDefaultOptions()
+    const offlineSignerOnlyAmino = window.getOfflineSignerOnlyAmino
+    if (offlineSignerOnlyAmino) {
+      const signer = await offlineSignerOnlyAmino(chainId)
+      if (!signer) return
+      const account = await signer.getAccounts()
+      const client = await SigningCosmWasmClient.offline(signer)
+      const onlineData: SequenceResponse = (await getAccountOnChain(safeAddress, getInternalChainId())).Data
+      const signerData: SignerData = {
+        accountNumber: onlineData.accountNumber,
+        sequence: sequence ? +sequence : onlineData?.sequence,
+        chainId,
+      }
+      const signerAddress = _.get(account, '[0].address')
+      if (!(signerAddress && messages && fee && signerData)) {
+        return undefined
+      }
+      ;(window as any).signObject = messages?.[0]?.typeUrl
+        ? { signerAddress, messages, fee, memo, signerData }
+        : { signerAddress, messages: [{ typeUrl, value: messages }], fee, memo, signerData }
+      const respone = messages?.[0]?.typeUrl
+        ? await client.sign(signerAddress, messages, fee, memo || '', signerData)
+        : await client.sign(signerAddress, [{ typeUrl, value: messages }], fee, memo || '', signerData)
+      return {
+        ...respone,
+        accountNumber: onlineData.accountNumber,
+        sequence: sequence ? +sequence : onlineData?.sequence,
+      }
+    }
+    return undefined
+  } catch (error) {
+    throw new Error(error)
+  }
 }
 export { signMessage as createMessage }
