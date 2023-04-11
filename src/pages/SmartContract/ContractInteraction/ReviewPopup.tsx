@@ -1,5 +1,5 @@
 import { toBase64, toUtf8 } from '@cosmjs/encoding'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { generatePath } from 'react-router-dom'
 import AddressInfo from 'src/components/AddressInfo'
@@ -39,7 +39,7 @@ export default function ReviewPopup({ open, setOpen, gasUsed, data, contractData
   const { ethBalance: balance } = useSelector(currentSafeWithNames)
   const chainDefaultGasPrice = getChainDefaultGasPrice()
   const decimal = getCoinDecimal()
-  const defaultGas = gasUsed || '250000'
+  const defaultGas = '250000'
   const gasFee =
     defaultGas && chainDefaultGasPrice
       ? calculateGasFee(+defaultGas, +chainDefaultGasPrice, decimal)
@@ -52,6 +52,12 @@ export default function ReviewPopup({ open, setOpen, gasUsed, data, contractData
   const [isDisabled, setDisabled] = useState(false)
   const userWalletAddress = useSelector(userAccountSelector)
   const chainInfo = getChainInfo()
+
+  useEffect(() => {
+    setManualGasLimit(gasUsed)
+    const gasFee = calculateGasFee(+gasUsed, +chainDefaultGasPrice, decimal)
+    setGasPriceFormatted(gasFee)
+  }, [gasUsed])
 
   const signTransaction = async () => {
     setDisabled(true)

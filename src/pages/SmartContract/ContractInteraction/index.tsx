@@ -137,7 +137,7 @@ function ContractInteraction(props): ReactElement {
           onChange={setAbi}
           endIcon={isValidAbi != null ? getAbiStatus() : null}
         />
-        {contractData && <Contract contractData={contractData} />}
+        <Contract contractData={contractData} />
       </Wrap>
     </>
   )

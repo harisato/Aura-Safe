@@ -36,45 +36,21 @@ const Wrap = styled.div`
       margin-top: 16px;
     }
   }
-  .preview-button {
-    padding: 24px;
-    margin: 24px -24px -24px;
-    border-top: 1px solid #363843;
-    display: flex;
-    justify-content: end;
-  }
 `
-function JsonschemaForm({ contractData, schema, onPreview }): ReactElement {
+function JsonschemaForm({
+  schema,
+  formData,
+  setFormData,
+  shouldCheck,
+  setShouldCheck,
+  activeFunction,
+  setActiveFunction,
+}): ReactElement {
   const dispatch = useDispatch()
   const jsValidator = new Validator()
+  if (!schema) return <></>
   jsValidator.addSchema(schema)
   const schemaInput = makeSchemaInput(jsValidator)
-
-  const [formData, setFormData] = useState({})
-  const [activeFunction, setActiveFunction] = useState(0)
-  const [shouldCheck, setShouldCheck] = useState(false)
-
-  useEffect(() => {
-    setFormData({})
-    setActiveFunction(0)
-    setShouldCheck(false)
-  }, [contractData.contractAddress])
-  const preview = async () => {
-    try {
-      setShouldCheck(true)
-      onPreview(schemaInput.at(activeFunction).fieldList, formData, schemaInput.at(activeFunction).fieldName)
-    } catch (error) {
-      dispatch(
-        enqueueSnackbar(
-          enhanceSnackbarForAction({
-            message: error.message || 'Failed to execute message',
-            options: { variant: 'error', persist: true, preventDuplicate: true },
-          }),
-        ),
-      )
-      console.log('eevv', error)
-    }
-  }
 
   const validateField = (field) => {
     if (field.isRequired && !formData[field.fieldName]) {
@@ -119,9 +95,6 @@ function JsonschemaForm({ contractData, schema, onPreview }): ReactElement {
             }}
           />
         ))}
-      </div>
-      <div className="preview-button">
-        <FilledButton onClick={preview}>Preview</FilledButton>
       </div>
     </Wrap>
   )
