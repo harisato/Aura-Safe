@@ -62,7 +62,7 @@ function Contract({ contractData }): ReactElement {
                     sender: safeAddress,
                     funds: [],
                     msg: JSON.stringify({
-                      [activeFunction]: formData,
+                      [selectedFunction]: formData,
                     }),
                   },
                 },
