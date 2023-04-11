@@ -27,8 +27,13 @@ export default function TxMsg({ tx, txDetail }) {
   if (type == MsgTypeUrl.ExecuteContract) {
     return (
       <div className="tx-msg">
-        <strong>Contract address:</strong>
-        <AddressInfo address={txDetail?.txMessage[0]?.contractAddress} showAvatar={false} showName={false} />
+        <div>
+          <span className="contentTertiary">Interact with contract: </span>
+          <span style={{ display: 'inline-block' }}>
+            <AddressInfo address={txDetail?.txMessage[0]?.contractAddress} showAvatar={false} showName={false} />
+          </span>
+        </div>
+
         <div className="function-name">{txDetail?.txMessage[0].contractFunction}</div>
         {Object.keys(JSON.parse(txDetail?.txMessage[0].contractArgs))?.map((key, index) => (
           <div className="field" key={index}>

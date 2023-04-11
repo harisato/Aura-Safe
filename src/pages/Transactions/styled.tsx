@@ -472,6 +472,8 @@ export const TxDetailsContainer = styled.div<{ ownerRows?: number }>`
   }
   .tx-msg {
     padding: 16px;
+    max-height: 200px;
+    overflow: auto;
     .token {
       color: #5ee6d0;
     }
@@ -486,19 +488,19 @@ export const TxDetailsContainer = styled.div<{ ownerRows?: number }>`
     }
     .function-name {
       font-weight: 600;
-      font-size: 12px;
-      line-height: 16px;
-      color: #b4b8c0;
+      font-size: 16px;
+      line-height: 20px;
     }
     .field__label {
       font-weight: 400;
-      font-size: 12px;
+      font-size: 14px;
       line-height: 16px;
       color: #b4b8c0;
+      margin-bottom: 2px;
     }
     .field__data {
       font-weight: 400;
-      font-size: 12px;
+      font-size: 14px;
       line-height: 16px;
     }
   }
