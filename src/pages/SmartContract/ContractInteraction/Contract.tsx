@@ -42,11 +42,9 @@ function Contract({ contractData }): ReactElement {
                   contract: contractData.contractAddress,
                   sender: safeAddress,
                   funds: [],
-                  msg: toUtf8(
-                    JSON.stringify({
-                      [selectedFunction]: data,
-                    }),
-                  ),
+                  msg: JSON.stringify({
+                    [selectedFunction]: data,
+                  }),
                 },
               },
             ]),

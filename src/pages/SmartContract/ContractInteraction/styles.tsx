@@ -99,4 +99,8 @@ export const Wrap = styled.div`
     font-size: 12px;
     line-height: 16px;
   }
+  .fields {
+    max-height: 26vh;
+    overflow: auto;
+  }
 `

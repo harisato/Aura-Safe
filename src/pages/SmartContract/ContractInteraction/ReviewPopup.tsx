@@ -166,12 +166,14 @@ export default function ReviewPopup({ open, setOpen, gasUsed, data, contractData
         <Divider withArrow />
         <AddressInfo address={contractData.contractAddress} showAvatar={false} showName={false} />
         <div className="function-name">{contractData.selectedFunction}</div>
-        {Object.keys(data)?.map((key, index) => (
-          <div className="field" key={index}>
-            <div className="field__label">{key}:</div>
-            <div className="field__data">{data[key]}</div>
-          </div>
-        ))}
+        <div className="fields">
+          {Object.keys(data)?.map((key, index) => (
+            <div className="field" key={index}>
+              <div className="field__label">{key}:</div>
+              <div className="field__data">{data[key]}</div>
+            </div>
+          ))}
+        </div>
         <Divider />
         <FeeAndSequence
           open={openGasInput}
