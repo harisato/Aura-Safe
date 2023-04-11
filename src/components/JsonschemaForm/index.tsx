@@ -1,10 +1,7 @@
 import { Validator } from 'jsonschema'
-import { ReactElement, useState, useEffect } from 'react'
+import { ReactElement } from 'react'
 import { useDispatch } from 'react-redux'
-import { enhanceSnackbarForAction } from 'src/logic/notifications'
-import enqueueSnackbar from 'src/logic/notifications/store/actions/enqueueSnackbar'
 import styled from 'styled-components'
-import { FilledButton } from '../Button'
 import Field from './Field'
 import { makeSchemaInput } from './utils'
 const Wrap = styled.div`
