@@ -28,7 +28,7 @@ export default function TxMsg({ tx, txDetail }) {
     return (
       <div className="tx-msg">
         <div>
-          <span className="contentTertiary">Interact with contract: </span>
+          <span style={{ color: '#B4B8C0' }}>Interct with contract: </span>
           <span style={{ display: 'inline-block' }}>
             <AddressInfo address={txDetail?.txMessage[0]?.contractAddress} showAvatar={false} showName={false} />
           </span>
