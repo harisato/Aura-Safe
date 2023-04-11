@@ -31,7 +31,9 @@ import { createSafeTransaction } from 'src/services'
 import { MESSAGES_CODE } from 'src/services/constant/message'
 import { ICreateSafeTransaction } from 'src/types/transaction'
 import { calcFee, formatNativeCurrency } from 'src/utils'
-import { Wrap } from './styles'
+import styled from 'styled-components'
+
+const Wrap = styled.div``
 
 export default function ReviewPopup({ open, setOpen, gasUsed, data, contractData }) {
   const safeAddress = extractSafeAddress()
@@ -54,11 +56,9 @@ export default function ReviewPopup({ open, setOpen, gasUsed, data, contractData
   const chainInfo = getChainInfo()
 
   useEffect(() => {
-    if (gasUsed) {
-      setManualGasLimit(gasUsed)
-      const gasFee = calculateGasFee(+gasUsed, +chainDefaultGasPrice, decimal)
-      setGasPriceFormatted(gasFee)
-    }
+    setManualGasLimit(gasUsed)
+    const gasFee = calculateGasFee(+gasUsed, +chainDefaultGasPrice, decimal)
+    setGasPriceFormatted(gasFee)
   }, [gasUsed])
 
   const signTransaction = async () => {
