@@ -72,6 +72,14 @@ const useSidebarItems = (): ListItemType[] => {
         href: currentSafeRoutes.CONTRACT_INTERACTION,
       }),
     ]
+    const advancedSubItems = [
+      makeEntryItem({
+        label: 'Custom Transaction',
+        badge: needsUpdate && granted,
+        iconType: 'info',
+        href: currentSafeRoutes.CUSTOM_TRANSACTION,
+      }),
+    ]
 
     return [
       makeEntryItem({
@@ -102,6 +110,12 @@ const useSidebarItems = (): ListItemType[] => {
         iconType: 'smartContractAura',
         href: currentSafeRoutes.CONTRACT_INTERACTION,
         subItems: smartContractSubItems,
+      }),
+      makeEntryItem({
+        label: 'Advanced',
+        iconType: 'smartContractAura',
+        href: currentSafeRoutes.CUSTOM_TRANSACTION,
+        subItems: advancedSubItems,
       }),
       makeEntryItem({
         label: 'Address Book',

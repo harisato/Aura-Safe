@@ -1,7 +1,7 @@
+import { pyxisTheme } from 'src/theme/styledComponentsTheme'
 import 'styled-components'
-import theme from './styledComponentsTheme'
 
-type CustomTheme = typeof theme
+type CustomTheme = typeof pyxisTheme
 
 declare module 'styled-components' {
   export interface DefaultTheme extends CustomTheme {}
