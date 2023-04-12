@@ -150,8 +150,10 @@ export default function ReviewPopup({ open, setOpen, gasUsed, msg }) {
         }
       }
       setOpen(false)
+      setDisabled(false)
     } catch (error) {
       console.error(error)
+      setDisabled(false)
       setOpen(false)
       dispatch(
         enqueueSnackbar(

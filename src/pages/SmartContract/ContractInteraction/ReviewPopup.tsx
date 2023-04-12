@@ -149,9 +149,13 @@ export default function ReviewPopup({ open, setOpen, gasUsed, data, contractData
         }
       }
       setOpen(false)
+      setDisabled(false)
+
     } catch (error) {
       console.error(error)
       setOpen(false)
+      setDisabled(false)
+
       dispatch(
         enqueueSnackbar(
           enhanceSnackbarForAction({
