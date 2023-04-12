@@ -165,7 +165,6 @@
     ]
   },
   "dependencies": {
-    "@aura-nw/aurajs": "0.1.1-alpha",
     "@aura/safe-react-components": "https://github.com/aura-nw/safe-react-components.git",
     "@cosmjs/cosmwasm-stargate": "^0.28.11",
     "@cosmjs/stargate": "^0.28.11",
