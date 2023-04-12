@@ -14,7 +14,7 @@ import { getChainDefaultGasPrice, getChainInfo, getCoinDecimal, getInternalChain
 import { enhanceSnackbarForAction, ERROR, NOTIFICATIONS } from 'src/logic/notifications'
 import enqueueSnackbar from 'src/logic/notifications/store/actions/enqueueSnackbar'
 import { MsgTypeUrl } from 'src/logic/providers/constants/constant'
-import { signCosWasmMessage } from 'src/logic/providers/signing'
+import { signCosWasmMessage, signMessage } from 'src/logic/providers/signing'
 import calculateGasFee from 'src/logic/providers/utils/fee'
 import fetchTransactions from 'src/logic/safe/store/actions/transactions/fetchTransactions'
 import { currentSafeWithNames } from 'src/logic/safe/store/selectors'
@@ -32,10 +32,9 @@ import { MESSAGES_CODE } from 'src/services/constant/message'
 import { ICreateSafeTransaction } from 'src/types/transaction'
 import { calcFee, formatNativeCurrency } from 'src/utils'
 import styled from 'styled-components'
+import { Wrap } from './styles'
 
-const Wrap = styled.div``
-
-export default function ReviewPopup({ open, setOpen, gasUsed, data, contractData }) {
+export default function ReviewPopup({ open, setOpen, gasUsed, msg }) {
   const safeAddress = extractSafeAddress()
   const dispatch = useDispatch()
   const { ethBalance: balance } = useSelector(currentSafeWithNames)
@@ -65,26 +64,28 @@ export default function ReviewPopup({ open, setOpen, gasUsed, data, contractData
     setDisabled(true)
     const chainId = chainInfo.chainId
     const _sendFee = calcFee(manualGasLimit)
-    const Msg: any = {
-      contract: contractData.contractAddress,
-      sender: safeAddress,
-      funds: [],
-      msg: toUtf8(
-        JSON.stringify({
-          [contractData.selectedFunction]: data,
-        }),
-      ),
-    }
+    const Msg = msg.map((message: any) => {
+      if (
+        [
+          '/cosmwasm.wasm.v1.MsgInstantiateContract',
+          '/cosmwasm.wasm.v1.MsgExecuteContract',
+          '/cosmwasm.wasm.v1.MsgMigrateContract',
+        ].includes(message.typeUrl as never)
+      ) {
+        return {
+          ...message,
+          value: {
+            ...message.value,
+            msg: toUtf8(JSON.stringify(message.value.msg)),
+          },
+        }
+      }
+
+      return message
+    })
     try {
       dispatch(enqueueSnackbar(enhanceSnackbarForAction(NOTIFICATIONS.SIGN_TX_MSG)))
-      const signResult = await signCosWasmMessage(
-        chainId,
-        safeAddress,
-        MsgTypeUrl.ExecuteContract,
-        Msg,
-        _sendFee,
-        sequence,
-      )
+      const signResult = await signMessage(chainId, safeAddress, MsgTypeUrl.ExecuteContract, Msg, _sendFee, sequence)
       if (!signResult) throw new Error()
       const signatures = toBase64(signResult.signatures[0])
       const bodyBytes = toBase64(signResult.bodyBytes)
@@ -172,16 +173,7 @@ export default function ReviewPopup({ open, setOpen, gasUsed, data, contractData
           Balance: <strong>{formatNativeCurrency(balance)}</strong>
         </div>
         <Divider withArrow />
-        <AddressInfo address={contractData.contractAddress} showAvatar={false} showName={false} />
-        <div className="function-name">{contractData.selectedFunction}</div>
-        <div className="fields">
-          {Object.keys(data)?.map((key, index) => (
-            <div className="field" key={index}>
-              <div className="field__label">{key}:</div>
-              <div className="field__data">{data[key]}</div>
-            </div>
-          ))}
-        </div>
+
         <Divider />
         <FeeAndSequence
           open={openGasInput}

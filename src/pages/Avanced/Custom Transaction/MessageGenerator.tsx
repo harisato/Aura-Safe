@@ -78,7 +78,7 @@ export const StyledAccordionSummary = styled(AccordionSummary)`
 const Message = ({ msgData }) => {
   return (
     <NoPaddingAccordion>
-      <StyledAccordionSummary>{msgData?.type}</StyledAccordionSummary>
+      <StyledAccordionSummary>{msgData?.typeUrl}</StyledAccordionSummary>
       <AccordionDetails>{JSON.stringify(msgData?.value)}</AccordionDetails>
     </NoPaddingAccordion>
   )

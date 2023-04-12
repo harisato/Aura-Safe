@@ -1,3 +1,4 @@
+import { getSigningCosmosClientOptions } from '@aura-nw/aurajs'
 import { SequenceResponse, SignerData, SigningStargateClient, StdFee } from '@cosmjs/stargate'
 import { SigningCosmWasmClient } from '@cosmjs/cosmwasm-stargate'
 import { KeplrIntereactionOptions } from '@keplr-wallet/types'
@@ -9,7 +10,42 @@ import { getProvider } from 'src/logic/providers/utils/wallets'
 import { WALLETS_NAME } from 'src/logic/wallets/constant/wallets'
 import { loadLastUsedProvider } from 'src/logic/wallets/store/middlewares/providerWatcher'
 import { getAccountOnChain } from 'src/services'
-
+import { TxTypes } from './txTypes'
+import {
+  AminoTypes,
+  createBankAminoConverters,
+  createDistributionAminoConverters,
+  createGovAminoConverters,
+  createStakingAminoConverters,
+  createAuthzAminoConverters,
+  createFreegrantAminoConverters,
+  createIbcAminoConverters,
+} from '@cosmjs/stargate'
+import { createWasmAminoConverters } from '@cosmjs/cosmwasm-stargate'
+import { encodeSecp256k1Pubkey, makeSignDoc as makeSignDocAmino } from '@cosmjs/amino'
+import { fromBase64 } from '@cosmjs/encoding'
+import { Int53, Uint53 } from '@cosmjs/math'
+import {
+  EncodeObject,
+  encodePubkey,
+  GeneratedType,
+  isOfflineDirectSigner,
+  makeAuthInfoBytes,
+  makeSignDoc,
+  OfflineSigner,
+  Registry,
+  TxBodyEncodeObject,
+} from '@cosmjs/proto-signing'
+import { Tendermint34Client } from '@cosmjs/tendermint-rpc'
+import { assert, assertDefined } from '@cosmjs/utils'
+import { Coin } from 'cosmjs-types/cosmos/base/v1beta1/coin'
+import { MsgWithdrawDelegatorReward } from 'cosmjs-types/cosmos/distribution/v1beta1/tx'
+import { MsgDelegate, MsgUndelegate } from 'cosmjs-types/cosmos/staking/v1beta1/tx'
+import { SignMode } from 'cosmjs-types/cosmos/tx/signing/v1beta1/signing'
+import { TxRaw } from 'cosmjs-types/cosmos/tx/v1beta1/tx'
+import { MsgTransfer } from 'cosmjs-types/ibc/applications/transfer/v1/tx'
+import { Height } from 'cosmjs-types/ibc/core/client/v1/client'
+import Long from 'long'
 const getDefaultOptions = (): KeplrIntereactionOptions => ({
   sign: {
     preferNoSetMemo: true,
@@ -24,7 +60,7 @@ const getMessage: {
   [MsgTypeUrl.Vote]: Vote,
 }
 
-const signMessage = async (
+const signCosmosMessage = async (
   chainId: string,
   safeAddress: string,
   typeUrl: MsgTypeUrl,
@@ -125,4 +161,95 @@ export const signCosWasmMessage = async (
     throw new Error(error)
   }
 }
-export { signMessage as createMessage }
+
+export const signMessage = async (
+  chainId: string,
+  safeAddress: string,
+  typeUrl: MsgTypeUrl,
+  messages: any,
+  fee: StdFee,
+  sequence?: string | undefined,
+  memo?: string,
+): Promise<any> => {
+  try {
+    console.log('aa')
+    const loadLastUsedProviderResult = await loadLastUsedProvider()
+    const provider = loadLastUsedProviderResult
+      ? await getProvider(loadLastUsedProviderResult as WALLETS_NAME)
+      : undefined
+    if (!provider) return
+    provider.defaultOptions = getDefaultOptions()
+    const offlineSignerOnlyAmino = window.getOfflineSignerOnlyAmino
+    if (offlineSignerOnlyAmino) {
+      const signer = await offlineSignerOnlyAmino(chainId)
+      if (!signer) return
+      const account = await signer.getAccounts()
+      const client = await SigningCosmWasmClient.offline(signer)
+      const onlineData: SequenceResponse = (await getAccountOnChain(safeAddress, getInternalChainId())).Data
+      const signerData: SignerData = {
+        accountNumber: onlineData.accountNumber,
+        sequence: sequence ? +sequence : onlineData?.sequence,
+        chainId,
+      }
+      const signerAddress = _.get(account, '[0].address')
+      if (!(signerAddress && messages && fee && signerData)) {
+        return undefined
+      }
+      ;(window as any).signObject = { signerAddress, messages, fee, memo, signerData }
+
+      const registry = new Registry(TxTypes)
+      const aminoTypes = new AminoTypes({
+        ...createBankAminoConverters(),
+        ...createStakingAminoConverters(getChainInfo().shortName),
+        ...createDistributionAminoConverters(),
+        ...createGovAminoConverters(),
+        ...createWasmAminoConverters(),
+        ...createAuthzAminoConverters(),
+        ...createFreegrantAminoConverters(),
+        ...createIbcAminoConverters(),
+      })
+
+      const pubkey = encodePubkey(encodeSecp256k1Pubkey(account[0].pubkey))
+
+      const signMode = SignMode.SIGN_MODE_LEGACY_AMINO_JSON
+
+      const msgs = messages.map((msg) => {
+        return aminoTypes.toAmino(msg)
+      })
+      const signDoc = makeSignDocAmino(msgs, fee, chainId, memo, signerData.accountNumber, signerData.sequence)
+      const { signature, signed } = await signer.signAmino(signerAddress, signDoc)
+      const signedTxBody = {
+        messages: signed.msgs.map((msg) => aminoTypes.fromAmino(msg)),
+        memo: signed.memo,
+      }
+      const signedTxBodyEncodeObject: TxBodyEncodeObject = {
+        typeUrl: '/cosmos.tx.v1beta1.TxBody',
+        value: signedTxBody,
+      }
+      const signedTxBodyBytes = registry.encode(signedTxBodyEncodeObject)
+      const signedGasLimit = Int53.fromString(signed.fee.gas).toNumber()
+      const signedSequence = Int53.fromString(signed.sequence).toNumber()
+      const signedAuthInfoBytes = makeAuthInfoBytes(
+        [{ pubkey, sequence: signedSequence }],
+        signed.fee.amount,
+        signedGasLimit,
+        signMode,
+      )
+      const respone = TxRaw.fromPartial({
+        bodyBytes: signedTxBodyBytes,
+        authInfoBytes: signedAuthInfoBytes,
+        signatures: [fromBase64(signature.signature)],
+      })
+      return {
+        ...respone,
+        accountNumber: onlineData.accountNumber,
+        sequence: sequence ? +sequence : onlineData?.sequence,
+      }
+    }
+    return undefined
+  } catch (error) {
+    throw new Error(error)
+  }
+}
+
+export { signCosmosMessage as createMessage }
