@@ -49,7 +49,6 @@ function Contract({ contractData }): ReactElement {
           isError = true
         }
       })
-
       if (!isError) {
         try {
           const res = await simulate({
@@ -62,7 +61,7 @@ function Contract({ contractData }): ReactElement {
                     sender: safeAddress,
                     funds: [],
                     msg: JSON.stringify({
-                      [selectedFunction]: formData,
+                      [schemaInput.at(activeFunction).fieldName]: formData,
                     }),
                   },
                 },
