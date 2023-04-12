@@ -1,7 +1,25 @@
-import { getSigningCosmosClientOptions } from '@aura-nw/aurajs'
-import { SequenceResponse, SignerData, SigningStargateClient, StdFee } from '@cosmjs/stargate'
-import { SigningCosmWasmClient } from '@cosmjs/cosmwasm-stargate'
+import { encodeSecp256k1Pubkey, makeSignDoc as makeSignDocAmino } from '@cosmjs/amino'
+import { SigningCosmWasmClient, createWasmAminoConverters } from '@cosmjs/cosmwasm-stargate'
+import { fromBase64 } from '@cosmjs/encoding'
+import { Int53 } from '@cosmjs/math'
+import { Registry, TxBodyEncodeObject, encodePubkey, makeAuthInfoBytes } from '@cosmjs/proto-signing'
+import {
+  AminoTypes,
+  SequenceResponse,
+  SignerData,
+  SigningStargateClient,
+  StdFee,
+  createAuthzAminoConverters,
+  createBankAminoConverters,
+  createDistributionAminoConverters,
+  createFreegrantAminoConverters,
+  createGovAminoConverters,
+  createIbcAminoConverters,
+  createStakingAminoConverters,
+} from '@cosmjs/stargate'
 import { KeplrIntereactionOptions } from '@keplr-wallet/types'
+import { SignMode } from 'cosmjs-types/cosmos/tx/signing/v1beta1/signing'
+import { TxRaw } from 'cosmjs-types/cosmos/tx/v1beta1/tx'
 import _ from 'lodash'
 import { getChainInfo, getInternalChainId } from 'src/config'
 import { MsgTypeUrl } from 'src/logic/providers/constants/constant'
@@ -11,41 +29,6 @@ import { WALLETS_NAME } from 'src/logic/wallets/constant/wallets'
 import { loadLastUsedProvider } from 'src/logic/wallets/store/middlewares/providerWatcher'
 import { getAccountOnChain } from 'src/services'
 import { TxTypes } from './txTypes'
-import {
-  AminoTypes,
-  createBankAminoConverters,
-  createDistributionAminoConverters,
-  createGovAminoConverters,
-  createStakingAminoConverters,
-  createAuthzAminoConverters,
-  createFreegrantAminoConverters,
-  createIbcAminoConverters,
-} from '@cosmjs/stargate'
-import { createWasmAminoConverters } from '@cosmjs/cosmwasm-stargate'
-import { encodeSecp256k1Pubkey, makeSignDoc as makeSignDocAmino } from '@cosmjs/amino'
-import { fromBase64 } from '@cosmjs/encoding'
-import { Int53, Uint53 } from '@cosmjs/math'
-import {
-  EncodeObject,
-  encodePubkey,
-  GeneratedType,
-  isOfflineDirectSigner,
-  makeAuthInfoBytes,
-  makeSignDoc,
-  OfflineSigner,
-  Registry,
-  TxBodyEncodeObject,
-} from '@cosmjs/proto-signing'
-import { Tendermint34Client } from '@cosmjs/tendermint-rpc'
-import { assert, assertDefined } from '@cosmjs/utils'
-import { Coin } from 'cosmjs-types/cosmos/base/v1beta1/coin'
-import { MsgWithdrawDelegatorReward } from 'cosmjs-types/cosmos/distribution/v1beta1/tx'
-import { MsgDelegate, MsgUndelegate } from 'cosmjs-types/cosmos/staking/v1beta1/tx'
-import { SignMode } from 'cosmjs-types/cosmos/tx/signing/v1beta1/signing'
-import { TxRaw } from 'cosmjs-types/cosmos/tx/v1beta1/tx'
-import { MsgTransfer } from 'cosmjs-types/ibc/applications/transfer/v1/tx'
-import { Height } from 'cosmjs-types/ibc/core/client/v1/client'
-import Long from 'long'
 const getDefaultOptions = (): KeplrIntereactionOptions => ({
   sign: {
     preferNoSetMemo: true,
