@@ -82,7 +82,7 @@ function MessageGenerator({ setMessage }): ReactElement {
         <p>Transaction Preview</p>
         <div className="preview-msg">
           {parsedMsg.map((msg, index) => {
-            return <Message msgData={msg} key={index} />
+            return <Message msgData={msg} key={index} index={index} />
           })}
         </div>
       </div>
@@ -118,7 +118,7 @@ export const StyledAccordionDetails = styled(AccordionDetails)`
   background: #34353a !important; ;
 `
 
-const Message = ({ msgData }) => {
+export const Message = ({ msgData, index }) => {
   const Wrap = styled.div`
     white-space: pre-wrap;
     .string {
@@ -162,7 +162,9 @@ const Message = ({ msgData }) => {
   }
   return (
     <NoPaddingAccordion>
-      <StyledAccordionSummary>{msgData?.typeUrl.split('Msg').at(-1)}</StyledAccordionSummary>
+      <StyledAccordionSummary>
+        {index + 1}. {msgData?.typeUrl.split('Msg').at(-1)}
+      </StyledAccordionSummary>
       <StyledAccordionDetails>
         <Wrap dangerouslySetInnerHTML={{ __html: beutifyJson() }} />
       </StyledAccordionDetails>

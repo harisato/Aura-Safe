@@ -70,7 +70,7 @@ function CustomTransaction(props): ReactElement {
   }
   return (
     <>
-      <Breadcrumb title="Custom Transaction" subtitleIcon={Icon} subtitle="Custom Transaction / Custom Transaction" />
+      <Breadcrumb title="Custom Transaction" subtitleIcon={Icon} subtitle="Advanced / Custom Transaction" />
       <Wrap>
         <div className="title">Custom Transaction</div>
         <p className="description">

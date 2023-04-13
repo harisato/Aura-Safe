@@ -3,6 +3,10 @@ import styled from 'styled-components'
 export const Wrap = styled.div`
   width: 540px;
   padding: 24px;
+  .msgs {
+    max-height: 32vh;
+    overflow: auto;
+  }
   .label {
     font-size: 12px;
     line-height: 150%;
