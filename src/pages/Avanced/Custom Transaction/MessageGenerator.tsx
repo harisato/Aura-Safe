@@ -11,10 +11,26 @@ import { javascript } from '@codemirror/lang-javascript'
 
 const Wrap = styled.div`
   display: flex;
-  gap: 12px;
+  gap: 24px;
   > div {
     max-width: 50%;
     width: 100%;
+  }
+  .cm-editor {
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  .error > .cm-editor {
+    outline: #d5625e 1px solid;
+  }
+  .error-msg {
+    color: #d5625e;
+    font-size: 12px;
+    line-height: 16px;
+  }
+  .preview-msg {
+    max-height: 54vh;
+    overflow: auto;
   }
 `
 
@@ -53,18 +69,22 @@ function MessageGenerator({ setMessage }): ReactElement {
       <div>
         <p>Message</p>
         <CodeMirror
+          className={errorMsg ? 'error' : ''}
           theme={githubDark}
           extensions={[json()]}
           value={rawMsg}
-          height="600px"
+          height="54vh"
           onChange={(value, viewUpdate) => onMsgChange(value)}
         />
-        <p>{errorMsg}</p>
+        <p className="error-msg">{errorMsg}</p>
       </div>
-      <div>
-        {parsedMsg.map((msg, index) => {
-          return <Message msgData={msg} key={index} />
-        })}
+      <div className="preview">
+        <p>Transaction Preview</p>
+        <div className="preview-msg">
+          {parsedMsg.map((msg, index) => {
+            return <Message msgData={msg} key={index} />
+          })}
+        </div>
       </div>
     </Wrap>
   )
@@ -72,6 +92,7 @@ function MessageGenerator({ setMessage }): ReactElement {
 
 export const NoPaddingAccordion = styled(Accordion)`
   margin-bottom: 16px !important;
+  border-radius: 8px !important;
   &.MuiAccordion-root {
     border: none !important;
     .MuiAccordionDetails-root {
@@ -81,7 +102,7 @@ export const NoPaddingAccordion = styled(Accordion)`
 `
 
 export const StyledAccordionSummary = styled(AccordionSummary)`
-  background-color: #24262e !important;
+  background-color: #363843 !important;
   border: none !important;
   height: 52px;
   &.Mui-expanded {
@@ -91,6 +112,10 @@ export const StyledAccordionSummary = styled(AccordionSummary)`
     margin: 0 16px 0 8px;
     min-width: 80px;
   }
+`
+export const StyledAccordionDetails = styled(AccordionDetails)`
+  padding: 16px !important;
+  background: #34353a !important; ;
 `
 
 const Message = ({ msgData }) => {
@@ -137,10 +162,10 @@ const Message = ({ msgData }) => {
   }
   return (
     <NoPaddingAccordion>
-      <StyledAccordionSummary>{msgData?.typeUrl}</StyledAccordionSummary>
-      <AccordionDetails>
+      <StyledAccordionSummary>{msgData?.typeUrl.split('Msg').at(-1)}</StyledAccordionSummary>
+      <StyledAccordionDetails>
         <Wrap dangerouslySetInnerHTML={{ __html: beutifyJson() }} />
-      </AccordionDetails>
+      </StyledAccordionDetails>
     </NoPaddingAccordion>
   )
 }

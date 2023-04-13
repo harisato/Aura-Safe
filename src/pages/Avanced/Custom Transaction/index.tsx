@@ -23,6 +23,13 @@ const Wrap = styled.div`
     line-height: 24px;
     margin-bottom: 16px;
   }
+  .description {
+    color: #ccd0d5;
+  }
+  .btn {
+    display: flex;
+    justify-content: end;
+  }
 `
 
 function CustomTransaction(props): ReactElement {
@@ -65,10 +72,17 @@ function CustomTransaction(props): ReactElement {
     <>
       <Breadcrumb title="Custom Transaction" subtitleIcon={Icon} subtitle="Custom Transaction / Custom Transaction" />
       <Wrap>
+        <div className="title">Custom Transaction</div>
+        <p className="description">
+          Sign and create any multi-sig transaction based on input message using JSON format. Pyxis Safe cannot validate
+          and message types which is unsupported by the network. Make sure you know what you are doing.
+        </p>
         <MessageGenerator setMessage={setMessage} />
-        <FilledButton disabled={loading} onClick={createTransaction}>
-          {loading ? <Loader content="Create Transaction" /> : 'Create Transaction'}
-        </FilledButton>
+        <div className="btn">
+          <FilledButton disabled={loading} onClick={createTransaction}>
+            {loading ? <Loader content="Create Transaction" /> : 'Create Transaction'}
+          </FilledButton>
+        </div>
       </Wrap>
       <ReviewPopup open={open} setOpen={setOpen} gasUsed={Math.round(gasUsed * 1.3)} msg={message} />
     </>
