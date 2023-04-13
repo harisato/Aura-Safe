@@ -166,6 +166,9 @@
   },
   "dependencies": {
     "@aura/safe-react-components": "https://github.com/aura-nw/safe-react-components.git",
+    "@codemirror/lang-javascript": "^6.1.6",
+    "@codemirror/lang-json": "^6.0.1",
+    "@codemirror/language": "^6.6.0",
     "@cosmjs/cosmwasm-stargate": "^0.28.11",
     "@cosmjs/stargate": "^0.28.11",
     "@gnosis.pm/safe-apps-sdk": "6.1.0",
@@ -181,6 +184,8 @@
     "@reduxjs/toolkit": "^1.8.6",
     "@sentry/react": "^6.10.0",
     "@sentry/tracing": "^6.10.0",
+    "@uiw/codemirror-theme-github": "^4.19.16",
+    "@uiw/react-codemirror": "^4.19.16",
     "@unstoppabledomains/resolution": "^1.17.0",
     "abi-decoder": "^2.4.0",
     "axios": "0.21.4",

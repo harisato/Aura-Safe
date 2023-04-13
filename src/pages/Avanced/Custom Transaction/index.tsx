@@ -70,7 +70,7 @@ function CustomTransaction(props): ReactElement {
           {loading ? <Loader content="Create Transaction" /> : 'Create Transaction'}
         </FilledButton>
       </Wrap>
-      <ReviewPopup open={open} setOpen={setOpen} gasUsed={gasUsed} msg={message} />
+      <ReviewPopup open={open} setOpen={setOpen} gasUsed={Math.round(gasUsed * 1.3)} msg={message} />
     </>
   )
 }

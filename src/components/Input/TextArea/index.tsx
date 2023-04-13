@@ -71,6 +71,7 @@ export default function TextArea({
   placeholder,
   required,
   errorMsg,
+  id,
 }: {
   value: any
   onChange: (value: string) => void
@@ -82,10 +83,11 @@ export default function TextArea({
   placeholder?: string
   required?: boolean
   errorMsg?: string
+  id?: string
 }) {
   const [isFocus, setIsFocus] = useState(false)
   return (
-    <Wrap className={isFocus ? 'focused' : ''}>
+    <Wrap id={id} className={isFocus ? 'focused' : ''}>
       {label && (
         <div className="input-label">
           {label}

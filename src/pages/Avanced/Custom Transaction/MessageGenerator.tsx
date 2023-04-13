@@ -3,6 +3,12 @@ import { ReactElement, useEffect, useState } from 'react'
 import TextArea from 'src/components/Input/TextArea'
 import { getInternalChainId } from 'src/config'
 import styled from 'styled-components'
+import CodeMirror from '@uiw/react-codemirror'
+import { githubDark } from '@uiw/codemirror-theme-github'
+import { StreamLanguage } from '@codemirror/language'
+import { json } from '@codemirror/lang-json'
+import { javascript } from '@codemirror/lang-javascript'
+
 const Wrap = styled.div`
   display: flex;
   gap: 12px;
@@ -18,9 +24,20 @@ function MessageGenerator({ setMessage }): ReactElement {
   const [parsedMsg, setParsedMsg] = useState<any[]>([])
   const [errorMsg, setErrorMsg] = useState('')
 
-  const parseMsg = () => {
+  const onMsgChange = (msg) => {
     try {
-      const parsedMessage = JSON.parse(rawMsg)
+      setErrorMsg('')
+      setMessage([])
+      setParsedMsg([])
+      setRawMsg(msg)
+
+      if (!msg) {
+        setRawMsg('')
+        return
+      }
+      const parsedMessage = JSON.parse(msg)
+      const prettyJson = JSON.stringify(parsedMessage, undefined, 4)
+      setRawMsg(prettyJson)
       if (typeof parsedMessage !== 'object' || !Array.isArray(parsedMessage)) {
         throw new Error('Input data is not an array')
       }
@@ -30,17 +47,18 @@ function MessageGenerator({ setMessage }): ReactElement {
       setErrorMsg(error.message)
     }
   }
-  useEffect(() => {
-    setErrorMsg('')
-    if (rawMsg != '') {
-      parseMsg()
-    }
-  }, [rawMsg])
+
   return (
     <Wrap>
       <div>
         <p>Message</p>
-        <TextArea value={rawMsg} onChange={setRawMsg} rows={25} />
+        <CodeMirror
+          theme={githubDark}
+          extensions={[json()]}
+          value={rawMsg}
+          height="600px"
+          onChange={(value, viewUpdate) => onMsgChange(value)}
+        />
         <p>{errorMsg}</p>
       </div>
       <div>
@@ -76,10 +94,53 @@ export const StyledAccordionSummary = styled(AccordionSummary)`
 `
 
 const Message = ({ msgData }) => {
+  const Wrap = styled.div`
+    white-space: pre-wrap;
+    .string {
+      color: #ce9178;
+    }
+    .number {
+      color: #aac19e;
+    }
+    .boolean {
+      color: #266781;
+    }
+    .null {
+      color: #d33a3a;
+    }
+    .key {
+      color: #569cd6;
+    }
+  `
+  const beutifyJson = () => {
+    const prettyJson = JSON.stringify(msgData?.value, undefined, 4)
+    const json = prettyJson.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+    const formattedJson = json.replace(
+      /("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g,
+      function (match) {
+        var cls = 'number'
+        if (/^"/.test(match)) {
+          if (/:$/.test(match)) {
+            cls = 'key'
+          } else {
+            cls = 'string'
+          }
+        } else if (/true|false/.test(match)) {
+          cls = 'boolean'
+        } else if (/null/.test(match)) {
+          cls = 'null'
+        }
+        return '<span class="' + cls + '">' + match + '</span>'
+      },
+    )
+    return formattedJson
+  }
   return (
     <NoPaddingAccordion>
       <StyledAccordionSummary>{msgData?.typeUrl}</StyledAccordionSummary>
-      <AccordionDetails>{JSON.stringify(msgData?.value)}</AccordionDetails>
+      <AccordionDetails>
+        <Wrap dangerouslySetInnerHTML={{ __html: beutifyJson() }} />
+      </AccordionDetails>
     </NoPaddingAccordion>
   )
 }
