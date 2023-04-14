@@ -438,6 +438,11 @@ export const TxDetailsContainer = styled.div<{ ownerRows?: number }>`
   grid-template-rows: [tx-summary] minmax(min-content, max-content) [tx-details] minmax(min-content, 1fr);
   width: 100%;
   position: relative;
+  .msgs {
+    padding: 16px;
+    max-height: 500px;
+    overflow: auto;
+  }
   .recipient {
     display: flex;
     align-items: center;

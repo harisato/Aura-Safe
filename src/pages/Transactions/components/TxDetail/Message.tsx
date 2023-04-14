@@ -1,10 +1,11 @@
 import { MsgTypeUrl } from 'src/logic/providers/constants/constant'
 import { formatNativeToken } from 'src/utils'
 import AddressInfo from 'src/components/AddressInfo'
-import { Fragment } from 'react'
+import { Fragment, useEffect, useState } from 'react'
 import { formatDateTime, formatWithSchema } from 'src/utils/date'
 import StatusCard from 'src/components/StatusCard'
 import styled from 'styled-components'
+import { Message } from 'src/components/CustomTransactionMessage/SmallMsg'
 
 const voteMapping = {
   1: 'Yes',
@@ -23,7 +24,22 @@ const StyledStatus = styled.div`
 export default function TxMsg({ tx, txDetail }) {
   const type = tx.txInfo.typeUrl
   const amount = formatNativeToken(txDetail.txMessage[0]?.amount || 0)
+  const [msg, setMsg] = useState([])
+  useEffect(() => {
+    if (txDetail?.rawMessage) {
+      setMsg(JSON.parse(txDetail?.rawMessage))
+    }
+  }, [txDetail])
   if (!txDetail) return null
+  if (msg?.length > 1) {
+    return (
+      <div className="msgs">
+        {msg.map((message, index) => {
+          return <Message index={index} msgData={message} key={index} />
+        })}
+      </div>
+    )
+  }
   if (type == MsgTypeUrl.ExecuteContract) {
     return (
       <div className="tx-msg">

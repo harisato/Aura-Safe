@@ -155,7 +155,6 @@ export const signMessage = async (
   memo?: string,
 ): Promise<any> => {
   try {
-    console.log('aa')
     const loadLastUsedProviderResult = await loadLastUsedProvider()
     const provider = loadLastUsedProviderResult
       ? await getProvider(loadLastUsedProviderResult as WALLETS_NAME)

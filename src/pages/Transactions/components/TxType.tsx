@@ -85,7 +85,7 @@ export default function TxType({ type }) {
   return (
     <div className="tx-type">
       <img src={CustomIcon} alt="custom-icon" />
-      <p>Unknown</p>
+      <p>Custom Transaction</p>
     </div>
   )
 }

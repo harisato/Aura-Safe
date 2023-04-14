@@ -10,7 +10,13 @@ import { Popup } from 'src/components/Popup'
 import Footer from 'src/components/Popup/Footer'
 import Header from 'src/components/Popup/Header'
 import Amount from 'src/components/TxComponents/Amount'
-import { getChainDefaultGasPrice, getChainInfo, getCoinDecimal, getInternalChainId } from 'src/config'
+import {
+  getChainDefaultGasPrice,
+  getChainInfo,
+  getCoinDecimal,
+  getInternalChainId,
+  getNativeCurrency,
+} from 'src/config'
 import { enhanceSnackbarForAction, ERROR, NOTIFICATIONS } from 'src/logic/notifications'
 import enqueueSnackbar from 'src/logic/notifications/store/actions/enqueueSnackbar'
 import { MsgTypeUrl } from 'src/logic/providers/constants/constant'
@@ -30,10 +36,12 @@ import {
 import { createSafeTransaction } from 'src/services'
 import { MESSAGES_CODE } from 'src/services/constant/message'
 import { ICreateSafeTransaction } from 'src/types/transaction'
-import { calcFee, formatNativeCurrency } from 'src/utils'
+import { calcFee, formatNativeCurrency, formatNumber } from 'src/utils'
 import styled from 'styled-components'
 import { Wrap } from './styles'
 import { Accordion, AccordionSummary, AccordionDetails } from '@aura/safe-react-components'
+import BigNumber from 'bignumber.js'
+import { Message } from 'src/components/CustomTransactionMessage/SmallMsg'
 
 export default function ReviewPopup({ open, setOpen, gasUsed, msg }) {
   const safeAddress = extractSafeAddress()
@@ -41,6 +49,7 @@ export default function ReviewPopup({ open, setOpen, gasUsed, msg }) {
   const { ethBalance: balance } = useSelector(currentSafeWithNames)
   const chainDefaultGasPrice = getChainDefaultGasPrice()
   const decimal = getCoinDecimal()
+  const nativeCurrency = getNativeCurrency()
   const defaultGas = '250000'
   const gasFee =
     defaultGas && chainDefaultGasPrice
@@ -52,14 +61,33 @@ export default function ReviewPopup({ open, setOpen, gasUsed, msg }) {
   const [openGasInput, setOpenGasInput] = useState<boolean>(false)
   const [sequence, setSequence] = useState('0')
   const [isDisabled, setDisabled] = useState(false)
+  const [amount, setAmount] = useState('0')
   const userWalletAddress = useSelector(userAccountSelector)
   const chainInfo = getChainInfo()
 
   useEffect(() => {
-    setManualGasLimit(gasUsed)
-    const gasFee = calculateGasFee(+gasUsed, +chainDefaultGasPrice, decimal)
-    setGasPriceFormatted(gasFee)
+    if (gasUsed) {
+      setManualGasLimit(gasUsed)
+      const gasFee = calculateGasFee(+gasUsed, +chainDefaultGasPrice, decimal)
+      setGasPriceFormatted(gasFee)
+    }
   }, [gasUsed])
+
+  useEffect(() => {
+    let newTotalAmount = new BigNumber(0)
+
+    msg.map((message: any) => {
+      if ('/cosmos.bank.v1beta1.MsgSend' == message.typeUrl) {
+        newTotalAmount = newTotalAmount.plus(+formatNumber(message?.value?.amount[0]?.amount || 0))
+      }
+      if (MsgTypeUrl.MultiSend == message.typeUrl) {
+        message.value?.outputs?.map((re) => {
+          newTotalAmount = newTotalAmount.plus(+formatNumber(re?.coins[0]?.amount || 0))
+        })
+      }
+    })
+    setAmount(newTotalAmount.toString())
+  }, [])
 
   const signTransaction = async () => {
     setDisabled(true)
@@ -193,7 +221,15 @@ export default function ReviewPopup({ open, setOpen, gasUsed, msg }) {
           setSequence={setSequence}
         />
         <Divider />
-        <Amount amount={formatNativeCurrency(+gasPriceFormatted)} label="Total Allocation Amount" />
+        <Amount
+          amount={formatNativeCurrency(
+            new BigNumber(+amount)
+              .div(new BigNumber(10).pow(nativeCurrency.decimals))
+              .plus(+gasPriceFormatted)
+              .toString(),
+          )}
+          label="Total Allocation Amount"
+        />
         <div className="notice">
           You’re about to create a transaction and will have to confirm it with your currently connected wallet.
         </div>
@@ -207,93 +243,5 @@ export default function ReviewPopup({ open, setOpen, gasUsed, msg }) {
         </FilledButton>
       </Footer>
     </Popup>
-  )
-}
-
-export const NoPaddingAccordion = styled(Accordion)`
-  margin-bottom: 8px !important;
-  border-radius: 8px !important;
-  &.MuiAccordion-root {
-    border: none !important;
-    .MuiAccordionDetails-root {
-      padding: 0;
-    }
-  }
-`
-
-export const StyledAccordionSummary = styled(AccordionSummary)`
-  background-color: #363843 !important;
-  border: none !important;
-  min-height: 24px !important;
-  font-size: 12px;
-  &.Mui-expanded {
-    background-color: #363843 !important;
-  }
-  .tx-nonce {
-    margin: 0 16px 0 8px;
-    min-width: 80px;
-  }
-  > div {
-    padding: 0px !important;
-    margin: 0px !important;
-  }
-`
-export const StyledAccordionDetails = styled(AccordionDetails)`
-  padding: 8px !important;
-  background: #34353a !important;
-  font-size: 12px !important;
-`
-
-export const Message = ({ msgData, index }) => {
-  const Wrap = styled.div`
-    white-space: pre-wrap;
-    .string {
-      color: #ce9178;
-    }
-    .number {
-      color: #aac19e;
-    }
-    .boolean {
-      color: #266781;
-    }
-    .null {
-      color: #d33a3a;
-    }
-    .key {
-      color: #569cd6;
-    }
-  `
-  const beutifyJson = () => {
-    const prettyJson = JSON.stringify(msgData?.value, undefined, 4)
-    const json = prettyJson.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
-    const formattedJson = json.replace(
-      /("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g,
-      function (match) {
-        var cls = 'number'
-        if (/^"/.test(match)) {
-          if (/:$/.test(match)) {
-            cls = 'key'
-          } else {
-            cls = 'string'
-          }
-        } else if (/true|false/.test(match)) {
-          cls = 'boolean'
-        } else if (/null/.test(match)) {
-          cls = 'null'
-        }
-        return '<span class="' + cls + '">' + match + '</span>'
-      },
-    )
-    return formattedJson
-  }
-  return (
-    <NoPaddingAccordion>
-      <StyledAccordionSummary>
-        {index + 1}. {msgData?.typeUrl.split('Msg').at(-1)}
-      </StyledAccordionSummary>
-      <StyledAccordionDetails>
-        <Wrap dangerouslySetInnerHTML={{ __html: beutifyJson() }} />
-      </StyledAccordionDetails>
-    </NoPaddingAccordion>
   )
 }
