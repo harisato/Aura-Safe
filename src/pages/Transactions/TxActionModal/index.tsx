@@ -18,6 +18,7 @@ import {
 import { TxSignModalContext } from '../Queue'
 import ClaimRewardPopup from './ClaimReward'
 import ContractInteractionPopup from './ContractInteraction'
+import CustomTransactionPopup from './CustomTransaction'
 import DelegatePopup from './Delegate'
 import MultiSendPopup from './MultiSend'
 import RedelegatePopup from './Redelegate'
@@ -363,7 +364,20 @@ export default function TxActionModal() {
       />
     )
   }
-  return <></>
+  return (
+    <CustomTransactionPopup
+      open={open}
+      onClose={() => setOpen(false)}
+      data={txData}
+      sendTx={sendTx}
+      rejectTx={rejectTx}
+      deleteTx={deleteTx}
+      disabled={isDisabled}
+      setDisabled={setIsDisabled}
+      confirmTxFromApi={confirmTxFromApi}
+      changeTxSeqFromApi={changeTxSeqFromApi}
+    />
+  )
 }
 
 export const getTitle = (action) => {

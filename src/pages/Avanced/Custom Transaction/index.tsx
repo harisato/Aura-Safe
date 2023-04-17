@@ -41,6 +41,7 @@ function CustomTransaction(props): ReactElement {
 
   const [gasUsed, setGasUsed] = useState(0)
   const [loading, setLoading] = useState(false)
+  const [error, setIsError] = useState(true)
   const [open, setOpen] = useState(false)
   const createTransaction = async () => {
     try {
@@ -77,9 +78,9 @@ function CustomTransaction(props): ReactElement {
           Sign and create any multi-sig transaction based on input message using JSON format. Pyxis Safe cannot validate
           and message types which is unsupported by the network. Make sure you know what you are doing.
         </p>
-        <MessageGenerator setMessage={setMessage} />
+        <MessageGenerator setMessage={setMessage} setIsError={setIsError} />
         <div className="btn">
-          <FilledButton disabled={loading} onClick={createTransaction}>
+          <FilledButton disabled={loading || error} onClick={createTransaction}>
             {loading ? <Loader content="Create Transaction" /> : 'Create Transaction'}
           </FilledButton>
         </div>

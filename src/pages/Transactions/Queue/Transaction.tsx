@@ -43,7 +43,7 @@ export default function Transaction({
             <TxSequence sequence={transaction.txSequence} />
           )}
           <TxType type={transaction.txInfo.typeUrl} />
-          <TxAmount amount={transaction.txInfo.amount} />
+          <TxAmount amount={transaction.txInfo.typeUrl == 'Custom' ? 0 : transaction.txInfo.amount} />
           <TxTime time={transaction.timestamp ? formatTimeInWords(transaction.timestamp) : 'Unknown'} />
           <TxExecutionInfo
             required={transaction.executionInfo.confirmationsRequired}

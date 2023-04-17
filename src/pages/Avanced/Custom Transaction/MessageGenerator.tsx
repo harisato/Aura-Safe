@@ -35,7 +35,7 @@ const Wrap = styled.div`
   }
 `
 
-function MessageGenerator({ setMessage }): ReactElement {
+function MessageGenerator({ setMessage, setIsError }): ReactElement {
   const internalChainId = getInternalChainId()
   const [rawMsg, setRawMsg] = useState('')
   const [parsedMsg, setParsedMsg] = useState<any[]>([])
@@ -50,8 +50,10 @@ function MessageGenerator({ setMessage }): ReactElement {
 
       if (!msg) {
         setRawMsg('')
+        setIsError(true)
         return
       }
+      setIsError(false)
       const parsedMessage = JSON.parse(msg)
       const prettyJson = JSON.stringify(parsedMessage, undefined, 4)
       setRawMsg(prettyJson)
@@ -67,6 +69,11 @@ function MessageGenerator({ setMessage }): ReactElement {
       setErrorMsg(error.message)
     }
   }
+  useEffect(() => {
+    if (errorMsg) {
+      setIsError(true)
+    }
+  }, [errorMsg])
 
   return (
     <Wrap>

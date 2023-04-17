@@ -700,6 +700,10 @@ export const NoTransactions = styled.div`
 export const ReviewTxPopupWrapper = styled.div`
   padding: 24px;
   width: 540px;
+  .msgs {
+    max-height: 39vh;
+    overflow: auto;
+  }
   .recipient {
     display: flex;
     align-items: center;
