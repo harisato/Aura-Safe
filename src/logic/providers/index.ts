@@ -149,6 +149,8 @@ export async function getKeplrKey(chainId: string): Promise<WalletKey | undefine
     .then((keplr) => {
       if (keplr) {
         return keplr.getKey(chainId)
+      } else {
+        alert("keplr not found")
       }
     })
     .then((key) =>
