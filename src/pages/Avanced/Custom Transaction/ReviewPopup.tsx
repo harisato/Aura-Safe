@@ -1,9 +1,11 @@
 import { toBase64, toUtf8 } from '@cosmjs/encoding'
+import BigNumber from 'bignumber.js'
 import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { generatePath } from 'react-router-dom'
 import AddressInfo from 'src/components/AddressInfo'
 import { FilledButton, OutlinedNeutralButton } from 'src/components/Button'
+import { Message } from 'src/components/CustomTransactionMessage/SmallMsg'
 import Divider from 'src/components/Divider'
 import FeeAndSequence from 'src/components/FeeAndSequence'
 import { Popup } from 'src/components/Popup'
@@ -17,31 +19,27 @@ import {
   getInternalChainId,
   getNativeCurrency,
 } from 'src/config'
-import { enhanceSnackbarForAction, ERROR, NOTIFICATIONS } from 'src/logic/notifications'
+import { ERROR, NOTIFICATIONS, enhanceSnackbarForAction } from 'src/logic/notifications'
 import enqueueSnackbar from 'src/logic/notifications/store/actions/enqueueSnackbar'
 import { MsgTypeUrl } from 'src/logic/providers/constants/constant'
-import { signCosWasmMessage, signMessage } from 'src/logic/providers/signing'
+import { signMessage } from 'src/logic/providers/signing'
 import calculateGasFee from 'src/logic/providers/utils/fee'
 import fetchTransactions from 'src/logic/safe/store/actions/transactions/fetchTransactions'
 import { currentSafeWithNames } from 'src/logic/safe/store/selectors'
 import { userAccountSelector } from 'src/logic/wallets/store/selectors'
 import {
+  SAFE_ADDRESS_SLUG,
+  SAFE_ROUTES,
   extractSafeAddress,
   extractShortChainName,
   getPrefixedSafeAddressSlug,
   history,
-  SAFE_ADDRESS_SLUG,
-  SAFE_ROUTES,
 } from 'src/routes/routes'
 import { createSafeTransaction } from 'src/services'
 import { MESSAGES_CODE } from 'src/services/constant/message'
 import { ICreateSafeTransaction } from 'src/types/transaction'
 import { calcFee, formatNativeCurrency, formatNumber } from 'src/utils'
-import styled from 'styled-components'
 import { Wrap } from './styles'
-import { Accordion, AccordionSummary, AccordionDetails } from '@aura/safe-react-components'
-import BigNumber from 'bignumber.js'
-import { Message } from 'src/components/CustomTransactionMessage/SmallMsg'
 
 export default function ReviewPopup({ open, setOpen, gasUsed, msg }) {
   const safeAddress = extractSafeAddress()
@@ -86,6 +84,10 @@ export default function ReviewPopup({ open, setOpen, gasUsed, msg }) {
         })
       }
     })
+    const gasUsed = (200000 * msg.length).toString()
+    setManualGasLimit(gasUsed)
+    const gasFee = calculateGasFee(+gasUsed, +chainDefaultGasPrice, decimal)
+    setGasPriceFormatted(gasFee)
     setAmount(newTotalAmount.toString())
   }, [])
 
@@ -197,7 +199,7 @@ export default function ReviewPopup({ open, setOpen, gasUsed, msg }) {
 
   return (
     <Popup title="" open={open} handleClose={() => setOpen(false)}>
-      <Header onClose={() => setOpen(false)} title={'Contract Interaction'} />
+      <Header onClose={() => setOpen(false)} title={'Custom Transaction'} />
       <Wrap>
         <AddressInfo address={safeAddress} />
         <div className="balance">
