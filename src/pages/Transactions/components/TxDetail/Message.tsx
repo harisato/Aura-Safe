@@ -46,7 +46,7 @@ export default function TxMsg({ tx, txDetail }) {
         <div>
           <span style={{ color: '#B4B8C0' }}>Interct with contract: </span>
           <span style={{ display: 'inline-block' }}>
-            <AddressInfo address={txDetail?.txMessage[0]?.contractAddress} showAvatar={false} showName={false} />
+            <div>{txDetail?.txMessage[0]?.contractAddress}</div>
           </span>
         </div>
 

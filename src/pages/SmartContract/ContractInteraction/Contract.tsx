@@ -107,7 +107,7 @@ function Contract({ contractData }): ReactElement {
     }
   }, [contractData.contractAddress, contractData.executeMsgSchema])
 
-  if (!contractData?.executeMsgSchema) return <></>
+  if (!contractData?.executeMsgSchema || !contractData.contractAddress) return <></>
 
   return (
     <Wrap>

@@ -43,7 +43,9 @@ function ContractInteraction(props): ReactElement {
       setContractData(Data)
       setIsVerifiedContract(Data.verification ? 'true' : 'false')
     } else {
-      setContractData({})
+      setContractData({
+        contractAddress: contractAddress,
+      })
       setIsVerifiedContract('false')
     }
   }
