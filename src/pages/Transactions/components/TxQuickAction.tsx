@@ -16,6 +16,7 @@ import fetchTransactions from 'src/logic/safe/store/actions/transactions/fetchTr
 import { getTransactionByAttribute } from 'src/logic/safe/store/selectors/gatewayTransactions'
 import { userAccountSelector } from 'src/logic/wallets/store/selectors'
 import { extractSafeAddress, generateSafeRoute, history, SAFE_ROUTES } from 'src/routes/routes'
+import { grantedSelector } from 'src/utils/safeUtils/selector'
 import { confirmSafeTransaction, rejectTransactionById, sendSafeTransaction } from 'src/services'
 import { AppReduxState } from 'src/store'
 import { ICreateSafeTransaction } from 'src/types/transaction'
@@ -37,6 +38,7 @@ export default function TxQuickAction({ transaction, curSeq }) {
   const safeAddress = extractSafeAddress()
   const chainId = chainInfo.chainId
   const denom = getCoinMinimalDenom()
+  const granted = useSelector(grantedSelector)
   const [loading, setLoading] = useState(false)
   const [isWaiting, setIsWaiting] = useState(false)
   const data = useSelector((state: AppReduxState) =>
@@ -317,6 +319,8 @@ export default function TxQuickAction({ transaction, curSeq }) {
       )
     }
   }
+
+  if (!granted) return <Wrap></Wrap>
 
   if (transaction?.executionInfo?.confirmationsRequired <= transaction?.executionInfo?.confirmationsSubmitted.length) {
     if (+curSeq != +transaction.txSequence || transaction.txStatus == 'PENDING') {

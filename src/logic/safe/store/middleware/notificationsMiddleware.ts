@@ -9,7 +9,7 @@ import { getAwaitingGatewayTransactions } from 'src/logic/safe/transactions/awai
 import { getSafeVersionInfo } from 'src/logic/safe/utils/safeVersion'
 import { isUserAnOwner } from 'src/logic/wallets/ethAddresses'
 import { userAccountSelector } from 'src/logic/wallets/store/selectors'
-import { grantedSelector } from 'src/routes/safe/container/selector'
+import { grantedSelector } from 'src/utils/safeUtils/selector'
 import {
   ADD_QUEUED_TRANSACTIONS,
   ADD_HISTORY_TRANSACTIONS,

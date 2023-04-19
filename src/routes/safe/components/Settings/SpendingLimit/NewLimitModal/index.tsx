@@ -5,7 +5,7 @@ import { useSelector } from 'react-redux'
 import { Modal } from 'src/components/Modal'
 import { makeToken, Token } from 'src/logic/tokens/store/model/token'
 import { sameAddress } from 'src/logic/wallets/ethAddresses'
-import { extendedSafeTokensSelector } from 'src/routes/safe/container/selector'
+import { extendedSafeTokensSelector } from 'src/utils/safeUtils/selector'
 
 import Create from './Create'
 import { ReviewSpendingLimits } from './Review'

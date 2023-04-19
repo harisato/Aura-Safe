@@ -1,7 +1,7 @@
 import { Loader } from '@aura/safe-react-components'
 import { useSelector } from 'react-redux'
 import { getExplorerInfo } from 'src/config'
-import { grantedSelector } from 'src/routes/safe/container/selector'
+import { grantedSelector } from 'src/utils/safeUtils/selector'
 import { formatWithSchema } from 'src/utils/date'
 import { useTransactionDetails } from '../../../../utils/hooks/useTransactionDetails'
 import { Centered, InlineEthHashInfo, TxDetailsContainer } from '../../styled'

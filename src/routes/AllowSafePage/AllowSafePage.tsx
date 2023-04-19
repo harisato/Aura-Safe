@@ -182,7 +182,6 @@ function Allow(): ReactElement {
   const onSubmitAllowSafe = async (values: AllowSafeFormValues): Promise<void> => {
     const id = values[FIELD_ALLOW_SAFE_ID]
     const safeName = values[FIELD_ALLOW_CUSTOM_SAFE_NAME] || values[FIELD_ALLOW_SUGGESTED_SAFE_NAME]
-    console.log('getKeplrKey', values)
     const walletKey = await getKeplrKey(chainId)
     if (!id || !walletKey) {
       dispatch(

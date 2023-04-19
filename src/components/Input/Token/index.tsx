@@ -3,7 +3,7 @@ import { Token } from 'src/logic/tokens/store/model/token'
 import styled from 'styled-components'
 import MenuItem from '@material-ui/core/MenuItem'
 import { useSelector } from 'react-redux'
-import { extendedSafeTokensSelector } from 'src/routes/safe/container/selector'
+import { extendedSafeTokensSelector } from 'src/utils/safeUtils/selector'
 import { List } from 'immutable'
 
 const MenuItemWrapper = styled.div`

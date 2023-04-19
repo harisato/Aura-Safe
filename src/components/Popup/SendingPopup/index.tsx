@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux'
 import { getCoinMinimalDenom } from 'src/config'
 import { SpendingLimit } from 'src/logic/safe/store/models/safe'
 
-import { extendedSafeTokensSelector } from 'src/routes/safe/container/selector'
+import { extendedSafeTokensSelector } from 'src/utils/safeUtils/selector'
 
 import { coins } from '@cosmjs/stargate'
 import AddressInfo from 'src/components/AddressInfo'

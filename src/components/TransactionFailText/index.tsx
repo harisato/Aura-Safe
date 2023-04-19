@@ -9,7 +9,7 @@ import InfoIcon from 'src/assets/icons/info_red.svg'
 import { useSelector } from 'react-redux'
 import { currentSafeThreshold } from 'src/logic/safe/store/selectors'
 import { shouldSwitchWalletChain } from 'src/logic/wallets/store/selectors'
-import { grantedSelector } from 'src/routes/safe/container/selector'
+import { grantedSelector } from 'src/utils/safeUtils/selector'
 
 const styles = createStyles({
   executionWarningRow: {

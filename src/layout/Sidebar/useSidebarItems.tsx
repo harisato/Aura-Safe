@@ -7,7 +7,7 @@ import { getShortName } from 'src/config'
 import { ListItemType } from 'src/components/List'
 import ListIcon from 'src/layout/Sidebar/ListIcon'
 import { currentSafeFeaturesEnabled, currentSafeWithNames } from 'src/logic/safe/store/selectors'
-import { grantedSelector } from 'src/routes/safe/container/selector'
+import { grantedSelector } from 'src/utils/safeUtils/selector'
 import {
   extractSafeAddress,
   ADDRESSED_ROUTE,

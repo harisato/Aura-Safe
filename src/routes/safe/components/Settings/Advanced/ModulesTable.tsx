@@ -10,7 +10,7 @@ import { RemoveModuleModal } from './RemoveModuleModal'
 import { useStyles } from './style'
 
 import ButtonHelper from 'src/components/ButtonHelper'
-import { grantedSelector } from 'src/routes/safe/container/selector'
+import { grantedSelector } from 'src/utils/safeUtils/selector'
 import { ModulePair } from 'src/logic/safe/store/models/safe'
 import Table from 'src/components/Table'
 import { TableCell, TableRow } from 'src/components/layout/Table'

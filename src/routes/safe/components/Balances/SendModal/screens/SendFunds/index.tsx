@@ -36,7 +36,7 @@ import { AddressBookInput } from 'src/routes/safe/components/Balances/SendModal/
 import { SpendingLimitRow } from 'src/routes/safe/components/Balances/SendModal/screens/SendFunds/SpendingLimitRow'
 import TokenSelectField from 'src/routes/safe/components/Balances/SendModal/screens/SendFunds/TokenSelectField'
 import { fromTokenUnit } from 'src/logic/tokens/utils/humanReadableValue'
-import { extendedSafeTokensSelector } from 'src/routes/safe/container/selector'
+import { extendedSafeTokensSelector } from 'src/utils/safeUtils/selector'
 import { currentSafeSpendingLimits } from 'src/logic/safe/store/selectors'
 import { sameString } from 'src/utils/strings'
 

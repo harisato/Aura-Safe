@@ -1,7 +1,7 @@
 import { ReactElement, useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 
-import { extendedSafeTokensSelector } from 'src/routes/safe/container/selector'
+import { extendedSafeTokensSelector } from 'src/utils/safeUtils/selector'
 
 import { AminoMsgMultiSend, coins } from '@cosmjs/stargate'
 import BigNumber from 'bignumber.js'
