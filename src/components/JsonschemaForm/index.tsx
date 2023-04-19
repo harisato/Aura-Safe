@@ -45,7 +45,6 @@ function JsonschemaForm({
 }): ReactElement {
   const dispatch = useDispatch()
   const jsValidator = new Validator()
-  console.log(schema)
   if (!schema) return <></>
   jsValidator.addSchema(schema)
   const schemaInput = makeSchemaInput(jsValidator)

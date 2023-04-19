@@ -207,11 +207,16 @@ export default function Execute({
             </TxContent>
           ) : (
             <>
-              {+amount > 0 ? <Amount amount={formatNativeToken(new BigNumber(+amount).toString())} /> : null}
+              {+amount > 0 ? (
+                <>
+                  <Amount amount={formatNativeToken(new BigNumber(+amount).toString())} />
+                  <Gap height={16} />
+                </>
+              ) : null}
               {action == 'change-sequence' && (
                 <>
                   <EditSequence defaultSequence={data?.txSequence} sequence={sequence} setSequence={setSequence} />
-                  <Gap height={24} />
+                  <Gap height={16} />
                 </>
               )}
               <Divider />
