@@ -105,7 +105,7 @@ function Contract({ contractData }): ReactElement {
     } catch (error) {
       console.log('ee', error)
     }
-  }, [contractData.contractAddress])
+  }, [contractData.contractAddress, contractData.executeMsgSchema])
 
   if (!contractData?.executeMsgSchema) return <></>
 
