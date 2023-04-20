@@ -37,7 +37,6 @@ export const TxOwners = ({ txDetails }: { txDetails: any }): ReactElement | null
       </div>
     </OwnerListItem>
   )
-  console.log(txDetails)
 
   return (
     <OwnerList>

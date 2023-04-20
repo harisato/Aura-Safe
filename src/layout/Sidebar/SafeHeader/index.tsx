@@ -97,12 +97,6 @@ const SafeHeader = ({
             }}
             options={[
               {
-                label: 'Send',
-                onClick: () => {
-                  setSendTxType('single-send')
-                },
-              },
-              {
                 label: 'Multi Send',
                 onClick: () => {
                   setSendTxType('multi-send')
