@@ -89,6 +89,7 @@ export const fetchTransactionDetailsById =
         txStatus: (Data.Status == '0' ? TransactionStatus.SUCCESS : Data.Status) as TransactionStatus,
         txMessage: Data?.Messages?.length ? Data?.Messages : [],
         rawMessage: Data?.RawMessages,
+        deletedBy: Data?.Deleter,
         fee: Data?.Fee?.toString() || 0,
         gas: Data?.Gas?.toString() || 0,
         txHash: Data?.TxHash || null,
