@@ -106,6 +106,7 @@ export function getMChainsConfig(): Promise<MChainInfo[]> {
             txHash: getExplorerUrl(e.chainId, e.explorer, 'txHash'),
             api: getExplorerUrl(e.chainId, e.explorer, 'api'),
             proposals: getExplorerUrl(e.chainId, e.explorer, 'proposals'),
+            contract: getExplorerUrl(e.chainId, e.explorer, 'contract'),
           },
           nativeCurrency: {
             name: e.prefix.charAt(0).toUpperCase() + e.prefix.slice(1, e.prefix.length).toLowerCase(),

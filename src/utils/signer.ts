@@ -1,29 +1,24 @@
 import { Dispatch } from 'redux'
 import { getChainInfo, getInternalChainId } from 'src/config'
 
-import { currentChainId } from 'src/logic/config/store/selectors'
+import { toBase64, toUtf8 } from '@cosmjs/encoding'
+import { generatePath } from 'react-router-dom'
 import { ERROR, NOTIFICATIONS, enhanceSnackbarForAction } from 'src/logic/notifications'
 import enqueueSnackbar from 'src/logic/notifications/store/actions/enqueueSnackbar'
-import { store } from 'src/logic/safe/store'
-import { toBase64, toUtf8 } from '@cosmjs/encoding'
 import { signMessage } from 'src/logic/providers/signing'
+import fetchTransactions from 'src/logic/safe/store/actions/transactions/fetchTransactions'
 import {
   SAFE_ADDRESS_SLUG,
   SAFE_ROUTES,
   extractSafeAddress,
   extractShortChainName,
   getPrefixedSafeAddressSlug,
+  history,
 } from 'src/routes/routes'
-import { MsgTypeUrl } from 'src/logic/providers/constants/constant'
-import { calcFee, formatNativeCurrency, formatNumber } from 'src/utils'
-import { ICreateSafeTransaction } from 'src/types/transaction'
-import { useSelector } from 'react-redux'
-import { userAccountSelector } from 'src/logic/wallets/store/selectors'
 import { changeTransactionSequenceById, confirmSafeTransaction, createSafeTransaction } from 'src/services'
-import { generatePath } from 'react-router-dom'
-import fetchTransactions from 'src/logic/safe/store/actions/transactions/fetchTransactions'
 import { MESSAGES_CODE } from 'src/services/constant/message'
-import { history } from 'src/routes/routes'
+import { ICreateSafeTransaction } from 'src/types/transaction'
+import { calcFee } from 'src/utils'
 export const signAndCreateTransaction =
   (
     message: any[],
@@ -140,7 +135,7 @@ export const signAndConfirmTransaction =
             ...msg,
             value: {
               ...msg.value,
-              msg: toUtf8(JSON.stringify(msg.value.msg)),
+              msg: toUtf8(msg.value.msg),
             },
           }
         }
@@ -230,7 +225,7 @@ export const signAndChangeTransactionSequence =
             ...msg,
             value: {
               ...msg.value,
-              msg: toUtf8(JSON.stringify(msg.value.msg)),
+              msg: toUtf8(msg.value.msg),
             },
           }
         }

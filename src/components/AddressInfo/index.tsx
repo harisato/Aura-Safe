@@ -18,6 +18,7 @@ type EthHashInfoRestProps = Omit<
 
 type Props = EthHashInfoRestProps & {
   address: string
+  type?: string
   name?: string | undefined
   avatarUrl?: string | undefined
 }
@@ -32,6 +33,7 @@ export default function AddressInfo({
   showAvatar = true,
   showName = true,
   avatarUrl,
+  type,
   ...rest
 }: Props): ReactElement | null {
   const toInfo = useKnownAddress({ value: address, name: name || null, logoUri: avatarUrl || null })
@@ -49,7 +51,7 @@ export default function AddressInfo({
       showAvatar={showAvatar}
       customAvatar={addressDetail?.picture || toInfo.logoUri || undefined}
       showCopyBtn={!addressDetail}
-      explorerUrl={getExplorerInfo(addressDetail?.operatorAddress || address)}
+      explorerUrl={getExplorerInfo(addressDetail?.operatorAddress || address, type)}
       {...rest}
     />
   )
