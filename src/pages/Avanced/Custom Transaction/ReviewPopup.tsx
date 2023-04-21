@@ -1,4 +1,3 @@
-import { toUtf8 } from '@cosmjs/encoding'
 import BigNumber from 'bignumber.js'
 import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'

@@ -1,4 +1,3 @@
-import { toUtf8 } from '@cosmjs/encoding'
 import { coins } from '@cosmjs/stargate'
 import { useContext, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
@@ -39,11 +38,9 @@ export default function Execute({ open, onClose, data, sendTx, rejectTx, disable
           contract: data?.txDetails?.txMessage[0].contractAddress,
           sender: safeAddress,
           funds: [],
-          msg: toUtf8(
-            JSON.stringify({
-              [data?.txDetails?.txMessage[0].contractFunction]: JSON.parse(data?.txDetails?.txMessage[0].contractArgs),
-            }),
-          ),
+          msg: {
+            [data?.txDetails?.txMessage[0].contractFunction]: JSON.parse(data?.txDetails?.txMessage[0].contractArgs),
+          },
         },
       },
     ]

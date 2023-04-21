@@ -1,4 +1,3 @@
-import { toUtf8 } from '@cosmjs/encoding'
 import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import AddressInfo from 'src/components/AddressInfo'
@@ -52,11 +51,9 @@ export default function ReviewPopup({ open, setOpen, gasUsed, data, contractData
           contract: contractData.contractAddress,
           sender: safeAddress,
           funds: [],
-          msg: toUtf8(
-            JSON.stringify({
-              [contractData.selectedFunction]: data,
-            }),
-          ),
+          msg: {
+            [contractData.selectedFunction]: data,
+          },
         },
       },
     ]
