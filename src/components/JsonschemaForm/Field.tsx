@@ -14,7 +14,7 @@ export default function Field({ fieldSchema, value, onChange, errorMsg }) {
         label={`${fieldSchema.fieldName} (${fieldSchema.type})`}
         type="number"
         value={value || ''}
-        onChange={onChange}
+        onChange={(value) => onChange(+value)}
         required={fieldSchema.isRequired}
         placeholder={`Input ${fieldSchema.fieldName.replace('_', ' ')}`}
         errorMsg={errorMsg}
