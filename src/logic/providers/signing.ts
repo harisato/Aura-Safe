@@ -37,118 +37,9 @@ const getDefaultOptions = (): KeplrIntereactionOptions => ({
   },
 })
 
-const getMessage: {
-  [key in MsgTypeUrl]?: any
-} = {
-  [MsgTypeUrl.Vote]: Vote,
-}
-
-const signCosmosMessage = async (
-  chainId: string,
-  safeAddress: string,
-  typeUrl: MsgTypeUrl,
-  messages: any,
-  fee: StdFee,
-  sequence?: string | undefined,
-  memo?: string,
-): Promise<any> => {
-  try {
-    const loadLastUsedProviderResult = await loadLastUsedProvider()
-    const provider = loadLastUsedProviderResult
-      ? await getProvider(loadLastUsedProviderResult as WALLETS_NAME)
-      : undefined
-    if (!provider) return
-    provider.defaultOptions = getDefaultOptions()
-    const offlineSignerOnlyAmino = window.getOfflineSignerOnlyAmino
-    if (offlineSignerOnlyAmino) {
-      const signer = await offlineSignerOnlyAmino(chainId)
-      const chainInfo = getChainInfo()
-      if (!signer) return
-      const account = await signer.getAccounts()
-      const client = await SigningStargateClient.offline(signer)
-      // const onlineData = await onlineClient.getSequence(safeAddress)
-      const onlineData: SequenceResponse = (await getAccountOnChain(safeAddress, getInternalChainId())).Data
-      const signerData: SignerData = {
-        accountNumber: onlineData.accountNumber,
-        sequence: sequence ? +sequence : onlineData?.sequence,
-        chainId,
-      }
-      const signerAddress = _.get(account, '[0].address')
-      if (!(signerAddress && messages && fee && signerData)) {
-        return undefined
-      }
-      ;(window as any).signObject = messages?.[0]?.typeUrl
-        ? { signerAddress, messages, fee, memo, signerData }
-        : { signerAddress, messages: [{ typeUrl, value: messages }], fee, memo, signerData }
-      const respone = messages?.[0]?.typeUrl
-        ? await client.sign(signerAddress, messages, fee, memo || '', signerData)
-        : await client.sign(signerAddress, [{ typeUrl, value: messages }], fee, memo || '', signerData)
-      return {
-        ...respone,
-        accountNumber: onlineData.accountNumber,
-        sequence: sequence ? +sequence : onlineData?.sequence,
-      }
-    }
-    return undefined
-  } catch (error) {
-    throw new Error(error)
-  }
-}
-
-export const signCosWasmMessage = async (
-  chainId: string,
-  safeAddress: string,
-  typeUrl: MsgTypeUrl,
-  messages: any,
-  fee: StdFee,
-  sequence?: string | undefined,
-  memo?: string,
-): Promise<any> => {
-  try {
-    const loadLastUsedProviderResult = await loadLastUsedProvider()
-    const provider = loadLastUsedProviderResult
-      ? await getProvider(loadLastUsedProviderResult as WALLETS_NAME)
-      : undefined
-    if (!provider) return
-    provider.defaultOptions = getDefaultOptions()
-    const offlineSignerOnlyAmino = window.getOfflineSignerOnlyAmino
-    if (offlineSignerOnlyAmino) {
-      const signer = await offlineSignerOnlyAmino(chainId)
-      if (!signer) return
-      const account = await signer.getAccounts()
-      const client = await SigningCosmWasmClient.offline(signer)
-      const onlineData: SequenceResponse = (await getAccountOnChain(safeAddress, getInternalChainId())).Data
-      const signerData: SignerData = {
-        accountNumber: onlineData.accountNumber,
-        sequence: sequence ? +sequence : onlineData?.sequence,
-        chainId,
-      }
-      const signerAddress = _.get(account, '[0].address')
-      if (!(signerAddress && messages && fee && signerData)) {
-        return undefined
-      }
-      ;(window as any).signObject = messages?.[0]?.typeUrl
-        ? { signerAddress, messages, fee, memo, signerData }
-        : { signerAddress, messages: [{ typeUrl, value: messages }], fee, memo, signerData }
-      const respone = messages?.[0]?.typeUrl
-        ? await client.sign(signerAddress, messages, fee, memo || '', signerData)
-        : await client.sign(signerAddress, [{ typeUrl, value: messages }], fee, memo || '', signerData)
-      return {
-        ...respone,
-        accountNumber: onlineData.accountNumber,
-        sequence: sequence ? +sequence : onlineData?.sequence,
-      }
-    }
-    return undefined
-  } catch (error) {
-    throw new Error(error)
-  }
-}
-
 export const signMessage = async (
   chainId: string,
   safeAddress: string,
-  typeUrl: MsgTypeUrl,
   messages: any,
   fee: StdFee,
   sequence?: string | undefined,
@@ -161,24 +52,22 @@ export const signMessage = async (
       : undefined
     if (!provider) return
     provider.defaultOptions = getDefaultOptions()
-    const offlineSignerOnlyAmino = window.getOfflineSignerOnlyAmino
+    const offlineSignerOnlyAmino = (window as any).getOfflineSignerOnlyAmino
     if (offlineSignerOnlyAmino) {
       const signer = await offlineSignerOnlyAmino(chainId)
       if (!signer) return
       const account = await signer.getAccounts()
-      const client = await SigningCosmWasmClient.offline(signer)
       const onlineData: SequenceResponse = (await getAccountOnChain(safeAddress, getInternalChainId())).Data
       const signerData: SignerData = {
         accountNumber: onlineData.accountNumber,
         sequence: sequence ? +sequence : onlineData?.sequence,
         chainId,
       }
-      const signerAddress = _.get(account, '[0].address')
+      const signerAddress = account[0].address
       if (!(signerAddress && messages && fee && signerData)) {
         return undefined
       }
       ;(window as any).signObject = { signerAddress, messages, fee, memo, signerData }
-
       const registry = new Registry(TxTypes)
       const aminoTypes = new AminoTypes({
         ...createBankAminoConverters(),
@@ -190,11 +79,8 @@ export const signMessage = async (
         ...createFreegrantAminoConverters(),
         ...createIbcAminoConverters(),
       })
-
       const pubkey = encodePubkey(encodeSecp256k1Pubkey(account[0].pubkey))
-
       const signMode = SignMode.SIGN_MODE_LEGACY_AMINO_JSON
-
       const msgs = messages.map((msg) => {
         return aminoTypes.toAmino(msg)
       })
@@ -226,6 +112,7 @@ export const signMessage = async (
         ...respone,
         accountNumber: onlineData.accountNumber,
         sequence: sequence ? +sequence : onlineData?.sequence,
+        signerAddress,
       }
     }
     return undefined
@@ -234,4 +121,3 @@ export const signMessage = async (
   }
 }
 
-export { signCosmosMessage as createMessage }

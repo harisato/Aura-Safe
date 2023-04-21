@@ -11,7 +11,7 @@ import { fetchSafeTransaction } from 'src/logic/safe/transactions/api/fetchSafeT
 import { extractSafeAddress } from 'src/routes/routes'
 import { getProposalDetail, getTxDetailById } from 'src/services'
 import { MESSAGES_CODE } from 'src/services/constant/message'
-import { AppReduxState } from 'src/store'
+import { AppReduxState } from 'src/logic/safe/store'
 
 export const UPDATE_TRANSACTION_DETAILS = 'UPDATE_TRANSACTION_DETAILS'
 const updateTransactionDetails = createAction<TransactionDetailsPayload>(UPDATE_TRANSACTION_DETAILS)

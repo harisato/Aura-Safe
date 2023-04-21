@@ -1,7 +1,7 @@
 import { Action } from 'redux'
 
 import { Dispatch } from 'src/logic/safe/store/actions/types'
-import { store as reduxStore } from 'src/store'
+import { store as reduxStore } from 'src/logic/safe/store'
 import session from 'src/utils/storage/session'
 import { UPDATE_TRANSACTION_STATUS } from '../actions/updateTransactionStatus'
 import { localStatuses } from '../selectors/txStatus'

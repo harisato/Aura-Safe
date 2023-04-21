@@ -1,6 +1,6 @@
 import Onboard from 'bnc-onboard'
 import { API, Wallet } from 'bnc-onboard/dist/src/interfaces'
-import { store } from 'src/store'
+import { store } from 'src/logic/safe/store'
 import { _getChainId, getChainName } from 'src/config'
 import { setWeb3 } from './getWeb3'
 import { fetchProvider, removeProvider } from './store/actions'

@@ -10,7 +10,7 @@ import { connectProvider } from 'src/logic/providers'
 import { checkExistedCoin98 } from 'src/logic/providers/utils/wallets'
 import { WALLETS_NAME } from 'src/logic/wallets/constant/wallets'
 import { loadLastUsedProvider } from 'src/logic/wallets/store/middlewares/providerWatcher'
-import { store } from 'src/store'
+import { store } from 'src/logic/safe/store'
 import TermContext from 'src/logic/TermContext'
 // const useStyles = makeStyles(styles)
 const WalletSwitch = ({ openConnectWallet }: { openConnectWallet?: () => void }): ReactElement => {

@@ -14,7 +14,7 @@ import { fontColor, lg, md, screenSm, secondaryText } from 'src/theme/variables'
 import { borderLinear } from 'src/theme/variables'
 import Logo from 'src/assets/icons/Logo.svg'
 import session from 'src/utils/storage/session'
-import { store } from 'src/store'
+import { store } from 'src/logic/safe/store'
 import { setTerm } from 'src/logic/checkTerm/store/actions/setTerm'
 import { handleConnectWallet } from 'src/logic/providers'
 

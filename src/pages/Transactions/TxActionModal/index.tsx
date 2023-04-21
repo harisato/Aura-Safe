@@ -1,16 +1,15 @@
 import { useContext, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { getChainInfo, getInternalChainId, getShortName } from 'src/config'
-import { enhanceSnackbarForAction, NOTIFICATIONS } from 'src/logic/notifications'
+import { NOTIFICATIONS, enhanceSnackbarForAction } from 'src/logic/notifications'
 import enqueueSnackbar from 'src/logic/notifications/store/actions/enqueueSnackbar'
 import { MsgTypeUrl } from 'src/logic/providers/constants/constant'
 import fetchTransactions from 'src/logic/safe/store/actions/transactions/fetchTransactions'
 import { txTransactions } from 'src/logic/safe/store/selectors/gatewayTransactions'
 import { userAccountSelector } from 'src/logic/wallets/store/selectors'
-import { extractSafeAddress, generateSafeRoute, history, SAFE_ROUTES } from 'src/routes/routes'
+import { SAFE_ROUTES, extractSafeAddress, generateSafeRoute, history } from 'src/routes/routes'
 import {
   changeTransactionSequenceById,
-  confirmSafeTransaction,
   deleteTransactionById,
   rejectTransactionById,
   sendSafeTransaction,
@@ -42,68 +41,6 @@ export default function TxActionModal() {
   const userWalletAddress = useSelector(userAccountSelector)
   const dispatch = useDispatch()
   const safeAddress = extractSafeAddress()
-  const confirmTxFromApi = async (data: any, chainId: any, safeAddress: any) => {
-    const result = await confirmSafeTransaction(data)
-    const { ErrorCode } = result
-    if (ErrorCode === 'SUCCESSFUL') {
-      history.push(
-        generateSafeRoute(SAFE_ROUTES.TRANSACTIONS_QUEUE, {
-          shortName: getShortName(),
-          safeAddress,
-        }),
-      )
-      dispatch(fetchTransactions(chainId, safeAddress, true))
-      // dispatch(fetchTransactionDetailsById({ transactionId: data.transactionId }))
-      setIsDisabled(false)
-      setOpen(false)
-      // window.location.reload()
-    } else {
-      setIsDisabled(false)
-      dispatch(
-        enqueueSnackbar(
-          enhanceSnackbarForAction(
-            result?.Message
-              ? {
-                  message: result?.Message,
-                  options: { variant: 'error', persist: false, autoHideDuration: 5000, preventDuplicate: true },
-                }
-              : NOTIFICATIONS.TX_FAILED_MSG,
-          ),
-        ),
-      )
-    }
-  }
-  const changeTxSeqFromApi = async (data: any, chainId: any, safeAddress: any) => {
-    const result = await changeTransactionSequenceById(data)
-    const { ErrorCode } = result
-    if (ErrorCode === 'SUCCESSFUL') {
-      history.push(
-        generateSafeRoute(SAFE_ROUTES.TRANSACTIONS_QUEUE, {
-          shortName: getShortName(),
-          safeAddress,
-        }),
-      )
-      dispatch(fetchTransactions(chainId, safeAddress, true))
-      // dispatch(fetchTransactionDetailsById({ transactionId: data.transactionId }))
-      setIsDisabled(false)
-      setOpen(false)
-      // window.location.reload()
-    } else {
-      setIsDisabled(false)
-      dispatch(
-        enqueueSnackbar(
-          enhanceSnackbarForAction(
-            result?.Message
-              ? {
-                  message: result?.Message,
-                  options: { variant: 'error', persist: false, autoHideDuration: 5000, preventDuplicate: true },
-                }
-              : NOTIFICATIONS.TX_FAILED_MSG,
-          ),
-        ),
-      )
-    }
-  }
 
   const sendTx = async () => {
     try {
@@ -129,8 +66,8 @@ export default function TxActionModal() {
               : NOTIFICATIONS.TX_FAILED_MSG,
           ),
         )
-        setIsDisabled(false)
       }
+      setIsDisabled(false)
       const chainInfo = getChainInfo()
       const chainId = chainInfo.chainId
       dispatch(fetchTransactions(chainId, safeAddress))
@@ -173,8 +110,8 @@ export default function TxActionModal() {
               : NOTIFICATIONS.TX_FAILED_MSG,
           ),
         )
-        setIsDisabled(false)
       }
+      setIsDisabled(false)
       const chainInfo = getChainInfo()
       const chainId = chainInfo.chainId
       dispatch(fetchTransactions(chainId, safeAddress))
@@ -215,8 +152,8 @@ export default function TxActionModal() {
               : NOTIFICATIONS.TX_FAILED_MSG,
           ),
         )
-        setIsDisabled(false)
       }
+      setIsDisabled(false)
       const chainInfo = getChainInfo()
       const chainId = chainInfo.chainId
       dispatch(fetchTransactions(chainId, safeAddress))
@@ -247,8 +184,6 @@ export default function TxActionModal() {
         deleteTx={deleteTx}
         disabled={isDisabled}
         setDisabled={setIsDisabled}
-        confirmTxFromApi={confirmTxFromApi}
-        changeTxSeqFromApi={changeTxSeqFromApi}
       />
     )
   }
@@ -263,8 +198,6 @@ export default function TxActionModal() {
         deleteTx={deleteTx}
         disabled={isDisabled}
         setDisabled={setIsDisabled}
-        confirmTxFromApi={confirmTxFromApi}
-        changeTxSeqFromApi={changeTxSeqFromApi}
       />
     )
   }
@@ -279,8 +212,6 @@ export default function TxActionModal() {
         deleteTx={deleteTx}
         disabled={isDisabled}
         setDisabled={setIsDisabled}
-        confirmTxFromApi={confirmTxFromApi}
-        changeTxSeqFromApi={changeTxSeqFromApi}
       />
     )
   }
@@ -295,8 +226,6 @@ export default function TxActionModal() {
         deleteTx={deleteTx}
         disabled={isDisabled}
         setDisabled={setIsDisabled}
-        confirmTxFromApi={confirmTxFromApi}
-        changeTxSeqFromApi={changeTxSeqFromApi}
       />
     )
   }
@@ -311,8 +240,6 @@ export default function TxActionModal() {
         deleteTx={deleteTx}
         disabled={isDisabled}
         setDisabled={setIsDisabled}
-        confirmTxFromApi={confirmTxFromApi}
-        changeTxSeqFromApi={changeTxSeqFromApi}
       />
     )
   }
@@ -327,8 +254,6 @@ export default function TxActionModal() {
         deleteTx={deleteTx}
         disabled={isDisabled}
         setDisabled={setIsDisabled}
-        confirmTxFromApi={confirmTxFromApi}
-        changeTxSeqFromApi={changeTxSeqFromApi}
       />
     )
   }
@@ -343,8 +268,6 @@ export default function TxActionModal() {
         deleteTx={deleteTx}
         disabled={isDisabled}
         setDisabled={setIsDisabled}
-        confirmTxFromApi={confirmTxFromApi}
-        changeTxSeqFromApi={changeTxSeqFromApi}
       />
     )
   }
@@ -359,8 +282,6 @@ export default function TxActionModal() {
         deleteTx={deleteTx}
         disabled={isDisabled}
         setDisabled={setIsDisabled}
-        confirmTxFromApi={confirmTxFromApi}
-        changeTxSeqFromApi={changeTxSeqFromApi}
       />
     )
   }
@@ -374,8 +295,6 @@ export default function TxActionModal() {
       deleteTx={deleteTx}
       disabled={isDisabled}
       setDisabled={setIsDisabled}
-      confirmTxFromApi={confirmTxFromApi}
-      changeTxSeqFromApi={changeTxSeqFromApi}
     />
   )
 }

@@ -3,7 +3,7 @@ import isEqual from 'lodash/isEqual'
 import memoize from 'lodash/memoize'
 import { createSelectorCreator, defaultMemoize } from 'reselect'
 
-import { AppReduxState } from 'src/store'
+import { AppReduxState } from 'src/logic/safe/store'
 
 export const createIsEqualSelector = createSelectorCreator(defaultMemoize, isEqual)
 

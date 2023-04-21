@@ -1,6 +1,6 @@
 import { createSelector } from 'reselect'
 
-import { AppReduxState } from 'src/store'
+import { AppReduxState } from 'src/logic/safe/store'
 import { ChainId } from 'src/config/chain.d'
 import { CONFIG_REDUCER_ID } from '../reducer'
 import { ConfigState } from '../reducer/reducer.d'

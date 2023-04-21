@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { fetchTransactionDetailsById } from 'src/logic/safe/store/actions/fetchTransactionDetails'
 import { getTransactionByAttribute } from 'src/logic/safe/store/selectors/gatewayTransactions'
-import { AppReduxState } from 'src/store'
+import { AppReduxState } from 'src/logic/safe/store'
 
 export type LoadTransactionDetails = {
   data?: any

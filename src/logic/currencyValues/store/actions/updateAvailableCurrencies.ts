@@ -1,6 +1,6 @@
 import { Action } from 'redux-actions'
 import { ThunkDispatch } from 'redux-thunk'
-import { AppReduxState } from 'src/store'
+import { AppReduxState } from 'src/logic/safe/store'
 import { AvailableCurrenciesPayload } from 'src/logic/currencyValues/store/reducer/currencyValues'
 import { setAvailableCurrencies } from 'src/logic/currencyValues/store/actions/setAvailableCurrencies'
 import { fetchAvailableCurrencies } from 'src/logic/currencyValues/api/fetchAvailableCurrencies'

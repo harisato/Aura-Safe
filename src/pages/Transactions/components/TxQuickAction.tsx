@@ -7,19 +7,19 @@ import Check from 'src/assets/icons/GradientCheck.svg'
 import PaperPlaneTiltIcon from 'src/assets/icons/PaperPlaneTilt.svg'
 import X from 'src/assets/icons/X.svg'
 import { getChainInfo, getCoinMinimalDenom, getInternalChainId, getShortName } from 'src/config'
-import { enhanceSnackbarForAction, NOTIFICATIONS } from 'src/logic/notifications'
+import { NOTIFICATIONS, enhanceSnackbarForAction } from 'src/logic/notifications'
 import enqueueSnackbar from 'src/logic/notifications/store/actions/enqueueSnackbar'
 import { MsgTypeUrl } from 'src/logic/providers/constants/constant'
-import { createMessage } from 'src/logic/providers/signing'
+import { signMessage } from 'src/logic/providers/signing'
+import { AppReduxState } from 'src/logic/safe/store'
 import { fetchTransactionDetailsById } from 'src/logic/safe/store/actions/fetchTransactionDetails'
 import fetchTransactions from 'src/logic/safe/store/actions/transactions/fetchTransactions'
 import { getTransactionByAttribute } from 'src/logic/safe/store/selectors/gatewayTransactions'
 import { userAccountSelector } from 'src/logic/wallets/store/selectors'
-import { extractSafeAddress, generateSafeRoute, history, SAFE_ROUTES } from 'src/routes/routes'
-import { grantedSelector } from 'src/utils/safeUtils/selector'
+import { SAFE_ROUTES, extractSafeAddress, generateSafeRoute, history } from 'src/routes/routes'
 import { confirmSafeTransaction, rejectTransactionById, sendSafeTransaction } from 'src/services'
-import { AppReduxState } from 'src/store'
 import { ICreateSafeTransaction } from 'src/types/transaction'
+import { grantedSelector } from 'src/utils/safeUtils/selector'
 import styled from 'styled-components'
 
 const Wrap = styled.div`
@@ -193,7 +193,7 @@ export default function TxQuickAction({ transaction, curSeq }) {
           break
       }
 
-      signResult = await createMessage(chainId, safeAddress, type, Data, sendFee, data?.txSequence)
+      signResult = await signMessage(chainId, safeAddress, Data, sendFee, data?.txSequence)
       if (!signResult) throw new Error()
       const signatures = toBase64(signResult.signatures[0])
       const bodyBytes = toBase64(signResult.bodyBytes)

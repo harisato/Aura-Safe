@@ -6,7 +6,7 @@ import { Close as IconClose } from '@material-ui/icons'
 import { Notification } from 'src/logic/notifications/notificationTypes'
 import closeSnackbarAction from './closeSnackbar'
 import { Dispatch } from 'src/logic/safe/store/actions/types.d'
-import { AppReduxState } from 'src/store'
+import { AppReduxState } from 'src/logic/safe/store'
 
 export const ENQUEUE_SNACKBAR = 'ENQUEUE_SNACKBAR'
 

@@ -1,6 +1,6 @@
 import { createSelector } from 'reselect'
 import { PROPOSALS_REDUCER_ID } from 'src/logic/proposal/store/reducer/proposals'
-import { AppReduxState } from 'src/store'
+import { AppReduxState } from 'src/logic/safe/store'
 import { currentChainId } from 'src/logic/config/store/selectors'
 import { IProposal } from 'src/types/proposal'
 import { extractSafeAddress } from 'src/routes/routes'

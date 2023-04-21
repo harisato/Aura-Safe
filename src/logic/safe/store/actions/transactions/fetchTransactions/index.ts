@@ -6,7 +6,7 @@ import {
   addQueuedTransactions,
 } from 'src/logic/safe/store/actions/transactions/gatewayTransactions'
 import { loadHistoryTransactionsFromAuraApi, loadQueuedTransactionsFromAuraApi } from './loadGatewayTransactions'
-import { AppReduxState } from 'src/store'
+import { AppReduxState } from 'src/logic/safe/store'
 
 export default (chainId: string, safeAddress: string, loadQueued = false) =>
   async (dispatch: ThunkDispatch<AppReduxState, undefined, AnyAction>): Promise<void> => {

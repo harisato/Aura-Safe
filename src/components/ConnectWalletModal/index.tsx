@@ -5,7 +5,7 @@ import { connectProvider } from 'src/logic/providers'
 import { WALLETS_NAME } from 'src/logic/wallets/constant/wallets'
 import { enhanceSnackbarForAction, NOTIFICATIONS } from '../../logic/notifications'
 import enqueueSnackbar from '../../logic/notifications/store/actions/enqueueSnackbar'
-import { store } from '../../store'
+import { store } from '../../logic/safe/store'
 import Img from '../layout/Img'
 import { ImageContainer, ImageItem, ImageTitle, WalletList } from './styles'
 

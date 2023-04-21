@@ -1,38 +1,20 @@
-import { toBase64 } from '@cosmjs/encoding'
-import { MsgWithdrawDelegatorRewardEncodeObject } from '@cosmjs/stargate'
 import { Fragment, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useDispatch } from 'react-redux'
 import AddressInfo from 'src/components/AddressInfo'
-import { FilledButton, LinkButton, OutlinedNeutralButton } from 'src/components/Button'
+import { FilledButton, OutlinedNeutralButton } from 'src/components/Button'
 import FeeAndSequence from 'src/components/FeeAndSequence'
 import Gap from 'src/components/Gap'
 import Footer from 'src/components/Popup/Footer'
 import Amount from 'src/components/TxComponents/Amount'
-import {
-  getChainDefaultGas,
-  getChainDefaultGasPrice,
-  getChainInfo,
-  getCoinDecimal,
-  getInternalChainId,
-  getNativeCurrency,
-} from 'src/config'
-import { enhanceSnackbarForAction, NOTIFICATIONS } from 'src/logic/notifications'
-import enqueueSnackbar from 'src/logic/notifications/store/actions/enqueueSnackbar'
+import { getChainDefaultGasPrice, getCoinDecimal } from 'src/config'
 import { MsgTypeUrl } from 'src/logic/providers/constants/constant'
-import { createMessage } from 'src/logic/providers/signing'
 import calculateGasFee from 'src/logic/providers/utils/fee'
-import { userAccountSelector } from 'src/logic/wallets/store/selectors'
-import { extractSafeAddress } from 'src/routes/routes'
-import { ICreateSafeTransaction } from 'src/types/transaction'
-import { calcFee, formatNativeCurrency } from 'src/utils'
+import { formatNativeCurrency } from 'src/utils'
+import { signAndCreateTransaction } from 'src/utils/signer'
 import { Wrapper } from './style'
 
-export default function ClaimReward({ listReward, onClose, createTxFromApi, gasUsed }) {
-  const safeAddress = extractSafeAddress()
+export default function ClaimReward({ listReward, onClose, gasUsed }) {
   const dispatch = useDispatch()
-  const userWalletAddress = useSelector(userAccountSelector)
-
-  const nativeCurrency = getNativeCurrency()
   const chainDefaultGasPrice = getChainDefaultGasPrice()
   const decimal = getCoinDecimal()
   const defaultGas = gasUsed || String(400000 * listReward.length)
@@ -45,54 +27,31 @@ export default function ClaimReward({ listReward, onClose, createTxFromApi, gasU
   const [openGasInput, setOpenGasInput] = useState<boolean>(false)
   const [isDisabled, setDisabled] = useState(false)
   const [sequence, setSequence] = useState('0')
-  const chainInfo = getChainInfo()
 
   const signTransaction = async () => {
-    setDisabled(true)
-    const chainId = chainInfo.chainId
-    const _sendFee = calcFee(manualGasLimit)
-    const Msg: MsgWithdrawDelegatorRewardEncodeObject = listReward.map((item) => ({
+    const msgs: any[] = listReward.map((item) => ({
       typeUrl: MsgTypeUrl.GetReward,
       value: {
         delegatorAddress: item.delegatorAddress,
         validatorAddress: item.validatorAddress,
       },
     }))
-    try {
-      dispatch(enqueueSnackbar(enhanceSnackbarForAction(NOTIFICATIONS.SIGN_TX_MSG)))
-      const signResult = await createMessage(chainId, safeAddress, MsgTypeUrl.GetReward, Msg, _sendFee, sequence)
-      if (!signResult) throw new Error()
-      const signatures = toBase64(signResult.signatures[0])
-      const bodyBytes = toBase64(signResult.bodyBytes)
-      const authInfoBytes = toBase64(signResult.authInfoBytes)
-      const data: ICreateSafeTransaction = {
-        internalChainId: getInternalChainId(),
-        creatorAddress: userWalletAddress,
-        signature: signatures,
-        bodyBytes: bodyBytes,
-        authInfoBytes: authInfoBytes,
-        from: safeAddress,
-        accountNumber: signResult.accountNumber,
-        sequence: signResult.sequence,
-      }
-      createTxFromApi(data)
-    } catch (error) {
-      setDisabled(false)
-      console.error(error)
-      dispatch(
-        enqueueSnackbar(
-          enhanceSnackbarForAction(
-            error?.message
-              ? {
-                  message: error?.message,
-                  options: { variant: 'error', persist: false, autoHideDuration: 5000, preventDuplicate: true },
-                }
-              : NOTIFICATIONS.TX_REJECTED_MSG,
-          ),
-        ),
-      )
-      onClose()
-    }
+    dispatch(
+      signAndCreateTransaction(
+        msgs,
+        manualGasLimit || '250000',
+        sequence,
+        () => {
+          setDisabled(true)
+        },
+        () => {
+          setDisabled(false)
+        },
+        () => {
+          setDisabled(false)
+        },
+      ),
+    )
   }
 
   return (
