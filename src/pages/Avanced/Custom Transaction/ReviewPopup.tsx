@@ -72,28 +72,9 @@ export default function ReviewPopup({ open, setOpen, gasUsed, msg }) {
   }, [msg.length])
 
   const signTransaction = async () => {
-    const msgs = msg.map((message: any) => {
-      if (
-        [
-          '/cosmwasm.wasm.v1.MsgInstantiateContract',
-          '/cosmwasm.wasm.v1.MsgExecuteContract',
-          '/cosmwasm.wasm.v1.MsgMigrateContract',
-        ].includes(message.typeUrl as never)
-      ) {
-        return {
-          ...message,
-          value: {
-            ...message.value,
-            msg: toUtf8(JSON.stringify(message.value.msg)),
-          },
-        }
-      }
-
-      return message
-    })
     dispatch(
       signAndCreateTransaction(
-        msgs,
+        msg,
         manualGasLimit || '250000',
         sequence,
         () => {
