@@ -69,7 +69,7 @@ export default function ReviewPopup({ open, setOpen, gasUsed, msg }) {
     const gasFee = calculateGasFee(+gasUsed, +chainDefaultGasPrice, decimal)
     setGasPriceFormatted(gasFee)
     setAmount(newTotalAmount.toString())
-  }, [])
+  }, [msg.length])
 
   const signTransaction = async () => {
     const msgs = msg.map((message: any) => {
