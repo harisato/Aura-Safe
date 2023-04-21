@@ -33,6 +33,7 @@ function Contract({ contractData }): ReactElement {
   const [shouldCheck, setShouldCheck] = useState(false)
   const [activeFunction, setActiveFunction] = useState(0)
   const [selectedFunction, setSelectedFunction] = useState('')
+  const [funds, setFunds] = useState('')
   const [schema, setSchema] = useState<any>()
   const [loading, setLoading] = useState(false)
   const preview = async () => {
@@ -119,6 +120,8 @@ function Contract({ contractData }): ReactElement {
         setShouldCheck={setShouldCheck}
         activeFunction={activeFunction}
         setActiveFunction={setActiveFunction}
+        funds={funds}
+        setFunds={setFunds}
       />
       <div className="preview-button">
         <FilledButton disabled={loading} onClick={preview}>
@@ -130,7 +133,7 @@ function Contract({ contractData }): ReactElement {
         setOpen={setOpen}
         gasUsed={Math.round(gasUsed * 1.3)}
         data={formData}
-        contractData={{ ...contractData, selectedFunction: selectedFunction }}
+        contractData={{ ...contractData, selectedFunction: selectedFunction, funds }}
       />
     </Wrap>
   )

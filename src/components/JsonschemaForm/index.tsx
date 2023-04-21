@@ -4,6 +4,7 @@ import { useDispatch } from 'react-redux'
 import styled from 'styled-components'
 import Field from './Field'
 import { makeSchemaInput } from './utils'
+import TextField from '../Input/TextField'
 const Wrap = styled.div`
   margin-top: 32px;
   .title {
@@ -42,6 +43,8 @@ function JsonschemaForm({
   setShouldCheck,
   activeFunction,
   setActiveFunction,
+  funds,
+  setFunds,
 }): ReactElement {
   const dispatch = useDispatch()
   const jsValidator = new Validator()
@@ -91,6 +94,7 @@ function JsonschemaForm({
             }}
           />
         ))}
+        <TextField label="fund" value={funds} onChange={setFunds} placeholder="json" />
       </div>
     </Wrap>
   )
