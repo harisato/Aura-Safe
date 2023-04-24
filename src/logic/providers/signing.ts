@@ -1,5 +1,5 @@
 import { encodeSecp256k1Pubkey, makeSignDoc as makeSignDocAmino } from '@cosmjs/amino'
-import { SigningCosmWasmClient, createWasmAminoConverters } from '@cosmjs/cosmwasm-stargate'
+import { createWasmAminoConverters } from '@cosmjs/cosmwasm-stargate'
 import { fromBase64 } from '@cosmjs/encoding'
 import { Int53 } from '@cosmjs/math'
 import { Registry, TxBodyEncodeObject, encodePubkey, makeAuthInfoBytes } from '@cosmjs/proto-signing'
@@ -7,7 +7,6 @@ import {
   AminoTypes,
   SequenceResponse,
   SignerData,
-  SigningStargateClient,
   StdFee,
   createAuthzAminoConverters,
   createBankAminoConverters,
@@ -20,10 +19,7 @@ import {
 import { KeplrIntereactionOptions } from '@keplr-wallet/types'
 import { SignMode } from 'cosmjs-types/cosmos/tx/signing/v1beta1/signing'
 import { TxRaw } from 'cosmjs-types/cosmos/tx/v1beta1/tx'
-import _ from 'lodash'
 import { getChainInfo, getInternalChainId } from 'src/config'
-import { MsgTypeUrl } from 'src/logic/providers/constants/constant'
-import { Vote } from 'src/logic/providers/utils/message'
 import { getProvider } from 'src/logic/providers/utils/wallets'
 import { WALLETS_NAME } from 'src/logic/wallets/constant/wallets'
 import { loadLastUsedProvider } from 'src/logic/wallets/store/middlewares/providerWatcher'
@@ -50,12 +46,14 @@ export const signMessage = async (
     const provider = loadLastUsedProviderResult
       ? await getProvider(loadLastUsedProviderResult as WALLETS_NAME)
       : undefined
-    if (!provider) return
+    if (!provider)
+      throw new Error(`An error occurred while loading wallet provider. Please disconnect your wallet and try again.`)
     provider.defaultOptions = getDefaultOptions()
     const offlineSignerOnlyAmino = (window as any).getOfflineSignerOnlyAmino
     if (offlineSignerOnlyAmino) {
       const signer = await offlineSignerOnlyAmino(chainId)
-      if (!signer) return
+      if (!signer)
+        throw new Error(`An error occurred while loading signer. Please disconnect your wallet and try again.`)
       const account = await signer.getAccounts()
       const onlineData: SequenceResponse = (await getAccountOnChain(safeAddress, getInternalChainId())).Data
       const signerData: SignerData = {
@@ -65,7 +63,7 @@ export const signMessage = async (
       }
       const signerAddress = account[0].address
       if (!(signerAddress && messages && fee && signerData)) {
-        return undefined
+        throw new Error(`An error occurred while loading signing payload. Please disconnect your wallet and try again.`)
       }
       ;(window as any).signObject = { signerAddress, messages, fee, memo, signerData }
       const registry = new Registry(TxTypes)

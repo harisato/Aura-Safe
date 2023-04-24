@@ -55,17 +55,6 @@ export async function getKeplr(): Promise<Keplr | undefined> {
   })
 }
 
-export async function getKeplrKey(chainId: string): Promise<WalletKey | undefined> {
-  const keplr = await getKeplr()
-
-  if (!keplr) return
-  const key = await keplr.getKey(chainId)
-  return {
-    myAddress: String(key.bech32Address),
-    myPubkey: parseToAddress(key.pubKey),
-  }
-}
-
 export async function connectKeplr(): Promise<KeplrErrors> {
   const chainInfo = getChainInfo()
   const internalChainId = getInternalChainId()

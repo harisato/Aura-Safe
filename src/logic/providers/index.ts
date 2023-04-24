@@ -145,12 +145,12 @@ ${timeStamp}`
 
 export async function getKeplrKey(chainId: string): Promise<WalletKey | undefined> {
   return loadLastUsedProvider()
-    .then((loadLastUsedProvider) => getProvider((loadLastUsedProvider as WALLETS_NAME) || WALLETS_NAME.Keplr))
+    .then((lastUsedProvider) => getProvider((lastUsedProvider as WALLETS_NAME) || WALLETS_NAME.Keplr))
     .then((keplr) => {
       if (keplr) {
         return keplr.getKey(chainId)
       } else {
-        alert("keplr not found")
+        alert('Wallet is not found!')
       }
     })
     .then((key) =>

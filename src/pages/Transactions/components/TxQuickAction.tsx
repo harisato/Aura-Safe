@@ -49,10 +49,10 @@ export default function TxQuickAction({ transaction, curSeq }) {
 
   const confirmHandler = async (event) => {
     event?.stopPropagation()
-    if (loading) return
+    if (event && loading) return
     try {
       setLoading(true)
-      dispatch(enqueueSnackbar(NOTIFICATIONS.TX_CREATE_MSG))
+      event && dispatch(enqueueSnackbar(NOTIFICATIONS.TX_CREATE_MSG))
       if (!data?.txDetails) {
         dispatch(fetchTransactionDetailsById({ transactionId: transaction.id }))
         setIsWaiting(true)

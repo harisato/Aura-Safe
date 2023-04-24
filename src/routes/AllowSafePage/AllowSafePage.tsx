@@ -187,7 +187,7 @@ function Allow(): ReactElement {
       dispatch(
         enqueueSnackbar(
           enhanceSnackbarForAction({
-            message: `Missing id or wallet key allow safe. id:${!id}, walletKey:${!walletKey}`,
+            message: `Cannot find wallet key. Please disconnect your wallet, check again then reconnect.`,
             options: { variant: ERROR, persist: false, autoHideDuration: 5000 },
           }),
         ),

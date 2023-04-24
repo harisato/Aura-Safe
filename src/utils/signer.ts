@@ -145,7 +145,7 @@ export const signAndConfirmTransaction =
       beforeSigningCallback && beforeSigningCallback()
       dispatch(enqueueSnackbar(enhanceSnackbarForAction(NOTIFICATIONS.SIGN_TX_MSG)))
       const signResult = await signMessage(chainId, safeAddress, msgs, sendFee, sequence)
-      if (!signResult) throw new Error()
+      if (!signResult) throw new Error(signResult)
       const signatures = toBase64(signResult.signatures[0])
       const bodyBytes = toBase64(signResult.bodyBytes)
       const authInfoBytes = toBase64(signResult.authInfoBytes)
@@ -188,6 +188,7 @@ export const signAndConfirmTransaction =
       }
     } catch (error) {
       errorSigningCallback && errorSigningCallback(error)
+      console.error(error)
       dispatch(
         enqueueSnackbar(
           enhanceSnackbarForAction({
