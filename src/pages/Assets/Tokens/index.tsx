@@ -7,7 +7,7 @@ import { useSelector } from 'react-redux'
 import { extendedSafeTokensSelector } from 'src/utils/safeUtils/selector'
 import { formatNativeCurrency } from 'src/utils'
 import SendingPopup from 'src/components/Popup/SendingPopup'
-
+import sendIcon from 'src/assets/icons/ArrowUpRight.svg'
 const Wrap = styled.div`
   background: ${(props) => props.theme.backgroundPrimary};
   border-radius: 8px;
@@ -90,18 +90,22 @@ function Tokens(props): ReactElement {
               <StyledTableCell></StyledTableCell>
               <StyledTableCell>{formatNativeCurrency(token.balance.tokenBalance)}</StyledTableCell>
               <StyledTableCell align="right">
-                <OutlinedNeutralButton
-                  className="small"
-                  onClick={() => {
-                    setOpen(true)
-                    setSelectedToken(token.address)
-                  }}
-                >
-                  Send
-                </OutlinedNeutralButton>
-                <OutlinedNeutralButton className="small" style={{ marginLeft: 8 }}>
-                  Receive
-                </OutlinedNeutralButton>
+                <div>
+                  <OutlinedNeutralButton
+                    className="small"
+                    onClick={() => {
+                      setOpen(true)
+                      setSelectedToken(token.address)
+                    }}
+                  >
+                    <img src={sendIcon} alt="" />
+                    Send
+                  </OutlinedNeutralButton>
+                  <OutlinedNeutralButton className="small" style={{ marginLeft: 8 }}>
+                    <img style={{ transform: 'rotate(180deg)' }} src={sendIcon} alt="" />
+                    Receive
+                  </OutlinedNeutralButton>
+                </div>
               </StyledTableCell>
             </StyledTableRow>
           )
