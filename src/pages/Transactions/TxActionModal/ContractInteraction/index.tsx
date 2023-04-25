@@ -31,24 +31,11 @@ export default function Execute({ open, onClose, data, sendTx, rejectTx, disable
 
   const txHandler = async (type) => {
     const safeAddress = extractSafeAddress()
-    const msgs = [
-      {
-        typeUrl: MsgTypeUrl.ExecuteContract,
-        value: {
-          contract: data?.txDetails?.txMessage[0].contractAddress,
-          sender: safeAddress,
-          funds: [],
-          msg: {
-            [data?.txDetails?.txMessage[0].contractFunction]: JSON.parse(data?.txDetails?.txMessage[0].contractArgs),
-          },
-        },
-      },
-    ]
     if (type == 'confirm') {
       dispatch(
         signAndConfirmTransaction(
           data?.id,
-          msgs,
+          JSON.parse(data?.txDetails?.rawMessage),
           {
             amount: coins(data?.txDetails?.fee, getCoinMinimalDenom()),
             gas: data?.txDetails?.gas.toString(),
@@ -70,7 +57,7 @@ export default function Execute({ open, onClose, data, sendTx, rejectTx, disable
       dispatch(
         signAndChangeTransactionSequence(
           data?.id,
-          msgs,
+          JSON.parse(data?.txDetails?.rawMessage),
           {
             amount: coins(data?.txDetails?.fee, getCoinMinimalDenom()),
             gas: data?.txDetails?.gas.toString(),
@@ -105,7 +92,9 @@ export default function Execute({ open, onClose, data, sendTx, rejectTx, disable
           {Object.keys(JSON.parse(data?.txDetails?.txMessage[0].contractArgs))?.map((key, index) => (
             <div className="field" key={index}>
               <div className="field__label">{key}:</div>
-              <div className="field__data">{JSON.parse(data?.txDetails?.txMessage[0].contractArgs)[key]}</div>
+              <div className="field__data">
+                {JSON.stringify(JSON.parse(data?.txDetails?.txMessage[0].contractArgs)[key])}
+              </div>
             </div>
           ))}
           <Gap height={24} />
