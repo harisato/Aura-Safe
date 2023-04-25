@@ -1,15 +1,27 @@
 import { ReactElement, useState } from 'react'
 import styled from 'styled-components'
 import SearchIcon from 'src/assets/icons/search.svg'
+import { FilledButton, OutlinedNeutralButton } from 'src/components/Button'
+import DenseTable, { StyledTableCell, StyledTableRow } from 'src/components/Table/DenseTable'
+import { useSelector } from 'react-redux'
+import { extendedSafeTokensSelector } from 'src/utils/safeUtils/selector'
+import { formatNativeCurrency } from 'src/utils'
+import SendingPopup from 'src/components/Popup/SendingPopup'
+
 const Wrap = styled.div`
   background: ${(props) => props.theme.backgroundPrimary};
   border-radius: 8px;
+  overflow: hidden;
   margin-top: 24px;
   > .header {
     padding: 16px 20px;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    > div:nth-child(2) {
+      display: flex;
+      gap: 32px;
+    }
     > .title {
       font-weight: 600;
       font-size: 22px;
@@ -35,9 +47,23 @@ const Wrap = styled.div`
     }
   }
 `
-
+const TokenInfo = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  line-height: 18px;
+  text-transform: uppercase;
+  img {
+    width: 24px;
+    height: 24px;
+    border-radius: 12px;
+  }
+`
 function Tokens(props): ReactElement {
-  const [tab, setTab] = useState(0)
+  const [open, setOpen] = useState(false)
+  const [selectedToken, setSelectedToken] = useState(undefined)
+  const safeTokens: any = useSelector(extendedSafeTokensSelector)
   return (
     <Wrap>
       <div className="header">
@@ -47,8 +73,41 @@ function Tokens(props): ReactElement {
             <input placeholder="Search by name/Token ID" />
             <img src={SearchIcon} alt="" />
           </div>
+          <FilledButton className="small">Manage token</FilledButton>
         </div>
       </div>
+      <DenseTable headers={['Name', 'Token Type', 'Balance', ' ']}>
+        {safeTokens.map((token, index) => {
+          console.log(token)
+          return (
+            <StyledTableRow key={index}>
+              <StyledTableCell>
+                <TokenInfo>
+                  <img src={token.logoUri} alt="" />
+                  {token.name || 'Unkonwn token'}
+                </TokenInfo>
+              </StyledTableCell>
+              <StyledTableCell></StyledTableCell>
+              <StyledTableCell>{formatNativeCurrency(token.balance.tokenBalance)}</StyledTableCell>
+              <StyledTableCell align="right">
+                <OutlinedNeutralButton
+                  className="small"
+                  onClick={() => {
+                    setOpen(true)
+                    setSelectedToken(token.address)
+                  }}
+                >
+                  Send
+                </OutlinedNeutralButton>
+                <OutlinedNeutralButton className="small" style={{ marginLeft: 8 }}>
+                  Receive
+                </OutlinedNeutralButton>
+              </StyledTableCell>
+            </StyledTableRow>
+          )
+        })}
+      </DenseTable>
+      <SendingPopup defaultToken={selectedToken} open={open} onOpen={() => {}} onClose={() => setOpen(false)} />
     </Wrap>
   )
 }
