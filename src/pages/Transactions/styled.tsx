@@ -671,7 +671,7 @@ export const ScrollableTransactionsContainer = styled.div`
     color: #ffffff;
     margin: 0px 0px 16px;
   }
-  .section-title:last-of-type {
+  .section-title:not(:first-of-type) {
     margin-top: 32px;
   }
 `
