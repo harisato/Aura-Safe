@@ -13,8 +13,9 @@ export default function Field({ fieldSchema, value, onChange, errorMsg }) {
       <TextField
         label={`${fieldSchema.fieldName} (${fieldSchema.type})`}
         type="number"
-        value={value || ''}
-        onChange={(value) => onChange(+value)}
+        min={0}
+        value={value}
+        onChange={(value) => onChange(value == '' ? '' : +value)}
         required={fieldSchema.isRequired}
         placeholder={`Input ${fieldSchema.fieldName.replace('_', ' ')}`}
         errorMsg={errorMsg}
@@ -24,7 +25,7 @@ export default function Field({ fieldSchema, value, onChange, errorMsg }) {
   return (
     <TextField
       label={`${fieldSchema.fieldName} (${fieldSchema.type})`}
-      value={value || ''}
+      value={value}
       onChange={onChange}
       required={fieldSchema.isRequired}
       placeholder={`Input ${fieldSchema.fieldName.replace('_', ' ')}`}

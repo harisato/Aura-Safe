@@ -85,6 +85,7 @@ function JsonschemaForm({
             value={formData[field.fieldName]}
             errorMsg={shouldCheck ? validateField(field) : ''}
             onChange={(value) => {
+              console.log(value)
               setFormData((prevState) => {
                 return {
                   ...prevState,
