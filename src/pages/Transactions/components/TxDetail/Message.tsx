@@ -1,5 +1,5 @@
 import { MsgTypeUrl } from 'src/logic/providers/constants/constant'
-import { formatNativeToken } from 'src/utils'
+import { beutifyJson, formatNativeToken } from 'src/utils'
 import AddressInfo from 'src/components/AddressInfo'
 import { Fragment, useEffect, useState } from 'react'
 import { formatDateTime, formatWithSchema } from 'src/utils/date'
@@ -174,5 +174,9 @@ export default function TxMsg({ tx, txDetail }) {
       </div>
     )
   }
-  return <div></div>
+  return (
+    <div>
+      <div className="json-msg" dangerouslySetInnerHTML={{ __html: beutifyJson(JSON.parse(txDetail?.rawMessage)) }} />
+    </div>
+  )
 }

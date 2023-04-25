@@ -438,6 +438,24 @@ export const TxDetailsContainer = styled.div<{ ownerRows?: number }>`
   grid-template-rows: [tx-summary] minmax(min-content, max-content) [tx-details] minmax(min-content, 1fr);
   width: 100%;
   position: relative;
+  .json-msg {
+    white-space: pre-wrap;
+    .string {
+      color: #ce9178;
+    }
+    .number {
+      color: #aac19e;
+    }
+    .boolean {
+      color: #266781;
+    }
+    .null {
+      color: #d33a3a;
+    }
+    .key {
+      color: #569cd6;
+    }
+  }
   .msgs {
     padding: 16px;
     max-height: 500px;

@@ -1,4 +1,5 @@
 import { Accordion, AccordionDetails, AccordionSummary } from '@aura/safe-react-components'
+import { beutifyJson } from 'src/utils'
 import styled from 'styled-components'
 
 export const NoPaddingAccordion = styled(Accordion)`
@@ -54,36 +55,14 @@ export const Message = ({ msgData, index }) => {
       color: #569cd6;
     }
   `
-  const beutifyJson = () => {
-    const prettyJson = JSON.stringify(msgData?.value, undefined, 4)
-    const json = prettyJson.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
-    const formattedJson = json.replace(
-      /("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g,
-      function (match) {
-        var cls = 'number'
-        if (/^"/.test(match)) {
-          if (/:$/.test(match)) {
-            cls = 'key'
-          } else {
-            cls = 'string'
-          }
-        } else if (/true|false/.test(match)) {
-          cls = 'boolean'
-        } else if (/null/.test(match)) {
-          cls = 'null'
-        }
-        return '<span class="' + cls + '">' + match + '</span>'
-      },
-    )
-    return formattedJson
-  }
+
   return (
     <NoPaddingAccordion>
       <StyledAccordionSummary>
         {index + 1}. {msgData?.typeUrl.split('Msg').at(-1)}
       </StyledAccordionSummary>
       <StyledAccordionDetails>
-        <Wrap dangerouslySetInnerHTML={{ __html: beutifyJson() }} />
+        <Wrap dangerouslySetInnerHTML={{ __html: beutifyJson(msgData?.value) }} />
       </StyledAccordionDetails>
     </NoPaddingAccordion>
   )
