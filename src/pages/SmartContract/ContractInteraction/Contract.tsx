@@ -46,7 +46,7 @@ function Contract({ contractData }): ReactElement {
       const schemaInput = makeSchemaInput(jsValidator)
       setSelectedFunction(schemaInput.at(activeFunction).fieldName)
       schemaInput.at(activeFunction).fieldList?.forEach((s) => {
-        if (s.isRequired && !formData[s.fieldName]) {
+        if (s.isRequired && (typeof formData[s.fieldName] == 'undefined' || formData[s.fieldName] === '')) {
           isError = true
         }
       })
