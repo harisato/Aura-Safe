@@ -17,9 +17,9 @@ import { currentNetworkAddressBookAddresses } from 'src/logic/addressBook/store/
 import { AddressBookEntry } from 'src/logic/addressBook/model/addressBook'
 import { Entry } from 'src/pages/AddressBook'
 
-export const CREATE_ENTRY_INPUT_NAME_ID = 'create-entry-input-name'
-export const CREATE_ENTRY_INPUT_ADDRESS_ID = 'create-entry-input-address'
-export const SAVE_NEW_ENTRY_BTN_ID = 'save-new-entry-btn-id'
+const CREATE_ENTRY_INPUT_NAME_ID = 'create-entry-input-name'
+const CREATE_ENTRY_INPUT_ADDRESS_ID = 'create-entry-input-address'
+const SAVE_NEW_ENTRY_BTN_ID = 'save-new-entry-btn-id'
 
 const formMutators = {
   setOwnerAddress: (args, state, utils) => {

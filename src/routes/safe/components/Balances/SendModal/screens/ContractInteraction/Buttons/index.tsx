@@ -3,7 +3,7 @@ import { Modal } from 'src/components/Modal'
 import { ButtonStatus } from 'src/components/Modal/type'
 import { isReadMethod } from 'src/routes/safe/components/Balances/SendModal/screens/ContractInteraction/utils'
 
-export interface ButtonProps {
+interface ButtonProps {
   onClose: () => void
   requiresMethod?: boolean
 }

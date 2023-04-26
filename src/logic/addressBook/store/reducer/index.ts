@@ -7,7 +7,7 @@ import { getEntryIndex, hasSameAddressAndChainId, isValidAddressBookName } from 
 
 export const ADDRESS_BOOK_REDUCER_ID = 'addressBook'
 
-export const initialAddressBookState: AddressBookState = []
+const initialAddressBookState: AddressBookState = []
 
 type Payloads = AddressBookEntry | AddressBookState
 

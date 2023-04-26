@@ -8,7 +8,7 @@ import { LocalTransactionStatus, Transaction } from 'src/logic/safe/store/models
 import { userAccountSelector } from 'src/logic/wallets/store/selectors'
 import { addressInList } from 'src/utils/transactionUtils'
 
-export type TransactionStatusProps = {
+type TransactionStatusProps = {
   color: string
   text: string
 }

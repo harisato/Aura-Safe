@@ -1,6 +1,6 @@
-import { useContext, useEffect, useState } from 'react'
 import { makeStyles } from '@material-ui/core/styles'
 import { SnackbarProvider } from 'notistack'
+import { useContext, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import styled from 'styled-components'
 
@@ -8,34 +8,31 @@ import AlertIcon from 'src/assets/icons/alert.svg'
 import CheckIcon from 'src/assets/icons/check.svg'
 import ErrorIcon from 'src/assets/icons/error.svg'
 import InfoIcon from 'src/assets/icons/info.svg'
-import AppLayout from 'src/layout'
-import { SafeListSidebar, SafeListSidebarContext } from 'src/components/SafeListSidebar'
 import CookiesBanner from 'src/components/CookiesBanner'
-import Notifier from 'src/components/Notifier'
-import Img from 'src/components/layout/Img'
-import { currentSafeWithNames } from 'src/logic/safe/store/selectors'
-import { currentCurrencySelector } from 'src/logic/currencyValues/store/selectors'
 import Modal from 'src/components/Modal'
-import SendModal from 'src/routes/safe/components/Balances/SendModal'
-import { useLoadSafe } from 'src/logic/safe/hooks/useLoadSafe'
+import Notifier from 'src/components/Notifier'
+import { SafeListSidebar, SafeListSidebarContext } from 'src/components/SafeListSidebar'
+import Img from 'src/components/layout/Img'
+import AppLayout from 'src/layout'
+import { currentCurrencySelector } from 'src/logic/currencyValues/store/selectors'
 import useConnectWallet from 'src/logic/hooks/useConnectWallet'
-import { useSafeScheduledUpdates } from 'src/logic/safe/hooks/useSafeScheduledUpdates'
+import { useLoadSafe } from 'src/logic/safe/hooks/useLoadSafe'
 import useSafeActions from 'src/logic/safe/hooks/useSafeActions'
+import { useSafeScheduledUpdates } from 'src/logic/safe/hooks/useSafeScheduledUpdates'
+import { currentSafeWithNames } from 'src/logic/safe/store/selectors'
 import { formatAmountInUsFormat } from 'src/logic/tokens/utils/formatAmount'
 import { grantedSelector } from 'src/utils/safeUtils/selector'
 
-import ReceiveModal from './ReceiveModal'
-import TermModal from './TermModal'
+import { ConnectWalletModal } from 'src/components/ConnectWalletModal'
 import { useSidebarItems } from 'src/layout/Sidebar/useSidebarItems'
 import useAddressBookSync from 'src/logic/addressBook/hooks/useAddressBookSync'
-import { extractSafeAddress, extractSafeId } from 'src/routes/routes'
-import loadSafesFromStorage from 'src/logic/safe/store/actions/loadSafesFromStorage'
 import loadCurrentSessionFromStorage from 'src/logic/currentSession/store/actions/loadCurrentSessionFromStorage'
-import { ConnectWalletModal } from 'src/components/ConnectWalletModal'
+import loadSafesFromStorage from 'src/logic/safe/store/actions/loadSafesFromStorage'
+import { extractSafeAddress, extractSafeId } from 'src/routes/routes'
+import TermModal from './TermModal'
 
 import TermContext from 'src/logic/TermContext'
 import { fetchAllValidator } from 'src/logic/validator/store/actions'
-import { fetchAllDelegations } from 'src/logic/delegation/store/actions'
 
 const notificationStyles = {
   success: {
@@ -103,8 +100,6 @@ const App: React.FC = ({ children }) => {
     termContext?.SetTerm(false)
   }
 
-  // Load the Safes from LS just once,
-  // they'll be reloaded on network change
   useEffect(() => {
     dispatch(loadSafesFromStorage())
     dispatch(loadCurrentSessionFromStorage())
@@ -149,25 +144,6 @@ const App: React.FC = ({ children }) => {
             isOpen={connectWalletState.showConnect}
             onClose={onConnectWalletHide}
           ></ConnectWalletModal>
-
-          <SendModal
-            activeScreenType="chooseTxType"
-            isOpen={sendFunds.isOpen}
-            onClose={hideSendFunds}
-            selectedToken={sendFunds.selectedToken}
-          />
-
-          {addressFromUrl && (
-            <Modal
-              description="Receive Tokens Form"
-              handleClose={onReceiveHide}
-              open={safeActionsState.showReceive}
-              paperClassName="receive-modal"
-              title="Receive Tokens"
-            >
-              <ReceiveModal onClose={onReceiveHide} safeAddress={addressFromUrl} safeName={safeName} />
-            </Modal>
-          )}
 
           <Modal description="Term Tokens Form" handleClose={onTermHide} open={TermState} title="Term Tokens">
             <TermModal onClose={onTermHide} valueTerm={termContext?.valueTerm} />

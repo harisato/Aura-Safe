@@ -27,12 +27,7 @@ export interface ISafeCreate {
 export interface ISafeCancel {
   myAddress: string
 }
-export interface ISafeAllow {
-  safeId: string
-  myAddress: string
-}
-
-export interface IResponse<T> {
+interface IResponse<T> {
   AdditionalData: any[]
   Data: any
   ErrorCode: string
@@ -179,10 +174,6 @@ export function createSafeTransaction(transactionInfo: ICreateSafeTransaction): 
   return axios.post(`${baseUrl}/transaction/create`, transactionInfo).then((res) => res.data)
 }
 
-export function signSafeTransaction(transactionInfo: ISignSafeTransaction): Promise<IResponse<any>> {
-  return axios.post(`${baseUrl}/transaction/sign`, transactionInfo).then((res) => res.data)
-}
-
 export const getTxDetailById = async (
   safeAddress: string,
   txId?: string,
@@ -270,10 +261,6 @@ export async function getNumberOfDelegator(validatorId: any): Promise<IResponse<
       }/cosmos/staking/v1beta1/validators/${validatorId}/delegations?pagination.count_total=true`,
     )
     .then((res) => res.data)
-}
-
-export function clamRewards(internalChainId: any, delegatorAddress: any): Promise<IResponse<any>> {
-  return axios.get(`${baseUrl}/general/${internalChainId}/${delegatorAddress}/rewards`).then((res) => res.data)
 }
 
 //VOTING

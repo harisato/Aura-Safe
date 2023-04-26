@@ -4,7 +4,7 @@ import { ChainId } from 'src/config/chain.d'
 
 import { BalanceRecord } from 'src/logic/tokens/store/actions/fetchSafeTokens'
 
-export type SafeOwner = string
+type SafeOwner = string
 
 export type ModulePair = [
   // previous module

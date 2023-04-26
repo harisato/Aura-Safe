@@ -2,7 +2,7 @@ import { Accordion, AccordionDetails, AccordionSummary } from '@aura/safe-react-
 import { beutifyJson } from 'src/utils'
 import styled from 'styled-components'
 
-export const NoPaddingAccordion = styled(Accordion)`
+const NoPaddingAccordion = styled(Accordion)`
   margin-bottom: 8px !important;
   border-radius: 4px !important;
   &.MuiAccordion-root {
@@ -13,7 +13,7 @@ export const NoPaddingAccordion = styled(Accordion)`
   }
 `
 
-export const StyledAccordionSummary = styled(AccordionSummary)`
+const StyledAccordionSummary = styled(AccordionSummary)`
   background-color: #363843 !important;
   border: none !important;
   min-height: 24px !important;
@@ -30,7 +30,7 @@ export const StyledAccordionSummary = styled(AccordionSummary)`
     margin: 0px !important;
   }
 `
-export const StyledAccordionDetails = styled(AccordionDetails)`
+const StyledAccordionDetails = styled(AccordionDetails)`
   padding: 8px !important;
   background: #34353a !important;
   font-size: 12px !important;

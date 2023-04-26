@@ -1,17 +1,18 @@
-export enum Operation {
+enum Operation {
   CALL,
   DELEGATE_CALL,
   CREATE,
 }
 
 // types comes from: https://github.com/gnosis/safe-client-gateway/blob/752e76b6d1d475791dbd7917b174bb41d2d9d8be/src/utils.rs
-export enum TransferMethods {
+
+enum TransferMethods {
   TRANSFER = 'transfer',
   TRANSFER_FROM = 'transferFrom',
   SAFE_TRANSFER_FROM = 'safeTransferFrom',
 }
 
-export enum SettingsChangeMethods {
+enum SettingsChangeMethods {
   SETUP = 'setup',
   SET_FALLBACK_HANDLER = 'setFallbackHandler',
   ADD_OWNER_WITH_THRESHOLD = 'addOwnerWithThreshold',
@@ -28,9 +29,9 @@ export enum SettingsChangeMethods {
 }
 
 // note: this extends SAFE_METHODS_NAMES in /logic/contracts/methodIds.ts, we need to figure out which one we are going to use
-export type DataDecodedMethod = TransferMethods | SettingsChangeMethods | string
+type DataDecodedMethod = TransferMethods | SettingsChangeMethods | string
 
-export interface ValueDecoded {
+interface ValueDecoded {
   operation: Operation
   to: string
   value: number
@@ -38,7 +39,7 @@ export interface ValueDecoded {
   dataDecoded: DataDecoded
 }
 
-export interface SingleTransactionMethodParameter {
+interface SingleTransactionMethodParameter {
   name: string
   type: string
   value: string
@@ -48,7 +49,7 @@ export interface MultiSendMethodParameter extends SingleTransactionMethodParamet
   valueDecoded: ValueDecoded[]
 }
 
-export type Parameter = MultiSendMethodParameter | SingleTransactionMethodParameter
+type Parameter = MultiSendMethodParameter | SingleTransactionMethodParameter
 
 export interface DataDecoded {
   method: DataDecodedMethod
@@ -93,7 +94,7 @@ export interface DataDecoded {
 //   { name: "getTransactionHash", id: "0xd8d11f78" }
 // ]
 
-export const SAFE_METHODS_NAMES = {
+const SAFE_METHODS_NAMES = {
   ADD_OWNER_WITH_THRESHOLD: 'addOwnerWithThreshold',
   CHANGE_THRESHOLD: 'changeThreshold',
   REMOVE_OWNER: 'removeOwner',
@@ -102,7 +103,7 @@ export const SAFE_METHODS_NAMES = {
   DISABLE_MODULE: 'disableModule',
 } as const
 
-export const SAFE_METHOD_ID_TO_NAME = {
+const SAFE_METHOD_ID_TO_NAME = {
   '0xe318b52b': SAFE_METHODS_NAMES.SWAP_OWNER,
   '0x0d582f13': SAFE_METHODS_NAMES.ADD_OWNER_WITH_THRESHOLD,
   '0xf8dc5dd9': SAFE_METHODS_NAMES.REMOVE_OWNER,
@@ -111,29 +112,29 @@ export const SAFE_METHOD_ID_TO_NAME = {
   '0xe009cfde': SAFE_METHODS_NAMES.DISABLE_MODULE,
 } as const
 
-export const SPENDING_LIMIT_METHODS_NAMES = {
+const SPENDING_LIMIT_METHODS_NAMES = {
   ADD_DELEGATE: 'addDelegate',
   SET_ALLOWANCE: 'setAllowance',
   EXECUTE_ALLOWANCE_TRANSFER: 'executeAllowanceTransfer',
   DELETE_ALLOWANCE: 'deleteAllowance',
 } as const
 
-export const SPENDING_LIMIT_METHOD_ID_TO_NAME = {
+const SPENDING_LIMIT_METHOD_ID_TO_NAME = {
   '0xe71bdf41': SPENDING_LIMIT_METHODS_NAMES.ADD_DELEGATE,
   '0xbeaeb388': SPENDING_LIMIT_METHODS_NAMES.SET_ALLOWANCE,
   '0x4515641a': SPENDING_LIMIT_METHODS_NAMES.EXECUTE_ALLOWANCE_TRANSFER,
   '0x885133e3': SPENDING_LIMIT_METHODS_NAMES.DELETE_ALLOWANCE,
 } as const
 
-export type SafeMethods = typeof SAFE_METHODS_NAMES[keyof typeof SAFE_METHODS_NAMES]
+type SafeMethods = typeof SAFE_METHODS_NAMES[keyof typeof SAFE_METHODS_NAMES]
 
-export const TOKEN_TRANSFER_METHODS_NAMES = {
+const TOKEN_TRANSFER_METHODS_NAMES = {
   TRANSFER: 'transfer',
   TRANSFER_FROM: 'transferFrom',
   SAFE_TRANSFER_FROM: 'safeTransferFrom',
 } as const
 
-export const TOKEN_TRANSFER_METHOD_ID_TO_NAME = {
+const TOKEN_TRANSFER_METHOD_ID_TO_NAME = {
   '0xa9059cbb': TOKEN_TRANSFER_METHODS_NAMES.TRANSFER,
   '0x23b872dd': TOKEN_TRANSFER_METHODS_NAMES.TRANSFER_FROM,
   '0x42842e0e': TOKEN_TRANSFER_METHODS_NAMES.SAFE_TRANSFER_FROM,
@@ -141,12 +142,12 @@ export const TOKEN_TRANSFER_METHOD_ID_TO_NAME = {
 
 type TokenMethods = typeof TOKEN_TRANSFER_METHODS_NAMES[keyof typeof TOKEN_TRANSFER_METHODS_NAMES]
 
-export type SafeDecodedParams = {
+type SafeDecodedParams = {
   [key in SafeMethods]?: Record<string, string>
 }
 
-export type TokenDecodedParams = {
+type TokenDecodedParams = {
   [key in TokenMethods]?: Record<string, string>
 }
 
-export type DecodedParams = SafeDecodedParams | TokenDecodedParams | null
+type DecodedParams = SafeDecodedParams | TokenDecodedParams | null

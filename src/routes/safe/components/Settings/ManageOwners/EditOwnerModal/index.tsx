@@ -20,8 +20,8 @@ import { OwnerData } from 'src/routes/safe/components/Settings/ManageOwners/data
 import { useStyles } from './style'
 import { currentChainId } from 'src/logic/config/store/selectors'
 
-export const RENAME_OWNER_INPUT_TEST_ID = 'rename-owner-input'
-export const SAVE_OWNER_CHANGES_BTN_TEST_ID = 'save-owner-changes-btn'
+const RENAME_OWNER_INPUT_TEST_ID = 'rename-owner-input'
+const SAVE_OWNER_CHANGES_BTN_TEST_ID = 'save-owner-changes-btn'
 
 type OwnProps = {
   isOpen: boolean

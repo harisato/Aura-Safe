@@ -326,7 +326,7 @@ const getDefaultOptions = (): KeplrIntereactionOptions => ({
   },
 })
 
-export const signMessage = async (
+const signMessage = async (
   chainId: string,
   safeAddress: string,
   messages: any,

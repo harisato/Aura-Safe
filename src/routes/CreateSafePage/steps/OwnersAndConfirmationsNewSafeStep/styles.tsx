@@ -1,12 +1,11 @@
-import { disabled, extraSmallFontSize, lg, sm, xs, mediumFont, descriptionAura } from 'src/theme/variables'
-import Block from 'src/components/layout/Block'
 import CheckCircle from '@material-ui/icons/CheckCircle'
-import Paragraph from 'src/components/layout/Paragraph'
-import styled from 'styled-components'
-import { Link } from '@aura/safe-react-components'
-import Row from 'src/components/layout/Row'
 import Field from 'src/components/forms/Field'
+import Block from 'src/components/layout/Block'
 import Col from 'src/components/layout/Col'
+import Paragraph from 'src/components/layout/Paragraph'
+import Row from 'src/components/layout/Row'
+import { descriptionAura, extraSmallFontSize, lg, mediumFont, sm } from 'src/theme/variables'
+import styled from 'styled-components'
 
 const BlockWithPadding = styled(Block)`
   padding: ${lg};
@@ -16,16 +15,6 @@ const ParagraphWithMargin = styled(Paragraph)`
   margin-bottom: 12px;
 `
 
-const StyledLink = styled(Link)`
-  padding: 0 ${xs};
-  & svg {
-    position: relative;
-    top: 1px;
-    left: ${xs};
-    height: 14px;
-    width: 14px;
-  }
-`
 const RowHeader = styled(Row)`
   padding: ${sm} ${lg};
   font-size: ${extraSmallFontSize};
@@ -70,7 +59,6 @@ const FieldStyled = styled(Field)`
 export {
   BlockWithPadding,
   ParagraphWithMargin,
-  StyledLink,
   RowHeader,
   OwnerNameField,
   CheckIconAddressAdornment,

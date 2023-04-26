@@ -7,7 +7,7 @@ import { colorLinear } from 'src/theme/variables'
 import { formatNumber, isNumberKeyPress } from 'src/utils'
 import styled from 'styled-components'
 
-export const StyledTextField = styled(MuiTextField)`
+const StyledTextField = styled(MuiTextField)`
   width: 100%;
   > label {
     z-index: 1;

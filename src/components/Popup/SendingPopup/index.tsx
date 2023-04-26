@@ -28,15 +28,6 @@ import CurrentSafe from './CurrentSafe'
 import { BodyWrapper, Footer, PopupWrapper } from './styles'
 import Loader from 'src/components/Loader'
 
-export type SendFundsTx = {
-  amount?: string
-  recipientAddress?: string
-  name?: string
-  token?: string
-  txType?: string
-  tokenSpendingLimit?: SpendingLimit
-}
-
 type SendFundsProps = {
   open: boolean
   onClose: () => void

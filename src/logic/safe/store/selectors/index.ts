@@ -3,11 +3,11 @@ import { createSelector } from 'reselect'
 import { AddressBookEntry, makeAddressBookEntry } from 'src/logic/addressBook/model/addressBook'
 import { currentNetworkAddressBookAsMap } from 'src/logic/addressBook/store/selectors'
 import { currentChainId } from 'src/logic/config/store/selectors'
+import { AppReduxState } from 'src/logic/safe/store'
 import makeSafe, { SafeRecord, SafeRecordProps } from 'src/logic/safe/store/models/safe'
 import { SAFE_REDUCER_ID } from 'src/logic/safe/store/reducer/safe'
 import { SafesMap } from 'src/logic/safe/store/reducer/types/safe'
 import { extractSafeAddress } from 'src/routes/routes'
-import { AppReduxState } from 'src/logic/safe/store'
 import { Overwrite } from 'src/types/helpers'
 
 const safesState = (state: AppReduxState) => state[SAFE_REDUCER_ID]
@@ -16,10 +16,6 @@ export const safesAsMap = (state: AppReduxState): SafesMap => safesState(state).
 
 export const safesAsList = createSelector(safesAsMap, (safes): List<SafeRecord> => safes.toList())
 
-export const latestMasterContractVersion = createSelector(safesState, (safeState) =>
-  safeState.get('latestMasterContractVersion'),
-)
-
 export const currentSafe = createSelector([safesAsMap], (safes: SafesMap) => {
   const address = extractSafeAddress()
   return safes.get(address, baseSafe(address))
@@ -27,7 +23,7 @@ export const currentSafe = createSelector([safesAsMap], (safes: SafesMap) => {
 
 const baseSafe = (address = '') => makeSafe({ address })
 
-export const safeFieldSelector =
+const safeFieldSelector =
   <K extends keyof SafeRecordProps>(field: K) =>
   (safe: SafeRecord): SafeRecordProps[K] =>
     safe.get(field, baseSafe().get(field))
@@ -36,30 +32,22 @@ export const currentSafeEthBalance = createSelector(currentSafe, safeFieldSelect
 
 export const currentSafeBalances = createSelector(currentSafe, safeFieldSelector('balances'))
 
-export const currentSafeNeedsUpdate = createSelector(currentSafe, safeFieldSelector('needsUpdate'))
-
 export const currentSafeCurrentVersion = createSelector(currentSafe, safeFieldSelector('currentVersion'))
 
 export const currentSafeThreshold = createSelector(currentSafe, safeFieldSelector('threshold'))
 
-export const currentSafeNonce = createSelector(currentSafe, safeFieldSelector('nonce'))
-
 export const currentSafeOwners = createSelector(currentSafe, safeFieldSelector('owners'))
-
-export const currentSafeModules = createSelector(currentSafe, safeFieldSelector('modules'))
 
 export const currentSafeFeaturesEnabled = createSelector(currentSafe, safeFieldSelector('featuresEnabled'))
 
 export const currentSafeSpendingLimits = createSelector(currentSafe, safeFieldSelector('spendingLimits'))
-
-export const currentSafeTotalFiatBalance = createSelector(currentSafe, safeFieldSelector('totalFiatBalance'))
 
 /*************************/
 /* With AddressBook Data */
 /*************************/
 const baseSafeWithName = (address = '') => ({ ...baseSafe(address).toJS(), name: '' })
 
-export type SafeRecordWithNames = Overwrite<SafeRecordProps, { owners: AddressBookEntry[] }> & { name: string }
+type SafeRecordWithNames = Overwrite<SafeRecordProps, { owners: AddressBookEntry[] }> & { name: string }
 
 export const safesWithNamesAsList = createSelector(
   [safesAsList, currentNetworkAddressBookAsMap, currentChainId],

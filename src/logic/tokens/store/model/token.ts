@@ -3,7 +3,7 @@ import { Record, RecordOf } from 'immutable'
 
 import { BalanceRecord } from 'src/logic/tokens/store/actions/fetchSafeTokens'
 
-export type TokenProps = {
+type TokenProps = {
   address: string
   name: string
   symbol: string

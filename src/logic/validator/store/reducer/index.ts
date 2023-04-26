@@ -14,7 +14,7 @@ export type ValidatorStateType = {
   allValidators: ValidatorType[]
 }
 
-export const initialState = {
+const initialState = {
   allValidators: [],
 }
 

@@ -9,7 +9,7 @@ export const OutlinedButton = ({ children, ...rest }) => {
     </OutlinedButtonWrap>
   )
 }
-export const OutlinedButtonWrap = styled.button<{ disabled?: boolean }>`
+const OutlinedButtonWrap = styled.button<{ disabled?: boolean }>`
   cursor: pointer;
   border: 1px solid transparent;
   background-image: ${borderLinear};
@@ -84,7 +84,7 @@ export const OutlinedNeutralButton = ({ children, ...rest }) => {
     </OutlinedNeutralButtonWrap>
   )
 }
-export const OutlinedNeutralButtonWrap = styled.button<{ disabled?: boolean; color?: string }>`
+const OutlinedNeutralButtonWrap = styled.button<{ disabled?: boolean; color?: string }>`
   background: transparent;
   cursor: pointer;
   padding: 0 !important;

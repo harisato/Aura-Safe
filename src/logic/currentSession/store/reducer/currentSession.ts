@@ -16,7 +16,7 @@ export type CurrentSessionState = {
   restored: boolean
 }
 
-export const initialState = {
+const initialState = {
   viewedSafes: [],
   restored: false,
 }

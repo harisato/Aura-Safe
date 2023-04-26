@@ -63,14 +63,14 @@ function StepperForm({ children, onSubmit, testId, initialValues }: StepperFormP
 
 export default StepperForm
 
-export type StepFormElementProps = {
+type StepFormElementProps = {
   label: string
   validate?: (values) => Record<string, unknown> | Promise<Record<string, string>>
   nextButtonLabel?: string
   children: ReactElement<any, string | JSXElementConstructor<any>>
   disableNextButton?: boolean
 }
-export type StepFormElementType = (props: StepFormElementProps) => StepElementType[]
+
 
 export function StepFormElement({ children }: StepFormElementProps): ReactElement {
   return children

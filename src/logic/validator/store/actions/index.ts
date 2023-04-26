@@ -28,4 +28,4 @@ export const fetchAllValidator =
     }
     return Promise.resolve()
   }
-export const setAllValidator = createAction<ValidatorType[]>(FETCH_ALL_VALIDATORS)
+const setAllValidator = createAction<ValidatorType[]>(FETCH_ALL_VALIDATORS)
