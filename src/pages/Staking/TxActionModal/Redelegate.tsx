@@ -23,7 +23,7 @@ import { Wrapper } from './style'
 export default function Redelegate({ validator, amount, onClose, dstValidator, gasUsed }) {
   const safeAddress = extractSafeAddress()
   const dispatch = useDispatch()
-  const { ethBalance: balance } = useSelector(currentSafeWithNames)
+  const { nativeBalance: balance } = useSelector(currentSafeWithNames)
   const delegations = useSelector(allDelegation)
   const userWalletAddress = useSelector(userAccountSelector)
   const stakedAmount = delegations?.find(

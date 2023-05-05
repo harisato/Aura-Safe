@@ -22,7 +22,7 @@ const StyledBlock = styled(Block)`
 `
 
 const SafeInfo = (): React.ReactElement => {
-  const { address: safeAddress, ethBalance, name: safeName } = useSelector(currentSafeWithNames)
+  const { address: safeAddress, nativeBalance, name: safeName } = useSelector(currentSafeWithNames)
   const nativeCurrency = getNativeCurrency()
 
   return (
@@ -34,11 +34,11 @@ const SafeInfo = (): React.ReactElement => {
         showAvatar
         showCopyBtn
       />
-      {ethBalance && (
+      {nativeBalance && (
         <StyledBlock>
           <Paragraph noMargin>
             Balance:{' '}
-            <Bold data-testid="current-eth-balance">{`${parseFloat(ethBalance).toFixed(6)} ${
+            <Bold data-testid="current-eth-balance">{`${parseFloat(nativeBalance).toFixed(6)} ${
               nativeCurrency.symbol
             }`}</Bold>
           </Paragraph>

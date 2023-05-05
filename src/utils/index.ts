@@ -82,7 +82,12 @@ export const formatNativeCurrency = (amount) => {
     Number(new BigNumber(new BigNumber(+amount).toFixed(+nativeCurrency.decimals)).toFixed()),
   )} ${nativeCurrency.symbol}`
 }
-const formatWithComma = (amount): string => {
+
+export const humanReadableValue = (value: number | string, decimals = 18): string => {
+  return new BigNumber(value).times(`1e-${decimals}`).toFixed()
+}
+
+export const formatWithComma = (amount): string => {
   if (+amount > 1) {
     const intl = new Intl.NumberFormat('en-US')
     return intl.format(amount)

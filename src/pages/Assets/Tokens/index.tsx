@@ -5,7 +5,7 @@ import { FilledButton, OutlinedNeutralButton } from 'src/components/Button'
 import DenseTable, { StyledTableCell, StyledTableRow } from 'src/components/Table/DenseTable'
 import { useSelector } from 'react-redux'
 import { extendedSafeTokensSelector } from 'src/utils/safeUtils/selector'
-import { formatNativeCurrency } from 'src/utils'
+import { formatNativeCurrency, formatWithComma } from 'src/utils'
 import SendingPopup from 'src/components/Popup/SendingPopup'
 import sendIcon from 'src/assets/icons/ArrowUpRight.svg'
 const Wrap = styled.div`
@@ -87,8 +87,8 @@ function Tokens(props): ReactElement {
                   {token.name || 'Unkonwn token'}
                 </TokenInfo>
               </StyledTableCell>
-              <StyledTableCell></StyledTableCell>
-              <StyledTableCell>{formatNativeCurrency(token.balance.tokenBalance)}</StyledTableCell>
+              <StyledTableCell>{token.type}</StyledTableCell>
+              <StyledTableCell>{formatWithComma(token.balance.tokenBalance)}</StyledTableCell>
               <StyledTableCell align="right">
                 <div>
                   <OutlinedNeutralButton

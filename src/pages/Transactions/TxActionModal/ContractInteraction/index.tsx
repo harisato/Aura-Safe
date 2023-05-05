@@ -23,7 +23,7 @@ import { getNotice, getTitle } from '..'
 import EditSequence from '../EditSequence'
 import { DeleteButton, TxContent } from '../styles'
 export default function Execute({ open, onClose, data, sendTx, rejectTx, disabled, setDisabled, deleteTx }) {
-  const { ethBalance: balance, nextQueueSeq, sequence: currentSequence } = useSelector(currentSafeWithNames)
+  const { nativeBalance: balance, nextQueueSeq, sequence: currentSequence } = useSelector(currentSafeWithNames)
   const { action } = useContext(TxSignModalContext)
   const userWalletAddress = useSelector(userAccountSelector)
   const dispatch = useDispatch()

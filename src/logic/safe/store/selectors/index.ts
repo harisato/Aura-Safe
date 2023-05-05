@@ -28,7 +28,7 @@ const safeFieldSelector =
   (safe: SafeRecord): SafeRecordProps[K] =>
     safe.get(field, baseSafe().get(field))
 
-export const currentSafeEthBalance = createSelector(currentSafe, safeFieldSelector('ethBalance'))
+export const currentSafeNativeBalance = createSelector(currentSafe, safeFieldSelector('nativeBalance'))
 
 export const currentSafeBalances = createSelector(currentSafe, safeFieldSelector('balances'))
 

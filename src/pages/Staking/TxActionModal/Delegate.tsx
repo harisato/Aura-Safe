@@ -21,7 +21,7 @@ import { Wrapper } from './style'
 export default function Delegate({ validator, amount, onClose, gasUsed }) {
   const safeAddress = extractSafeAddress()
   const dispatch = useDispatch()
-  const { ethBalance: balance } = useSelector(currentSafeWithNames)
+  const { nativeBalance: balance } = useSelector(currentSafeWithNames)
   const delegations = useSelector(allDelegation)
   const stakedAmount = delegations?.find(
     (delegation: any) => delegation.operatorAddress == validator.safeStaking,

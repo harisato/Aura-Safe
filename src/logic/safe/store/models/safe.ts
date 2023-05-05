@@ -28,7 +28,7 @@ export type SafeRecordProps = {
   chainId?: ChainId
   safeId?: number
   threshold: number
-  ethBalance: string
+  nativeBalance: string
   totalFiatBalance: string
   owners: SafeOwner[]
   modules?: ModulePair[] | null
@@ -56,7 +56,7 @@ const makeSafe = Record<SafeRecordProps>({
   chainId: undefined,
   safeId: undefined,
   threshold: 0,
-  ethBalance: '0',
+  nativeBalance: '0',
   totalFiatBalance: '0',
   owners: [],
   modules: [],

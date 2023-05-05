@@ -23,7 +23,7 @@ import { Wrap } from './styles'
 export default function ReviewPopup({ open, setOpen, gasUsed, msg }) {
   const safeAddress = extractSafeAddress()
   const dispatch = useDispatch()
-  const { ethBalance: balance } = useSelector(currentSafeWithNames)
+  const { nativeBalance: balance } = useSelector(currentSafeWithNames)
   const chainDefaultGasPrice = getChainDefaultGasPrice()
   const decimal = getCoinDecimal()
   const nativeCurrency = getNativeCurrency()

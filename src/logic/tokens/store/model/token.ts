@@ -1,4 +1,3 @@
-import { TokenType } from '@gnosis.pm/safe-react-gateway-sdk'
 import { Record, RecordOf } from 'immutable'
 
 import { BalanceRecord } from 'src/logic/tokens/store/actions/fetchSafeTokens'
@@ -10,7 +9,7 @@ type TokenProps = {
   decimals: number | string
   logoUri: string | null
   balance: BalanceRecord
-  type?: TokenType
+  type?: string
 }
 
 export const makeToken = Record<TokenProps>({
