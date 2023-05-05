@@ -26,6 +26,10 @@ export interface IMSafeInfo {
   txHistoryTag: string
   nextQueueSeq: string
   sequence: string
+  assets: {
+    CW20: any
+    CW721: any
+  }
 }
 
 export interface IMSafeResponse {

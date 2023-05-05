@@ -128,6 +128,23 @@ export const fetchMSafeTokens =
               type: 'ibc',
             })
           })
+
+        if (safeInfo.assets.CW20.asset.length > 0) {
+          safeInfo.assets.CW20.asset.forEach((data) => {
+            balances.push({
+              tokenBalance: `${humanReadableValue(
+                +data?.balance > 0 ? data?.balance : 0,
+                data.asset_info.data.decimals,
+              )}`,
+              tokenAddress: data.contract_address,
+              decimals: data.asset_info.data.decimals,
+              logoUri: chainInfo.nativeCurrency.logoUri,
+              name: data.asset_info.data.name,
+              symbol: data.asset_info.data.symbol,
+              type: 'CW20',
+            })
+          })
+        }
         const nativeBalance = humanReadableValue(
           nativeTokenData?.amount ? nativeTokenData?.amount : '0',
           chainInfo.nativeCurrency.decimals,
