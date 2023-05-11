@@ -93,7 +93,9 @@ export default function Execute({ open, onClose, data, sendTx, rejectTx, disable
             <div className="field" key={index}>
               <div className="field__label">{key}:</div>
               <div className="field__data">
-                {JSON.stringify(JSON.parse(data?.txDetails?.txMessage[0].contractArgs)[key])}
+                {typeof JSON.parse(data?.txDetails?.txMessage[0].contractArgs)[key] == 'object'
+                  ? JSON.stringify(JSON.parse(data?.txDetails?.txMessage[0].contractArgs)[key])
+                  : JSON.parse(data?.txDetails?.txMessage[0].contractArgs)[key]}
               </div>
             </div>
           ))}
