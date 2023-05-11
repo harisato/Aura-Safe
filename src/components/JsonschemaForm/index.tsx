@@ -53,7 +53,7 @@ function JsonschemaForm({
   const schemaInput = makeSchemaInput(jsValidator)
 
   const validateField = (field) => {
-    if (field.isRequired && !formData[field.fieldName]) {
+    if (field.isRequired && (typeof formData[field.fieldName] == 'undefined' || formData[field.fieldName] === '')) {
       return 'This field is required'
     }
 
@@ -82,13 +82,31 @@ function JsonschemaForm({
           <Field
             key={index}
             fieldSchema={field}
-            value={formData[field.fieldName]}
+            value={
+              typeof formData[field.fieldName] == 'object'
+                ? JSON.stringify(formData[field.fieldName])
+                : formData[field.fieldName]
+            }
             errorMsg={shouldCheck ? validateField(field) : ''}
             onChange={(value) => {
               setFormData((prevState) => {
-                return {
-                  ...prevState,
-                  [field.fieldName]: value,
+                try {
+                  const parsedValue = JSON.parse(value)
+                  if (typeof parsedValue == 'object') {
+                    return {
+                      ...prevState,
+                      [field.fieldName]: JSON.parse(value),
+                    }
+                  }
+                  return {
+                    ...prevState,
+                    [field.fieldName]: value,
+                  }
+                } catch (error) {
+                  return {
+                    ...prevState,
+                    [field.fieldName]: value,
+                  }
                 }
               })
             }}

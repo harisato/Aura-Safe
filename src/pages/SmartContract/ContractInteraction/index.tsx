@@ -67,7 +67,13 @@ function ContractInteraction(props): ReactElement {
   useEffect(() => {
     try {
       setIsValidAbi(null)
-      if (!abi) return
+      if (!abi) {
+        setContractData((prevState) => ({
+          ...prevState,
+          executeMsgSchema: undefined,
+        }))
+        return
+      }
       const schema = JSON.parse(abi)
       const jsValidator = new Validator()
       jsValidator.addSchema(schema)
@@ -80,7 +86,10 @@ function ContractInteraction(props): ReactElement {
     } catch (error) {
       setIsValidAbi('false')
       if (isVerifiedContract == 'false') {
-        setContractData({})
+        setContractData((prevState) => ({
+          ...prevState,
+          executeMsgSchema: undefined,
+        }))
       }
       console.log('eerrrorr', error)
     }

@@ -91,7 +91,7 @@ export default function ReviewPopup({ open, setOpen, gasUsed, data, contractData
           {Object.keys(data)?.map((key, index) => (
             <div className="field" key={index}>
               <div className="field__label">{key}:</div>
-              <div className="field__data">{data[key]}</div>
+              <div className="field__data">{typeof data[key] == 'object' ? JSON.stringify(data[key]) : data[key]}</div>
             </div>
           ))}
         </div>
