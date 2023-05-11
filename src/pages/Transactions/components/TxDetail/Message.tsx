@@ -59,7 +59,11 @@ export default function TxMsg({ tx, txDetail }) {
         {Object.keys(JSON.parse(txDetail?.txMessage[0].contractArgs))?.map((key, index) => (
           <div className="field" key={index}>
             <div className="field__label">{key}:</div>
-            <div className="field__data">{JSON.parse(txDetail?.txMessage[0].contractArgs)[key]}</div>
+            <div className="field__data">
+              {typeof JSON.parse(txDetail?.txMessage[0].contractArgs)[key] == 'object'
+                ? JSON.stringify(JSON.parse(txDetail?.txMessage[0].contractArgs)[key])
+                : JSON.parse(txDetail?.txMessage[0].contractArgs)[key]}
+            </div>
           </div>
         ))}
       </div>

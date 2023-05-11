@@ -105,7 +105,11 @@ export default function Execute({ open, onClose, data, sendTx, rejectTx, disable
           {Object.keys(JSON.parse(data?.txDetails?.txMessage[0].contractArgs))?.map((key, index) => (
             <div className="field" key={index}>
               <div className="field__label">{key}:</div>
-              <div className="field__data">{JSON.parse(data?.txDetails?.txMessage[0].contractArgs)[key]}</div>
+              <div className="field__data">
+                {typeof JSON.parse(data?.txDetails?.txMessage[0].contractArgs)[key] == 'object'
+                  ? JSON.stringify(JSON.parse(data?.txDetails?.txMessage[0].contractArgs)[key])
+                  : JSON.parse(data?.txDetails?.txMessage[0].contractArgs)[key]}
+              </div>
             </div>
           ))}
           <Gap height={24} />
