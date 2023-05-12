@@ -78,7 +78,6 @@ function Tokens(props): ReactElement {
       </div>
       <DenseTable headers={['Name', 'Token Type', 'Balance', ' ']}>
         {safeTokens.map((token, index) => {
-          console.log(token)
           return (
             <StyledTableRow key={index}>
               <StyledTableCell>

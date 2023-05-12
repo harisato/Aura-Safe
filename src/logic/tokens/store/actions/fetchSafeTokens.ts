@@ -15,6 +15,7 @@ import { humanReadableValue } from 'src/logic/tokens/utils/humanReadableValue'
 import { ZERO_ADDRESS, sameAddress } from 'src/logic/wallets/ethAddresses'
 import { IMSafeInfo } from 'src/types/safe'
 import axios from 'axios'
+import { getTokenDetail } from 'src/services'
 
 export type BalanceRecord = {
   tokenAddress?: string
@@ -96,8 +97,8 @@ export const fetchMSafeTokens =
     if (safeInfo) {
       if (safeInfo?.balance) {
         const listChain = getChains()
-        const tokenDetailsList = await axios.get('https://aura-nw.github.io/token-registry/testnet.json')
-        console.log(tokenDetailsList)
+        const tokenDetailsListData = await getTokenDetail()
+        const tokenDetailsList = await tokenDetailsListData.json()
         const chainInfo: any = listChain.find((x: any) => x.internalChainId === safeInfo?.internalChainId)
         const nativeTokenData = safeInfo.balance.find((balance) => balance.denom == chainInfo.denom)
         const balances: any[] = []
@@ -112,28 +113,28 @@ export const fetchMSafeTokens =
             logoUri: chainInfo.nativeCurrency.logoUri,
             name: chainInfo.nativeCurrency.name,
             symbol: chainInfo.nativeCurrency.symbol,
+            denom: chainInfo.denom,
             type: 'native',
           })
         }
         safeInfo.balance
           .filter((balance) => balance.denom != chainInfo.denom)
-          .forEach((data) => {
+          .forEach((data: any) => {
             balances.push({
-              tokenBalance: `${humanReadableValue(
-                +data?.amount > 0 ? data?.amount : 0,
-                chainInfo.nativeCurrency.decimals,
-              )}`,
+              tokenBalance: `${humanReadableValue(+data?.amount > 0 ? data?.amount : 0, data.decimal)}`,
               tokenAddress: '111111111111111111111111111111111111111',
-              decimals: chainInfo.nativeCurrency.decimals,
-              logoUri: chainInfo.nativeCurrency.logoUri,
-              name: chainInfo.nativeCurrency.name,
-              symbol: chainInfo.nativeCurrency.symbol,
+              decimals: data.decimal,
+              logoUri: data.logo,
+              name: data.display,
+              symbol: data.display,
+              denom: data.denom,
               type: 'ibc',
             })
           })
 
         if (safeInfo.assets.CW20.asset.length > 0) {
           safeInfo.assets.CW20.asset.forEach((data) => {
+            const tokenDetail = tokenDetailsList.find((token) => token.address == data.contract_address)
             balances.push({
               tokenBalance: `${humanReadableValue(
                 +data?.balance > 0 ? data?.balance : 0,
@@ -141,9 +142,12 @@ export const fetchMSafeTokens =
               )}`,
               tokenAddress: data.contract_address,
               decimals: data.asset_info.data.decimals,
-              logoUri: chainInfo.nativeCurrency.logoUri,
-              name: data.asset_info.data.name,
+              name: tokenDetail?.name,
+              logoUri: tokenDetail?.icon
+                ? `https://aura-nw.github.io/token-registry/images/${tokenDetail?.icon}`
+                : 'https://aura-nw.github.io/token-registry/images/undefined.png',
               symbol: data.asset_info.data.symbol,
+              denom: data.asset_info.data.symbol,
               type: 'CW20',
             })
           })

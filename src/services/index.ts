@@ -16,6 +16,7 @@ import {
 import { IMSafeInfo, IMSafeResponse, OwnedMSafes } from '../types/safe'
 
 let baseUrl = ''
+let githubPageTokenRegistryUrl = ''
 
 export interface ISafeCreate {
   creatorAddress: string
@@ -53,6 +54,9 @@ export type MChainInfo = ChainInfo & _ChainInfo
 
 export function setBaseUrl(url: string): void {
   baseUrl = url
+}
+export function setGithubPageTokenRegistryUrl(url: string): void {
+  githubPageTokenRegistryUrl = url
 }
 
 export function getMChainsConfig(): Promise<MChainInfo[]> {
@@ -277,4 +281,8 @@ export async function getProposalDetail(
 }
 export async function getContract(contractAddress: string, internalChainId: any): Promise<IResponse<any>> {
   return axios.get(`${baseUrl}/contract/${contractAddress}?internalChainId=${internalChainId}`).then((res) => res.data)
+}
+
+export async function getTokenDetail() {
+  return fetch(githubPageTokenRegistryUrl)
 }
