@@ -14,6 +14,7 @@ import { Token, makeToken } from 'src/logic/tokens/store/model/token'
 import { humanReadableValue } from 'src/logic/tokens/utils/humanReadableValue'
 import { ZERO_ADDRESS, sameAddress } from 'src/logic/wallets/ethAddresses'
 import { IMSafeInfo } from 'src/types/safe'
+import axios from 'axios'
 
 export type BalanceRecord = {
   tokenAddress?: string
@@ -95,6 +96,8 @@ export const fetchMSafeTokens =
     if (safeInfo) {
       if (safeInfo?.balance) {
         const listChain = getChains()
+        const tokenDetailsList = await axios.get('https://aura-nw.github.io/token-registry/testnet.json')
+        console.log(tokenDetailsList)
         const chainInfo: any = listChain.find((x: any) => x.internalChainId === safeInfo?.internalChainId)
         const nativeTokenData = safeInfo.balance.find((balance) => balance.denom == chainInfo.denom)
         const balances: any[] = []
