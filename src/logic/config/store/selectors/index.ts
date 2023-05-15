@@ -10,3 +10,6 @@ const configState = (state: AppReduxState): ConfigState => state[CONFIG_REDUCER_
 export const currentChainId = createSelector([configState], (config): ChainId => {
   return config.chainId
 })
+export const currentEnvironment = createSelector([configState], (config): string => {
+  return config.environment
+})

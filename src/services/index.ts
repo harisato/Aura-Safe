@@ -1,22 +1,17 @@
 import { SequenceResponse } from '@cosmjs/stargate'
-import { ChainInfo, TransferDirection } from '@gnosis.pm/safe-react-gateway-sdk'
+import { ChainInfo } from '@gnosis.pm/safe-react-gateway-sdk'
 import axios from 'axios'
 import { getChainInfo } from 'src/config'
 import { WalletKey } from 'src/logic/keplr/keplr'
 import { CHAIN_THEMES, THEME_DF } from 'src/services/constant/chainThemes'
 import { getExplorerUrl, getGatewayUrl } from 'src/services/data/environment'
 import { IProposal, IProposalRes } from 'src/types/proposal'
-import {
-  ICreateSafeTransaction,
-  ISignSafeTransaction,
-  ITransactionDetail,
-  ITransactionListItem,
-  ITransactionListQuery,
-} from 'src/types/transaction'
+import { ICreateSafeTransaction, ITransactionListItem, ITransactionListQuery } from 'src/types/transaction'
 import { IMSafeInfo, IMSafeResponse, OwnedMSafes } from '../types/safe'
 
 let baseUrl = ''
 let githubPageTokenRegistryUrl = ''
+let env = 'development'
 
 export interface ISafeCreate {
   creatorAddress: string
@@ -57,6 +52,9 @@ export function setBaseUrl(url: string): void {
 }
 export function setGithubPageTokenRegistryUrl(url: string): void {
   githubPageTokenRegistryUrl = url
+}
+export function setEnv(e: string): void {
+  env = e
 }
 
 export function getMChainsConfig(): Promise<MChainInfo[]> {
