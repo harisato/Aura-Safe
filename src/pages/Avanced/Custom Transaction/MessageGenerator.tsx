@@ -86,6 +86,15 @@ function MessageGenerator({ setMessage, setIsError }): ReactElement {
           value={rawMsg}
           height="54vh"
           onChange={(value, viewUpdate) => onMsgChange(value)}
+          placeholder={`[
+  {
+    "typeUrl": "...",
+    "value": {
+      ...
+    }
+  },
+  ...
+]`}
         />
         <p className="error-msg">{errorMsg}</p>
       </div>

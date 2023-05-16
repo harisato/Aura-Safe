@@ -53,7 +53,7 @@ function JsonschemaForm({
   const schemaInput = makeSchemaInput(jsValidator)
 
   const validateField = (field) => {
-    if (field.isRequired && !formData[field.fieldName]) {
+    if (field.isRequired && (typeof formData[field.fieldName] == 'undefined' || formData[field.fieldName] === '')) {
       return 'This field is required'
     }
 

@@ -63,6 +63,7 @@ export default function TextField({
   placeholder,
   required,
   errorMsg,
+  min,
 }: {
   label: string
   value: any
@@ -73,6 +74,7 @@ export default function TextField({
   placeholder?: string
   required?: boolean
   errorMsg?: string
+  min?: number
 }) {
   const [isFocus, setIsFocus] = useState(false)
   return (
@@ -92,6 +94,7 @@ export default function TextField({
           onChange={(e) => onChange(e.target.value)}
           onFocus={() => setIsFocus(true)}
           onBlur={() => setIsFocus(false)}
+          min={min}
         />
         {endIcon && <div className="input-end-icon">{endIcon}</div>}
       </div>
