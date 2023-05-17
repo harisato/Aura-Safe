@@ -60,11 +60,7 @@ const RootConsumer = (): React.ReactElement | null => {
         if (apiGateway) {
           setBaseUrl(apiGateway)
           setEnv(env || 'development')
-          setGithubPageTokenRegistryUrl(
-            env == 'production'
-              ? 'https://aura-nw.github.io/token-registry/mainnet.json'
-              : 'https://aura-nw.github.io/token-registry/testnet.json',
-          )
+          setGithubPageTokenRegistryUrl(`https://aura-nw.github.io/token-registry/${chainId}.json`)
           setGatewayUrl(apiGateway)
         } else {
           setIsError(true)

@@ -120,34 +120,34 @@ export const fetchMSafeTokens =
         safeInfo.balance
           .filter((balance) => balance.denom != chainInfo.denom)
           .forEach((data: any) => {
+            const tokenDetail = tokenDetailsList['ibc'].find((token) => token.cosmosDenom == data.minimal_denom)
             balances.push({
-              tokenBalance: `${humanReadableValue(+data?.amount > 0 ? data?.amount : 0, data.decimal)}`,
-              tokenAddress: '111111111111111111111111111111111111111',
-              decimals: data.decimal,
-              logoUri: data.logo,
-              name: data.display,
-              symbol: data.display,
-              denom: data.denom,
+              tokenBalance: `${humanReadableValue(+data?.amount > 0 ? data?.amount : 0, tokenDetail.decimals)}`,
+              tokenAddress: tokenDetail.address,
+              decimals: tokenDetail.decimal,
+              logoUri: tokenDetail?.icon
+                ? `https://aura-nw.github.io/token-registry/images/${tokenDetail?.icon}`
+                : 'https://aura-nw.github.io/token-registry/images/undefined.png',
+              name: tokenDetail.name,
+              symbol: tokenDetail.coinDenom,
+              denom: tokenDetail.minCoinDenom,
               type: 'ibc',
             })
           })
 
         if (safeInfo.assets.CW20.asset.length > 0) {
           safeInfo.assets.CW20.asset.forEach((data) => {
-            const tokenDetail = tokenDetailsList.find((token) => token.address == data.contract_address)
+            const tokenDetail = tokenDetailsList['cw20'].find((token) => token.address == data.contract_address)
             balances.push({
-              tokenBalance: `${humanReadableValue(
-                +data?.balance > 0 ? data?.balance : 0,
-                data.asset_info.data.decimals,
-              )}`,
-              tokenAddress: data.contract_address,
-              decimals: data.asset_info.data.decimals,
+              tokenBalance: `${humanReadableValue(+data?.balance > 0 ? data?.balance : 0, tokenDetail.decimals)}`,
+              tokenAddress: tokenDetail.address,
+              decimals: tokenDetail.decimals,
               name: tokenDetail?.name,
               logoUri: tokenDetail?.icon
                 ? `https://aura-nw.github.io/token-registry/images/${tokenDetail?.icon}`
                 : 'https://aura-nw.github.io/token-registry/images/undefined.png',
-              symbol: data.asset_info.data.symbol,
-              denom: data.asset_info.data.symbol,
+              symbol: tokenDetail.symbol,
+              denom: tokenDetail.symbol,
               type: 'CW20',
             })
           })

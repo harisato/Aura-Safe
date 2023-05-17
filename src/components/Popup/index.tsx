@@ -33,7 +33,7 @@ interface PopupProps {
   handleClose?: (event: Record<string, unknown>, reason: 'backdropClick' | 'escapeKeyDown') => void
   open: boolean
   paperClassName?: string
-  title: string
+  title?: string
 }
 
 const Popup = ({ children, description, handleClose, open, paperClassName, title }: PopupProps): ReactElement => {

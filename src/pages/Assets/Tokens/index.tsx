@@ -8,6 +8,8 @@ import { extendedSafeTokensSelector } from 'src/utils/safeUtils/selector'
 import { formatNativeCurrency, formatWithComma } from 'src/utils'
 import SendingPopup from 'src/components/Popup/SendingPopup'
 import sendIcon from 'src/assets/icons/ArrowUpRight.svg'
+import ManageTokenPopup from './ManageTokenPopup'
+import SearchInput from 'src/components/Input/Search'
 const Wrap = styled.div`
   background: ${(props) => props.theme.backgroundPrimary};
   border-radius: 8px;
@@ -27,23 +29,8 @@ const Wrap = styled.div`
       font-size: 22px;
       line-height: 28px;
     }
-    .token-search-input {
-      border: 1px solid #494c58;
-      border-radius: 8px;
-      padding: 8px 16px;
-      gap: 8px;
-      display: flex;
-      align-items: center;
-      input {
-        font-family: inherit;
-        font-size: 12px;
-        line-height: 16px;
-        background: transparent;
-        border: none;
-        outline: none;
-        color: #fff;
-        min-width: 300px;
-      }
+    .search-input {
+      min-width: 300px;
     }
   }
 `
@@ -62,6 +49,7 @@ const TokenInfo = styled.div`
 `
 function Tokens(props): ReactElement {
   const [open, setOpen] = useState(false)
+  const [manageTokenPopupOpen, setManageTokenPopupOpen] = useState(false)
   const [selectedToken, setSelectedToken] = useState(undefined)
   const safeTokens: any = useSelector(extendedSafeTokensSelector)
   return (
@@ -69,11 +57,10 @@ function Tokens(props): ReactElement {
       <div className="header">
         <div className="title">Token list</div>
         <div>
-          <div className="token-search-input">
-            <input placeholder="Search by name/Token ID" />
-            <img src={SearchIcon} alt="" />
-          </div>
-          <FilledButton className="small">Manage token</FilledButton>
+          <SearchInput placeholder="Search by name/Token ID" />
+          <FilledButton className="small" onClick={() => setManageTokenPopupOpen(true)}>
+            Manage token
+          </FilledButton>
         </div>
       </div>
       <DenseTable headers={['Name', 'Token Type', 'Balance', ' ']}>
@@ -111,6 +98,7 @@ function Tokens(props): ReactElement {
         })}
       </DenseTable>
       <SendingPopup defaultToken={selectedToken} open={open} onOpen={() => {}} onClose={() => setOpen(false)} />
+      <ManageTokenPopup open={manageTokenPopupOpen} onClose={() => setManageTokenPopupOpen(false)} />
     </Wrap>
   )
 }
