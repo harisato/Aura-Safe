@@ -46,13 +46,14 @@ function CustomTransaction(props): ReactElement {
   const createTransaction = async () => {
     try {
       setLoading(true)
-      const res = await simulate({
-        encodedMsgs: Buffer.from(JSON.stringify(message), 'binary').toString('base64'),
-        safeId: safeId?.toString(),
-      })
-      if (res?.Data?.gasUsed) {
-        setGasUsed(res?.Data?.gasUsed)
-      }
+      // const res = await simulate({
+      //   encodedMsgs: Buffer.from(JSON.stringify(message), 'binary').toString('base64'),
+      //   safeId: safeId?.toString(),
+      // })
+      // if (res?.Data?.gasUsed) {
+      //   setGasUsed(res?.Data?.gasUsed)
+      // }
+      setGasUsed(0)
 
       setLoading(false)
       setOpen(true)
