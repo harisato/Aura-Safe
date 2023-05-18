@@ -1,7 +1,7 @@
 import { Dispatch } from 'redux'
 import { getChainInfo, getInternalChainId } from 'src/config'
 
-import { toBase64, toUtf8 } from '@cosmjs/encoding'
+import { toBase64, toUtf8, fromBase64 } from '@cosmjs/encoding'
 import { generatePath } from 'react-router-dom'
 import { ERROR, NOTIFICATIONS, enhanceSnackbarForAction } from 'src/logic/notifications'
 import enqueueSnackbar from 'src/logic/notifications/store/actions/enqueueSnackbar'
@@ -51,10 +51,21 @@ export const signAndCreateTransaction =
           }
         }
 
+        if (['/cosmwasm.wasm.v1.MsgStoreCode'].includes(msg.typeUrl as never)) {
+          return {
+            ...msg,
+            value: {
+              ...msg.value,
+              wasmByteCode: fromBase64(msg.value.wasmByteCode),
+            },
+          }
+        }
+
         return msg
       })
       beforeSigningCallback && beforeSigningCallback()
       dispatch(enqueueSnackbar(enhanceSnackbarForAction(NOTIFICATIONS.SIGN_TX_MSG)))
+
       const signResult = await signMessage(chainId, safeAddress, msgs, sendFee, sequence)
       if (!signResult) throw new Error()
       const signatures = toBase64(signResult.signatures[0])
@@ -136,6 +147,15 @@ export const signAndConfirmTransaction =
             value: {
               ...msg.value,
               msg: toUtf8(msg.value.msg),
+            },
+          }
+        }
+        if (['/cosmwasm.wasm.v1.MsgStoreCode'].includes(msg.typeUrl as never)) {
+          return {
+            ...msg,
+            value: {
+              ...msg.value,
+              wasmByteCode: fromBase64(msg.value.wasmByteCode),
             },
           }
         }
@@ -227,6 +247,15 @@ export const signAndChangeTransactionSequence =
             value: {
               ...msg.value,
               msg: toUtf8(msg.value.msg),
+            },
+          }
+        }
+        if (['/cosmwasm.wasm.v1.MsgStoreCode'].includes(msg.typeUrl as never)) {
+          return {
+            ...msg,
+            value: {
+              ...msg.value,
+              wasmByteCode: fromBase64(msg.value.wasmByteCode),
             },
           }
         }
