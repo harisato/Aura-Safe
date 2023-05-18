@@ -10,6 +10,7 @@ import SendingPopup from 'src/components/Popup/SendingPopup'
 import sendIcon from 'src/assets/icons/ArrowUpRight.svg'
 import ManageTokenPopup from './ManageTokenPopup'
 import SearchInput from 'src/components/Input/Search'
+import { currentSafeWithNames } from 'src/logic/safe/store/selectors'
 const Wrap = styled.div`
   background: ${(props) => props.theme.backgroundPrimary};
   border-radius: 8px;
@@ -52,6 +53,8 @@ function Tokens(props): ReactElement {
   const [manageTokenPopupOpen, setManageTokenPopupOpen] = useState(false)
   const [selectedToken, setSelectedToken] = useState(undefined)
   const safeTokens: any = useSelector(extendedSafeTokensSelector)
+  const { coinConfig, address } = useSelector(currentSafeWithNames)
+
   return (
     <Wrap>
       <div className="header">
@@ -64,38 +67,47 @@ function Tokens(props): ReactElement {
         </div>
       </div>
       <DenseTable headers={['Name', 'Token Type', 'Balance', ' ']}>
-        {safeTokens.map((token, index) => {
-          return (
-            <StyledTableRow key={index}>
-              <StyledTableCell>
-                <TokenInfo>
-                  <img src={token.logoUri} alt="" />
-                  {token.name || 'Unkonwn token'}
-                </TokenInfo>
-              </StyledTableCell>
-              <StyledTableCell>{token.type}</StyledTableCell>
-              <StyledTableCell>{formatWithComma(token.balance.tokenBalance)}</StyledTableCell>
-              <StyledTableCell align="right">
-                <div>
-                  <OutlinedNeutralButton
-                    className="small"
-                    onClick={() => {
-                      setOpen(true)
-                      setSelectedToken(token.address)
-                    }}
-                  >
-                    <img src={sendIcon} alt="" />
-                    Send
-                  </OutlinedNeutralButton>
-                  <OutlinedNeutralButton className="small" style={{ marginLeft: 8 }}>
-                    <img style={{ transform: 'rotate(180deg)' }} src={sendIcon} alt="" />
-                    Receive
-                  </OutlinedNeutralButton>
-                </div>
-              </StyledTableCell>
-            </StyledTableRow>
-          )
-        })}
+        {safeTokens
+          .filter((token) => {
+            return (
+              token.type == 'native' ||
+              coinConfig?.find((coin) => {
+                return coin.address == token.address
+              })?.enable
+            )
+          })
+          .map((token, index) => {
+            return (
+              <StyledTableRow key={index}>
+                <StyledTableCell>
+                  <TokenInfo>
+                    <img src={token.logoUri} alt="" />
+                    {token.name || 'Unkonwn token'}
+                  </TokenInfo>
+                </StyledTableCell>
+                <StyledTableCell>{token.type}</StyledTableCell>
+                <StyledTableCell>{formatWithComma(token.balance.tokenBalance)}</StyledTableCell>
+                <StyledTableCell align="right">
+                  <div>
+                    <OutlinedNeutralButton
+                      className="small"
+                      onClick={() => {
+                        setOpen(true)
+                        setSelectedToken(token.address)
+                      }}
+                    >
+                      <img src={sendIcon} alt="" />
+                      Send
+                    </OutlinedNeutralButton>
+                    <OutlinedNeutralButton className="small" style={{ marginLeft: 8 }}>
+                      <img style={{ transform: 'rotate(180deg)' }} src={sendIcon} alt="" />
+                      Receive
+                    </OutlinedNeutralButton>
+                  </div>
+                </StyledTableCell>
+              </StyledTableRow>
+            )
+          })}
       </DenseTable>
       <SendingPopup defaultToken={selectedToken} open={open} onOpen={() => {}} onClose={() => setOpen(false)} />
       <ManageTokenPopup open={manageTokenPopupOpen} onClose={() => setManageTokenPopupOpen(false)} />

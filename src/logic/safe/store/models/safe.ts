@@ -46,6 +46,7 @@ export type SafeRecordProps = {
   txHistoryTag: string
   nextQueueSeq: string
   sequence: string
+  coinConfig?: any[]
 }
 
 /**
@@ -74,6 +75,7 @@ const makeSafe = Record<SafeRecordProps>({
   txHistoryTag: '0',
   nextQueueSeq: '1',
   sequence: '1',
+  coinConfig: [],
 })
 
 export type SafeRecord = RecordOf<SafeRecordProps>

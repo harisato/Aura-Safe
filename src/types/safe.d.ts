@@ -30,6 +30,7 @@ export interface IMSafeInfo {
     CW20: any
     CW721: any
   }
+  coinConfig: any[]
 }
 
 export interface IMSafeResponse {

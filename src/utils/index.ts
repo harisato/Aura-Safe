@@ -89,7 +89,9 @@ export const humanReadableValue = (value: number | string, decimals = 18): strin
 
 export const formatWithComma = (amount): string => {
   if (+amount > 1) {
-    const intl = new Intl.NumberFormat('en-US')
+    const intl = new Intl.NumberFormat('en-US', {
+      maximumFractionDigits: 6,
+    })
     return intl.format(amount)
   } else {
     return amount?.toString()

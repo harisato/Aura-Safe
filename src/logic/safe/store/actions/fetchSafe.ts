@@ -170,13 +170,18 @@ export const fetchMSafe =
       const { txQueuedTag, txHistoryTag, balances } = currentSafeWithNames(state)
       let isBalanceUpdated = false
 
-      mSafeInfo?.balance?.some((balance: any) => {
-        const decimal = balance?.decimal || coinDecimal
-        const remoteBalance = humanReadableValue(balance.amount, decimal)
-        const currentBalance = balances.find((b: any) => b.denom == balance.denom)
-        if (currentBalance?.tokenBalance != remoteBalance) isBalanceUpdated = true
-        return isBalanceUpdated
-      })
+      if ((mSafeInfo?.balance?.length || 0) + (mSafeInfo?.assets.CW20.asset?.length || 0) != balances?.length)
+        isBalanceUpdated = true
+
+      if (!isBalanceUpdated) {
+        mSafeInfo?.balance?.some((balance: any) => {
+          const decimal = balance?.decimal || coinDecimal
+          const remoteBalance = humanReadableValue(balance.amount, decimal)
+          const currentBalance = balances.find((b: any) => b.denom == balance.denom)
+          if (currentBalance?.tokenBalance != remoteBalance) isBalanceUpdated = true
+          return isBalanceUpdated
+        })
+      }
 
       if (!isBalanceUpdated && mSafeInfo?.assets.CW20.asset.length > 0) {
         mSafeInfo?.assets.CW20.asset.some((balance: any) => {
