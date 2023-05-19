@@ -107,7 +107,7 @@ const Container = (): React.ReactElement => {
           path={SAFE_ROUTES.CONTRACT_INTERACTION}
           render={() => wrapInSuspense(<ContractInteraction />, null)}
         />
-        <Route exact path={SAFE_ROUTES.CUSTOM_TRANSACTION} render={() => wrapInSuspense(<CustomTransaction />, null)} />
+        {/* <Route exact path={SAFE_ROUTES.CUSTOM_TRANSACTION} render={() => wrapInSuspense(<CustomTransaction />, null)} /> */}
         <Route exact path={SAFE_ROUTES.STAKING} render={() => wrapInSuspense(<Staking />, null)} />
         <Route exact path={SAFE_ROUTES.VOTING} render={() => wrapInSuspense(<Voting />, null)} />
         <Route exact path={SAFE_ROUTES.ADDRESS_BOOK} render={() => wrapInSuspense(<AddressBookTable />, null)} />
