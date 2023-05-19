@@ -3,8 +3,22 @@ import styled from 'styled-components'
 export const Wrap = styled.div`
   width: 540px;
   padding: 24px;
+  .gas-warning {
+    font-size: 14px;
+    background: #3d3730;
+    border-radius: 8px;
+    padding: 14px 16px;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    img {
+      width: 20px;
+      height: 20px;
+      margin-right: 6px;
+    }
+  }
   .msgs {
-    max-height: 32vh;
+    max-height: 25vh;
     overflow: auto;
   }
   .label {
