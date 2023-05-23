@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { FilledButton } from 'src/components/Button'
 import Checkbox from 'src/components/Input/Checkbox'
@@ -29,6 +29,8 @@ const Wrap = styled.div`
       border-radius: 8px;
       padding: 0px 16px;
       background: #363843;
+      max-height: 60vh;
+      overflow: auto;
     }
   }
 `
@@ -42,7 +44,6 @@ export default function ManageTokenPopup({ open, onClose }) {
   const [toggleAll, setToggleAll] = useState(false)
   const { coinConfig, address } = useSelector(currentSafeWithNames)
   const [config, setConfig] = useState(coinConfig)
-
   const applyHandler = () => {
     dispatch(
       updateSafe({
@@ -50,7 +51,18 @@ export default function ManageTokenPopup({ open, onClose }) {
         coinConfig: config,
       }),
     )
+    onClose()
   }
+
+  useEffect(() => {
+    setConfig(coinConfig)
+  }, [address])
+
+  const toggleAllHandler = () => {
+    setConfig(config?.map((cf, ii) => ({ ...cf, enable: !toggleAll })))
+    setToggleAll(!toggleAll)
+  }
+
   return (
     <Popup open={open} handleClose={onClose} title="Manage token">
       <Header title="Manage token" onClose={onClose} hideNetwork={true} />
@@ -61,7 +73,7 @@ export default function ManageTokenPopup({ open, onClose }) {
             <Row>
               <div className="title">Token list</div>
               <div style={{ marginRight: 16 }}>
-                <Checkbox checked={toggleAll} onChange={setToggleAll} />
+                <Checkbox checked={toggleAll} onChange={toggleAllHandler} />
               </div>
             </Row>
             <div className="list">
@@ -71,7 +83,7 @@ export default function ManageTokenPopup({ open, onClose }) {
                     key={i}
                     name={c.name}
                     isEnable={c.enable || false}
-                    setToggle={() => setConfig(config.map((cc, ii) => (i == ii ? { ...cc, enable: !cc.enable } : cc)))}
+                    setToggle={() => setConfig(config.map((cf, id) => (i == id ? { ...cf, enable: !cf.enable } : cf)))}
                   />
                 )
               })}

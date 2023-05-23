@@ -3,6 +3,7 @@ import MuiTextField from '@material-ui/core/TextField'
 import React from 'react'
 import { FilledButton } from 'src/components/Button'
 import { getNativeCurrency } from 'src/config'
+import { Token } from 'src/logic/tokens/store/model/token'
 import { colorLinear } from 'src/theme/variables'
 import { formatNumber, isNumberKeyPress } from 'src/utils'
 import styled from 'styled-components'
@@ -53,6 +54,7 @@ const StyledTextField = styled(MuiTextField)`
     height: 18px;
     margin-right: -12px;
     padding: 14px 8px;
+    text-transform: uppercase;
   }
 `
 export default function AmountInput({
@@ -62,6 +64,7 @@ export default function AmountInput({
   autoFocus,
   handleMax,
   placeholder = 'Amount',
+  token,
 }: {
   value: any
   onChange: (value: string) => void
@@ -69,6 +72,7 @@ export default function AmountInput({
   type?: React.HTMLInputTypeAttribute
   autoFocus?: boolean
   placeholder?: string
+  token?: Token
 }) {
   const nativeCurrency = getNativeCurrency()
   return (
@@ -83,7 +87,7 @@ export default function AmountInput({
             <FilledButton className="small" onClick={handleMax}>
               Max
             </FilledButton>
-            <div className="denom">{nativeCurrency.symbol}</div>
+            <div className="denom">{token?.symbol || nativeCurrency.symbol}</div>
           </InputAdornment>
         ),
       }}

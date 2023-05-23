@@ -2,21 +2,20 @@ import BigNumber from 'bignumber.js'
 import { Dispatch } from 'redux'
 
 import { SafeBalanceResponse } from '@gnosis.pm/safe-react-gateway-sdk'
+import { getCoinConfig } from 'src/config'
 import { getChains } from 'src/config/cache/chains'
 import { currentCurrencySelector } from 'src/logic/currencyValues/store/selectors'
 import { Errors, logError } from 'src/logic/exceptions/CodedException'
 import { TokenBalance, fetchTokenCurrenciesBalances } from 'src/logic/safe/api/fetchTokenCurrenciesBalances'
 import { AppReduxState } from 'src/logic/safe/store'
 import { updateSafe } from 'src/logic/safe/store/actions/updateSafe'
-import { currentSafe } from 'src/logic/safe/store/selectors'
+import { currentSafe, safeByAddressSelector } from 'src/logic/safe/store/selectors'
 import { addTokens } from 'src/logic/tokens/store/actions/addTokens'
 import { Token, makeToken } from 'src/logic/tokens/store/model/token'
 import { humanReadableValue } from 'src/logic/tokens/utils/humanReadableValue'
 import { ZERO_ADDRESS, sameAddress } from 'src/logic/wallets/ethAddresses'
-import { IMSafeInfo } from 'src/types/safe'
-import axios from 'axios'
 import { getTokenDetail } from 'src/services'
-import { getCoinConfig } from 'src/config'
+import { IMSafeInfo } from 'src/types/safe'
 
 export type BalanceRecord = {
   tokenAddress?: string
@@ -97,13 +96,13 @@ export const fetchMSafeTokens =
   (safeInfo: IMSafeInfo) =>
   async (dispatch: Dispatch, getState: () => AppReduxState): Promise<void> => {
     const state = getState()
-    const safe = currentSafe(state)
+    const safe = safeByAddressSelector(state, safeInfo.address)
     if (safeInfo?.balance) {
-      const coinConfig =
-        safe?.coinConfig ||
-        getCoinConfig().map((config) => {
-          return { ...config, enable: true }
-        })
+      const coinConfig = safe?.coinConfig?.length
+        ? safe?.coinConfig
+        : getCoinConfig().map((config) => {
+            return { ...config, enable: true }
+          })
       const listChain = getChains()
       const tokenDetailsListData = await getTokenDetail()
       const tokenDetailsList = await tokenDetailsListData.json()

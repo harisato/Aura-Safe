@@ -26,8 +26,6 @@ import { grantedSelector } from 'src/utils/safeUtils/selector'
 import { ConnectWalletModal } from 'src/components/ConnectWalletModal'
 import { useSidebarItems } from 'src/layout/Sidebar/useSidebarItems'
 import useAddressBookSync from 'src/logic/addressBook/hooks/useAddressBookSync'
-import loadCurrentSessionFromStorage from 'src/logic/currentSession/store/actions/loadCurrentSessionFromStorage'
-import loadSafesFromStorage from 'src/logic/safe/store/actions/loadSafesFromStorage'
 import { extractSafeAddress, extractSafeId } from 'src/routes/routes'
 import TermModal from './TermModal'
 
@@ -76,16 +74,16 @@ const App: React.FC = ({ children }) => {
   const termContext = useContext(TermContext)
   const TermState = termContext?.term || false
   const { name: safeName, totalFiatBalance: currentSafeBalance } = useSelector(currentSafeWithNames)
-  const addressFromUrl = extractSafeAddress()
-  const safeIdFromUrl = extractSafeId()
+  const safeAddress = extractSafeAddress()
+  const safeId = extractSafeId()
   const { safeActionsState, onShow, onHide, showSendFunds, hideSendFunds } = useSafeActions()
   const { connectWalletState, onConnectWalletShow, onConnectWalletHide } = useConnectWallet()
   const currentCurrency = useSelector(currentCurrencySelector)
   const granted = useSelector(grantedSelector)
   const sidebarItems = useSidebarItems()
   const dispatch = useDispatch()
-  useLoadSafe(addressFromUrl, safeIdFromUrl) // load initially
-  useSafeScheduledUpdates(addressFromUrl, safeIdFromUrl) // load every X seconds
+  useLoadSafe(safeAddress, safeId) // load initially
+  useSafeScheduledUpdates(safeAddress, safeId) // load every X seconds
   useAddressBookSync()
 
   const sendFunds = safeActionsState.sendFunds
@@ -101,8 +99,6 @@ const App: React.FC = ({ children }) => {
   }
 
   useEffect(() => {
-    dispatch(loadSafesFromStorage())
-    dispatch(loadCurrentSessionFromStorage())
     dispatch(fetchAllValidator())
   }, [dispatch])
 
@@ -128,7 +124,7 @@ const App: React.FC = ({ children }) => {
           <Notifier />
           <AppLayout
             sidebarItems={sidebarItems}
-            safeAddress={addressFromUrl}
+            safeAddress={safeAddress}
             safeName={safeName}
             balance={balance}
             granted={granted}

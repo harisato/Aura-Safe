@@ -9,6 +9,7 @@ type TokenProps = {
   decimals: number | string
   logoUri: string | null
   balance: BalanceRecord
+  denom: string
   type?: string
 }
 
@@ -22,6 +23,7 @@ export const makeToken = Record<TokenProps>({
     fiatBalance: '0',
     tokenBalance: '0',
   },
+  denom: '',
 })
 // balance is only set in extendedSafeTokensSelector when we display user's token balances
 

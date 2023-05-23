@@ -27,6 +27,7 @@ import CreateTxPopup from './CreateTxPopup'
 import CurrentSafe from './CurrentSafe'
 import { BodyWrapper, Footer, PopupWrapper } from './styles'
 import Loader from 'src/components/Loader'
+import { Token } from 'src/logic/tokens/store/model/token'
 
 type SendFundsProps = {
   open: boolean
@@ -36,23 +37,24 @@ type SendFundsProps = {
 }
 
 const SendingPopup = ({ open, onClose, onOpen, defaultToken }: SendFundsProps): ReactElement => {
-  const tokens = useSelector(extendedSafeTokensSelector)
+  const tokens = useSelector(extendedSafeTokensSelector) as unknown as Token[]
   const safeAddress = extractSafeAddress()
   const denom = getCoinMinimalDenom()
   const { safeId } = extractPrefixedSafeAddress()
   const [simulateLoading, setSimulateLoading] = useState(false)
   const [gasUsed, setGasUsed] = useState(0)
-  const chainId = useSelector(currentChainId)
+  const chainId = useSelector(currentChainId) as string
   const [createTxPopupOpen, setCreateTxPopupOpen] = useState(false)
   const [amount, setAmount] = useState('')
   const [recipient, setRecipient] = useState<AddressBookEntry | undefined>(undefined)
   const [recipientFocus, setRecipientFocus] = useState(false)
   const [addressValidateMsg, setAddressValidateMsg] = useState('')
   const [amountValidateMsg, setAmountValidateMsg] = useState('')
-  const [selectedToken, setSelectedToken] = useState(defaultToken || '')
+  const [selectedToken, setSelectedToken] = useState<Token | undefined>(undefined)
   useEffect(() => {
     if (defaultToken) {
-      setSelectedToken(defaultToken)
+      const token = tokens.find((t) => t.address == defaultToken)
+      setSelectedToken(token)
     }
   })
 
@@ -64,7 +66,7 @@ const SendingPopup = ({ open, onClose, onOpen, defaultToken }: SendFundsProps): 
     }
     setRecipient(undefined)
     setAmount('')
-    setSelectedToken('')
+    setSelectedToken(undefined)
     setAddressValidateMsg('')
     setAmountValidateMsg('')
     setCreateTxPopupOpen(false)
@@ -72,18 +74,17 @@ const SendingPopup = ({ open, onClose, onOpen, defaultToken }: SendFundsProps): 
 
   useEffect(() => {
     setAmountValidateMsg('')
-    if (selectedToken) {
-      const tokenbalance = tokens.find((t) => t.address == selectedToken)?.balance?.tokenBalance
+    if (selectedToken?.address) {
+      const tokenbalance = tokens.find((t) => t.address == selectedToken?.address)?.balance?.tokenBalance
       if (tokenbalance && +amount > +tokenbalance) {
         setAmountValidateMsg('Given amount is greater than available balance.')
       }
     }
-  }, [amount, selectedToken])
+  }, [amount, selectedToken?.address])
 
   const setMaxAmount = () => {
     if (selectedToken) {
-      const token = tokens.find((t) => t.address == selectedToken)
-      setAmount(token?.balance?.tokenBalance || '')
+      setAmount(selectedToken?.balance?.tokenBalance || '')
     }
   }
 
@@ -183,9 +184,18 @@ const SendingPopup = ({ open, onClose, onOpen, defaultToken }: SendFundsProps): 
               </>
             )}
             <Gap height={16} />
-            <TokenSelect selectedToken={selectedToken} setSelectedToken={setSelectedToken} disabled={!!defaultToken} />
+            <TokenSelect
+              selectedToken={selectedToken?.address}
+              setSelectedToken={setSelectedToken}
+              disabled={!!defaultToken}
+            />
             <Gap height={16} />
-            <AmountInput value={amount} onChange={(value) => setAmount(value)} handleMax={setMaxAmount} />
+            <AmountInput
+              value={amount}
+              onChange={(value) => setAmount(value)}
+              handleMax={setMaxAmount}
+              token={selectedToken}
+            />
             {amountValidateMsg && <div className="error-msg">{amountValidateMsg}</div>}
           </BodyWrapper>
           <Footer>
@@ -209,7 +219,7 @@ const SendingPopup = ({ open, onClose, onOpen, defaultToken }: SendFundsProps): 
       </Popup>
       <CreateTxPopup
         recipient={recipient}
-        selectedToken={tokens.find((t) => t.address == selectedToken)}
+        selectedToken={selectedToken}
         amount={amount}
         open={createTxPopupOpen}
         handleClose={handleClose}

@@ -9,14 +9,14 @@ import FeeAndSequence from 'src/components/FeeAndSequence'
 import Gap from 'src/components/Gap'
 import Loader from 'src/components/Loader'
 import Amount from 'src/components/TxComponents/Amount'
-import { getChainDefaultGasPrice, getCoinDecimal, getCoinMinimalDenom } from 'src/config'
+import { getChainDefaultGasPrice, getCoinDecimal, getCoinMinimalDenom, getNativeCurrency } from 'src/config'
 import { AddressBookEntry } from 'src/logic/addressBook/model/addressBook'
 import { MsgTypeUrl } from 'src/logic/providers/constants/constant'
 import calculateGasFee from 'src/logic/providers/utils/fee'
 import { currentSafeWithNames } from 'src/logic/safe/store/selectors'
 import { Token } from 'src/logic/tokens/store/model/token'
 import { extractSafeAddress } from 'src/routes/routes'
-import { formatBigNumber, formatNativeCurrency } from 'src/utils'
+import { formatBigNumber, formatNativeCurrency, formatWithComma } from 'src/utils'
 import { signAndCreateTransaction } from 'src/utils/signer'
 import { Popup } from '..'
 import Header from '../Header'
@@ -38,6 +38,7 @@ export default function CreateTxPopup({
   gasUsed: string
 }) {
   const safeAddress = extractSafeAddress()
+  const nativeCurrency = getNativeCurrency()
   const { nativeBalance: balance } = useSelector(currentSafeWithNames)
   const dispatch = useDispatch()
   const denom = getCoinMinimalDenom()
@@ -93,13 +94,14 @@ export default function CreateTxPopup({
       <Wrapper>
         <AddressInfo address={safeAddress} />
         <div className="balance">
-          Balance: <strong>{formatNativeCurrency(balance)}</strong>
+          Balance:{' '}
+          <strong>{`${formatWithComma(selectedToken?.balance?.tokenBalance)} ${selectedToken?.symbol}`}</strong>
         </div>
         <Divider withArrow />
         <p className="label">Recipient</p>
         <AddressInfo address={recipient?.address || ''} />
         <Gap height={16} />
-        <Amount amount={formatNativeCurrency(amount)} />
+        <Amount amount={`${formatWithComma(amount)} ${selectedToken?.symbol}`} token={selectedToken} />
         <Divider />
 
         <FeeAndSequence
@@ -116,7 +118,13 @@ export default function CreateTxPopup({
 
         <Amount
           label="Total Allocation Amount"
-          amount={formatNativeCurrency(new BigNumber(+amount).plus(+gasPriceFormatted).toString())}
+          amount={
+            selectedToken?.type == 'native'
+              ? formatNativeCurrency(new BigNumber(+amount).plus(+gasPriceFormatted).toString())
+              : `${formatWithComma(amount)} ${selectedToken?.symbol} + ${formatNativeCurrency(
+                  new BigNumber(+gasPriceFormatted).toString(),
+                )}`
+          }
         />
         <div className="notice">
           You’re about to create a transaction and will have to confirm it with your currently connected wallet.

@@ -97,7 +97,6 @@ export const extractPrefixedSafeAddress = (
   const match = matchPath<SafeRouteSlugs>(path, {
     path: route,
   })
-
   const prefixedSafeAddress = match?.params?.[SAFE_ADDRESS_SLUG]
   const { prefix, address } = parsePrefixedAddress(prefixedSafeAddress || '')
 
