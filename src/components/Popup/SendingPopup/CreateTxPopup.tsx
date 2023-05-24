@@ -16,7 +16,7 @@ import calculateGasFee from 'src/logic/providers/utils/fee'
 import { currentSafeWithNames } from 'src/logic/safe/store/selectors'
 import { Token } from 'src/logic/tokens/store/model/token'
 import { extractSafeAddress } from 'src/routes/routes'
-import { formatBigNumber, formatNativeCurrency, formatWithComma } from 'src/utils'
+import { convertAmount, formatNativeCurrency, formatWithComma } from 'src/utils'
 import { signAndCreateTransaction } from 'src/utils/signer'
 import { Popup } from '..'
 import Header from '../Header'
@@ -57,18 +57,39 @@ export default function CreateTxPopup({
       setManualGasLimit(gasUsed)
     }
   }, [gasUsed])
-
+  console.log(selectedToken)
   const signTransaction = async () => {
-    const msgs: any[] = [
-      {
-        typeUrl: MsgTypeUrl.Send,
-        value: {
-          amount: coins(formatBigNumber(+amount, true), denom),
-          fromAddress: safeAddress,
-          toAddress: recipient?.address,
-        },
-      },
-    ]
+    const msgs: any[] =
+      selectedToken?.type == 'CW20'
+        ? [
+            {
+              typeUrl: MsgTypeUrl.ExecuteContract,
+              value: {
+                contract: selectedToken.address,
+                sender: safeAddress,
+                funds: [],
+                msg: {
+                  transfer: {
+                    amount: convertAmount(+amount, true, +selectedToken.decimals),
+                    recipient: recipient?.address,
+                  },
+                },
+              },
+            },
+          ]
+        : [
+            {
+              typeUrl: MsgTypeUrl.Send,
+              value: {
+                amount: coins(
+                  convertAmount(+amount, true, +(selectedToken?.decimals || 6)),
+                  (selectedToken?.type == 'ibc' ? selectedToken?.cosmosDenom : selectedToken?.denom) || denom,
+                ),
+                fromAddress: safeAddress,
+                toAddress: recipient?.address,
+              },
+            },
+          ]
     dispatch(
       signAndCreateTransaction(
         msgs,
@@ -125,6 +146,7 @@ export default function CreateTxPopup({
                   new BigNumber(+gasPriceFormatted).toString(),
                 )}`
           }
+          hideLogo={true}
         />
         <div className="notice">
           You’re about to create a transaction and will have to confirm it with your currently connected wallet.

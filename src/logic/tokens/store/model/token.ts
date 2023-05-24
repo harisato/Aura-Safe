@@ -10,6 +10,7 @@ type TokenProps = {
   logoUri: string | null
   balance: BalanceRecord
   denom: string
+  cosmosDenom?: string
   type?: string
 }
 
@@ -24,6 +25,7 @@ export const makeToken = Record<TokenProps>({
     tokenBalance: '0',
   },
   denom: '',
+  cosmosDenom: '',
 })
 // balance is only set in extendedSafeTokensSelector when we display user's token balances
 

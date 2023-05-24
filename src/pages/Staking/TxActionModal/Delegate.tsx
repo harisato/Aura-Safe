@@ -14,7 +14,7 @@ import { MsgTypeUrl } from 'src/logic/providers/constants/constant'
 import calculateGasFee from 'src/logic/providers/utils/fee'
 import { currentSafeWithNames } from 'src/logic/safe/store/selectors'
 import { extractSafeAddress } from 'src/routes/routes'
-import { formatBigNumber, formatNativeCurrency, formatNativeToken } from 'src/utils'
+import { convertAmount, formatNativeCurrency, formatNativeToken } from 'src/utils'
 import { signAndCreateTransaction } from 'src/utils/signer'
 import { Wrapper } from './style'
 
@@ -46,7 +46,7 @@ export default function Delegate({ validator, amount, onClose, gasUsed }) {
       {
         typeUrl: MsgTypeUrl.Delegate,
         value: {
-          amount: coin(formatBigNumber(amount, true), denom),
+          amount: coin(convertAmount(amount, true), denom),
           delegatorAddress: safeAddress,
           validatorAddress: validator.safeStaking,
         },

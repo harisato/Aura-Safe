@@ -52,6 +52,7 @@ export const extendedSafeTokensSelector = createSelector(
         logoUri: safeBalance.logoUri,
         type: safeBalance.type,
         denom: safeBalance.denom,
+        cosmosDenom: safeBalance.cosmosDenom,
       } as Token)
     })
 

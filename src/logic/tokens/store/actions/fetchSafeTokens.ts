@@ -140,13 +140,14 @@ export const fetchMSafeTokens =
           balances.push({
             tokenBalance: `${humanReadableValue(+data?.amount > 0 ? data?.amount : 0, tokenDetail.decimals)}`,
             tokenAddress: tokenDetail.address,
-            decimals: tokenDetail.decimal,
+            decimals: tokenDetail.decimals,
             logoUri: tokenDetail?.icon
               ? `https://aura-nw.github.io/token-registry/images/${tokenDetail?.icon}`
               : 'https://aura-nw.github.io/token-registry/images/undefined.png',
             name: tokenDetail.name,
             symbol: tokenDetail.coinDenom,
             denom: tokenDetail.minCoinDenom,
+            cosmosDenom: tokenDetail.cosmosDenom,
             type: 'ibc',
           })
         })

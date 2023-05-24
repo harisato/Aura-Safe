@@ -16,7 +16,7 @@ import { currentSafeWithNames } from 'src/logic/safe/store/selectors'
 import { userAccountSelector } from 'src/logic/wallets/store/selectors'
 import { extractSafeAddress } from 'src/routes/routes'
 import { DEFAULT_GAS_LIMIT } from 'src/services/constant/common'
-import { formatBigNumber, formatNativeCurrency, formatNativeToken } from 'src/utils'
+import { convertAmount, formatNativeCurrency, formatNativeToken } from 'src/utils'
 import { signAndCreateTransaction } from 'src/utils/signer'
 import { Wrapper } from './style'
 
@@ -55,7 +55,7 @@ export default function Redelegate({ validator, amount, onClose, dstValidator, g
       {
         typeUrl: MsgTypeUrl.Redelegate,
         value: {
-          amount: coin(formatBigNumber(amount, true), denom),
+          amount: coin(convertAmount(amount, true), denom),
           delegatorAddress: safeAddress,
           validatorSrcAddress: validator.safeStaking,
           validatorDstAddress: dstValidator,

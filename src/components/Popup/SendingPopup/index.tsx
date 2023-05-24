@@ -19,7 +19,7 @@ import { currentChainId } from 'src/logic/config/store/selectors'
 import { MsgTypeUrl } from 'src/logic/providers/constants/constant'
 import { extractPrefixedSafeAddress, extractSafeAddress } from 'src/routes/routes'
 import { simulate } from 'src/services'
-import { formatBigNumber } from 'src/utils'
+import { convertAmount } from 'src/utils'
 import { isValidAddress } from 'src/utils/isValidAddress'
 import { Popup } from '..'
 import Header from '../Header'
@@ -101,7 +101,7 @@ const SendingPopup = ({ open, onClose, onOpen, defaultToken }: SendFundsProps): 
             {
               typeUrl: MsgTypeUrl.Send,
               value: {
-                amount: coins(formatBigNumber(amount, true), denom),
+                amount: coins(convertAmount(amount, true), denom),
                 fromAddress: safeAddress,
                 toAddress: recipient?.address,
               },

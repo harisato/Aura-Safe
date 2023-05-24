@@ -56,13 +56,15 @@ export const isNumberKeyPress = (event): boolean => {
   return true
 }
 
-export const formatBigNumber = (amount, isMulti = false) => {
+export const convertAmount = (amount: string | number, isMulti: boolean = false, decimal?: number) => {
   const nativeCurrency = getNativeCurrency()
-  if (isNaN(amount)) return '0'
+  if (isNaN(+amount)) return '0'
   return isMulti
-    ? new BigNumber(amount).times(new BigNumber(10).pow(nativeCurrency.decimals)).toFixed()
+    ? new BigNumber(amount).times(new BigNumber(10).pow(decimal || nativeCurrency.decimals)).toFixed()
     : new BigNumber(
-        new BigNumber(amount).div(new BigNumber(10).pow(nativeCurrency.decimals)).toFixed(nativeCurrency.decimals),
+        new BigNumber(amount)
+          .div(new BigNumber(10).pow(decimal || nativeCurrency.decimals))
+          .toFixed(decimal || nativeCurrency.decimals),
       ).toFixed()
 }
 
