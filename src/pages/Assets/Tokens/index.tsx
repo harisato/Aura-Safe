@@ -11,6 +11,7 @@ import sendIcon from 'src/assets/icons/ArrowUpRight.svg'
 import ManageTokenPopup from './ManageTokenPopup'
 import SearchInput from 'src/components/Input/Search'
 import { currentSafeWithNames } from 'src/logic/safe/store/selectors'
+import { Token } from 'src/logic/tokens/store/model/token'
 const Wrap = styled.div`
   background: ${(props) => props.theme.backgroundPrimary};
   border-radius: 8px;
@@ -65,7 +66,7 @@ const TokenType = styled.div`
 function Tokens(props): ReactElement {
   const [open, setOpen] = useState(false)
   const [manageTokenPopupOpen, setManageTokenPopupOpen] = useState(false)
-  const [selectedToken, setSelectedToken] = useState(undefined)
+  const [selectedToken, setSelectedToken] = useState<string>('')
   const safeTokens: any = useSelector(extendedSafeTokensSelector)
   const { coinConfig, address } = useSelector(currentSafeWithNames)
 
@@ -80,7 +81,7 @@ function Tokens(props): ReactElement {
           </FilledButton>
         </div>
       </div>
-      <DenseTable headers={['Name', 'Token Type', 'Balance', ' ']}>
+      <DenseTable headers={['Name', 'Token Type', 'Balance', ' ']} showPagination={true}>
         {safeTokens
           .filter((token) => {
             return (
@@ -90,12 +91,12 @@ function Tokens(props): ReactElement {
               })?.enable
             )
           })
-          .map((token, index) => {
+          .map((token: Token, index: number) => {
             return (
               <StyledTableRow key={index}>
                 <StyledTableCell>
                   <TokenInfo>
-                    <img src={token.logoUri} alt="" />
+                    <img src={token?.logoUri || ''} alt="" />
                     {token.name || 'Unkonwn token'}
                   </TokenInfo>
                 </StyledTableCell>
@@ -109,7 +110,7 @@ function Tokens(props): ReactElement {
                       className="small"
                       onClick={() => {
                         setOpen(true)
-                        setSelectedToken(token.address)
+                        setSelectedToken(token?.address)
                       }}
                     >
                       <img src={sendIcon} alt="" />

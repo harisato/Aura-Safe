@@ -201,7 +201,7 @@ const MultiSendPopup = ({ open, onClose, onOpen }: SendFundsProps): ReactElement
                         <StyledTableCell align="left">{row.address}</StyledTableCell>
                         <StyledTableCell align="left">{row.amount}</StyledTableCell>
                       </StyledTableRow>
-                    )
+                    ) 
                   })}
                 </DenseTable>
               </>
