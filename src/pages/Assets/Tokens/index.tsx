@@ -48,6 +48,20 @@ const TokenInfo = styled.div`
     border-radius: 12px;
   }
 `
+const TokenType = styled.div`
+  padding: 8px 16px;
+  border-radius: 8px;
+  width: fit-content;
+  text-transform: uppercase;
+  &.ibc {
+    background: #273033;
+    color: #67c091;
+  }
+  &.CW20 {
+    color: #ffba69;
+    background: #3d3730;
+  }
+`
 function Tokens(props): ReactElement {
   const [open, setOpen] = useState(false)
   const [manageTokenPopupOpen, setManageTokenPopupOpen] = useState(false)
@@ -85,7 +99,9 @@ function Tokens(props): ReactElement {
                     {token.name || 'Unkonwn token'}
                   </TokenInfo>
                 </StyledTableCell>
-                <StyledTableCell>{token.type}</StyledTableCell>
+                <StyledTableCell>
+                  <TokenType className={token.type}>{token.type == 'native' ? '' : token.type}</TokenType>
+                </StyledTableCell>
                 <StyledTableCell>{formatWithComma(token.balance.tokenBalance)}</StyledTableCell>
                 <StyledTableCell align="right">
                   <div>

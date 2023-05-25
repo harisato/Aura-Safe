@@ -57,7 +57,6 @@ export default function CreateTxPopup({
       setManualGasLimit(gasUsed)
     }
   }, [gasUsed])
-  console.log(selectedToken)
   const signTransaction = async () => {
     const msgs: any[] =
       selectedToken?.type == 'CW20'
