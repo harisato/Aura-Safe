@@ -1,7 +1,7 @@
 import { ThunkDispatch } from 'redux-thunk'
 import { AnyAction } from 'redux'
 
-import { AppReduxState } from 'src/store'
+import { AppReduxState } from 'src/logic/safe/store'
 
 export type DispatchReturn = string | undefined
 

@@ -140,23 +140,16 @@ body > div:first-child {
 /*Aura custom scollbar*/
 /* width */
 ::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+  width: 4px;
+  background: rgba(54, 56, 67, 0.5);
 }
 
 /* Handle */
 ::-webkit-scrollbar-thumb {
-  background: linear-gradient(108.46deg, #5ee6d0 12.51%, #bfc6ff 51.13%, #ffba69 87.49%);
-  border-radius: 4px;
+  background: #868A97;
+  border-radius: 2px;
 }
 
-.title-h3_20m {
-  font-family: 'SFProDisplay';
-  font-style: normal;
-  font-weight: 510;
-  font-size: 20px;
-  line-height: 26px;
-}
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
   -webkit-appearance: none;

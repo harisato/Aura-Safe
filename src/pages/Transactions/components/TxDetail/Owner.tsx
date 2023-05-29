@@ -90,7 +90,7 @@ export const TxOwners = ({ txDetails }: { txDetails: any }): ReactElement | null
           </div>
         </OwnerListItem>
       )}
-      {!txDetails.executor && confirmationsNeeded <= 0 && (
+      {!txDetails.executor && confirmationsNeeded <= 0 && !txDetails.deletedBy && (
         <OwnerListItem className="isPending">
           <span className="icon">
             <StyledImg alt="" src={ExecuteIcon} />
@@ -102,7 +102,7 @@ export const TxOwners = ({ txDetails }: { txDetails: any }): ReactElement | null
           </div>
         </OwnerListItem>
       )}
-      {confirmationsNeeded > 0 && (
+      {confirmationsNeeded > 0 && !txDetails.deletedBy && (
         <OwnerListItem className="isPending">
           <span className="icon">
             <StyledImg alt="" src={NotExecuteIcon} />
@@ -114,6 +114,19 @@ export const TxOwners = ({ txDetails }: { txDetails: any }): ReactElement | null
                 needed)
               </span>
             </Text>
+          </div>
+        </OwnerListItem>
+      )}
+      {txDetails.deletedBy && (
+        <OwnerListItem>
+          <span className="icon">
+            <img src={CircleRedIcon} alt="Aura Safe" />
+          </span>
+          <div className="legend">
+            <Text color="failAura" size="lg" strong>
+              <span style={{ fontWeight: 700 }}>Deleted</span>
+            </Text>
+            <AddressInfo address={txDetails.deletedBy.ownerAddress} />
           </div>
         </OwnerListItem>
       )}

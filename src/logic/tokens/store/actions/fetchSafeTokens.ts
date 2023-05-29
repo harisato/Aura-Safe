@@ -12,7 +12,7 @@ import { makeToken, Token } from 'src/logic/tokens/store/model/token'
 import { humanReadableValue } from 'src/logic/tokens/utils/humanReadableValue'
 import { sameAddress, ZERO_ADDRESS } from 'src/logic/wallets/ethAddresses'
 import { getMChainsConfig } from 'src/services/index'
-import { AppReduxState } from 'src/store'
+import { AppReduxState } from 'src/logic/safe/store'
 import { IMSafeInfo } from 'src/types/safe'
 import { getChains } from 'src/config/cache/chains'
 

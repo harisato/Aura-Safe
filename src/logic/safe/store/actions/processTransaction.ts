@@ -21,7 +21,7 @@ import closeSnackbarAction from 'src/logic/notifications/store/actions/closeSnac
 import { fetchSafe } from 'src/logic/safe/store/actions/fetchSafe'
 import fetchTransactions from 'src/logic/safe/store/actions/transactions/fetchTransactions'
 import { shouldExecuteTransaction } from 'src/logic/safe/store/actions/utils'
-import { AppReduxState } from 'src/store'
+import { AppReduxState } from 'src/logic/safe/store'
 import { TxParameters } from 'src/routes/safe/container/hooks/useTransactionParameters'
 import { Dispatch, DispatchReturn } from './types'
 import { PayableTx } from 'src/types/contracts/types'

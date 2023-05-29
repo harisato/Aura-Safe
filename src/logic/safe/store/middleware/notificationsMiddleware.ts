@@ -9,7 +9,7 @@ import { getAwaitingGatewayTransactions } from 'src/logic/safe/transactions/awai
 import { getSafeVersionInfo } from 'src/logic/safe/utils/safeVersion'
 import { isUserAnOwner } from 'src/logic/wallets/ethAddresses'
 import { userAccountSelector } from 'src/logic/wallets/store/selectors'
-import { grantedSelector } from 'src/routes/safe/container/selector'
+import { grantedSelector } from 'src/utils/safeUtils/selector'
 import {
   ADD_QUEUED_TRANSACTIONS,
   ADD_HISTORY_TRANSACTIONS,
@@ -19,7 +19,7 @@ import { safesAsMap } from 'src/logic/safe/store/selectors'
 import { isTransactionSummary } from 'src/logic/safe/store/models/types/gateway.d'
 import { loadFromStorage, saveToStorage } from 'src/utils/storage'
 import { ADD_OR_UPDATE_SAFE } from '../actions/addOrUpdateSafe'
-import { store as reduxStore } from 'src/store/index'
+import { store as reduxStore } from 'src/logic/safe/store/index'
 import { HistoryPayload } from 'src/logic/safe/store/reducer/gatewayTransactions'
 import { history, extractSafeAddress, generateSafeRoute, ADDRESSED_ROUTE, SAFE_ROUTES } from 'src/routes/routes'
 import { getShortName } from 'src/config'

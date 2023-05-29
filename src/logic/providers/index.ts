@@ -6,7 +6,7 @@ import { getProvider, suggestChain } from 'src/logic/providers/utils/wallets'
 import { WALLETS_NAME } from 'src/logic/wallets/constant/wallets'
 import { auth } from 'src/services'
 import { JWT_TOKEN_KEY } from 'src/services/constant/common'
-import { store } from 'src/store'
+import { store } from 'src/logic/safe/store'
 import { parseToAddress } from 'src/utils/parseByteAdress'
 import { saveToStorage } from 'src/utils/storage'
 import session from 'src/utils/storage/session'
@@ -145,10 +145,12 @@ ${timeStamp}`
 
 export async function getKeplrKey(chainId: string): Promise<WalletKey | undefined> {
   return loadLastUsedProvider()
-    .then((loadLastUsedProvider) => getProvider((loadLastUsedProvider as WALLETS_NAME) || WALLETS_NAME.Keplr))
+    .then((lastUsedProvider) => getProvider((lastUsedProvider as WALLETS_NAME) || WALLETS_NAME.Keplr))
     .then((keplr) => {
       if (keplr) {
         return keplr.getKey(chainId)
+      } else {
+        alert('Wallet is not found!')
       }
     })
     .then((key) =>

@@ -125,16 +125,16 @@ export const getExplorerUrl = (): string => {
   return new URL(address).origin
 }
 
-export const getHashedExplorerUrl = (hash: string): string => {
+export const getHashedExplorerUrl = (hash: string, type?: string): string => {
   const isTx = hash?.length > 50
-  const param = isTx ? 'txHash' : 'address'
+  const param = type ? type : isTx ? 'txHash' : 'address'
   const uri = getExplorerUriTemplate()[param]
   return evalTemplate(uri, { [param]: hash })
 }
 
 // Matches return type of ExplorerInfo from SRC
-export const getExplorerInfo = (hash: string): (() => { url: string; alt: string }) => {
-  const url = getHashedExplorerUrl(hash)
+export const getExplorerInfo = (hash: string, type?: string): (() => { url: string; alt: string }) => {
+  const url = getHashedExplorerUrl(hash, type)
   const { hostname } = new URL(url)
 
   const alt = `View on ${hostname}` // Not returned by CGW
@@ -208,7 +208,6 @@ export const getCoinSymbol = (): string => {
 export const getNativeCurrencyLogoUri = (): string => {
   return getChainInfo().nativeCurrency.logoUri
 }
-
 
 export const getCoinMinimalDenom = (): string => {
   return (getChainInfo() as MChainInfo).denom

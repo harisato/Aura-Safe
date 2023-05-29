@@ -11,7 +11,7 @@ import {
 import { GATEWAY_TRANSACTIONS_ID } from 'src/logic/safe/store/reducer/gatewayTransactions'
 import { currentChainId } from 'src/logic/config/store/selectors'
 import { createHashBasedSelector } from 'src/logic/safe/store/selectors/utils'
-import { AppReduxState } from 'src/store'
+import { AppReduxState } from 'src/logic/safe/store'
 import { extractSafeAddress } from 'src/routes/routes'
 
 export const gatewayTransactions = (state: AppReduxState): AppReduxState['gatewayTransactions'] => {

@@ -17,6 +17,7 @@ const handleProviderNotification = (provider: ProviderProps, dispatch: Dispatch<
   const { available, loaded } = provider
 
   if (!loaded) {
+    console.error('error loading provider zz')
     dispatch(enqueueSnackbar(enhanceSnackbarForAction(NOTIFICATIONS.CONNECT_WALLET_ERROR_MSG)))
     return
   }

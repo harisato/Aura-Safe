@@ -7,6 +7,30 @@ import calculateGasFee from 'src/logic/providers/utils/fee'
 import { useLocation } from 'react-router-dom'
 import { useMemo } from 'react'
 
+export const beutifyJson = (data) => {
+  if (!data) return ''
+  const prettyJson = JSON.stringify(data, undefined, 4)
+  const json = prettyJson.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+  const formattedJson = json.replace(
+    /("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g,
+    function (match) {
+      var cls = 'number'
+      if (/^"/.test(match)) {
+        if (/:$/.test(match)) {
+          cls = 'key'
+        } else {
+          cls = 'string'
+        }
+      } else if (/true|false/.test(match)) {
+        cls = 'boolean'
+      } else if (/null/.test(match)) {
+        cls = 'null'
+      }
+      return '<span class="' + cls + '">' + match + '</span>'
+    },
+  )
+  return formattedJson
+}
 export const validateFloatNumber = (value: any): boolean => {
   return !isNaN(parseFloat(value)) && isFinite(value)
 }

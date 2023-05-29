@@ -23,7 +23,7 @@ import Hairline from 'src/components/layout/Hairline'
 import { Modal } from 'src/components/Modal'
 import { ButtonStatus } from 'src/components/Modal/type'
 import { ReviewInfoText } from 'src/components/ReviewInfoText'
-import { grantedSelector } from 'src/routes/safe/container/selector'
+import { grantedSelector } from 'src/utils/safeUtils/selector'
 import Paragraph from 'src/components/layout/Paragraph'
 import PrefixedEthHashInfo from 'src/components/PrefixedEthHashInfo'
 

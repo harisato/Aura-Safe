@@ -106,6 +106,7 @@ export function getMChainsConfig(): Promise<MChainInfo[]> {
             txHash: getExplorerUrl(e.chainId, e.explorer, 'txHash'),
             api: getExplorerUrl(e.chainId, e.explorer, 'api'),
             proposals: getExplorerUrl(e.chainId, e.explorer, 'proposals'),
+            contract: getExplorerUrl(e.chainId, e.explorer, 'contract'),
           },
           nativeCurrency: {
             name: e.prefix.charAt(0).toUpperCase() + e.prefix.slice(1, e.prefix.length).toLowerCase(),
@@ -286,4 +287,7 @@ export async function getProposalDetail(
   proposalId: number | string,
 ): Promise<IResponse<IProposal>> {
   return axios.get(`${baseUrl}/gov/${internalChainId}/proposals/${proposalId}`).then((res) => res.data)
+}
+export async function getContract(contractAddress: string, internalChainId: any): Promise<IResponse<any>> {
+  return axios.get(`${baseUrl}/contract/${contractAddress}?internalChainId=${internalChainId}`).then((res) => res.data)
 }

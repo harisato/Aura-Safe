@@ -74,10 +74,18 @@ export default function TxType({ type }) {
       </div>
     )
   }
+  if (type == MsgTypeUrl.ExecuteContract) {
+    return (
+      <div className="tx-type">
+        <img src={CustomIcon} alt="custom-icon" />
+        <p>Contract Interaction</p>
+      </div>
+    )
+  }
   return (
     <div className="tx-type">
       <img src={CustomIcon} alt="custom-icon" />
-      <p>Unknown</p>
+      <p>Custom Transaction</p>
     </div>
   )
 }

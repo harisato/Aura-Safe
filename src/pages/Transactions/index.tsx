@@ -19,16 +19,6 @@ const TRANSACTION_TABS: Item[] = [
 const Transactions = (): ReactElement => {
   const history = useHistory()
   const [tab, setTab] = useState(0)
-  useEffect(() => {
-    switch (tab) {
-      case 0:
-        onTabChange(SAFE_ROUTES.TRANSACTIONS_QUEUE)
-        break
-      case 1:
-        onTabChange(SAFE_ROUTES.TRANSACTIONS_HISTORY)
-        break
-    }
-  }, [tab])
 
   useEffect(() => {
     if (history.location.pathname.includes('queue')) {
@@ -39,14 +29,27 @@ const Transactions = (): ReactElement => {
   }, [history.location.pathname])
 
   const onTabChange = (path: string) => {
-    history.replace(generateSafeRoute(path, extractPrefixedSafeAddress()) + history.location.search)
+    history.replace(generateSafeRoute(path, extractPrefixedSafeAddress()))
   }
 
   return (
     <Wrapper>
       <div className="head">
         <Breadcrumb title="Transactions" subtitleIcon={Icon} subtitle="Transactions" />
-        <Tabs value={tab} onChange={(e, v) => setTab(v)}>
+        <Tabs
+          value={tab}
+          onChange={(e, v) => {
+            setTab(v)
+            switch (v) {
+              case 0:
+                onTabChange(SAFE_ROUTES.TRANSACTIONS_QUEUE)
+                break
+              case 1:
+                onTabChange(SAFE_ROUTES.TRANSACTIONS_HISTORY)
+                break
+            }
+          }}
+        >
           <Tab label="Queue" />
           <Tab label="History" />
         </Tabs>

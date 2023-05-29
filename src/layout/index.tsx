@@ -59,7 +59,7 @@ const Layout: React.FC<Props> = ({
             onNewTransactionClick={onNewTransactionClick}
           />
         </SidebarWrapper>
-        <ContentWrapper>
+        <ContentWrapper className="bside">
           <div>{children}</div>
           {hasFooter && <Footer />}
         </ContentWrapper>

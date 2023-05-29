@@ -1,7 +1,7 @@
 import { mustBeEthereumContractAddress } from 'src/components/forms/validator'
 import { AddressBookEntry, AddressBookState } from 'src/logic/addressBook/model/addressBook'
 import { sameAddress } from 'src/logic/wallets/ethAddresses'
-import { AppReduxState } from 'src/store'
+import { AppReduxState } from 'src/logic/safe/store'
 import { Overwrite } from 'src/types/helpers'
 
 export type OldAddressBookEntry = {

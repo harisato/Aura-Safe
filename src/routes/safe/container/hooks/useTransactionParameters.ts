@@ -6,7 +6,7 @@ import { currentSafeCurrentVersion } from 'src/logic/safe/store/selectors'
 import { userAccountSelector } from 'src/logic/wallets/store/selectors'
 import { extractSafeAddress } from 'src/routes/routes'
 import { ParametersStatus } from 'src/utils/transactionHelpers/utils'
-import { AppReduxState } from 'src/store'
+import { AppReduxState } from 'src/logic/safe/store'
 import { sameString } from 'src/utils/strings'
 
 export type TxParameters = {

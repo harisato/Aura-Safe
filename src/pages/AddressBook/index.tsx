@@ -31,7 +31,7 @@ import { CreateEditEntryModal } from 'src/pages/AddressBook/CreateEditEntryModal
 import { DeleteEntryModal } from 'src/pages/AddressBook/DeleteEntryModal'
 import { ExportEntriesModal } from 'src/pages/AddressBook/ExportEntriesModal'
 import SendModal from 'src/routes/safe/components/Balances/SendModal'
-import { grantedSelector } from 'src/routes/safe/container/selector'
+import { grantedSelector } from 'src/utils/safeUtils/selector'
 import { SAFE_EVENTS, useAnalytics } from 'src/utils/googleAnalytics'
 import { isValidAddress } from 'src/utils/isValidAddress'
 import ImportEntriesModal from './ImportEntriesModal'

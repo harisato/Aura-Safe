@@ -9,7 +9,7 @@ import { SafeInfo } from '@gnosis.pm/safe-react-gateway-sdk'
 import { checksumAddress } from 'src/utils/checksumAddress'
 import { buildSafeOwners, extractRemoteSafeInfo } from './utils'
 import { Errors, logError } from 'src/logic/exceptions/CodedException'
-import { AppReduxState, store } from 'src/store'
+import { AppReduxState, store } from 'src/logic/safe/store'
 import { currentSafeWithNames } from '../selectors'
 import fetchTransactions from './transactions/fetchTransactions'
 import { fetchCollectibles } from 'src/logic/collectibles/store/actions/fetchCollectibles'
@@ -163,8 +163,8 @@ export const fetchMSafe =
       safeInfo = await extractRemoteSafeInfo(remoteSafeInfo)
       const onlineData: SequenceResponse = (await getAccountOnChain(safeAddress, getInternalChainId())).Data
 
-      safeInfo.nextQueueSeq = mSafeInfo?.nextQueueSeq || onlineData.sequence?.toString()
-      safeInfo.sequence = mSafeInfo?.sequence || onlineData.sequence?.toString()
+      safeInfo.nextQueueSeq = mSafeInfo?.nextQueueSeq || onlineData?.sequence?.toString()
+      safeInfo.sequence = mSafeInfo?.sequence || onlineData?.sequence?.toString()
       const coinDecimal = getCoinDecimal()
       // If these polling timestamps have changed, fetch again
       const { txQueuedTag, txHistoryTag, balances } = currentSafeWithNames(state)
@@ -178,7 +178,6 @@ export const fetchMSafe =
       if (_.first(balances)?.tokenBalance) {
         isRefreshTx = Number(_.first(balances)?.tokenBalance) < Number(safeBalance)
       }
-
       const shouldUpdateTxHistory = txHistoryTag !== safeInfo.txHistoryTag
       const shouldUpdateTxQueued = txQueuedTag !== safeInfo.txQueuedTag
 

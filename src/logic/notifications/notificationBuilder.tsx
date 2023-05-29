@@ -6,7 +6,7 @@ import { Notification, NOTIFICATIONS } from './notificationTypes'
 import closeSnackbarAction from 'src/logic/notifications/store/actions/closeSnackbar'
 import { TX_NOTIFICATION_TYPES } from 'src/logic/safe/transactions'
 import { getAppInfoFromOrigin } from 'src/routes/safe/components/Apps/utils'
-import { store } from 'src/store'
+import { store } from 'src/logic/safe/store'
 
 const setNotificationOrigin = (notification: Notification, origin: string): Notification => {
   if (!origin) {

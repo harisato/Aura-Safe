@@ -28,11 +28,13 @@ export const getGatewayUrl = async (): Promise<IConfiguration> => {
 export function getExplorerUrl(
   chainId: string,
   baseUrl: string,
-  type: 'txHash' | 'address' | 'api' | 'proposals',
+  type: 'txHash' | 'address' | 'api' | 'proposals' | 'contract',
 ): string {
   switch (type) {
     case 'txHash':
       return getExplorerUrlTxHash(chainId, baseUrl)
+    case 'contract':
+      return `${baseUrl.endsWith('/') ? baseUrl : baseUrl + '/'}contracts/{{contract}}`
     case 'address':
       // if (baseUrl.includes('canto')) {
       //   return `${baseUrl.endsWith('/') ? baseUrl : baseUrl + '/'}accounts/{{address}}`

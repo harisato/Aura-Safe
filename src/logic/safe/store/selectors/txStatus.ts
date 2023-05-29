@@ -2,7 +2,7 @@ import { TransactionStatus } from '@gnosis.pm/safe-react-gateway-sdk'
 import { createSelector } from 'reselect'
 import { ChainId } from 'src/config/chain.d'
 import { currentChainId } from 'src/logic/config/store/selectors'
-import { AppReduxState } from 'src/store'
+import { AppReduxState } from 'src/logic/safe/store'
 import {
   isMultiSigExecutionDetails,
   LocalTransactionStatus,

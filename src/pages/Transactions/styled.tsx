@@ -438,6 +438,29 @@ export const TxDetailsContainer = styled.div<{ ownerRows?: number }>`
   grid-template-rows: [tx-summary] minmax(min-content, max-content) [tx-details] minmax(min-content, 1fr);
   width: 100%;
   position: relative;
+  .json-msg {
+    white-space: pre-wrap;
+    .string {
+      color: #ce9178;
+    }
+    .number {
+      color: #aac19e;
+    }
+    .boolean {
+      color: #266781;
+    }
+    .null {
+      color: #d33a3a;
+    }
+    .key {
+      color: #569cd6;
+    }
+  }
+  .msgs {
+    padding: 16px;
+    max-height: 500px;
+    overflow: auto;
+  }
   .recipient {
     display: flex;
     align-items: center;
@@ -472,6 +495,8 @@ export const TxDetailsContainer = styled.div<{ ownerRows?: number }>`
   }
   .tx-msg {
     padding: 16px;
+    max-height: 200px;
+    overflow: auto;
     .token {
       color: #5ee6d0;
     }
@@ -483,6 +508,23 @@ export const TxDetailsContainer = styled.div<{ ownerRows?: number }>`
       :last-child {
         margin-bottom: 0px;
       }
+    }
+    .function-name {
+      font-weight: 600;
+      font-size: 16px;
+      line-height: 20px;
+    }
+    .field__label {
+      font-weight: 400;
+      font-size: 14px;
+      line-height: 16px;
+      color: #b4b8c0;
+      margin-bottom: 2px;
+    }
+    .field__data {
+      font-weight: 400;
+      font-size: 14px;
+      line-height: 16px;
     }
   }
 
@@ -675,7 +717,11 @@ export const NoTransactions = styled.div`
 
 export const ReviewTxPopupWrapper = styled.div`
   padding: 24px;
-  width: 482px;
+  width: 540px;
+  .msgs {
+    max-height: 39vh;
+    overflow: auto;
+  }
   .recipient {
     display: flex;
     align-items: center;
@@ -786,5 +832,25 @@ export const ReviewTxPopupWrapper = styled.div`
     width: fit-content;
     margin-left: 38px;
     margin-top: 4px;
+  }
+
+  .function-name {
+    font-weight: 600;
+    font-size: 12px;
+    line-height: 16px;
+    color: #b4b8c0;
+    margin-top: 8px;
+  }
+  .field__label {
+    font-weight: 400;
+    font-size: 12px;
+    line-height: 16px;
+    color: #b4b8c0;
+    margin-top: 6px;
+  }
+  .field__data {
+    font-weight: 400;
+    font-size: 12px;
+    line-height: 16px;
   }
 `

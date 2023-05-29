@@ -1,10 +1,11 @@
 import { MsgTypeUrl } from 'src/logic/providers/constants/constant'
-import { formatNativeToken } from 'src/utils'
+import { beutifyJson, formatNativeToken } from 'src/utils'
 import AddressInfo from 'src/components/AddressInfo'
-import { Fragment } from 'react'
+import { Fragment, useEffect, useState } from 'react'
 import { formatDateTime, formatWithSchema } from 'src/utils/date'
 import StatusCard from 'src/components/StatusCard'
 import styled from 'styled-components'
+import { Message } from 'src/components/CustomTransactionMessage/SmallMsg'
 
 const voteMapping = {
   1: 'Yes',
@@ -23,7 +24,51 @@ const StyledStatus = styled.div`
 export default function TxMsg({ tx, txDetail }) {
   const type = tx.txInfo.typeUrl
   const amount = formatNativeToken(txDetail.txMessage[0]?.amount || 0)
+  const [msg, setMsg] = useState([])
+  useEffect(() => {
+    if (txDetail?.rawMessage) {
+      setMsg(JSON.parse(txDetail?.rawMessage))
+    }
+  }, [txDetail])
   if (!txDetail) return null
+  if (msg?.length > 1) {
+    return (
+      <div className="msgs">
+        {msg.map((message, index) => {
+          return <Message index={index} msgData={message} key={index} />
+        })}
+      </div>
+    )
+  }
+  if (type == MsgTypeUrl.ExecuteContract) {
+    return (
+      <div className="tx-msg">
+        <div>
+          <span style={{ color: '#B4B8C0' }}>Interact with contract: </span>
+          <span style={{ display: 'inline-block' }}>
+            <AddressInfo
+              address={txDetail?.txMessage[0]?.contractAddress}
+              showAvatar={false}
+              showName={false}
+              type="contract"
+            />
+          </span>
+        </div>
+
+        <div className="function-name">{txDetail?.txMessage[0].contractFunction}</div>
+        {Object.keys(JSON.parse(txDetail?.txMessage[0].contractArgs))?.map((key, index) => (
+          <div className="field" key={index}>
+            <div className="field__label">{key}:</div>
+            <div className="field__data">
+              {typeof JSON.parse(txDetail?.txMessage[0].contractArgs)[key] == 'object'
+                ? JSON.stringify(JSON.parse(txDetail?.txMessage[0].contractArgs)[key])
+                : JSON.parse(txDetail?.txMessage[0].contractArgs)[key]}
+            </div>
+          </div>
+        ))}
+      </div>
+    )
+  }
   if (type == MsgTypeUrl.Delegate) {
     return (
       <div className="tx-msg">
@@ -133,5 +178,9 @@ export default function TxMsg({ tx, txDetail }) {
       </div>
     )
   }
-  return <div></div>
+  return (
+    <div>
+      <div className="json-msg" dangerouslySetInnerHTML={{ __html: beutifyJson(JSON.parse(txDetail?.rawMessage)) }} />
+    </div>
+  )
 }

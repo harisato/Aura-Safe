@@ -1,4 +1,4 @@
-import { ValidatorStateType } from './../logic/validator/store/reducer/index'
+import { ValidatorStateType } from '../../validator/store/reducer/index'
 import { applyMiddleware, CombinedState, combineReducers, compose, createStore, PreloadedState } from 'redux'
 import { save, load, LoadOptions, RLSOptions } from 'redux-localstorage-simple'
 import thunk from 'redux-thunk'

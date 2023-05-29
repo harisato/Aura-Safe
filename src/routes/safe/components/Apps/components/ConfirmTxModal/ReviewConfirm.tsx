@@ -30,7 +30,7 @@ import PrefixedEthHashInfo from 'src/components/PrefixedEthHashInfo'
 import { ReviewInfoText } from 'src/components/ReviewInfoText'
 
 import { ConfirmTxModalProps, DecodedTxDetail } from '.'
-import { grantedSelector } from 'src/routes/safe/container/selector'
+import { grantedSelector } from 'src/utils/safeUtils/selector'
 import ExecuteCheckbox from 'src/components/ExecuteCheckbox'
 
 const Container = styled.div`

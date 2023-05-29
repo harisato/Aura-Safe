@@ -6,7 +6,7 @@ import { Dispatch } from 'redux'
 import { JWT_TOKEN_KEY } from 'src/services/constant/common'
 import { getGatewayUrl } from 'src/services/data/environment'
 import { auth } from 'src/services/index'
-import { store } from 'src/store'
+import { store } from 'src/logic/safe/store'
 import { parseToAddress } from 'src/utils/parseByteAdress'
 import { saveToStorage } from 'src/utils/storage'
 import session from 'src/utils/storage/session'
@@ -53,17 +53,6 @@ export async function getKeplr(): Promise<Keplr | undefined> {
 
     document.addEventListener('readystatechange', documentStateChange)
   })
-}
-
-export async function getKeplrKey(chainId: string): Promise<WalletKey | undefined> {
-  const keplr = await getKeplr()
-
-  if (!keplr) return
-  const key = await keplr.getKey(chainId)
-  return {
-    myAddress: String(key.bech32Address),
-    myPubkey: parseToAddress(key.pubKey),
-  }
 }
 
 export async function connectKeplr(): Promise<KeplrErrors> {
@@ -153,6 +142,7 @@ const handleProviderNotification = (provider: ProviderProps, dispatch: Dispatch<
   const { available, loaded } = provider
 
   if (!loaded) {
+    console.error('error loading provider')
     dispatch(enqueueSnackbar(enhanceSnackbarForAction(NOTIFICATIONS.CONNECT_WALLET_ERROR_MSG)))
     return
   }

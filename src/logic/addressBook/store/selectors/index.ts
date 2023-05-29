@@ -3,7 +3,7 @@ import { createSelector } from 'reselect'
 import { ChainId } from 'src/config/chain.d'
 import { AddressBookEntry, ADDRESS_BOOK_DEFAULT_NAME } from 'src/logic/addressBook/model/addressBook'
 import { currentChainId } from 'src/logic/config/store/selectors'
-import { AppReduxState } from 'src/store'
+import { AppReduxState } from 'src/logic/safe/store'
 import { Overwrite } from 'src/types/helpers'
 
 export const addressBookState = (state: AppReduxState): AppReduxState['addressBook'] => state['addressBook']

@@ -22,7 +22,7 @@ import useConnectWallet from 'src/logic/hooks/useConnectWallet'
 import { useSafeScheduledUpdates } from 'src/logic/safe/hooks/useSafeScheduledUpdates'
 import useSafeActions from 'src/logic/safe/hooks/useSafeActions'
 import { formatAmountInUsFormat } from 'src/logic/tokens/utils/formatAmount'
-import { grantedSelector } from 'src/routes/safe/container/selector'
+import { grantedSelector } from 'src/utils/safeUtils/selector'
 
 import ReceiveModal from './ReceiveModal'
 import TermModal from './TermModal'

@@ -10,7 +10,7 @@ import { connectProvider } from 'src/logic/providers'
 import { checkExistedCoin98 } from 'src/logic/providers/utils/wallets'
 import { WALLETS_NAME } from 'src/logic/wallets/constant/wallets'
 import { loadLastUsedProvider } from 'src/logic/wallets/store/middlewares/providerWatcher'
-import { store } from 'src/store'
+import { store } from 'src/logic/safe/store'
 import TermContext from 'src/logic/TermContext'
 // const useStyles = makeStyles(styles)
 const WalletSwitch = ({ openConnectWallet }: { openConnectWallet?: () => void }): ReactElement => {
@@ -26,15 +26,39 @@ const WalletSwitch = ({ openConnectWallet }: { openConnectWallet?: () => void })
             return
           }
 
-          connectProvider(lastUsedProvider as WALLETS_NAME, termContext).catch(() => {
-            store.dispatch(enqueueSnackbar(enhanceSnackbarForAction(NOTIFICATIONS.CONNECT_WALLET_ERROR_MSG)))
+          connectProvider(lastUsedProvider as WALLETS_NAME, termContext).catch((error) => {
+            console.error('error 2', error)
+            store.dispatch(
+              enqueueSnackbar(
+                enhanceSnackbarForAction(
+                  error?.message
+                    ? {
+                        message: error?.message,
+                        options: { variant: 'error', persist: false, autoHideDuration: 5000, preventDuplicate: true },
+                      }
+                    : NOTIFICATIONS.CONNECT_WALLET_ERROR_MSG,
+                ),
+              ),
+            )
           })
         } else {
           openConnectWallet && openConnectWallet()
         }
       })
-      .catch(() => {
-        store.dispatch(enqueueSnackbar(enhanceSnackbarForAction(NOTIFICATIONS.CONNECT_WALLET_ERROR_MSG)))
+      .catch((error) => {
+        console.error('error 1', error)
+        store.dispatch(
+          enqueueSnackbar(
+            enhanceSnackbarForAction(
+              error?.message
+                ? {
+                    message: error?.message,
+                    options: { variant: 'error', persist: false, autoHideDuration: 5000, preventDuplicate: true },
+                  }
+                : NOTIFICATIONS.CONNECT_WALLET_ERROR_MSG,
+            ),
+          ),
+        )
       })
   }, [openConnectWallet])
 

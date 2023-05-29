@@ -3,7 +3,7 @@ import { ChainId, CHAIN_ID } from 'src/config/chain.d'
 
 import { currentChainId } from 'src/logic/config/store/selectors'
 import { PROVIDER_REDUCER_ID, ProviderState } from 'src/logic/wallets/store/reducer/provider'
-import { AppReduxState } from 'src/store'
+import { AppReduxState } from 'src/logic/safe/store'
 
 export const providerSelector = (state: AppReduxState): ProviderState => state[PROVIDER_REDUCER_ID]
 

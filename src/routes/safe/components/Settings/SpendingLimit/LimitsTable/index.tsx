@@ -11,7 +11,7 @@ import Table from 'src/components/Table'
 import { AddressInfo } from 'src/routes/safe/components/Settings/SpendingLimit/InfoDisplay'
 import { RemoveLimitModal } from 'src/routes/safe/components/Settings/SpendingLimit/RemoveLimitModal'
 import { useStyles } from 'src/routes/safe/components/Settings/SpendingLimit/style'
-import { grantedSelector } from 'src/routes/safe/container/selector'
+import { grantedSelector } from 'src/utils/safeUtils/selector'
 
 import {
   generateColumns,

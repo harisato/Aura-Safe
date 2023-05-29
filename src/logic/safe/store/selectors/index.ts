@@ -7,7 +7,7 @@ import makeSafe, { SafeRecord, SafeRecordProps } from 'src/logic/safe/store/mode
 import { SAFE_REDUCER_ID } from 'src/logic/safe/store/reducer/safe'
 import { SafesMap } from 'src/logic/safe/store/reducer/types/safe'
 import { extractSafeAddress } from 'src/routes/routes'
-import { AppReduxState } from 'src/store'
+import { AppReduxState } from 'src/logic/safe/store'
 import { Overwrite } from 'src/types/helpers'
 
 const safesState = (state: AppReduxState) => state[SAFE_REDUCER_ID]

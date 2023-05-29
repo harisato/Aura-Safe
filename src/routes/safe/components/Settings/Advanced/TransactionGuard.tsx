@@ -9,7 +9,7 @@ import { RemoveGuardModal } from './RemoveGuardModal'
 import { useStyles } from './style'
 
 import ButtonHelper from 'src/components/ButtonHelper'
-import { grantedSelector } from 'src/routes/safe/container/selector'
+import { grantedSelector } from 'src/utils/safeUtils/selector'
 import Table from 'src/components/Table'
 import { TableCell, TableRow } from 'src/components/layout/Table'
 import Block from 'src/components/layout/Block'

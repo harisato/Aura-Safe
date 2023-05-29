@@ -5,7 +5,7 @@ import { connectProvider } from 'src/logic/providers'
 import { WALLETS_NAME } from 'src/logic/wallets/constant/wallets'
 import { enhanceSnackbarForAction, NOTIFICATIONS } from '../../logic/notifications'
 import enqueueSnackbar from '../../logic/notifications/store/actions/enqueueSnackbar'
-import { store } from '../../store'
+import { store } from '../../logic/safe/store'
 import Img from '../layout/Img'
 import { ImageContainer, ImageItem, ImageTitle, WalletList } from './styles'
 
@@ -37,12 +37,34 @@ export const ConnectWalletModal = ({ isOpen, onClose }: Props): React.ReactEleme
           .then((res) => {
             onClose()
           })
-          .catch(() => {
-            store.dispatch(enqueueSnackbar(enhanceSnackbarForAction(NOTIFICATIONS.CONNECT_WALLET_ERROR_MSG)))
+          .catch((error) => {
+            console.error('error 3', error)
+            store.dispatch(
+              enqueueSnackbar(
+                enhanceSnackbarForAction(
+                  error?.message
+                    ? {
+                        message: error?.message,
+                        options: { variant: 'error', persist: false, autoHideDuration: 5000, preventDuplicate: true },
+                      }
+                    : NOTIFICATIONS.CONNECT_WALLET_ERROR_MSG,
+                ),
+              ),
+            )
           })
-      } catch (e) {
-        store.dispatch(enqueueSnackbar(enhanceSnackbarForAction(NOTIFICATIONS.CONNECT_WALLET_ERROR_MSG)))
-        console.log(e)
+      } catch (error) {
+        store.dispatch(
+          enqueueSnackbar(
+            enhanceSnackbarForAction(
+              error?.message
+                ? {
+                    message: error?.message,
+                    options: { variant: 'error', persist: false, autoHideDuration: 5000, preventDuplicate: true },
+                  }
+                : NOTIFICATIONS.CONNECT_WALLET_ERROR_MSG,
+            ),
+          ),
+        )
       }
     },
     [onClose],

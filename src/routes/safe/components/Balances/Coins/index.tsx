@@ -20,7 +20,7 @@ import {
   generateColumns,
   getBalanceData,
 } from 'src/routes/safe/components/Balances/dataFetcher'
-import { extendedSafeTokensSelector, grantedSelector } from 'src/routes/safe/container/selector'
+import { extendedSafeTokensSelector, grantedSelector } from 'src/utils/safeUtils/selector'
 import { SAFE_EVENTS, useAnalytics } from 'src/utils/googleAnalytics'
 import styled from 'styled-components'
 import { StyledButton, styles } from './styles'

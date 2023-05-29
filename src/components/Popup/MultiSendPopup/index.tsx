@@ -1,11 +1,11 @@
 import { ReactElement, useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 
-import { extendedSafeTokensSelector } from 'src/routes/safe/container/selector'
+import { extendedSafeTokensSelector } from 'src/utils/safeUtils/selector'
 
 import { AminoMsgMultiSend, coins } from '@cosmjs/stargate'
 import BigNumber from 'bignumber.js'
-import { OutlinedButton, TextButton } from 'src/components/Button'
+import { OutlinedButton, OutlinedNeutralButton, TextButton } from 'src/components/Button'
 import Gap from 'src/components/Gap'
 import TextArea from 'src/components/Input/TextArea'
 import TokenSelect from 'src/components/Input/Token'
@@ -221,9 +221,7 @@ const MultiSendPopup = ({ open, onClose, onOpen }: SendFundsProps): ReactElement
             ) : null}
           </BodyWrapper>
           <Footer>
-            <TextButton size="md" onClick={() => handleClose()}>
-              Cancel
-            </TextButton>
+            <OutlinedNeutralButton onClick={() => handleClose()}>Cancel</OutlinedNeutralButton>
             <OutlinedButton
               disabled={
                 !selectedToken ||

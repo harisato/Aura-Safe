@@ -88,7 +88,9 @@ export default function MyDelegation(props): ReactElement {
                 <StyledTableCell align="left">
                   <div>{formatNativeCurrency(formatBigNumber(row?.balance?.amount))}</div>
                 </StyledTableCell>
-                <StyledTableCell align="left">{row?.reward?.length > 0 ? 'Yes' : 'No'}</StyledTableCell>
+                <StyledTableCell align="left">
+                  {row?.reward?.length > 0 && +row?.reward?.[0]?.amount >= 1 ? 'Yes' : 'No'}
+                </StyledTableCell>
                 <StyledTableCell align="right">
                   {!disabledButton && (
                     <OutlinedButton className="small" onClick={() => handleModal(row)}>

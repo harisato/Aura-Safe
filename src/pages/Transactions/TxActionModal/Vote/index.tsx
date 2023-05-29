@@ -1,25 +1,19 @@
-import { toBase64 } from '@cosmjs/encoding'
-import { coins, MsgVoteEncodeObject } from '@cosmjs/stargate'
+import { coins } from '@cosmjs/stargate'
 import { useContext, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { FilledButton, OutlinedNeutralButton } from 'src/components/Button'
 import { Popup } from 'src/components/Popup'
 import Footer from 'src/components/Popup/Footer'
 import Header from 'src/components/Popup/Header'
-import { getChainInfo, getCoinMinimalDenom, getInternalChainId } from 'src/config'
-import { enhanceSnackbarForAction, NOTIFICATIONS } from 'src/logic/notifications'
-import enqueueSnackbar from 'src/logic/notifications/store/actions/enqueueSnackbar'
-import { MsgTypeUrl } from 'src/logic/providers/constants/constant'
-import { createMessage } from 'src/logic/providers/signing'
+import { getCoinMinimalDenom } from 'src/config'
 import { userAccountSelector } from 'src/logic/wallets/store/selectors'
-import { extractSafeAddress } from 'src/routes/routes'
-import { ICreateSafeTransaction } from 'src/types/transaction'
 import { formatNativeToken } from 'src/utils'
 import { formatWithSchema } from 'src/utils/date'
 
 import Gap from 'src/components/Gap'
 import Amount from 'src/components/TxComponents/Amount'
 import { currentSafeWithNames } from 'src/logic/safe/store/selectors'
+import { signAndChangeTransactionSequence, signAndConfirmTransaction } from 'src/utils/signer'
 import { getNotice, getTitle } from '..'
 import { TxSignModalContext } from '../../Queue'
 import { ReviewTxPopupWrapper } from '../../styled'
@@ -41,8 +35,7 @@ export default function Execute({
   rejectTx,
   disabled,
   setDisabled,
-  confirmTxFromApi,
-  changeTxSeqFromApi,
+
   deleteTx,
 }) {
   const { action } = useContext(TxSignModalContext)
@@ -51,86 +44,51 @@ export default function Execute({
   const userWalletAddress = useSelector(userAccountSelector)
   const dispatch = useDispatch()
 
-  const confirmTx = async () => {
-    setDisabled(true)
-    const chainInfo = getChainInfo()
-    const safeAddress = extractSafeAddress()
-    const chainId = chainInfo.chainId
-    const denom = getCoinMinimalDenom()
-    const sendFee = {
-      amount: coins(data?.txDetails?.fee, denom),
-      gas: data?.txDetails?.gas.toString(),
-    }
-    const voteData: MsgVoteEncodeObject['value'] = {
-      option: data.txDetails?.txMessage[0]?.voteOption,
-      proposalId: data.txDetails?.extraDetails?.proposalDetail?.id,
-      voter: safeAddress,
-    }
-    try {
-      dispatch(enqueueSnackbar(enhanceSnackbarForAction(NOTIFICATIONS.SIGN_TX_MSG)))
-      const signResult = await createMessage(chainId, safeAddress, MsgTypeUrl.Vote, voteData, sendFee, data?.txSequence)
-      if (!signResult) throw new Error()
-      const signatures = toBase64(signResult.signatures[0])
-      const bodyBytes = toBase64(signResult.bodyBytes)
-      const authInfoBytes = toBase64(signResult.authInfoBytes)
-      const payload: ICreateSafeTransaction = {
-        internalChainId: getInternalChainId(),
-        creatorAddress: userWalletAddress,
-        signature: signatures,
-        bodyBytes: bodyBytes,
-        authInfoBytes: authInfoBytes,
-        from: safeAddress,
-        accountNumber: signResult.accountNumber,
-        sequence: signResult.sequence,
-        transactionId: data?.id,
-      }
-      confirmTxFromApi(payload, chainId, safeAddress)
-    } catch (error) {
-      setDisabled(false)
-      console.error(error)
-      dispatch(enqueueSnackbar(enhanceSnackbarForAction(NOTIFICATIONS.TX_REJECTED_MSG)))
-      onClose()
-    }
-  }
-  const changeTxSequence = async () => {
-    setDisabled(true)
-    const chainInfo = getChainInfo()
-    const safeAddress = extractSafeAddress()
-    const chainId = chainInfo.chainId
-    const denom = getCoinMinimalDenom()
-    const sendFee = {
-      amount: coins(data?.txDetails?.fee, denom),
-      gas: data?.txDetails?.gas.toString(),
-    }
-    const voteData: MsgVoteEncodeObject['value'] = {
-      option: data.txDetails?.txMessage[0]?.voteOption,
-      proposalId: data.txDetails?.extraDetails?.proposalDetail?.id,
-      voter: safeAddress,
-    }
-    try {
-      dispatch(enqueueSnackbar(enhanceSnackbarForAction(NOTIFICATIONS.SIGN_TX_MSG)))
-      const signResult = await createMessage(chainId, safeAddress, MsgTypeUrl.Vote, voteData, sendFee, sequence)
-      if (!signResult) throw new Error()
-      const signatures = toBase64(signResult.signatures[0])
-      const bodyBytes = toBase64(signResult.bodyBytes)
-      const authInfoBytes = toBase64(signResult.authInfoBytes)
-      const payload: ICreateSafeTransaction = {
-        internalChainId: getInternalChainId(),
-        creatorAddress: userWalletAddress,
-        signature: signatures,
-        bodyBytes: bodyBytes,
-        authInfoBytes: authInfoBytes,
-        from: safeAddress,
-        accountNumber: signResult.accountNumber,
-        sequence: signResult.sequence,
-        oldTxId: data?.id,
-      }
-      changeTxSeqFromApi(payload, chainId, safeAddress)
-    } catch (error) {
-      setDisabled(false)
-      console.error(error)
-      dispatch(enqueueSnackbar(enhanceSnackbarForAction(NOTIFICATIONS.TX_REJECTED_MSG)))
-      onClose()
+  const txHandler = async (type) => {
+    if (type == 'confirm') {
+      dispatch(
+        signAndConfirmTransaction(
+          data?.id,
+          JSON.parse(data?.txDetails?.rawMessage),
+          {
+            amount: coins(data?.txDetails?.fee, getCoinMinimalDenom()),
+            gas: data?.txDetails?.gas.toString(),
+          },
+          sequence,
+          () => {
+            setDisabled(true)
+          },
+          () => {
+            setDisabled(false)
+            onClose()
+          },
+          () => {
+            setDisabled(false)
+          },
+        ),
+      )
+    } else {
+      dispatch(
+        signAndChangeTransactionSequence(
+          data?.id,
+          JSON.parse(data?.txDetails?.rawMessage),
+          {
+            amount: coins(data?.txDetails?.fee, getCoinMinimalDenom()),
+            gas: data?.txDetails?.gas.toString(),
+          },
+          sequence,
+          () => {
+            setDisabled(true)
+          },
+          () => {
+            setDisabled(false)
+            onClose()
+          },
+          () => {
+            setDisabled(false)
+          },
+        ),
+      )
     }
   }
 
@@ -193,11 +151,11 @@ export default function Execute({
             <FilledButton
               onClick={() => {
                 action == 'confirm'
-                  ? confirmTx()
+                  ? txHandler('confirm')
                   : action == 'reject'
                   ? rejectTx()
                   : action == 'change-sequence'
-                  ? changeTxSequence()
+                  ? txHandler('change-sequence')
                   : sendTx()
               }}
               disabled={disabled || +sequence < +currentSequence}

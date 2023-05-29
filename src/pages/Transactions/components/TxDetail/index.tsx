@@ -1,8 +1,7 @@
 import { Loader } from '@aura/safe-react-components'
-import { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { getExplorerInfo } from 'src/config'
-import { grantedSelector } from 'src/routes/safe/container/selector'
+import { grantedSelector } from 'src/utils/safeUtils/selector'
 import { formatWithSchema } from 'src/utils/date'
 import { useTransactionDetails } from '../../../../utils/hooks/useTransactionDetails'
 import { Centered, InlineEthHashInfo, TxDetailsContainer } from '../../styled'
@@ -20,7 +19,7 @@ export default function TxDetail({ transaction, isHistoryTx }) {
       </Centered>
     )
   }
-  
+
   if (!data) {
     return (
       <Centered padding={20}>

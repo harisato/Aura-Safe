@@ -79,6 +79,8 @@ export const SAFE_ROUTES = {
   SETTINGS_POLICIES: `${ADDRESSED_ROUTE}/settings/policies`,
   SETTINGS_SPENDING_LIMIT: `${ADDRESSED_ROUTE}/settings/spending-limit`,
   SETTINGS_ADVANCED: `${ADDRESSED_ROUTE}/settings/advanced`,
+  CONTRACT_INTERACTION: `${ADDRESSED_ROUTE}/contract-interaction`,
+  CUSTOM_TRANSACTION: `${ADDRESSED_ROUTE}/custom-transaction`,
 }
 
 export const getNetworkRootRoutes = (): Array<{ chainId: ChainId; route: string }> =>

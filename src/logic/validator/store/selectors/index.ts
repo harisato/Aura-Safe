@@ -1,5 +1,5 @@
 import { VALIDATOR_REDUCER_ID } from 'src/logic/validator/store/reducer'
-import { AppReduxState } from 'src/store'
+import { AppReduxState } from 'src/logic/safe/store'
 import { ValidatorType } from '../reducer'
 
 export const allValidator = (state: AppReduxState['validator']): ValidatorType[] | [] => {

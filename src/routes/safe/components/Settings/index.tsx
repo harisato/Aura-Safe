@@ -12,7 +12,7 @@ import { LoadingContainer } from 'src/components/LoaderContainer'
 import { getShortName } from 'src/config'
 import { currentSafeWithNames } from 'src/logic/safe/store/selectors'
 import { generatePrefixedAddressRoutes, SAFE_SUBSECTION_ROUTE } from 'src/routes/routes'
-import { grantedSelector } from 'src/routes/safe/container/selector'
+import { grantedSelector } from 'src/utils/safeUtils/selector'
 import { styles } from './style'
 
 // const Advanced = lazy(() => import('./Advanced'))

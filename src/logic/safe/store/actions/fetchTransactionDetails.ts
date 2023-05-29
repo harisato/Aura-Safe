@@ -11,7 +11,7 @@ import { fetchSafeTransaction } from 'src/logic/safe/transactions/api/fetchSafeT
 import { extractSafeAddress } from 'src/routes/routes'
 import { getProposalDetail, getTxDetailById } from 'src/services'
 import { MESSAGES_CODE } from 'src/services/constant/message'
-import { AppReduxState } from 'src/store'
+import { AppReduxState } from 'src/logic/safe/store'
 
 export const UPDATE_TRANSACTION_DETAILS = 'UPDATE_TRANSACTION_DETAILS'
 const updateTransactionDetails = createAction<TransactionDetailsPayload>(UPDATE_TRANSACTION_DETAILS)
@@ -88,6 +88,8 @@ export const fetchTransactionDetailsById =
         createAt: Data.CreatedAt ? new Date(Data.CreatedAt).getTime() : null,
         txStatus: (Data.Status == '0' ? TransactionStatus.SUCCESS : Data.Status) as TransactionStatus,
         txMessage: Data?.Messages?.length ? Data?.Messages : [],
+        rawMessage: Data?.RawMessages,
+        deletedBy: Data?.Deleter,
         fee: Data?.Fee?.toString() || 0,
         gas: Data?.Gas?.toString() || 0,
         txHash: Data?.TxHash || null,
