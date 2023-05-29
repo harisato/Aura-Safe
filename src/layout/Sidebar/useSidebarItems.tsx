@@ -111,12 +111,12 @@ const useSidebarItems = (): ListItemType[] => {
         href: currentSafeRoutes.CONTRACT_INTERACTION,
         subItems: smartContractSubItems,
       }),
-      // makeEntryItem({
-      //   label: 'Advanced',
-      //   iconType: 'smartContractAura',
-      //   href: currentSafeRoutes.CUSTOM_TRANSACTION,
-      //   subItems: advancedSubItems,
-      // }),
+      makeEntryItem({
+        label: 'Advanced',
+        iconType: 'smartContractAura',
+        href: currentSafeRoutes.CUSTOM_TRANSACTION,
+        subItems: advancedSubItems,
+      }),
       makeEntryItem({
         label: 'Address Book',
         iconType: 'addressbookAura',
