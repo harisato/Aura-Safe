@@ -137,7 +137,7 @@ function Contract({ contractData }): ReactElement {
         contractData={{
           ...contractData,
           selectedFunction: selectedFunction,
-          funds: funds.map(({ id, ...rest }) => rest),
+          funds: funds.filter((fund) => fund.denom !== '').map(({ id, ...rest }) => rest),
         }}
       />
     </Wrap>
