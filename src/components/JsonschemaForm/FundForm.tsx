@@ -1,12 +1,13 @@
-import { useState } from 'react'
-import Select, { IOption } from '../Input/Select'
-import styled from 'styled-components'
-import { useSelector } from 'react-redux'
-import { extendedSafeTokensSelector } from 'src/utils/safeUtils/selector'
 import { MenuItem } from '@material-ui/core'
+import { useState } from 'react'
+import { useSelector } from 'react-redux'
 import { Token } from 'src/logic/tokens/store/model/token'
+import { extendedSafeTokensSelector } from 'src/utils/safeUtils/selector'
+import styled from 'styled-components'
+import ic_trash from '../../assets/icons/ic_trash.svg'
+import ButtonHelper from '../ButtonHelper'
 import AmountInput from '../Input/AmountInput'
-import { FilledButton } from '../Button'
+import Select, { IOption } from '../Input/Select'
 
 const MenuItemWrapper = styled.div`
   display: flex;
@@ -20,6 +21,7 @@ const MenuItemWrapper = styled.div`
 
 const FormWrapper = styled.div`
   display: flex;
+  align-items: center;
   justify-content: space-between;
 `
 const FormItemWrapper = styled.div`
@@ -103,7 +105,9 @@ const FundForm = ({ fund, selectedTokens, onDelete, onSelectToken }: IFundFormPr
         <FormLabel>Amount:</FormLabel>
         <AmountInput value={amount} onChange={handleAmountChange} endAdornment={false} />
       </FormItemWrapper>
-      <FilledButton onClick={() => onDelete(fund.id)}>Delete</FilledButton>
+      <ButtonHelper onClick={() => onDelete(fund.id)}>
+        <img src={ic_trash} alt="Trash Icon" />
+      </ButtonHelper>
     </FormWrapper>
   )
 }

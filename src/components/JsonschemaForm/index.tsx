@@ -1,9 +1,9 @@
-import { Box } from '@material-ui/core'
+import { Box, Button } from '@material-ui/core'
 import { Validator } from 'jsonschema'
 import { ReactElement, useState } from 'react'
 import { useDispatch } from 'react-redux'
 import styled from 'styled-components'
-import { FilledButton } from '../Button'
+import Paragraph from '../layout/Paragraph'
 import Field from './Field'
 import FundForm, { IFund } from './FundForm'
 import { makeSchemaInput } from './utils'
@@ -156,7 +156,11 @@ function JsonschemaForm({
           </div>
         ))}
         <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
-          <FilledButton onClick={handleAddFund}>Add Fund</FilledButton>
+          <Button color="secondary" onClick={handleAddFund}>
+            <Paragraph noMargin size="smd" weight="bolder" color="green">
+              + Add fund
+            </Paragraph>
+          </Button>
         </Box>
       </div>
     </Wrap>
