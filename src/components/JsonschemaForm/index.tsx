@@ -1,10 +1,12 @@
+import { Box } from '@material-ui/core'
 import { Validator } from 'jsonschema'
-import { ReactElement } from 'react'
+import { ReactElement, useState } from 'react'
 import { useDispatch } from 'react-redux'
 import styled from 'styled-components'
+import { FilledButton } from '../Button'
 import Field from './Field'
+import FundForm, { IFund } from './FundForm'
 import { makeSchemaInput } from './utils'
-import TextField from '../Input/TextField'
 const Wrap = styled.div`
   margin-top: 32px;
   .title {
@@ -35,6 +37,9 @@ const Wrap = styled.div`
     }
   }
 `
+
+let rowId = 1
+
 function JsonschemaForm({
   schema,
   formData,
@@ -47,6 +52,7 @@ function JsonschemaForm({
   setFunds,
 }): ReactElement {
   const dispatch = useDispatch()
+  const [selectedTokens, setSelectedTokens] = useState<string[]>([])
   const jsValidator = new Validator()
   if (!schema) return <></>
   jsValidator.addSchema(schema)
@@ -59,6 +65,32 @@ function JsonschemaForm({
 
     return ''
   }
+
+  const handleAddFund = () => {
+    const newFund = { id: rowId, denom: '', amount: '' }
+    const newFunds = [...funds, newFund]
+    setFunds(newFunds)
+    rowId++
+  }
+
+  const handleDeleteFund = (id: number) => {
+    const updatedFunds = funds.filter((fund) => fund.id !== id)
+    setFunds(updatedFunds)
+    const updatedSelectedTokens = selectedTokens.filter((token) => token !== getDenomById(id))
+    setSelectedTokens(updatedSelectedTokens)
+  }
+
+  const getDenomById = (id: number) => {
+    const fund = funds.find((fund: IFund) => fund.id === id)
+    return fund ? fund.denom : ''
+  }
+
+  const handleSelectToken = (denom: string) => {
+    const updatedSelectedTokens = [...selectedTokens]
+    updatedSelectedTokens.push(denom)
+    setSelectedTokens(updatedSelectedTokens)
+  }
+
   return (
     <Wrap>
       <div className="title">Function List</div>
@@ -112,7 +144,20 @@ function JsonschemaForm({
             }}
           />
         ))}
-        <TextField label="fund" value={funds} onChange={setFunds} placeholder="json" />
+        <div className="title">Funds</div>
+        {funds.map((fund: IFund) => (
+          <div key={fund.id}>
+            <FundForm
+              fund={fund}
+              selectedTokens={selectedTokens}
+              onDelete={handleDeleteFund}
+              onSelectToken={handleSelectToken}
+            />
+          </div>
+        ))}
+        <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+          <FilledButton onClick={handleAddFund}>Add Fund</FilledButton>
+        </Box>
       </div>
     </Wrap>
   )

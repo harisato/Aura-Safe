@@ -12,6 +12,7 @@ import ReviewPopup from './ReviewPopup'
 import { Validator } from 'jsonschema'
 import { makeSchemaInput } from 'src/components/JsonschemaForm/utils'
 import Loader from 'src/components/Loader'
+import { IFund } from 'src/components/JsonschemaForm/FundForm'
 
 const Wrap = styled.div`
   .preview-button {
@@ -33,7 +34,7 @@ function Contract({ contractData }): ReactElement {
   const [shouldCheck, setShouldCheck] = useState(false)
   const [activeFunction, setActiveFunction] = useState(0)
   const [selectedFunction, setSelectedFunction] = useState('')
-  const [funds, setFunds] = useState('')
+  const [funds, setFunds] = useState<IFund[]>([{ id: 0, denom: '', amount: '' }])
   const [schema, setSchema] = useState<any>()
   const [loading, setLoading] = useState(false)
   const preview = async () => {
@@ -133,7 +134,11 @@ function Contract({ contractData }): ReactElement {
         setOpen={setOpen}
         gasUsed={Math.round(gasUsed * 1.3)}
         data={formData}
-        contractData={{ ...contractData, selectedFunction: selectedFunction, funds }}
+        contractData={{
+          ...contractData,
+          selectedFunction: selectedFunction,
+          funds: funds.map(({ id, ...rest }) => rest),
+        }}
       />
     </Wrap>
   )
