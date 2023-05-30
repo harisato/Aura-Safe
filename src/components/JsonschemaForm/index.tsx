@@ -117,7 +117,7 @@ function JsonschemaForm({
             value={
               typeof formData[field.fieldName] == 'object'
                 ? JSON.stringify(formData[field.fieldName])
-                : formData[field.fieldName]
+                : formData[field.fieldName] || ''
             }
             errorMsg={shouldCheck ? validateField(field) : ''}
             onChange={(value) => {
