@@ -47,6 +47,7 @@ export type IFund = {
   id: number
   denom: string
   amount: string
+  tokenDecimal: string | number
 }
 
 type IFundFormProps = {
@@ -82,6 +83,7 @@ const FundForm = ({ fund, selectedTokens, onDelete, onSelectToken }: IFundFormPr
     fund.denom = token
     onSelectToken(token)
     const selectedToken = filteredTokenList.find((e) => e.denom === token)
+    fund.tokenDecimal = selectedToken ? selectedToken.decimals : 0
     setSelectedToken(selectedToken)
   }
 

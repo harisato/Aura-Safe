@@ -13,6 +13,7 @@ import { Validator } from 'jsonschema'
 import { makeSchemaInput } from 'src/components/JsonschemaForm/utils'
 import Loader from 'src/components/Loader'
 import { IFund } from 'src/components/JsonschemaForm/FundForm'
+import { convertAmount } from 'src/utils'
 
 const Wrap = styled.div`
   .preview-button {
@@ -34,7 +35,7 @@ function Contract({ contractData }): ReactElement {
   const [shouldCheck, setShouldCheck] = useState(false)
   const [activeFunction, setActiveFunction] = useState(0)
   const [selectedFunction, setSelectedFunction] = useState('')
-  const [funds, setFunds] = useState<IFund[]>([{ id: 0, denom: '', amount: '' }])
+  const [funds, setFunds] = useState<IFund[]>([{ id: 0, denom: '', amount: '', tokenDecimal: '' }])
   const [schema, setSchema] = useState<any>()
   const [loading, setLoading] = useState(false)
   const preview = async () => {
@@ -137,7 +138,9 @@ function Contract({ contractData }): ReactElement {
         contractData={{
           ...contractData,
           selectedFunction: selectedFunction,
-          funds: funds.filter((fund) => fund.denom !== '').map(({ id, ...rest }) => rest),
+          funds: funds
+            .filter((fund) => fund.denom !== '')
+            .map((e) => ({ denom: e.denom, amount: convertAmount(+e.amount, true, +e.tokenDecimal) })),
         }}
       />
     </Wrap>
