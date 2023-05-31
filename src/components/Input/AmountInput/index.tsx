@@ -65,16 +65,14 @@ export default function AmountInput({
   handleMax,
   placeholder = 'Amount',
   token,
-  endAdornment = true,
 }: {
   value: any
   onChange: (value: string) => void
-  handleMax?: () => void
+  handleMax: () => void
   type?: React.HTMLInputTypeAttribute
   autoFocus?: boolean
   placeholder?: string
   token?: Token
-  endAdornment?: boolean
 }) {
   const nativeCurrency = getNativeCurrency()
   return (
@@ -84,7 +82,7 @@ export default function AmountInput({
       type={type}
       placeholder={placeholder}
       InputProps={{
-        endAdornment: endAdornment && (
+        endAdornment: (
           <InputAdornment position="end">
             <FilledButton className="small" onClick={handleMax}>
               Max

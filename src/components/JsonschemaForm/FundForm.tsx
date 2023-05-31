@@ -1,5 +1,5 @@
 import { MenuItem } from '@material-ui/core'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { Token } from 'src/logic/tokens/store/model/token'
 import { extendedSafeTokensSelector } from 'src/utils/safeUtils/selector'
@@ -25,7 +25,7 @@ const FormWrapper = styled.div`
   justify-content: space-between;
 `
 const FormItemWrapper = styled.div`
-  width: 30%;
+  width: 40%;
   display: flex;
   align-items: center;
 `
@@ -35,6 +35,17 @@ const FormLabel = styled.div`
   font-size: 16px;
   line-height: 20px;
   margin-right: 8px;
+`
+
+const ErrorMsg = styled.div`
+  color: #bf2525;
+  font-size: 12px;
+  position: absolute;
+  left: 55%;
+`
+const Wrap = styled.div`
+  position: relative;
+  width: 100%;
 `
 export type IFund = {
   id: number
@@ -56,13 +67,34 @@ const FundForm = ({ fund, selectedTokens, onDelete, onSelectToken }: IFundFormPr
     value: token.denom,
     label: token.name,
   }))
-  const [selectedToken, setSelectedToken] = useState<string>('')
+
+  const [selectedToken, setSelectedToken] = useState<Token | undefined>(undefined)
+  const [token, setToken] = useState<string>('')
   const [amount, setAmount] = useState<string>('')
+  const [amountValidateMsg, setAmountValidateMsg] = useState('')
+
+  useEffect(() => {
+    setAmountValidateMsg('')
+    if (selectedToken?.address) {
+      const tokenbalance = tokenList.find((t) => t.denom == selectedToken?.denom)?.balance?.tokenBalance
+      if (tokenbalance && +amount > +tokenbalance) {
+        setAmountValidateMsg('Given amount is greater than available balance.')
+      }
+    }
+  }, [amount, selectedToken?.address])
 
   const handleDenomChange = (token: string) => {
     fund.denom = token
     onSelectToken(token)
-    setSelectedToken(token)
+    setToken(token)
+    const selectedToken = filteredTokenList.find((e) => e.denom === token)
+    setSelectedToken(selectedToken)
+  }
+
+  const setMaxAmount = () => {
+    if (selectedToken) {
+      setAmount(selectedToken?.balance?.tokenBalance || '')
+    }
   }
 
   const handleAmountChange = (value) => {
@@ -71,44 +103,51 @@ const FundForm = ({ fund, selectedTokens, onDelete, onSelectToken }: IFundFormPr
   }
 
   return (
-    <FormWrapper>
-      <FormItemWrapper>
-        <FormLabel>Token:</FormLabel>
-        <Select
-          options={tokenOptions}
-          value={selectedToken || ''}
-          onChange={handleDenomChange}
-          placeholder="Token"
-          customRenderer={(value) => {
-            const selectedToken = tokenList.find((token) => token.denom == value)
-            return selectedToken ? (
-              <MenuItemWrapper>
-                <img src={selectedToken.logoUri || ''} alt={selectedToken.name} />
-                {selectedToken.name}
-              </MenuItemWrapper>
-            ) : null
-          }}
-        >
-          {filteredTokenList.map((token: Token, index: any) => {
-            return (
-              <MenuItem key={index} value={token.denom}>
+    <>
+      <FormWrapper>
+        <FormItemWrapper>
+          <FormLabel>Token:</FormLabel>
+          <Select
+            options={tokenOptions}
+            value={token || ''}
+            onChange={handleDenomChange}
+            placeholder="Token"
+            customRenderer={(value) => {
+              const selectedToken = tokenList.find((token) => token.denom == value)
+              return selectedToken ? (
                 <MenuItemWrapper>
-                  <img src={token.logoUri || ''} alt={token.name} />
-                  {token.name}
+                  <img src={selectedToken.logoUri || ''} alt={selectedToken.name} />
+                  {`${selectedToken.balance.tokenBalance} ${selectedToken.symbol}`}
                 </MenuItemWrapper>
-              </MenuItem>
-            )
-          })}
-        </Select>
-      </FormItemWrapper>
-      <FormItemWrapper>
-        <FormLabel>Amount:</FormLabel>
-        <AmountInput value={amount} onChange={handleAmountChange} endAdornment={false} />
-      </FormItemWrapper>
-      <ButtonHelper onClick={() => onDelete(fund.id)}>
-        <img src={ic_trash} alt="Trash Icon" />
-      </ButtonHelper>
-    </FormWrapper>
+              ) : null
+            }}
+          >
+            {filteredTokenList.map((token: Token, index: any) => {
+              return (
+                <MenuItem key={index} value={token.denom}>
+                  <MenuItemWrapper>
+                    <img src={token.logoUri || ''} alt={token.name} />
+                    {`${token.balance.tokenBalance} ${token.symbol}`}
+                  </MenuItemWrapper>
+                </MenuItem>
+              )
+            })}
+          </Select>
+        </FormItemWrapper>
+        <FormItemWrapper>
+          <FormLabel>Amount:</FormLabel>
+          <AmountInput value={amount} onChange={handleAmountChange} handleMax={setMaxAmount} token={selectedToken} />
+        </FormItemWrapper>
+        <ButtonHelper onClick={() => onDelete(fund.id)}>
+          <img src={ic_trash} alt="Trash Icon" />
+        </ButtonHelper>
+      </FormWrapper>
+      {amountValidateMsg && (
+        <Wrap>
+          <ErrorMsg>{amountValidateMsg}</ErrorMsg>
+        </Wrap>
+      )}
+    </>
   )
 }
 
