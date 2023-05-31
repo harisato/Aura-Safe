@@ -8,7 +8,7 @@ import { colorLinear } from 'src/theme/variables'
 import { formatNumber, isNumberKeyPress } from 'src/utils'
 import styled from 'styled-components'
 
-const StyledTextField = styled(MuiTextField)`
+const StyledTextField = styled(MuiTextField)<{ invalid?: boolean }>`
   width: 100%;
   > label {
     z-index: 1;
@@ -24,7 +24,7 @@ const StyledTextField = styled(MuiTextField)`
   }
   > div {
     background: #24262e;
-    border: 1px solid #494c58;
+    ${({ invalid }) => (invalid ? { border: '1px solid #d5625e' } : { border: '1px solid #494c58' })}
     color: #fff;
     border-radius: 8px;
     overflow: hidden;
@@ -35,7 +35,7 @@ const StyledTextField = styled(MuiTextField)`
   }
   > div.Mui-focused {
     background: linear-gradient(#24262e, #24262e) padding-box, ${colorLinear} border-box;
-    border: 1px solid transparent;
+    ${({ invalid }) => (invalid ? { border: '1px solid #d5625e' } : { border: '1px solid transparent' })}
   }
   input {
     color: #fff;
@@ -65,28 +65,40 @@ export default function AmountInput({
   handleMax,
   placeholder = 'Amount',
   token,
+  disabled = false,
+  showBtnMax = true,
+  invalid = false,
 }: {
   value: any
   onChange: (value: string) => void
-  handleMax: () => void
+  handleMax?: () => void
   type?: React.HTMLInputTypeAttribute
   autoFocus?: boolean
   placeholder?: string
   token?: Token
+  disabled?: boolean
+  showBtnMax?: boolean
+  invalid?: boolean
 }) {
   const nativeCurrency = getNativeCurrency()
+  console.log(invalid, 'invalidinvalid')
+
   return (
     <StyledTextField
       autoFocus={autoFocus}
+      disabled={disabled}
       variant="filled"
       type={type}
+      invalid={invalid}
       placeholder={placeholder}
       InputProps={{
         endAdornment: (
           <InputAdornment position="end">
-            <FilledButton className="small" onClick={handleMax}>
-              Max
-            </FilledButton>
+            {showBtnMax && (
+              <FilledButton className="small" onClick={handleMax}>
+                Max
+              </FilledButton>
+            )}
             <div className="denom">{token?.symbol || nativeCurrency.symbol}</div>
           </InputAdornment>
         ),

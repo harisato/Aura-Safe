@@ -50,7 +50,7 @@ export default function ReviewPopup({ open, setOpen, gasUsed, data, contractData
         value: {
           contract: contractData.contractAddress,
           sender: safeAddress,
-          funds: contractData.funds ? JSON.parse(contractData.funds) : [],
+          funds: contractData.funds ?? [],
           msg: {
             [contractData.selectedFunction]: data,
           },
