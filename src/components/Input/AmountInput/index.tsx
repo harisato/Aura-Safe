@@ -81,7 +81,6 @@ export default function AmountInput({
   invalid?: boolean
 }) {
   const nativeCurrency = getNativeCurrency()
-  console.log(invalid, 'invalidinvalid')
 
   return (
     <StyledTextField
