@@ -69,13 +69,12 @@ const FundForm = ({ fund, selectedTokens, onDelete, onSelectToken }: IFundFormPr
   }))
 
   const [selectedToken, setSelectedToken] = useState<Token | undefined>(undefined)
-  const [token, setToken] = useState<string>('')
   const [amount, setAmount] = useState<string>('')
   const [amountValidateMsg, setAmountValidateMsg] = useState('')
 
   useEffect(() => {
     setAmountValidateMsg('')
-    if (selectedToken?.address) {
+    if (selectedToken?.denom) {
       const tokenbalance = tokenList.find((t) => t.denom == selectedToken?.denom)?.balance?.tokenBalance
       if (tokenbalance && +amount > +tokenbalance) {
         setAmountValidateMsg('Given amount is greater than available balance.')
@@ -86,13 +85,13 @@ const FundForm = ({ fund, selectedTokens, onDelete, onSelectToken }: IFundFormPr
   const handleDenomChange = (token: string) => {
     fund.denom = token
     onSelectToken(token)
-    setToken(token)
     const selectedToken = filteredTokenList.find((e) => e.denom === token)
     setSelectedToken(selectedToken)
   }
 
   const setMaxAmount = () => {
     if (selectedToken) {
+      fund.amount = selectedToken?.balance?.tokenBalance || ''
       setAmount(selectedToken?.balance?.tokenBalance || '')
     }
   }
@@ -109,7 +108,7 @@ const FundForm = ({ fund, selectedTokens, onDelete, onSelectToken }: IFundFormPr
           <FormLabel>Token:</FormLabel>
           <Select
             options={tokenOptions}
-            value={token || ''}
+            value={selectedToken?.denom || ''}
             onChange={handleDenomChange}
             placeholder="Token"
             customRenderer={(value) => {
