@@ -22,26 +22,22 @@ const MenuItemWrapper = styled.div`
 const FormWrapper = styled.div`
   display: flex;
   align-items: center;
-  justify-content: space-between;
 `
-const FormItemWrapper = styled.div`
-  width: 40%;
-  display: flex;
-  align-items: center;
+const SelectWrapper = styled.div`
+  margin-right: 16px;
+  width: 35%;
 `
 
-const FormLabel = styled.div`
-  font-weight: 400;
-  font-size: 16px;
-  line-height: 20px;
-  margin-right: 8px;
+const InputWrapper = styled.div`
+  margin-right: 23px;
+  width: 30%;
 `
 
 const ErrorMsg = styled.div`
-  color: #bf2525;
+  color: #d5625e;
   font-size: 12px;
   position: absolute;
-  left: 55%;
+  left: 37%;
 `
 const Wrap = styled.div`
   position: relative;
@@ -77,7 +73,7 @@ const FundForm = ({ fund, selectedTokens, onDelete, onSelectToken }: IFundFormPr
     if (selectedToken?.denom) {
       const tokenbalance = tokenList.find((t) => t.denom == selectedToken?.denom)?.balance?.tokenBalance
       if (tokenbalance && +amount > +tokenbalance) {
-        setAmountValidateMsg('Given amount is greater than available balance.')
+        setAmountValidateMsg('Insufficient funds.')
       }
     }
   }, [amount, selectedToken?.address])
@@ -89,13 +85,6 @@ const FundForm = ({ fund, selectedTokens, onDelete, onSelectToken }: IFundFormPr
     setSelectedToken(selectedToken)
   }
 
-  const setMaxAmount = () => {
-    if (selectedToken) {
-      fund.amount = selectedToken?.balance?.tokenBalance || ''
-      setAmount(selectedToken?.balance?.tokenBalance || '')
-    }
-  }
-
   const handleAmountChange = (value) => {
     fund.amount = value
     setAmount(value)
@@ -104,13 +93,12 @@ const FundForm = ({ fund, selectedTokens, onDelete, onSelectToken }: IFundFormPr
   return (
     <>
       <FormWrapper>
-        <FormItemWrapper>
-          <FormLabel>Token:</FormLabel>
+        <SelectWrapper>
           <Select
             options={tokenOptions}
             value={selectedToken?.denom || ''}
             onChange={handleDenomChange}
-            placeholder="Token"
+            placeholder="Select an asset*"
             customRenderer={(value) => {
               const selectedToken = tokenList.find((token) => token.denom == value)
               return selectedToken ? (
@@ -132,11 +120,17 @@ const FundForm = ({ fund, selectedTokens, onDelete, onSelectToken }: IFundFormPr
               )
             })}
           </Select>
-        </FormItemWrapper>
-        <FormItemWrapper>
-          <FormLabel>Amount:</FormLabel>
-          <AmountInput value={amount} onChange={handleAmountChange} handleMax={setMaxAmount} token={selectedToken} />
-        </FormItemWrapper>
+        </SelectWrapper>
+        <InputWrapper>
+          <AmountInput
+            invalid={!!amountValidateMsg}
+            disabled={!selectedToken}
+            value={amount}
+            onChange={handleAmountChange}
+            showBtnMax={false}
+            token={selectedToken}
+          />
+        </InputWrapper>
         <ButtonHelper onClick={() => onDelete(fund.id)}>
           <img src={ic_trash} alt="Trash Icon" />
         </ButtonHelper>

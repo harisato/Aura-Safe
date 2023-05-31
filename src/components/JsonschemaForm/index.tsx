@@ -1,4 +1,4 @@
-import { Box, Button } from '@material-ui/core'
+import { Button } from '@material-ui/core'
 import { Validator } from 'jsonschema'
 import { ReactElement, useState } from 'react'
 import { useDispatch } from 'react-redux'
@@ -36,6 +36,13 @@ const Wrap = styled.div`
       margin-top: 16px;
     }
   }
+`
+
+const Title = styled.div`
+  font-weight: 600;
+  font-size: 20px;
+  line-height: 24px;
+  margin-top: 16px;
 `
 
 let rowId = 1
@@ -144,7 +151,7 @@ function JsonschemaForm({
             }}
           />
         ))}
-        <div className="title">Funds</div>
+        <Title>Transaction funds</Title>
         {funds.map((fund: IFund) => (
           <div key={fund.id}>
             <FundForm
@@ -155,13 +162,11 @@ function JsonschemaForm({
             />
           </div>
         ))}
-        <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
-          <Button color="secondary" onClick={handleAddFund}>
-            <Paragraph noMargin size="smd" weight="bolder" color="green">
-              + Add fund
-            </Paragraph>
-          </Button>
-        </Box>
+        <Button color="secondary" onClick={handleAddFund}>
+          <Paragraph noMargin size="smd" weight="bolder" color="green">
+            + Add fund
+          </Paragraph>
+        </Button>
       </div>
     </Wrap>
   )
