@@ -7,6 +7,9 @@ import Paragraph from '../layout/Paragraph'
 import Field from './Field'
 import FundForm, { IFund } from './FundForm'
 import { makeSchemaInput } from './utils'
+import { OutlinedButton } from '../Button'
+import Plus from '../../assets/icons/Plus.svg'
+
 const Wrap = styled.div`
   margin-top: 32px;
   .title {
@@ -176,11 +179,10 @@ function JsonschemaForm({
             />
           </div>
         ))}
-        <Button color="secondary" onClick={handleAddFund}>
-          <Paragraph noMargin size="smd" weight="bolder" color="green">
-            + Add fund
-          </Paragraph>
-        </Button>
+        <OutlinedButton className="small" onClick={handleAddFund}>
+          <img src={Plus} alt="" />
+          Add funds
+        </OutlinedButton>
       </div>
     </Wrap>
   )
