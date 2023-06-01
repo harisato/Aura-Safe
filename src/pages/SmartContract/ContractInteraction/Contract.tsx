@@ -35,9 +35,10 @@ function Contract({ contractData }): ReactElement {
   const [shouldCheck, setShouldCheck] = useState(false)
   const [activeFunction, setActiveFunction] = useState(0)
   const [selectedFunction, setSelectedFunction] = useState('')
-  const [funds, setFunds] = useState<IFund[]>([{ id: 0, denom: '', amount: '', tokenDecimal: '' }])
+  const [funds, setFunds] = useState<IFund[]>([])
   const [schema, setSchema] = useState<any>()
   const [loading, setLoading] = useState(false)
+  const [invalidAmount, setInvalidAmount] = useState(false)
   const preview = async () => {
     try {
       setLoading(true)
@@ -52,7 +53,7 @@ function Contract({ contractData }): ReactElement {
           isError = true
         }
       })
-      if (!isError) {
+      if (!isError && !invalidAmount) {
         try {
           const res = await simulate({
             encodedMsgs: Buffer.from(
@@ -124,6 +125,7 @@ function Contract({ contractData }): ReactElement {
         setActiveFunction={setActiveFunction}
         funds={funds}
         setFunds={setFunds}
+        setInvalidAmount={setInvalidAmount}
       />
       <div className="preview-button">
         <FilledButton disabled={loading} onClick={preview}>
@@ -140,7 +142,13 @@ function Contract({ contractData }): ReactElement {
           selectedFunction: selectedFunction,
           funds: funds
             .filter((fund) => fund.denom !== '')
-            .map((e) => ({ denom: e.denom, amount: convertAmount(+e.amount, true, +e.tokenDecimal) })),
+            .map((e) => ({
+              denom: e.denom,
+              amount: e.amount,
+              logoUri: e.logoUri,
+              type: e.type,
+              symbol: e.symbol,
+            })),
         }}
       />
     </Wrap>

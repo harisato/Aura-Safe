@@ -1,4 +1,4 @@
-import { MenuItem } from '@material-ui/core'
+import { MenuItem, Tooltip } from '@material-ui/core'
 import { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { Token } from 'src/logic/tokens/store/model/token'
@@ -48,16 +48,28 @@ export type IFund = {
   denom: string
   amount: string
   tokenDecimal: string | number
+  logoUri: string | null
+  type: string
+  symbol: string
 }
 
 type IFundFormProps = {
   fund: IFund
   onDelete: (id: number) => void
   onSelectToken: (token: string) => void
+  onDeselectToken: (token: string, preToken: string) => void
   selectedTokens: string[]
+  onChangeAmount: (isError: boolean) => void
 }
-
-const FundForm = ({ fund, selectedTokens, onDelete, onSelectToken }: IFundFormProps) => {
+let preToken: Record<number, string> = {}
+const FundForm = ({
+  fund,
+  selectedTokens,
+  onDelete,
+  onSelectToken,
+  onChangeAmount,
+  onDeselectToken,
+}: IFundFormProps) => {
   const tokenList = useSelector(extendedSafeTokensSelector) as unknown as Token[]
   const filteredTokenList = tokenList.filter((token) => !selectedTokens.includes(token.denom))
   const tokenOptions: IOption[] = tokenList.map((token: Token) => ({
@@ -67,7 +79,7 @@ const FundForm = ({ fund, selectedTokens, onDelete, onSelectToken }: IFundFormPr
 
   const [selectedToken, setSelectedToken] = useState<Token | undefined>(undefined)
   const [amount, setAmount] = useState<string>('')
-  const [amountValidateMsg, setAmountValidateMsg] = useState('')
+  const [amountValidateMsg, setAmountValidateMsg] = useState<string>('')
 
   useEffect(() => {
     setAmountValidateMsg('')
@@ -77,17 +89,30 @@ const FundForm = ({ fund, selectedTokens, onDelete, onSelectToken }: IFundFormPr
         setAmountValidateMsg('Insufficient funds.')
       }
     }
-  }, [amount, selectedToken?.address])
+  }, [amount, selectedToken?.denom])
+
+  useEffect(() => {
+    onChangeAmount(amountValidateMsg !== '')
+  }, [amountValidateMsg])
 
   const handleDenomChange = (token: string) => {
     fund.denom = token
     onSelectToken(token)
+
+    if (preToken[fund.id] !== undefined && token !== preToken[fund.id]) {
+      onDeselectToken(token, preToken[fund.id])
+    }
+    preToken[fund.id] = token
+
     const selectedToken = filteredTokenList.find((e) => e.denom === token)
-    fund.tokenDecimal = selectedToken ? selectedToken.decimals : 0
+    fund.tokenDecimal = selectedToken?.decimals ?? 0
+    fund.logoUri = selectedToken?.logoUri ?? ''
+    fund.type = selectedToken?.type ?? ''
+    fund.symbol = selectedToken?.symbol ?? ''
     setSelectedToken(selectedToken)
   }
 
-  const handleAmountChange = (value) => {
+  const handleAmountChange = (value: string) => {
     fund.amount = value
     setAmount(value)
   }
@@ -123,18 +148,21 @@ const FundForm = ({ fund, selectedTokens, onDelete, onSelectToken }: IFundFormPr
             })}
           </Select>
         </SelectWrapper>
-        <InputWrapper>
-          <AmountInput
-            invalid={!!amountValidateMsg}
-            disabled={!selectedToken}
-            value={amount}
-            onChange={handleAmountChange}
-            showBtnMax={false}
-            token={selectedToken}
-          />
-        </InputWrapper>
+        {selectedToken ? (
+          <InputWrapper>
+            <AmountInput
+              invalid={(!!amountValidateMsg).toString()}
+              value={amount}
+              onChange={handleAmountChange}
+              showBtnMax={false}
+              token={selectedToken}
+            />
+          </InputWrapper>
+        ) : (
+          <></>
+        )}
         <ButtonHelper onClick={() => onDelete(fund.id)}>
-          <img src={ic_trash} alt="Trash Icon" />
+          <Tooltip placement="top" arrow children={<img src={ic_trash} alt="Trash Icon" />} title="Delete"></Tooltip>
         </ButtonHelper>
       </FormWrapper>
       {amountValidateMsg && (

@@ -8,7 +8,7 @@ import { colorLinear } from 'src/theme/variables'
 import { formatNumber, isNumberKeyPress } from 'src/utils'
 import styled from 'styled-components'
 
-const StyledTextField = styled(MuiTextField)<{ invalid?: boolean }>`
+const StyledTextField = styled(MuiTextField)<{ invalid?: string }>`
   width: 100%;
   > label {
     z-index: 1;
@@ -24,7 +24,7 @@ const StyledTextField = styled(MuiTextField)<{ invalid?: boolean }>`
   }
   > div {
     background: #24262e;
-    ${({ invalid }) => (invalid ? { border: '1px solid #d5625e' } : { border: '1px solid #494c58' })}
+    ${({ invalid }) => (invalid === 'true' ? { border: '1px solid #d5625e' } : { border: '1px solid #494c58' })}
     color: #fff;
     border-radius: 8px;
     overflow: hidden;
@@ -35,7 +35,7 @@ const StyledTextField = styled(MuiTextField)<{ invalid?: boolean }>`
   }
   > div.Mui-focused {
     background: linear-gradient(#24262e, #24262e) padding-box, ${colorLinear} border-box;
-    ${({ invalid }) => (invalid ? { border: '1px solid #d5625e' } : { border: '1px solid transparent' })}
+    ${({ invalid }) => (invalid === 'true' ? { border: '1px solid #d5625e' } : { border: '1px solid transparent' })}
   }
   input {
     color: #fff;
@@ -65,9 +65,8 @@ export default function AmountInput({
   handleMax,
   placeholder = 'Amount',
   token,
-  disabled = false,
   showBtnMax = true,
-  invalid = false,
+  invalid = 'false',
 }: {
   value: any
   onChange: (value: string) => void
@@ -76,16 +75,14 @@ export default function AmountInput({
   autoFocus?: boolean
   placeholder?: string
   token?: Token
-  disabled?: boolean
   showBtnMax?: boolean
-  invalid?: boolean
+  invalid?: string
 }) {
   const nativeCurrency = getNativeCurrency()
 
   return (
     <StyledTextField
       autoFocus={autoFocus}
-      disabled={disabled}
       variant="filled"
       type={type}
       invalid={invalid}

@@ -45,7 +45,7 @@ const Title = styled.div`
   margin-top: 16px;
 `
 
-let rowId = 1
+let rowId = 0
 
 function JsonschemaForm({
   schema,
@@ -57,6 +57,7 @@ function JsonschemaForm({
   setActiveFunction,
   funds,
   setFunds,
+  setInvalidAmount,
 }): ReactElement {
   const dispatch = useDispatch()
   const [selectedTokens, setSelectedTokens] = useState<string[]>([])
@@ -96,6 +97,17 @@ function JsonschemaForm({
     const updatedSelectedTokens = [...selectedTokens]
     updatedSelectedTokens.push(denom)
     setSelectedTokens(updatedSelectedTokens)
+  }
+
+  const handleDeselectToken = (denom: string, preToken: string) => {
+    const tokens = selectedTokens.filter((e) => e !== preToken)
+    const updatedSelectedTokens = [...tokens]
+    updatedSelectedTokens.push(denom)
+    setSelectedTokens(updatedSelectedTokens)
+  }
+
+  const handleChangeAmount = (isError: boolean) => {
+    setInvalidAmount(isError)
   }
 
   return (
@@ -159,6 +171,8 @@ function JsonschemaForm({
               selectedTokens={selectedTokens}
               onDelete={handleDeleteFund}
               onSelectToken={handleSelectToken}
+              onChangeAmount={handleChangeAmount}
+              onDeselectToken={handleDeselectToken}
             />
           </div>
         ))}
