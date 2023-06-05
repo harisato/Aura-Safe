@@ -1,9 +1,13 @@
 import { useEffect, useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 import { FilledButton, OutlinedNeutralButton } from 'src/components/Button'
 import Checkbox from 'src/components/Input/Checkbox'
 import { Popup } from 'src/components/Popup'
 import Footer from 'src/components/Popup/Footer'
 import Header from 'src/components/Popup/Header'
+import { addToFunds } from 'src/logic/contracts/store/actions'
+import { getFunds } from 'src/logic/contracts/store/selectors'
+
 import styled from 'styled-components'
 
 const Wrap = styled.div`
@@ -90,6 +94,8 @@ const CoinConfig = ({ token, isEnable, setToggle }) => {
 
 const ManageTokenPopup = ({ open, onClose, setFunds, listTokens, setListTokens, defListTokens }) => {
   const [toggleAll, setToggleAll] = useState<boolean>(false)
+  const funds = useSelector(getFunds)
+  const dispatch = useDispatch()
 
   const toggleAllHandler = () => {
     setListTokens(listTokens?.map((token) => ({ ...token, enabled: !toggleAll })))
@@ -98,14 +104,18 @@ const ManageTokenPopup = ({ open, onClose, setFunds, listTokens, setListTokens, 
 
   const handleAddFunds = () => {
     const listFunds = listTokens.filter((token) => token.enabled)
-    localStorage.setItem('listFunds', JSON.stringify(listTokens))
+    dispatch(addToFunds(listTokens))
     setFunds(listFunds)
     onClose()
   }
 
   const handleClose = () => {
-    const storedListTokens = localStorage.getItem('listFunds')
-    setListTokens(storedListTokens ? JSON.parse(storedListTokens) : defListTokens)
+    if (!funds || funds.length == 0) {
+      dispatch(addToFunds(defListTokens))
+      setListTokens(defListTokens)
+    } else {
+      setListTokens(funds)
+    }
     onClose()
   }
 

@@ -56,6 +56,8 @@ import { SafeReducerMap } from 'src/logic/safe/store/reducer/types/safe'
 import validatorReducer, { VALIDATOR_REDUCER_ID } from 'src/logic/validator/store/reducer'
 import { IProposal } from 'src/types/proposal'
 import { LS_NAMESPACE, LS_SEPARATOR } from 'src/utils/constants'
+import fundsReducer, { FUNDS_REDUCER_ID } from 'src/logic/contracts/store/reducer'
+import { IFund } from 'src/components/JsonschemaForm/FundForm'
 
 const CURRENCY_KEY = `${CURRENCY_REDUCER_ID}.selectedCurrency`
 
@@ -107,6 +109,7 @@ const reducers = {
   [PROPOSALS_REDUCER_ID]: proposalsReducer,
   [VALIDATOR_REDUCER_ID]: validatorReducer,
   [DELEGATION_REDUCER_ID]: delegationReducer,
+  [FUNDS_REDUCER_ID]: fundsReducer,
 }
 
 const rootReducer = combineReducers(reducers)
@@ -133,6 +136,7 @@ export type AppReduxState = CombinedState<{
   [PROPOSALS_REDUCER_ID]: IProposal[]
   [VALIDATOR_REDUCER_ID]: ValidatorStateType
   [DELEGATION_REDUCER_ID]: DelegationStateType
+  [FUNDS_REDUCER_ID]: IFund[]
 }>
 
 export const store: any = createStore(rootReducer, load(LS_CONFIG), enhancer)

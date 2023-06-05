@@ -1,9 +1,8 @@
 import { Validator } from 'jsonschema'
-import { ReactElement, useEffect, useState } from 'react'
-import { useSelector } from 'react-redux'
-import { Token } from 'src/logic/tokens/store/model/token'
+import { ReactElement, useState } from 'react'
+import { useDispatch } from 'react-redux'
+import { addToFunds } from 'src/logic/contracts/store/actions'
 import ManageTokenPopup from 'src/pages/SmartContract/ContractInteraction/ManageTokenPopup'
-import { extendedSafeTokensSelector } from 'src/utils/safeUtils/selector'
 import styled from 'styled-components'
 import Plus from '../../assets/icons/Plus.svg'
 import { OutlinedButton } from '../Button'
@@ -60,22 +59,11 @@ function JsonschemaForm({
   funds,
   setFunds,
   setInvalidAmount,
+  defListTokens,
 }): ReactElement {
-  const tokenList = useSelector(extendedSafeTokensSelector) as unknown as Token[]
-  const defListTokens = tokenList.map((token) => ({
-    id: token.denom,
-    denom: token.denom,
-    amount: '',
-    tokenDecimal: token.decimals,
-    logoUri: token.logoUri,
-    type: token.type,
-    symbol: token.symbol,
-    name: token.name,
-    balance: token.balance.tokenBalance,
-    enabled: false,
-  }))
+  const dispatch = useDispatch()
   const [manageTokenPopupOpen, setManageTokenPopupOpen] = useState(false)
-  const [listTokens, setListTokens] = useState(defListTokens ?? [])
+  const [listTokens, setListTokens] = useState<IFund[]>(defListTokens ?? [])
   const jsValidator = new Validator()
   if (!schema) return <></>
   jsValidator.addSchema(schema)
@@ -105,7 +93,7 @@ function JsonschemaForm({
       }
       return token
     })
-    localStorage.setItem('listFunds', JSON.stringify(updatedListTokens))
+    dispatch(addToFunds(updatedListTokens))
     setListTokens(updatedListTokens)
   }
 
