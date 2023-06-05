@@ -1,7 +1,11 @@
+import { Validator } from 'jsonschema'
 import { ReactElement, useEffect, useState } from 'react'
 import { useDispatch } from 'react-redux'
 import { FilledButton } from 'src/components/Button'
 import JsonschemaForm from 'src/components/JsonschemaForm'
+import { IFund } from 'src/components/JsonschemaForm/FundForm'
+import { makeSchemaInput } from 'src/components/JsonschemaForm/utils'
+import Loader from 'src/components/Loader'
 import { enhanceSnackbarForAction } from 'src/logic/notifications'
 import enqueueSnackbar from 'src/logic/notifications/store/actions/enqueueSnackbar'
 import { MsgTypeUrl } from 'src/logic/providers/constants/constant'
@@ -9,11 +13,6 @@ import { extractPrefixedSafeAddress, extractSafeAddress } from 'src/routes/route
 import { simulate } from 'src/services'
 import styled from 'styled-components'
 import ReviewPopup from './ReviewPopup'
-import { Validator } from 'jsonschema'
-import { makeSchemaInput } from 'src/components/JsonschemaForm/utils'
-import Loader from 'src/components/Loader'
-import { IFund } from 'src/components/JsonschemaForm/FundForm'
-import { convertAmount } from 'src/utils'
 
 const Wrap = styled.div`
   .preview-button {
@@ -110,6 +109,12 @@ function Contract({ contractData }): ReactElement {
       console.log('ee', error)
     }
   }, [contractData.contractAddress, contractData.executeMsgSchema])
+
+  useEffect(() => {
+    return () => {
+      localStorage.removeItem('listFunds')
+    }
+  }, [])
 
   if (!contractData?.executeMsgSchema || !contractData.contractAddress) return <></>
 

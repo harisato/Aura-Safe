@@ -1,14 +1,15 @@
-import { Button } from '@material-ui/core'
 import { Validator } from 'jsonschema'
-import { ReactElement, useState } from 'react'
-import { useDispatch } from 'react-redux'
+import { ReactElement, useEffect, useState } from 'react'
+import { useSelector } from 'react-redux'
+import { Token } from 'src/logic/tokens/store/model/token'
+import ManageTokenPopup from 'src/pages/SmartContract/ContractInteraction/ManageTokenPopup'
+import { extendedSafeTokensSelector } from 'src/utils/safeUtils/selector'
 import styled from 'styled-components'
-import Paragraph from '../layout/Paragraph'
+import Plus from '../../assets/icons/Plus.svg'
+import { OutlinedButton } from '../Button'
 import Field from './Field'
 import FundForm, { IFund } from './FundForm'
 import { makeSchemaInput } from './utils'
-import { OutlinedButton } from '../Button'
-import Plus from '../../assets/icons/Plus.svg'
 
 const Wrap = styled.div`
   margin-top: 32px;
@@ -48,8 +49,6 @@ const Title = styled.div`
   margin-top: 16px;
 `
 
-let rowId = 0
-
 function JsonschemaForm({
   schema,
   formData,
@@ -62,8 +61,21 @@ function JsonschemaForm({
   setFunds,
   setInvalidAmount,
 }): ReactElement {
-  const dispatch = useDispatch()
-  const [selectedTokens, setSelectedTokens] = useState<string[]>([])
+  const tokenList = useSelector(extendedSafeTokensSelector) as unknown as Token[]
+  const defListTokens = tokenList.map((token) => ({
+    id: token.denom,
+    denom: token.denom,
+    amount: '',
+    tokenDecimal: token.decimals,
+    logoUri: token.logoUri,
+    type: token.type,
+    symbol: token.symbol,
+    name: token.name,
+    balance: token.balance.tokenBalance,
+    enabled: false,
+  }))
+  const [manageTokenPopupOpen, setManageTokenPopupOpen] = useState(false)
+  const [listTokens, setListTokens] = useState(defListTokens ?? [])
   const jsValidator = new Validator()
   if (!schema) return <></>
   jsValidator.addSchema(schema)
@@ -78,35 +90,23 @@ function JsonschemaForm({
   }
 
   const handleAddFund = () => {
-    const newFund = { id: rowId, denom: '', amount: '' }
-    const newFunds = [...funds, newFund]
-    setFunds(newFunds)
-    rowId++
+    setManageTokenPopupOpen(true)
   }
 
-  const handleDeleteFund = (id: number) => {
-    const updatedFunds = funds.filter((fund) => fund.id !== id)
+  const handleDeleteFund = (id: string) => {
+    const updatedFunds = funds.filter((fund: IFund) => fund.id !== id)
     setFunds(updatedFunds)
-    const updatedSelectedTokens = selectedTokens.filter((token) => token !== getDenomById(id))
-    setSelectedTokens(updatedSelectedTokens)
-  }
-
-  const getDenomById = (id: number) => {
-    const fund = funds.find((fund: IFund) => fund.id === id)
-    return fund ? fund.denom : ''
-  }
-
-  const handleSelectToken = (denom: string) => {
-    const updatedSelectedTokens = [...selectedTokens]
-    updatedSelectedTokens.push(denom)
-    setSelectedTokens(updatedSelectedTokens)
-  }
-
-  const handleDeselectToken = (denom: string, preToken: string) => {
-    const tokens = selectedTokens.filter((e) => e !== preToken)
-    const updatedSelectedTokens = [...tokens]
-    updatedSelectedTokens.push(denom)
-    setSelectedTokens(updatedSelectedTokens)
+    const updatedListTokens = listTokens.map((token) => {
+      if (token.id === id) {
+        return {
+          ...token,
+          enabled: false,
+        }
+      }
+      return token
+    })
+    localStorage.setItem('listFunds', JSON.stringify(updatedListTokens))
+    setListTokens(updatedListTokens)
   }
 
   const handleChangeAmount = (isError: boolean) => {
@@ -169,14 +169,7 @@ function JsonschemaForm({
         <Title>Transaction funds</Title>
         {funds.map((fund: IFund) => (
           <div key={fund.id}>
-            <FundForm
-              fund={fund}
-              selectedTokens={selectedTokens}
-              onDelete={handleDeleteFund}
-              onSelectToken={handleSelectToken}
-              onChangeAmount={handleChangeAmount}
-              onDeselectToken={handleDeselectToken}
-            />
+            <FundForm fund={fund} onDelete={handleDeleteFund} onChangeAmount={handleChangeAmount} />
           </div>
         ))}
         <OutlinedButton className="small" onClick={handleAddFund}>
@@ -184,6 +177,14 @@ function JsonschemaForm({
           Add funds
         </OutlinedButton>
       </div>
+      <ManageTokenPopup
+        open={manageTokenPopupOpen}
+        onClose={() => setManageTokenPopupOpen(false)}
+        setFunds={setFunds}
+        listTokens={listTokens}
+        setListTokens={setListTokens}
+        defListTokens={defListTokens}
+      />
     </Wrap>
   )
 }
