@@ -126,23 +126,7 @@ export function getMChainsConfig(): Promise<MChainInfo[]> {
             // 'SAFE_TX_GAS_OPTIONAL',
             // 'SPENDING_LIMIT',
           ],
-          coinConfig: e?.coinConfig || [
-            {
-              name: 'AURA',
-            },
-            {
-              name: 'BTC',
-            },
-            {
-              name: 'ETH',
-            },
-            {
-              name: 'BNB',
-            },
-            {
-              name: 'USDT',
-            },
-          ],
+          coinConfig: e?.coinConfig || [],
         }
       },
     )
