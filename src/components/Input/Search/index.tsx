@@ -1,3 +1,4 @@
+import { ChangeEvent } from 'react'
 import SearchIcon from 'src/assets/icons/search.svg'
 import styled from 'styled-components'
 
@@ -19,10 +20,15 @@ const Wrap = styled.div`
     width: 100%;
   }
 `
-export default function SearchInput({ placeholder }) {
+interface ISearchInputProps {
+  placeholder: string
+  onChange?: (event: ChangeEvent<HTMLInputElement>) => void
+}
+
+export default function SearchInput({ placeholder, onChange }: ISearchInputProps) {
   return (
     <Wrap className="search-input">
-      <input placeholder={placeholder} />
+      <input placeholder={placeholder} onChange={onChange} />
       <img src={SearchIcon} alt="" />
     </Wrap>
   )

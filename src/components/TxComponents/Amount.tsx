@@ -37,29 +37,21 @@ export default function Amount({
     <div className="total-amount">
       <p className="title"> {label}</p>
       {listTokens ? (
-        nativeToken ? (
-          <>
-            <div className="amount">
-              {!hideLogo && <img alt={'nativeCurrencyLogoUri'} height={25} src={nativeCurrency.logoUri} />}
+        <>
+          <div className="amount">
+            {!hideLogo && <img alt={'nativeCurrencyLogoUri'} height={25} src={nativeCurrency.logoUri} />}
+            {nativeToken ? (
               <p>
                 {new BigNumber(nativeFee).plus(new BigNumber(+nativeToken.amount)).toString()} {nativeToken.symbol}
               </p>
-            </div>
-            {otherToken?.map((token: IFund) => (
-              <OtherToken token={token} hideLogo={hideLogo} nativeCurrency={nativeCurrency} />
-            ))}
-          </>
-        ) : (
-          <>
-            <div className="amount">
-              {!hideLogo && <img alt={'nativeCurrencyLogoUri'} height={25} src={nativeCurrency.logoUri} />}
+            ) : (
               <p>{amount}</p>
-            </div>
-            {listTokens.map((token: IFund) => (
-              <OtherToken token={token} hideLogo={hideLogo} nativeCurrency={nativeCurrency} />
-            ))}
-          </>
-        )
+            )}
+          </div>
+          {otherToken?.map((token: IFund) => (
+            <OtherToken token={token} hideLogo={hideLogo} nativeCurrency={nativeCurrency} />
+          ))}
+        </>
       ) : (
         <div className="amount">
           {!hideLogo && (
