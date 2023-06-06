@@ -52,8 +52,10 @@ function Contract({ contractData }): ReactElement {
     symbol: token.symbol,
     name: token.name,
     balance: token.balance.tokenBalance,
+    address: token.address,
     enabled: false,
   })) as IFund[]
+
   const preview = async () => {
     try {
       setLoading(true)

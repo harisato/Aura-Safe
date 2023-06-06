@@ -52,6 +52,7 @@ export type IFund = {
   symbol: string
   name: string
   balance: string
+  address: string
   enabled?: boolean
 }
 

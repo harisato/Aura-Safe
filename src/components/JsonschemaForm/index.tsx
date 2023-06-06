@@ -5,7 +5,7 @@ import { addToFunds } from 'src/logic/contracts/store/actions'
 import ManageTokenPopup from 'src/pages/SmartContract/ContractInteraction/ManageTokenPopup'
 import styled from 'styled-components'
 import Plus from '../../assets/icons/Plus.svg'
-import { OutlinedButton } from '../Button'
+import { OutlinedNeutralButton } from '../Button'
 import Field from './Field'
 import FundForm, { IFund } from './FundForm'
 import { makeSchemaInput } from './utils'
@@ -160,10 +160,10 @@ function JsonschemaForm({
             <FundForm fund={fund} onDelete={handleDeleteFund} onChangeAmount={handleChangeAmount} />
           </div>
         ))}
-        <OutlinedButton className="small" onClick={handleAddFund}>
+        <OutlinedNeutralButton className="small" onClick={handleAddFund}>
           <img src={Plus} alt="" />
           Add funds
-        </OutlinedButton>
+        </OutlinedNeutralButton>
       </div>
       <ManageTokenPopup
         open={manageTokenPopupOpen}
