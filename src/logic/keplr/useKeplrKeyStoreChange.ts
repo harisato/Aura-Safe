@@ -8,7 +8,7 @@ import { loadLastUsedProvider } from 'src/logic/wallets/store/middlewares/provid
 import { JWT_TOKEN_KEY } from 'src/services/constant/common'
 import session from 'src/utils/storage/session'
 
-export const useKeplrKeyStoreChange = (): void => {
+const useKeplrKeyStoreChange = (): void => {
   const dispatch = useDispatch<Dispatch>()
 
   useEffect(() => {

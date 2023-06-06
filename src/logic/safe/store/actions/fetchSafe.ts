@@ -10,17 +10,18 @@ import { checksumAddress } from 'src/utils/checksumAddress'
 import { buildSafeOwners, extractRemoteSafeInfo } from './utils'
 import { Errors, logError } from 'src/logic/exceptions/CodedException'
 import { AppReduxState, store } from 'src/logic/safe/store'
-import { currentSafeWithNames } from '../selectors'
+import { currentSafe, currentSafeWithNames } from '../selectors'
 import fetchTransactions from './transactions/fetchTransactions'
 import { fetchCollectibles } from 'src/logic/collectibles/store/actions/fetchCollectibles'
 import { currentChainId } from 'src/logic/config/store/selectors'
 import { getAccountOnChain, getMSafeInfo } from 'src/services'
 import { IMSafeInfo } from 'src/types/safe'
-import { getCoinDecimal, getInternalChainId, _getChainId } from 'src/config'
+import { getCoinDecimal, getInternalChainId, _getChainId, getChainInfo } from 'src/config'
 import { fetchMSafeTokens } from 'src/logic/tokens/store/actions/fetchSafeTokens'
 import _ from 'lodash'
 import BigNumber from 'bignumber.js'
 import { SequenceResponse } from '@cosmjs/stargate'
+import { humanReadableValue } from 'src/utils'
 
 /**
  * Builds a Safe Record that will be added to the app's store
@@ -166,34 +167,44 @@ export const fetchMSafe =
       safeInfo.nextQueueSeq = mSafeInfo?.nextQueueSeq || onlineData?.sequence?.toString()
       safeInfo.sequence = mSafeInfo?.sequence || onlineData?.sequence?.toString()
       const coinDecimal = getCoinDecimal()
-      // If these polling timestamps have changed, fetch again
       const { txQueuedTag, txHistoryTag, balances } = currentSafeWithNames(state)
-      const remoteBalances = _.first(mSafeInfo?.balance)
-      const safeBalance = new BigNumber(remoteBalances?.amount || 0)
-        .dividedBy(Math.pow(10, coinDecimal))
-        .toFixed(coinDecimal)
+      let isBalanceUpdated = false
 
-      let isRefreshTx = false
+      if ((mSafeInfo?.balance?.length || 0) + (mSafeInfo?.assets.CW20.asset?.length || 0) != balances?.length)
+        isBalanceUpdated = true
 
-      if (_.first(balances)?.tokenBalance) {
-        isRefreshTx = Number(_.first(balances)?.tokenBalance) < Number(safeBalance)
+      if (!isBalanceUpdated) {
+        mSafeInfo?.balance?.some((balance: any) => {
+          const decimal = balance?.decimal || coinDecimal
+          const remoteBalance = humanReadableValue(balance.amount, decimal)
+          const currentBalance = balances.find((b: any) => b.denom == balance.denom)
+          if (currentBalance?.tokenBalance != remoteBalance) isBalanceUpdated = true
+          return isBalanceUpdated
+        })
       }
+
+      if (!isBalanceUpdated && mSafeInfo?.assets.CW20.asset.length > 0) {
+        mSafeInfo?.assets.CW20.asset.some((balance: any) => {
+          const decimal = balance?.asset_info.data.decimals || coinDecimal
+          const remoteBalance = humanReadableValue(balance.balance, decimal)
+          const currentBalance = balances.find((b: any) => b.denom == balance.asset_info.data.symbol)
+          if (currentBalance?.tokenBalance != remoteBalance) isBalanceUpdated = true
+          return isBalanceUpdated
+        })
+      }
+
       const shouldUpdateTxHistory = txHistoryTag !== safeInfo.txHistoryTag
       const shouldUpdateTxQueued = txQueuedTag !== safeInfo.txQueuedTag
 
-      if (shouldUpdateTxHistory || isRefreshTx || isInitialLoad) {
+      if (shouldUpdateTxHistory || isInitialLoad) {
         dispatchPromises.push(dispatch(fetchTransactions(chainId, safeAddress)))
       } else if (shouldUpdateTxQueued) {
         dispatchPromises.push(dispatch(fetchTransactions(chainId, safeAddress, true)))
       }
 
-      if (mSafeInfo) {
+      if ((isBalanceUpdated || isInitialLoad) && mSafeInfo) {
         dispatchPromises.push(dispatch(fetchMSafeTokens(mSafeInfo)))
       }
-
-      // if (isInitialLoad) {
-      //   dispatchPromises.push(dispatch(fetchTransactions(chainId, safeAddress)))
-      // }
     }
 
     const owners = buildSafeOwners(remoteSafeInfo?.owners)
@@ -204,7 +215,6 @@ export const fetchMSafe =
   }
 
 async function _getSafeInfo(safeAddress: string, safeId: number): Promise<[IMSafeInfo, SafeInfo]> {
-  // if (dispatch) await dispatch(fetchMSafeTokens(info))
   return getMSafeInfo(safeId).then((mSafeInfo) => {
     return [
       mSafeInfo,

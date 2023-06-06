@@ -1,14 +1,14 @@
-import { getTransactionHistory, getTransactionQueue, TransactionListItem } from '@gnosis.pm/safe-react-gateway-sdk'
-import { getInternalChainId, _getChainId } from 'src/config'
-import { HistoryGatewayResponse, QueuedGatewayResponse } from 'src/logic/safe/store/models/types/gateway.d'
-import { checksumAddress } from 'src/utils/checksumAddress'
-import { Errors, CodedException } from 'src/logic/exceptions/CodedException'
-import { GATEWAY_URL } from 'src/utils/constants'
-import { getAllTx } from 'src/services'
-import { makeQueueTransactionsFromService, makeHistoryTransactionsFromService } from 'src/utils/transactionUtils'
+import { getTransactionHistory, TransactionListItem } from '@gnosis.pm/safe-react-gateway-sdk'
 import isEqual from 'lodash/isEqual'
+import { _getChainId, getInternalChainId } from 'src/config'
+import { CodedException, Errors } from 'src/logic/exceptions/CodedException'
+import { HistoryGatewayResponse, QueuedGatewayResponse } from 'src/logic/safe/store/models/types/gateway.d'
+import { getAllTx } from 'src/services'
 import { DEFAULT_PAGE_FIRST, DEFAULT_PAGE_SIZE, QUEUED_PAGE_SIZE } from 'src/services/constant/common'
 import { ITransactionListQuery } from 'src/types/transaction'
+import { checksumAddress } from 'src/utils/checksumAddress'
+import { GATEWAY_URL } from 'src/utils/constants'
+import { makeHistoryTransactionsFromService, makeQueueTransactionsFromService } from 'src/utils/transactionUtils'
 
 /*************/
 /*  HISTORY  */
@@ -42,25 +42,6 @@ export const loadPagedHistoryTransactions = async (
     historyPointers[chainId][safeAddress] = { next, previous }
 
     return { values: results, next: historyPointers[chainId][safeAddress].next }
-  } catch (e) {
-    throw new CodedException(Errors._602, e.message)
-  }
-}
-
-export const loadHistoryTransactions = async (safeAddress: string): Promise<HistoryGatewayResponse['results']> => {
-  const chainId = _getChainId()
-  try {
-    const { results, next, previous } = await getTransactionHistory(GATEWAY_URL, chainId, checksumAddress(safeAddress))
-
-    if (!historyPointers[chainId]) {
-      historyPointers[chainId] = {}
-    }
-
-    if (!historyPointers[chainId][safeAddress]) {
-      historyPointers[chainId][safeAddress] = { next, previous }
-    }
-
-    return results
   } catch (e) {
     throw new CodedException(Errors._602, e.message)
   }
@@ -161,50 +142,6 @@ const queuedTransactions: { [chainId: string]: { [safeAddress: string]: { txs?: 
  * If the fetch was success, updates the pointers.
  * @param {string} safeAddress
  */
-export const loadPagedQueuedTransactions = async (
-  safeAddress: string,
-): Promise<{ values: QueuedGatewayResponse['results']; next?: string } | undefined> => {
-  const chainId = _getChainId()
-  // if `queuedPointers[safeAddress] is `undefined` it means `loadHistoryTransactions` wasn't called
-  // if `queuedPointers[safeAddress].next is `null`, it means it reached the last page in gateway-client
-  if (!queuedPointers[safeAddress]?.next) {
-    throw new CodedException(Errors._608)
-  }
-
-  try {
-    const { results, next, previous } = await getTransactionQueue(
-      GATEWAY_URL,
-      chainId,
-      checksumAddress(safeAddress),
-      queuedPointers[chainId][safeAddress].next,
-    )
-
-    queuedPointers[chainId][safeAddress] = { next, previous }
-
-    return { values: results, next: queuedPointers[chainId][safeAddress].next }
-  } catch (e) {
-    throw new CodedException(Errors._603, e.message)
-  }
-}
-
-export const loadQueuedTransactions = async (safeAddress: string): Promise<QueuedGatewayResponse['results']> => {
-  const chainId = _getChainId()
-  try {
-    const { results, next, previous } = await getTransactionQueue(GATEWAY_URL, chainId, checksumAddress(safeAddress))
-
-    if (!queuedPointers[chainId]) {
-      queuedPointers[chainId] = {}
-    }
-
-    if (!queuedPointers[chainId][safeAddress] || queuedPointers[chainId][safeAddress].next === null) {
-      queuedPointers[chainId][safeAddress] = { next, previous }
-    }
-
-    return results
-  } catch (e) {
-    throw new CodedException(Errors._603, e.message)
-  }
-}
 
 export const loadQueuedTransactionsFromAuraApi = async (
   safeAddress: string,

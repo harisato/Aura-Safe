@@ -1,7 +1,11 @@
+import { Validator } from 'jsonschema'
 import { ReactElement, useEffect, useState } from 'react'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { FilledButton } from 'src/components/Button'
 import JsonschemaForm from 'src/components/JsonschemaForm'
+import { IFund } from 'src/components/JsonschemaForm/FundForm'
+import { makeSchemaInput } from 'src/components/JsonschemaForm/utils'
+import Loader from 'src/components/Loader'
 import { enhanceSnackbarForAction } from 'src/logic/notifications'
 import enqueueSnackbar from 'src/logic/notifications/store/actions/enqueueSnackbar'
 import { MsgTypeUrl } from 'src/logic/providers/constants/constant'
@@ -9,9 +13,9 @@ import { extractPrefixedSafeAddress, extractSafeAddress } from 'src/routes/route
 import { simulate } from 'src/services'
 import styled from 'styled-components'
 import ReviewPopup from './ReviewPopup'
-import { Validator } from 'jsonschema'
-import { makeSchemaInput } from 'src/components/JsonschemaForm/utils'
-import Loader from 'src/components/Loader'
+import { addToFunds } from 'src/logic/contracts/store/actions'
+import { extendedSafeTokensSelector } from 'src/utils/safeUtils/selector'
+import { Token } from 'src/logic/tokens/store/model/token'
 
 const Wrap = styled.div`
   .preview-button {
@@ -33,9 +37,25 @@ function Contract({ contractData }): ReactElement {
   const [shouldCheck, setShouldCheck] = useState(false)
   const [activeFunction, setActiveFunction] = useState(0)
   const [selectedFunction, setSelectedFunction] = useState('')
-  const [funds, setFunds] = useState('')
+  const [funds, setFunds] = useState<IFund[]>([])
   const [schema, setSchema] = useState<any>()
   const [loading, setLoading] = useState(false)
+  const [invalidAmount, setInvalidAmount] = useState(false)
+  const tokenList = useSelector(extendedSafeTokensSelector) as unknown as Token[]
+  const defListTokens = tokenList.map((token) => ({
+    id: token.denom,
+    denom: token.denom,
+    amount: '',
+    tokenDecimal: token.decimals,
+    logoUri: token.logoUri,
+    type: token.type,
+    symbol: token.symbol,
+    name: token.name,
+    balance: token.balance.tokenBalance,
+    address: token.address,
+    enabled: false,
+  })) as IFund[]
+
   const preview = async () => {
     try {
       setLoading(true)
@@ -50,7 +70,7 @@ function Contract({ contractData }): ReactElement {
           isError = true
         }
       })
-      if (!isError) {
+      if (!isError && !invalidAmount) {
         try {
           const res = await simulate({
             encodedMsgs: Buffer.from(
@@ -108,6 +128,12 @@ function Contract({ contractData }): ReactElement {
     }
   }, [contractData.contractAddress, contractData.executeMsgSchema])
 
+  useEffect(() => {
+    return () => {
+      dispatch(addToFunds(defListTokens))
+    }
+  }, [])
+
   if (!contractData?.executeMsgSchema || !contractData.contractAddress) return <></>
 
   return (
@@ -122,6 +148,8 @@ function Contract({ contractData }): ReactElement {
         setActiveFunction={setActiveFunction}
         funds={funds}
         setFunds={setFunds}
+        setInvalidAmount={setInvalidAmount}
+        defListTokens={defListTokens}
       />
       <div className="preview-button">
         <FilledButton disabled={loading} onClick={preview}>
@@ -133,7 +161,19 @@ function Contract({ contractData }): ReactElement {
         setOpen={setOpen}
         gasUsed={Math.round(gasUsed * 1.3)}
         data={formData}
-        contractData={{ ...contractData, selectedFunction: selectedFunction, funds }}
+        contractData={{
+          ...contractData,
+          selectedFunction: selectedFunction,
+          funds: funds
+            .filter((fund) => fund.denom !== '')
+            .map((e) => ({
+              denom: e.denom,
+              amount: e.amount,
+              logoUri: e.logoUri,
+              type: e.type,
+              symbol: e.symbol,
+            })),
+        }}
       />
     </Wrap>
   )

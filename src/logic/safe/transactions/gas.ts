@@ -198,7 +198,7 @@ type TransactionApprovalEstimationProps = {
   isOffChainSignature: boolean
 }
 
-export const estimateGasForTransactionApproval = async ({
+const estimateGasForTransactionApproval = async ({
   safeAddress,
   safeVersion,
   txRecipient,

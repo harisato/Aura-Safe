@@ -1,5 +1,5 @@
 import { MsgTypeUrl } from 'src/logic/providers/constants/constant'
-import { beutifyJson, formatNativeToken } from 'src/utils'
+import { beutifyJson, convertAmount, formatNativeToken } from 'src/utils'
 import AddressInfo from 'src/components/AddressInfo'
 import { Fragment, useEffect, useState } from 'react'
 import { formatDateTime, formatWithSchema } from 'src/utils/date'
@@ -41,6 +41,20 @@ export default function TxMsg({ tx, txDetail }) {
     )
   }
   if (type == MsgTypeUrl.ExecuteContract) {
+    // if (txDetail?.txMessage[0].contractFunction == 'transfer') {
+    //   return (
+    //     <div className="tx-msg">
+    //       <strong>
+    //         Send{' '}
+    //         <span className="token">
+    //           {convertAmount(JSON.parse(txDetail?.txMessage[0].contractArgs)?.amount || '0', false)}
+    //         </span>{' '}
+    //         to:
+    //       </strong>
+    //       <AddressInfo address={JSON.parse(txDetail?.txMessage[0].contractArgs)?.recipient} />
+    //     </div>
+    //   )
+    // }
     return (
       <div className="tx-msg">
         <div>
@@ -56,16 +70,17 @@ export default function TxMsg({ tx, txDetail }) {
         </div>
 
         <div className="function-name">{txDetail?.txMessage[0].contractFunction}</div>
-        {Object.keys(JSON.parse(txDetail?.txMessage[0].contractArgs))?.map((key, index) => (
-          <div className="field" key={index}>
-            <div className="field__label">{key}:</div>
-            <div className="field__data">
-              {typeof JSON.parse(txDetail?.txMessage[0].contractArgs)[key] == 'object'
-                ? JSON.stringify(JSON.parse(txDetail?.txMessage[0].contractArgs)[key])
-                : JSON.parse(txDetail?.txMessage[0].contractArgs)[key]}
+        {txDetail?.txMessage[0].contractArgs &&
+          Object.keys(JSON.parse(txDetail?.txMessage[0].contractArgs))?.map((key, index) => (
+            <div className="field" key={index}>
+              <div className="field__label">{key}:</div>
+              <div className="field__data">
+                {typeof JSON.parse(txDetail?.txMessage[0].contractArgs)[key] == 'object'
+                  ? JSON.stringify(JSON.parse(txDetail?.txMessage[0].contractArgs)[key])
+                  : JSON.parse(txDetail?.txMessage[0].contractArgs)[key]}
+              </div>
             </div>
-          </div>
-        ))}
+          ))}
       </div>
     )
   }

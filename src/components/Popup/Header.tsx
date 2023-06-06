@@ -44,10 +44,12 @@ export default function Header({
   onClose,
   title,
   subTitle,
+  hideNetwork,
 }: {
   onClose: () => void
   title?: string
   subTitle?: string
+  hideNetwork?: boolean
 }) {
   const connectedNetwork = getChainInfo()
   return (
@@ -57,7 +59,7 @@ export default function Header({
         <p className="sub-title">{subTitle}</p>
       </div>
       <div>
-        {connectedNetwork.chainId && <ChainIndicator chainId={connectedNetwork.chainId} />}
+        {connectedNetwork.chainId && !hideNetwork && <ChainIndicator chainId={connectedNetwork.chainId} />}
         <Close onClick={onClose} className="close-icon" />
       </div>
     </HeaderWrapper>

@@ -32,7 +32,7 @@ export default function Execute({
 
   deleteTx,
 }) {
-  const { ethBalance: balance, nextQueueSeq, sequence: currentSequence } = useSelector(currentSafeWithNames)
+  const { nativeBalance: balance, nextQueueSeq, sequence: currentSequence } = useSelector(currentSafeWithNames)
   const { action } = useContext(TxSignModalContext)
   const delegations = useSelector(allDelegation)
   const stakedAmount = delegations?.find(

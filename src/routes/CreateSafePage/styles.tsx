@@ -20,14 +20,6 @@ const EmphasisLabel = styled.span`
   font-weight: ${boldFont};
 `
 
-const ButtonContainer = styled.div`
-  text-align: center;
-`
-
-const StyledGenericModal = styled(GenericModal)`
-  background-color: ${bgBox};
-`
-
 const StyledBorder = styled.div`
   border-radius: 50px !important;
   border: 2px solid transparent;
@@ -46,13 +38,4 @@ const StyledButtonLabel = styled(Text)`
   background-color: transparent !important;
 `
 
-export {
-  LoaderContainer,
-  BackIcon,
-  EmphasisLabel,
-  ButtonContainer,
-  StyledGenericModal,
-  StyledButtonBorder,
-  StyledBorder,
-  StyledButtonLabel,
-}
+export { LoaderContainer, BackIcon, EmphasisLabel, StyledButtonBorder, StyledBorder, StyledButtonLabel }

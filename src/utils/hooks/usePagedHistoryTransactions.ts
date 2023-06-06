@@ -70,7 +70,7 @@ export const usePagedHistoryTransactions = (): PagedTransactions => {
   return { count, transactions, hasMore, next, isLoading }
 }
 
-export const useHistoryTransactions = (): TransactionDetails => {
+const useHistoryTransactions = (): TransactionDetails => {
   const historyTxs = useSelector(historyTransactions)
   const [count, setCount] = useState(0)
 

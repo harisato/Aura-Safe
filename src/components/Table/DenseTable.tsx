@@ -1,7 +1,6 @@
-import { ReactElement } from 'react'
-import styled from 'styled-components'
+import { ReactElement, useState } from 'react'
 
-import { withStyles, makeStyles } from '@material-ui/core/styles'
+import { makeStyles, withStyles } from '@material-ui/core/styles'
 
 import Table from '@material-ui/core/Table'
 import TableBody from '@material-ui/core/TableBody'
@@ -10,6 +9,9 @@ import TableContainer from '@material-ui/core/TableContainer'
 import TableHead from '@material-ui/core/TableHead'
 import TableRow from '@material-ui/core/TableRow'
 import Pagination from '@material-ui/lab/Pagination'
+import { List } from 'immutable'
+import styled from 'styled-components'
+import Select from '../Input/Select'
 
 export const StyledTableCell = withStyles((theme) => ({
   head: {
@@ -41,14 +43,43 @@ const useStyles = makeStyles({
   table: {
     minWidth: 700,
   },
-  pagi: {
-    display: 'flex',
-    marginTop: 20,
-    justifyContent: 'flex-end',
+  pagination: {
     color: 'white',
+    '& .MuiPaginationItem-page.Mui-selected': {
+      color: '#fff',
+      background: '#2BBBA3',
+      border: 'none',
+    },
   },
 })
 
+const TablePagination = styled.div`
+  border-top: 1px solid #3a3a3a;
+  display: flex;
+  padding: 16px;
+  justify-content: space-between;
+  align-items: center;
+  > div:last-child {
+    display: flex;
+    align-items: center;
+    > div:first-child {
+      display: flex;
+      margin-right: 36px;
+      align-items: center;
+      > div:first-child {
+        margin-right: 6px;
+      }
+      .MuiSelect-select.MuiSelect-select {
+        padding: 8px 40px 8px 16px;
+        font-size: 12px;
+        line-height: 16px;
+      }
+      .select-icon {
+        width: 12px;
+      }
+    }
+  }
+`
 function DenseTable({
   headers,
   children,
@@ -57,12 +88,15 @@ function DenseTable({
   maxHeight,
 }: {
   headers: string[]
-  children: ReactElement | ReactElement[] | undefined
+  children: ReactElement[] | List<any>
   showPagination?: boolean
   stickyHeader?: boolean
   maxHeight?: number | string
 }): ReactElement {
   const classes = useStyles()
+  const totalCount: number | undefined = (children as ReactElement[]).length || (children as List<any>).size
+  const [rowPerPage, setRowPerPage] = useState<number>(10)
+  const [page, setPage] = useState<number>(1)
   return (
     <>
       <TableContainer style={maxHeight ? { maxHeight } : {}}>
@@ -70,7 +104,7 @@ function DenseTable({
           {headers.length > 0 && (
             <TableHead>
               <TableRow>
-                {headers.map((header, index) => {
+                {headers.map<ReactElement>((header, index) => {
                   return (
                     <StyledTableCell key={index} align="left">
                       {header}
@@ -80,10 +114,52 @@ function DenseTable({
               </TableRow>
             </TableHead>
           )}
-          <TableBody>{children}</TableBody>
+          <TableBody>
+            {showPagination ? children.slice(rowPerPage * (page - 1), rowPerPage * page) : children}
+          </TableBody>
         </Table>
-        {showPagination && (
-          <Pagination className={classes.pagi} count={5} shape="rounded" showFirstButton showLastButton />
+        {showPagination && totalCount / rowPerPage > 1 && (
+          <TablePagination>
+            <div>{`${rowPerPage * (page - 1) + 1} - ${
+              rowPerPage * page > totalCount ? totalCount : rowPerPage * page
+            } of ${totalCount}`}</div>
+            <div>
+              <div>
+                <div>Row per page:</div>
+                <div>
+                  <Select
+                    options={[
+                      {
+                        value: 10,
+                        label: '10',
+                      },
+                      {
+                        value: 25,
+                        label: '25',
+                      },
+                      {
+                        value: 50,
+                        label: '50',
+                      },
+                      {
+                        value: 100,
+                        label: '100',
+                      },
+                    ]}
+                    value={rowPerPage}
+                    onChange={(v: number) => setRowPerPage(v)}
+                  />
+                </div>
+              </div>
+              <Pagination
+                className={classes.pagination}
+                page={page}
+                onChange={(e, v) => setPage(v)}
+                count={Math.ceil(totalCount / rowPerPage)}
+                shape="rounded"
+              />
+            </div>
+          </TablePagination>
         )}
       </TableContainer>
     </>

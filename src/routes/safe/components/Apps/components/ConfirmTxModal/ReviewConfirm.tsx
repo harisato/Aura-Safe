@@ -70,7 +70,7 @@ export const ReviewConfirm = ({
   app,
   txs,
   safeAddress,
-  ethBalance,
+  nativeBalance,
   safeName,
   params,
   hidden,
@@ -208,7 +208,7 @@ export const ReviewConfirm = ({
             <PrefixedEthHashInfo name={safeName} hash={safeAddress} showAvatar showCopyBtn explorerUrl={explorerUrl} />
             <StyledBlock>
               <Text size="md">Balance:</Text>
-              <Text size="md" strong>{`${ethBalance} ${nativeCurrency.symbol}`}</Text>
+              <Text size="md" strong>{`${nativeBalance} ${nativeCurrency.symbol}`}</Text>
             </StyledBlock>
 
             <Divider withArrow />

@@ -34,7 +34,7 @@ const SafeLoadError = (): ReactElement => {
   )
 }
 
-export const ErrorContainer = styled.div`
+const ErrorContainer = styled.div`
   width: 100%;
   height: 100%;
   display: flex;

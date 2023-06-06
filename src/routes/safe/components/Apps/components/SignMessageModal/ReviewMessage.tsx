@@ -70,7 +70,7 @@ type Props = Omit<SignMessageModalProps, 'message' | 'isOpen'> & {
 export const ReviewMessage = ({
   app,
   safeAddress,
-  ethBalance,
+  nativeBalance,
   safeName,
   onUserConfirm,
   onClose,
@@ -185,7 +185,7 @@ export const ReviewMessage = ({
             <PrefixedEthHashInfo name={safeName} hash={safeAddress} showAvatar showCopyBtn explorerUrl={explorerUrl} />
             <StyledBlock>
               <Text size="md">Balance:</Text>
-              <Text size="md" strong>{`${ethBalance} ${nativeCurrency.symbol}`}</Text>
+              <Text size="md" strong>{`${nativeBalance} ${nativeCurrency.symbol}`}</Text>
             </StyledBlock>
 
             <Divider withArrow />

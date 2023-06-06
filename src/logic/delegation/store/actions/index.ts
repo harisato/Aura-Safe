@@ -30,4 +30,4 @@ export const fetchAllDelegations =
     }
     return Promise.resolve()
   }
-export const setAllDelegation = createAction<DelegationType[]>(FETCH_ALL_DELEGATIONS)
+const setAllDelegation = createAction<DelegationType[]>(FETCH_ALL_DELEGATIONS)

@@ -34,7 +34,7 @@ const useIframeMessageHandler = (
   iframeRef: MutableRefObject<HTMLIFrameElement | null>,
 ): ReturnType => {
   const { enqueueSnackbar, closeSnackbar } = useSnackbar()
-  const { address: safeAddress, ethBalance, name: safeName } = useSelector(currentSafeWithNames)
+  const { address: safeAddress, nativeBalance, name: safeName } = useSelector(currentSafeWithNames)
   const dispatch = useDispatch()
 
   const sendMessageToIframe = useCallback(
@@ -83,7 +83,7 @@ const useIframeMessageHandler = (
             data: {
               safeAddress: safeAddress as string,
               network: getChainName().toLowerCase() as LowercaseNetworks,
-              ethBalance: ethBalance as string,
+              ethBalance: nativeBalance as string,
             },
           }
           const envInfoMessage = {
@@ -129,7 +129,7 @@ const useIframeMessageHandler = (
     closeSnackbar,
     dispatch,
     enqueueSnackbar,
-    ethBalance,
+    nativeBalance,
     openConfirmationModal,
     safeAddress,
     safeName,

@@ -23,7 +23,7 @@ import { getNotice, getTitle } from '..'
 import EditSequence from '../EditSequence'
 import { DeleteButton, TxContent } from '../styles'
 export default function Execute({ open, onClose, data, sendTx, rejectTx, disabled, setDisabled, deleteTx }) {
-  const { ethBalance: balance, nextQueueSeq, sequence: currentSequence } = useSelector(currentSafeWithNames)
+  const { nativeBalance: balance, nextQueueSeq, sequence: currentSequence } = useSelector(currentSafeWithNames)
   const { action } = useContext(TxSignModalContext)
   const userWalletAddress = useSelector(userAccountSelector)
   const dispatch = useDispatch()
@@ -89,16 +89,17 @@ export default function Execute({ open, onClose, data, sendTx, rejectTx, disable
           <Divider withArrow />
           <AddressInfo address={data?.txDetails?.txMessage[0].contractAddress} showAvatar={false} showName={false} />
           <div className="function-name">{data?.txDetails?.txMessage[0].contractFunction}</div>
-          {Object.keys(JSON.parse(data?.txDetails?.txMessage[0].contractArgs))?.map((key, index) => (
-            <div className="field" key={index}>
-              <div className="field__label">{key}:</div>
-              <div className="field__data">
-                {typeof JSON.parse(data?.txDetails?.txMessage[0].contractArgs)[key] == 'object'
-                  ? JSON.stringify(JSON.parse(data?.txDetails?.txMessage[0].contractArgs)[key])
-                  : JSON.parse(data?.txDetails?.txMessage[0].contractArgs)[key]}
+          {data?.txDetails?.txMessage[0].contractArgs &&
+            Object.keys(JSON.parse(data?.txDetails?.txMessage[0].contractArgs))?.map((key, index) => (
+              <div className="field" key={index}>
+                <div className="field__label">{key}:</div>
+                <div className="field__data">
+                  {typeof JSON.parse(data?.txDetails?.txMessage[0].contractArgs)[key] == 'object'
+                    ? JSON.stringify(JSON.parse(data?.txDetails?.txMessage[0].contractArgs)[key])
+                    : JSON.parse(data?.txDetails?.txMessage[0].contractArgs)[key]}
+                </div>
               </div>
-            </div>
-          ))}
+            ))}
           <Gap height={24} />
           {action == 'delete' ? (
             <TxContent>

@@ -4,7 +4,7 @@ import { ChainId } from 'src/config/chain.d'
 
 import { BalanceRecord } from 'src/logic/tokens/store/actions/fetchSafeTokens'
 
-export type SafeOwner = string
+type SafeOwner = string
 
 export type ModulePair = [
   // previous module
@@ -28,7 +28,7 @@ export type SafeRecordProps = {
   chainId?: ChainId
   safeId?: number
   threshold: number
-  ethBalance: string
+  nativeBalance: string
   totalFiatBalance: string
   owners: SafeOwner[]
   modules?: ModulePair[] | null
@@ -46,6 +46,7 @@ export type SafeRecordProps = {
   txHistoryTag: string
   nextQueueSeq: string
   sequence: string
+  coinConfig?: any[]
 }
 
 /**
@@ -56,7 +57,7 @@ const makeSafe = Record<SafeRecordProps>({
   chainId: undefined,
   safeId: undefined,
   threshold: 0,
-  ethBalance: '0',
+  nativeBalance: '0',
   totalFiatBalance: '0',
   owners: [],
   modules: [],
@@ -74,6 +75,7 @@ const makeSafe = Record<SafeRecordProps>({
   txHistoryTag: '0',
   nextQueueSeq: '1',
   sequence: '1',
+  coinConfig: [],
 })
 
 export type SafeRecord = RecordOf<SafeRecordProps>

@@ -18,7 +18,7 @@ import { currentSafe } from 'src/logic/safe/store/selectors'
 import { Modal } from 'src/components/Modal'
 import { ModalHeader } from 'src/routes/safe/components/Balances/SendModal/screens/ModalHeader'
 
-export const ADD_OWNER_THRESHOLD_NEXT_BTN_TEST_ID = 'add-owner-threshold-next-btn'
+const ADD_OWNER_THRESHOLD_NEXT_BTN_TEST_ID = 'add-owner-threshold-next-btn'
 
 const useStyles = makeStyles(styles)
 

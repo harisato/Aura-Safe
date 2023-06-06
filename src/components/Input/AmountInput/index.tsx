@@ -3,11 +3,12 @@ import MuiTextField from '@material-ui/core/TextField'
 import React from 'react'
 import { FilledButton } from 'src/components/Button'
 import { getNativeCurrency } from 'src/config'
+import { Token } from 'src/logic/tokens/store/model/token'
 import { colorLinear } from 'src/theme/variables'
 import { formatNumber, isNumberKeyPress } from 'src/utils'
 import styled from 'styled-components'
 
-export const StyledTextField = styled(MuiTextField)`
+const StyledTextField = styled(MuiTextField)<{ invalid?: string }>`
   width: 100%;
   > label {
     z-index: 1;
@@ -23,7 +24,7 @@ export const StyledTextField = styled(MuiTextField)`
   }
   > div {
     background: #24262e;
-    border: 1px solid #494c58;
+    ${({ invalid }) => (invalid === 'true' ? { border: '1px solid #d5625e' } : { border: '1px solid #494c58' })}
     color: #fff;
     border-radius: 8px;
     overflow: hidden;
@@ -34,7 +35,7 @@ export const StyledTextField = styled(MuiTextField)`
   }
   > div.Mui-focused {
     background: linear-gradient(#24262e, #24262e) padding-box, ${colorLinear} border-box;
-    border: 1px solid transparent;
+    ${({ invalid }) => (invalid === 'true' ? { border: '1px solid #d5625e' } : { border: '1px solid transparent' })}
   }
   input {
     color: #fff;
@@ -53,6 +54,7 @@ export const StyledTextField = styled(MuiTextField)`
     height: 18px;
     margin-right: -12px;
     padding: 14px 8px;
+    text-transform: uppercase;
   }
 `
 export default function AmountInput({
@@ -62,28 +64,38 @@ export default function AmountInput({
   autoFocus,
   handleMax,
   placeholder = 'Amount',
+  token,
+  showBtnMax = true,
+  invalid = 'false',
 }: {
   value: any
   onChange: (value: string) => void
-  handleMax: () => void
+  handleMax?: () => void
   type?: React.HTMLInputTypeAttribute
   autoFocus?: boolean
   placeholder?: string
+  token?: Token
+  showBtnMax?: boolean
+  invalid?: string
 }) {
   const nativeCurrency = getNativeCurrency()
+
   return (
     <StyledTextField
       autoFocus={autoFocus}
       variant="filled"
       type={type}
+      invalid={invalid}
       placeholder={placeholder}
       InputProps={{
         endAdornment: (
           <InputAdornment position="end">
-            <FilledButton className="small" onClick={handleMax}>
-              Max
-            </FilledButton>
-            <div className="denom">{nativeCurrency.symbol}</div>
+            {showBtnMax && (
+              <FilledButton className="small" onClick={handleMax}>
+                Max
+              </FilledButton>
+            )}
+            <div className="denom">{token?.symbol || nativeCurrency.symbol}</div>
           </InputAdornment>
         ),
       }}

@@ -17,7 +17,7 @@ import { CodedException, Errors, logError } from 'src/logic/exceptions/CodedExce
 import { TermProvider } from 'src/logic/TermContext/index'
 import AppRoutes from 'src/routes'
 import { history, WELCOME_ROUTE } from 'src/routes/routes'
-import { setBaseUrl } from 'src/services'
+import { setBaseUrl, setEnv, setGithubPageTokenRegistryUrl } from 'src/services'
 import { getGatewayUrl } from 'src/services/data/environment'
 import { store } from 'src/logic/safe/store'
 import theme from 'src/theme/mui'
@@ -49,7 +49,7 @@ const RootConsumer = (): React.ReactElement | null => {
           setIsError(true)
           return
         }
-        const { chainId, apiGateway } = gateway
+        const { chainId, apiGateway, env } = gateway
 
         const localItem = local.getItem<ConfigState>(LOCAL_CONFIG_KEY)
 
@@ -59,6 +59,8 @@ const RootConsumer = (): React.ReactElement | null => {
 
         if (apiGateway) {
           setBaseUrl(apiGateway)
+          setEnv(env || 'development')
+          setGithubPageTokenRegistryUrl(`https://aura-nw.github.io/token-registry/${chainId}.json`)
           setGatewayUrl(apiGateway)
         } else {
           setIsError(true)

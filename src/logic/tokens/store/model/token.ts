@@ -1,16 +1,17 @@
-import { TokenType } from '@gnosis.pm/safe-react-gateway-sdk'
 import { Record, RecordOf } from 'immutable'
 
 import { BalanceRecord } from 'src/logic/tokens/store/actions/fetchSafeTokens'
 
-export type TokenProps = {
+type TokenProps = {
   address: string
   name: string
   symbol: string
   decimals: number | string
   logoUri: string | null
   balance: BalanceRecord
-  type?: TokenType
+  denom: string
+  cosmosDenom?: string
+  type?: string
 }
 
 export const makeToken = Record<TokenProps>({
@@ -23,6 +24,8 @@ export const makeToken = Record<TokenProps>({
     fiatBalance: '0',
     tokenBalance: '0',
   },
+  denom: '',
+  cosmosDenom: '',
 })
 // balance is only set in extendedSafeTokensSelector when we display user's token balances
 

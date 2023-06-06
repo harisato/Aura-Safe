@@ -73,7 +73,7 @@ export const usePagedQueuedTransactions = (): PagedQueuedTransactions => {
 /**
  * Get transactions (next and queue) from nextTransactions and queuedTransactions selectors
  */
-export const useQueueTransactions = (): TransactionDetails => {
+const useQueueTransactions = (): TransactionDetails => {
   const nextTxs = useSelector(nextTransactions)
   const queuedTxs = useSelector(queuedTransactions)
   const allTxs = useSelector(txsTransactions)
