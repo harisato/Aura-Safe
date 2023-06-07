@@ -128,7 +128,7 @@ export const fetchMSafeTokens =
         .filter((balance) => balance.denom != chainInfo.denom)
         .forEach((data: any) => {
           const tokenDetail = tokenDetailsList['ibc'].find((token) => token.cosmosDenom == data.minimal_denom)
-          if (coinConfig.findIndex((config) => config.address == tokenDetail.address) == -1) {
+          if (tokenDetail && coinConfig.findIndex((config) => config.address == tokenDetail.address) == -1) {
             coinConfig.push({
               name: tokenDetail.name,
               address: tokenDetail.address,
@@ -138,16 +138,16 @@ export const fetchMSafeTokens =
             })
           }
           balances.push({
-            tokenBalance: `${humanReadableValue(+data?.amount > 0 ? data?.amount : 0, tokenDetail.decimals)}`,
-            tokenAddress: tokenDetail.address,
-            decimals: tokenDetail.decimals,
+            tokenBalance: `${humanReadableValue(+data?.amount > 0 ? data?.amount : 0, tokenDetail?.decimals || 6)}`,
+            tokenAddress: tokenDetail?.address,
+            decimals: tokenDetail?.decimals || 6,
             logoUri: tokenDetail?.icon
               ? `https://aura-nw.github.io/token-registry/images/${tokenDetail?.icon}`
               : 'https://aura-nw.github.io/token-registry/images/undefined.png',
-            name: tokenDetail.name,
-            symbol: tokenDetail.coinDenom,
-            denom: tokenDetail.minCoinDenom,
-            cosmosDenom: tokenDetail.cosmosDenom,
+            name: tokenDetail?.name,
+            symbol: tokenDetail?.coinDenom,
+            denom: tokenDetail?.minCoinDenom,
+            cosmosDenom: tokenDetail?.cosmosDenom,
             type: 'ibc',
           })
         })
@@ -155,7 +155,7 @@ export const fetchMSafeTokens =
       if (safeInfo.assets.CW20.asset.length > 0) {
         safeInfo.assets.CW20.asset.forEach((data) => {
           const tokenDetail = tokenDetailsList['cw20'].find((token) => token.address == data.contract_address)
-          if (coinConfig.findIndex((config) => config.address == tokenDetail.address) == -1) {
+          if (tokenDetail && coinConfig.findIndex((config) => config.address == tokenDetail.address) == -1) {
             coinConfig.push({
               name: tokenDetail.name,
               address: tokenDetail.address,
@@ -165,15 +165,15 @@ export const fetchMSafeTokens =
             })
           }
           balances.push({
-            tokenBalance: `${humanReadableValue(+data?.balance > 0 ? data?.balance : 0, tokenDetail.decimals)}`,
-            tokenAddress: tokenDetail.address,
-            decimals: tokenDetail.decimals,
+            tokenBalance: `${humanReadableValue(+data?.balance > 0 ? data?.balance : 0, tokenDetail?.decimals || 6)}`,
+            tokenAddress: tokenDetail?.address,
+            decimals: tokenDetail?.decimals || 6,
             name: tokenDetail?.name,
             logoUri: tokenDetail?.icon
               ? `https://aura-nw.github.io/token-registry/images/${tokenDetail?.icon}`
               : 'https://aura-nw.github.io/token-registry/images/undefined.png',
-            symbol: tokenDetail.symbol,
-            denom: tokenDetail.symbol,
+            symbol: tokenDetail?.symbol,
+            denom: tokenDetail?.symbol,
             type: 'CW20',
           })
         })
