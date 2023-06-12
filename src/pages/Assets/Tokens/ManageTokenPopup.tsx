@@ -1,5 +1,7 @@
+import { Button, Tooltip } from '@material-ui/core'
 import { ChangeEvent, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import ic_close from 'src/assets/icons/ic_close.svg'
 import ic_empty from 'src/assets/icons/ic_empty.svg'
 import { FilledButton, OutlinedButton } from 'src/components/Button'
 import ButtonHelper from 'src/components/ButtonHelper'
@@ -10,7 +12,6 @@ import Header from 'src/components/Popup/Header'
 import { updateSafe } from 'src/logic/safe/store/actions/updateSafe'
 import { currentSafeWithNames } from 'src/logic/safe/store/selectors'
 import styled from 'styled-components'
-import ic_close from 'src/assets/icons/ic_close.svg'
 
 const Wrap = styled.div`
   width: 480px;
@@ -36,6 +37,9 @@ const Wrap = styled.div`
       overflow: auto;
     }
   }
+  .note {
+    margin-top: 8px;
+  }
 `
 const Row = styled.div`
   display: flex;
@@ -51,7 +55,6 @@ export default function ManageTokenPopup({
   setKeepMoutedManagePopup,
 }) {
   const dispatch = useDispatch()
-  const [toggleAll, setToggleAll] = useState<boolean>(false)
   const { coinConfig, address } = useSelector(currentSafeWithNames)
   const [config, setConfig] = useState(coinConfig)
 
@@ -72,19 +75,6 @@ export default function ManageTokenPopup({
     setConfig(coinConfig)
   }, [address])
 
-  const toggleAllHandler = () => {
-    setConfig(
-      config?.map((cf, ii) => {
-        if (cf.type === 'native') {
-          return cf
-        } else {
-          return { ...cf, enable: !toggleAll }
-        }
-      }),
-    )
-    setToggleAll(!toggleAll)
-  }
-
   const handleSearch = (event: ChangeEvent<HTMLInputElement>) => {
     const searchTerm = event.target.value.toLowerCase()
     const filteredTokens = coinConfig?.filter((token) => {
@@ -102,13 +92,6 @@ export default function ManageTokenPopup({
     setConfig(updatedConfig)
   }
 
-  useEffect(() => {
-    if (config && config?.length > 0) {
-      const isSelectAll = config?.every((token) => token?.enable)
-      setToggleAll(!!isSelectAll)
-    }
-  }, [config])
-
   return (
     <Popup open={open} title="Manage token" keepMounted={keepMountedManagePopup}>
       <Header
@@ -122,19 +105,20 @@ export default function ManageTokenPopup({
       />
       <Wrap>
         <div>
-          <SearchInput onChange={handleSearch} placeholder="Search by token name, token symbol or address" />
+          <SearchInput onChange={handleSearch} placeholder="Search by token name, symbol or address" />
           <div className="token-list">
             <Row>
               <div className="title">Token list</div>
-              {config && config?.length > 0 ? (
-                <>
-                  <div style={{ marginRight: 16 }}>
-                    <Checkbox checked={toggleAll} onChange={toggleAllHandler} />
-                  </div>
-                </>
-              ) : (
-                <></>
-              )}
+              <Button
+                color="secondary"
+                variant="text"
+                onClick={() => {
+                  onClose()
+                  onImport()
+                }}
+              >
+                Import CW-20 Token
+              </Button>
             </Row>
             <div className="list">
               {config && config?.length > 0 ? (
@@ -161,6 +145,9 @@ export default function ManageTokenPopup({
                 />
               )}
             </div>
+            <div className="note">
+              Note: Zero balances are auto-hidden & You can only delete the tokens that you have imported manually
+            </div>
           </div>
         </div>
         <div style={{ float: 'right' }}>
@@ -180,6 +167,15 @@ const CoinWrapper = styled.div`
   > div {
     text-transform: uppercase;
   }
+  .info {
+    display: flex;
+    align-items: center;
+    .icon {
+      width: 20px;
+      height: 20px;
+      margin-right: 8px;
+    }
+  }
   .actions {
     display: flex;
     align-items: center;
@@ -191,12 +187,17 @@ const CoinWrapper = styled.div`
 const CoinConfig = ({ setToggle, coin, onDelete }) => {
   return (
     <CoinWrapper>
-      <div>{coin.name}</div>
+      <div className="info">
+        <img className="icon" src={coin?.logoUri ?? coin.icon} />
+        <div>{coin.name}</div>
+      </div>
       <div className="actions">
         {coin.isAddedToken ? (
           <div className="btn-delete">
             <ButtonHelper onClick={() => onDelete(coin.address)}>
-              <img src={ic_close} alt="Trash Icon" />
+              <Tooltip arrow placement="top" title="Remove">
+                <img src={ic_close} alt="Trash Icon" />
+              </Tooltip>
             </ButtonHelper>
           </div>
         ) : (
@@ -233,8 +234,8 @@ const Empty = ({ onImport }) => {
   return (
     <EmptyWrapper>
       <img src={ic_empty} />
-      <div className="title">This token hasn’t imported</div>
-      <div className="sub-title">Do you want to imported this token?</div>
+      <div className="title">This token hasn’t been imported</div>
+      <div className="sub-title">Do you want to import this token?</div>
       <OutlinedButton className="small btn-import" onClick={onImport}>
         Import
       </OutlinedButton>

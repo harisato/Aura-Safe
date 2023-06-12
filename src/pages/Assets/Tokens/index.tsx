@@ -1,5 +1,5 @@
 import { ChangeEvent, ReactElement, useEffect, useState } from 'react'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import sendIcon from 'src/assets/icons/ArrowUpRight.svg'
 import { FilledButton, OutlinedNeutralButton } from 'src/components/Button'
 import SearchInput from 'src/components/Input/Search'
@@ -12,6 +12,8 @@ import { extendedSafeTokensSelector } from 'src/utils/safeUtils/selector'
 import styled from 'styled-components'
 import ImportTokenPopup from './ImportTokenPopup'
 import ManageTokenPopup from './ManageTokenPopup'
+import Checkbox from 'src/components/Input/Checkbox'
+import { updateSafe } from 'src/logic/safe/store/actions/updateSafe'
 const Wrap = styled.div`
   background: ${(props) => props.theme.backgroundPrimary};
   border-radius: 8px;
@@ -63,14 +65,23 @@ const TokenType = styled.div`
     background: #3d3730;
   }
 `
+const CheckboxWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  .label {
+    margin-left: 8px;
+  }
+`
 function Tokens(props): ReactElement {
+  const dispatch = useDispatch()
   const [open, setOpen] = useState(false)
   const [manageTokenPopupOpen, setManageTokenPopupOpen] = useState(false)
   const [keepMountedManagePopup, setKeepMoutedManagePopup] = useState(true)
   const [importTokenPopup, setImportTokenPopup] = useState(false)
   const [selectedToken, setSelectedToken] = useState<string>('')
   const safeTokens: any = useSelector(extendedSafeTokensSelector)
-  const { coinConfig } = useSelector(currentSafeWithNames)
+  const { address, coinConfig, isHideZeroBalance } = useSelector(currentSafeWithNames)
+  const [hideZeroBalance, setHideZeroBalance] = useState(isHideZeroBalance ?? true)
   const tokenConfig = safeTokens.filter((token) => {
     return (
       token.type == 'native' ||
@@ -93,11 +104,28 @@ function Tokens(props): ReactElement {
     setListToken(filteredTokens)
   }
 
+  const filterListToken = () => {
+    setHideZeroBalance(!hideZeroBalance)
+    const filteredList = listToken.filter((token) => token.balance.tokenBalance !== 0)
+    setListToken(filteredList)
+    dispatch(
+      updateSafe({
+        address,
+        isHideZeroBalance: !hideZeroBalance,
+      }),
+    )
+  }
+
   return (
     <Wrap>
       <div className="header">
         <div className="title">Token list</div>
         <div>
+          <CheckboxWrapper>
+            <Checkbox checked={hideZeroBalance} onChange={filterListToken} />
+            <div className="label">Hide zero balances</div>
+          </CheckboxWrapper>
+
           <SearchInput placeholder="Search by name/Token ID" onChange={handleSearch} />
           <FilledButton
             className="small"

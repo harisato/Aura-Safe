@@ -35,7 +35,7 @@ import { currentNetworkAddressBookAsMap } from 'src/logic/addressBook/store/sele
 import { getLoadSafeName } from './fields/utils'
 import { currentChainId } from 'src/logic/config/store/selectors'
 import { BackIcon } from './styles'
-import ArrowBack from '../CreateSafePage/assets/arrow-left.svg' 
+import ArrowBack from '../CreateSafePage/assets/arrow-left.svg'
 
 function Load(): ReactElement {
   const dispatch = useDispatch()
@@ -110,7 +110,7 @@ function Load(): ReactElement {
       <Block>
         <Row align="center">
           <BackIcon disableRipple onClick={history.goBack}>
-            <img src={ArrowBack}  alt='Safe Aura'/>
+            <img src={ArrowBack} alt="Safe Aura" />
           </BackIcon>
           <Heading tag="h2">Add existing Safe</Heading>
         </Row>

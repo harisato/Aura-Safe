@@ -102,7 +102,9 @@ const FundForm = ({ fund, onDelete, onChangeAmount }: IFundFormProps) => {
           />
         </InputWrapper>
         <ButtonHelper onClick={() => onDelete(fund.id)}>
-          <Tooltip placement="top" arrow children={<img src={ic_trash} alt="Trash Icon" />} title="Delete"></Tooltip>
+          <Tooltip placement="top" arrow title="Delete">
+            <img src={ic_trash} alt="Trash Icon" />
+          </Tooltip>
         </ButtonHelper>
       </FormWrapper>
       {amountValidateMsg && (

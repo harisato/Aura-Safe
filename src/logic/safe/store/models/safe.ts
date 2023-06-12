@@ -47,6 +47,7 @@ export type SafeRecordProps = {
   nextQueueSeq: string
   sequence: string
   coinConfig?: any[]
+  isHideZeroBalance?: boolean
 }
 
 /**
@@ -76,6 +77,7 @@ const makeSafe = Record<SafeRecordProps>({
   nextQueueSeq: '1',
   sequence: '1',
   coinConfig: [],
+  isHideZeroBalance: true,
 })
 
 export type SafeRecord = RecordOf<SafeRecordProps>
