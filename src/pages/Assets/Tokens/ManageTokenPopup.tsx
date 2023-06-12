@@ -73,7 +73,15 @@ export default function ManageTokenPopup({
   }, [address])
 
   const toggleAllHandler = () => {
-    setConfig(config?.map((cf, ii) => ({ ...cf, enable: !toggleAll })))
+    setConfig(
+      config?.map((cf, ii) => {
+        if (cf.type === 'native') {
+          return cf
+        } else {
+          return { ...cf, enable: !toggleAll }
+        }
+      }),
+    )
     setToggleAll(!toggleAll)
   }
 
