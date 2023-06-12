@@ -90,7 +90,7 @@ function Tokens(props): ReactElement {
       })?.enable
     )
   })
-  const [listToken, setListToken] = useState(tokenConfig)
+  const [listToken, setListToken] = useState(tokenConfig.filter((token) => token.balance.tokenBalance !== 0))
 
   useEffect(() => {
     setListToken(tokenConfig)
@@ -104,10 +104,9 @@ function Tokens(props): ReactElement {
     setListToken(filteredTokens)
   }
 
-  const filterListToken = () => {
+  const handleFilterListToken = () => {
     setHideZeroBalance(!hideZeroBalance)
-    const filteredList = listToken.filter((token) => token.balance.tokenBalance !== 0)
-    setListToken(filteredList)
+    setListToken(!hideZeroBalance ? tokenConfig.filter((token) => token.balance.tokenBalance !== 0) : tokenConfig)
     dispatch(
       updateSafe({
         address,
@@ -122,7 +121,7 @@ function Tokens(props): ReactElement {
         <div className="title">Token list</div>
         <div>
           <CheckboxWrapper>
-            <Checkbox checked={hideZeroBalance} onChange={filterListToken} />
+            <Checkbox checked={hideZeroBalance} onChange={handleFilterListToken} />
             <div className="label">Hide zero balances</div>
           </CheckboxWrapper>
 
