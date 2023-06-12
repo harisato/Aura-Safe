@@ -141,7 +141,7 @@ const ManageTokenPopup = ({ open, onClose, setFunds, listTokens, setListTokens, 
   }, [listTokens])
 
   return (
-    <Popup open={open} handleClose={handleClose} title="Select Asset">
+    <Popup open={open} title="Select Asset">
       <Header title="Select Asset" onClose={handleClose} hideNetwork={true} />
       <Wrap>
         <div>

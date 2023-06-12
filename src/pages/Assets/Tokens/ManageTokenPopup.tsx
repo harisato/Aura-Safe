@@ -1,6 +1,8 @@
 import { ChangeEvent, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { FilledButton } from 'src/components/Button'
+import ic_empty from 'src/assets/icons/ic_empty.svg'
+import { FilledButton, OutlinedButton } from 'src/components/Button'
+import ButtonHelper from 'src/components/ButtonHelper'
 import Checkbox from 'src/components/Input/Checkbox'
 import SearchInput from 'src/components/Input/Search'
 import { Popup } from 'src/components/Popup'
@@ -8,6 +10,7 @@ import Header from 'src/components/Popup/Header'
 import { updateSafe } from 'src/logic/safe/store/actions/updateSafe'
 import { currentSafeWithNames } from 'src/logic/safe/store/selectors'
 import styled from 'styled-components'
+import ic_close from 'src/assets/icons/ic_close.svg'
 
 const Wrap = styled.div`
   width: 480px;
@@ -39,19 +42,30 @@ const Row = styled.div`
   justify-content: space-between;
   align-items: center;
 `
-export default function ManageTokenPopup({ open, onClose }) {
+
+export default function ManageTokenPopup({
+  open,
+  onImport,
+  onClose,
+  keepMountedManagePopup,
+  setKeepMoutedManagePopup,
+}) {
   const dispatch = useDispatch()
   const [toggleAll, setToggleAll] = useState<boolean>(false)
   const { coinConfig, address } = useSelector(currentSafeWithNames)
   const [config, setConfig] = useState(coinConfig)
+
   const applyHandler = () => {
-    dispatch(
-      updateSafe({
-        address,
-        coinConfig: config,
-      }),
-    )
+    if (config && config?.length > 0) {
+      dispatch(
+        updateSafe({
+          address,
+          coinConfig: config,
+        }),
+      )
+    }
     onClose()
+    setKeepMoutedManagePopup(false)
   }
 
   useEffect(() => {
@@ -59,7 +73,15 @@ export default function ManageTokenPopup({ open, onClose }) {
   }, [address])
 
   const toggleAllHandler = () => {
-    setConfig(config?.map((cf, ii) => ({ ...cf, enable: !toggleAll })))
+    setConfig(
+      config?.map((cf, ii) => {
+        if (cf.type === 'native') {
+          return cf
+        } else {
+          return { ...cf, enable: !toggleAll }
+        }
+      }),
+    )
     setToggleAll(!toggleAll)
   }
 
@@ -75,36 +97,69 @@ export default function ManageTokenPopup({ open, onClose }) {
     setConfig(filteredTokens)
   }
 
+  const handleDeleteCoin = (address: string) => {
+    const updatedConfig = config?.filter((coin) => coin.address !== address)
+    setConfig(updatedConfig)
+  }
+
   useEffect(() => {
-    const isSelectAll = config?.every((token) => token?.enable)
-    setToggleAll(!!isSelectAll)
+    if (config && config?.length > 0) {
+      const isSelectAll = config?.every((token) => token?.enable)
+      setToggleAll(!!isSelectAll)
+    }
   }, [config])
 
   return (
-    <Popup open={open} handleClose={onClose} title="Manage token">
-      <Header title="Manage token" onClose={onClose} hideNetwork={true} />
+    <Popup open={open} title="Manage token" keepMounted={keepMountedManagePopup}>
+      <Header
+        title="Manage token"
+        onClose={() => {
+          onClose()
+          setConfig(coinConfig)
+          setKeepMoutedManagePopup(false)
+        }}
+        hideNetwork={true}
+      />
       <Wrap>
         <div>
           <SearchInput onChange={handleSearch} placeholder="Search by token name, token symbol or address" />
           <div className="token-list">
             <Row>
               <div className="title">Token list</div>
-              <div style={{ marginRight: 16 }}>
-                <Checkbox checked={toggleAll} onChange={toggleAllHandler} />
-              </div>
+              {config && config?.length > 0 ? (
+                <>
+                  <div style={{ marginRight: 16 }}>
+                    <Checkbox checked={toggleAll} onChange={toggleAllHandler} />
+                  </div>
+                </>
+              ) : (
+                <></>
+              )}
             </Row>
             <div className="list">
-              {config?.map((c, i) => {
-                return (
-                  <CoinConfig
-                    key={i}
-                    type={c.type}
-                    name={c.name}
-                    isEnable={c.enable || false}
-                    setToggle={() => setConfig(config.map((cf, id) => (i == id ? { ...cf, enable: !cf.enable } : cf)))}
-                  />
-                )
-              })}
+              {config && config?.length > 0 ? (
+                <>
+                  {config?.map((c, i) => {
+                    return (
+                      <CoinConfig
+                        key={i}
+                        coin={c}
+                        onDelete={handleDeleteCoin}
+                        setToggle={() =>
+                          setConfig(config.map((cf, id) => (i == id ? { ...cf, enable: !cf.enable } : cf)))
+                        }
+                      />
+                    )
+                  })}
+                </>
+              ) : (
+                <Empty
+                  onImport={() => {
+                    onClose()
+                    onImport()
+                  }}
+                />
+              )}
             </div>
           </div>
         </div>
@@ -125,12 +180,64 @@ const CoinWrapper = styled.div`
   > div {
     text-transform: uppercase;
   }
+  .actions {
+    display: flex;
+    align-items: center;
+    .btn-delete {
+      margin-right: 8px;
+    }
+  }
 `
-const CoinConfig = ({ name, isEnable, setToggle, type }) => {
+const CoinConfig = ({ setToggle, coin, onDelete }) => {
   return (
     <CoinWrapper>
-      <div>{name}</div>
-      {type !== 'native' ? <Checkbox checked={isEnable} onChange={() => setToggle()} /> : <></>}
+      <div>{coin.name}</div>
+      <div className="actions">
+        {coin.isAddedToken ? (
+          <div className="btn-delete">
+            <ButtonHelper onClick={() => onDelete(coin.address)}>
+              <img src={ic_close} alt="Trash Icon" />
+            </ButtonHelper>
+          </div>
+        ) : (
+          <></>
+        )}
+        {coin.type !== 'native' ? <Checkbox checked={coin.enable || false} onChange={() => setToggle()} /> : <></>}
+      </div>
     </CoinWrapper>
+  )
+}
+
+const EmptyWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0px;
+  gap: 8px;
+  .title {
+    font-weight: 600;
+    font-size: 14px;
+    line-height: 18px;
+  }
+  .sub-title {
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 18px;
+  }
+  .btn-import {
+    margin-top: 8px;
+    margin-bottom: 24px;
+  }
+`
+const Empty = ({ onImport }) => {
+  return (
+    <EmptyWrapper>
+      <img src={ic_empty} />
+      <div className="title">This token hasn’t imported</div>
+      <div className="sub-title">Do you want to imported this token?</div>
+      <OutlinedButton className="small btn-import" onClick={onImport}>
+        Import
+      </OutlinedButton>
+    </EmptyWrapper>
   )
 }

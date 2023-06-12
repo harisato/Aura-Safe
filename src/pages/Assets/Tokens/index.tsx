@@ -1,17 +1,17 @@
-import { ReactElement, useState } from 'react'
-import styled from 'styled-components'
-import SearchIcon from 'src/assets/icons/search.svg'
-import { FilledButton, OutlinedNeutralButton } from 'src/components/Button'
-import DenseTable, { StyledTableCell, StyledTableRow } from 'src/components/Table/DenseTable'
+import { ChangeEvent, ReactElement, useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
-import { extendedSafeTokensSelector } from 'src/utils/safeUtils/selector'
-import { formatNativeCurrency, formatWithComma } from 'src/utils'
-import SendingPopup from 'src/components/Popup/SendingPopup'
 import sendIcon from 'src/assets/icons/ArrowUpRight.svg'
-import ManageTokenPopup from './ManageTokenPopup'
+import { FilledButton, OutlinedNeutralButton } from 'src/components/Button'
 import SearchInput from 'src/components/Input/Search'
+import SendingPopup from 'src/components/Popup/SendingPopup'
+import DenseTable, { StyledTableCell, StyledTableRow } from 'src/components/Table/DenseTable'
 import { currentSafeWithNames } from 'src/logic/safe/store/selectors'
 import { Token } from 'src/logic/tokens/store/model/token'
+import { formatWithComma } from 'src/utils'
+import { extendedSafeTokensSelector } from 'src/utils/safeUtils/selector'
+import styled from 'styled-components'
+import ImportTokenPopup from './ImportTokenPopup'
+import ManageTokenPopup from './ManageTokenPopup'
 const Wrap = styled.div`
   background: ${(props) => props.theme.backgroundPrimary};
   border-radius: 8px;
@@ -66,68 +66,112 @@ const TokenType = styled.div`
 function Tokens(props): ReactElement {
   const [open, setOpen] = useState(false)
   const [manageTokenPopupOpen, setManageTokenPopupOpen] = useState(false)
+  const [keepMountedManagePopup, setKeepMoutedManagePopup] = useState(true)
+  const [importTokenPopup, setImportTokenPopup] = useState(false)
   const [selectedToken, setSelectedToken] = useState<string>('')
   const safeTokens: any = useSelector(extendedSafeTokensSelector)
-  const { coinConfig, address } = useSelector(currentSafeWithNames)
+  const { coinConfig } = useSelector(currentSafeWithNames)
+  const tokenConfig = safeTokens.filter((token) => {
+    return (
+      token.type == 'native' ||
+      coinConfig?.find((coin) => {
+        return coin.address == token.address
+      })?.enable
+    )
+  })
+  const [listToken, setListToken] = useState(tokenConfig)
+
+  useEffect(() => {
+    setListToken(tokenConfig)
+  }, [coinConfig, safeTokens])
+
+  const handleSearch = (event: ChangeEvent<HTMLInputElement>) => {
+    const searchTerm = event.target.value.toLowerCase()
+    const filteredTokens = tokenConfig?.filter((token) => {
+      return token?.name?.toLowerCase().includes(searchTerm) || token?.address?.toLowerCase().includes(searchTerm)
+    })
+    setListToken(filteredTokens)
+  }
 
   return (
     <Wrap>
       <div className="header">
         <div className="title">Token list</div>
         <div>
-          <SearchInput placeholder="Search by name/Token ID" />
-          <FilledButton className="small" onClick={() => setManageTokenPopupOpen(true)}>
+          <SearchInput placeholder="Search by name/Token ID" onChange={handleSearch} />
+          <FilledButton
+            className="small"
+            onClick={() => {
+              setManageTokenPopupOpen(true)
+              setKeepMoutedManagePopup(true)
+            }}
+          >
             Manage token
           </FilledButton>
         </div>
       </div>
       <DenseTable headers={['Name', 'Token Type', 'Balance', ' ']} showPagination={true}>
-        {safeTokens
-          .filter((token) => {
-            return (
-              token.type == 'native' ||
-              coinConfig?.find((coin) => {
-                return coin.address == token.address
-              })?.enable
-            )
-          })
-          .map((token: Token, index: number) => {
-            return (
-              <StyledTableRow key={index}>
-                <StyledTableCell>
-                  <TokenInfo>
-                    <img src={token?.logoUri || ''} alt="" />
-                    {token.name || 'Unkonwn token'}
-                  </TokenInfo>
-                </StyledTableCell>
-                <StyledTableCell>
-                  <TokenType className={token.type}>{token.type == 'native' ? '' : token.type}</TokenType>
-                </StyledTableCell>
-                <StyledTableCell>{formatWithComma(token.balance.tokenBalance)}</StyledTableCell>
-                <StyledTableCell align="right">
-                  <div>
-                    <OutlinedNeutralButton
-                      className="small"
-                      onClick={() => {
-                        setOpen(true)
-                        setSelectedToken(token?.address)
-                      }}
-                    >
-                      <img src={sendIcon} alt="" />
-                      Send
-                    </OutlinedNeutralButton>
-                    <OutlinedNeutralButton className="small" style={{ marginLeft: 8 }}>
-                      <img style={{ transform: 'rotate(180deg)' }} src={sendIcon} alt="" />
-                      Receive
-                    </OutlinedNeutralButton>
-                  </div>
-                </StyledTableCell>
-              </StyledTableRow>
-            )
-          })}
+        {listToken.map((token: Token, index: number) => {
+          return (
+            <StyledTableRow key={index}>
+              <StyledTableCell>
+                <TokenInfo>
+                  <img src={token?.logoUri || ''} alt="" />
+                  {token.name || 'Unkonwn token'}
+                </TokenInfo>
+              </StyledTableCell>
+              <StyledTableCell>
+                <TokenType className={token.type}>{token.type == 'native' ? '' : token.type}</TokenType>
+              </StyledTableCell>
+              <StyledTableCell>{formatWithComma(token.balance.tokenBalance)}</StyledTableCell>
+              <StyledTableCell align="right">
+                <div>
+                  <OutlinedNeutralButton
+                    className="small"
+                    onClick={() => {
+                      setOpen(true)
+                      setSelectedToken(token?.address)
+                    }}
+                  >
+                    <img src={sendIcon} alt="" />
+                    Send
+                  </OutlinedNeutralButton>
+                  <OutlinedNeutralButton className="small" style={{ marginLeft: 8 }}>
+                    <img style={{ transform: 'rotate(180deg)' }} src={sendIcon} alt="" />
+                    Receive
+                  </OutlinedNeutralButton>
+                </div>
+              </StyledTableCell>
+            </StyledTableRow>
+          )
+        })}
       </DenseTable>
       <SendingPopup defaultToken={selectedToken} open={open} onOpen={() => {}} onClose={() => setOpen(false)} />
-      <ManageTokenPopup open={manageTokenPopupOpen} onClose={() => setManageTokenPopupOpen(false)} />
+      {keepMountedManagePopup && (
+        <ManageTokenPopup
+          open={manageTokenPopupOpen}
+          onImport={() => {
+            setImportTokenPopup(true)
+          }}
+          onClose={() => {
+            setManageTokenPopupOpen(false)
+          }}
+          keepMountedManagePopup={keepMountedManagePopup}
+          setKeepMoutedManagePopup={setKeepMoutedManagePopup}
+        />
+      )}
+      <ImportTokenPopup
+        open={importTokenPopup}
+        onBack={() => {
+          setImportTokenPopup(false)
+          setManageTokenPopupOpen(true)
+          setKeepMoutedManagePopup(true)
+        }}
+        onClose={() => {
+          setImportTokenPopup(false)
+          setKeepMoutedManagePopup(false)
+        }}
+      />
     </Wrap>
   )
 }

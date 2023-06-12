@@ -26,6 +26,7 @@ export interface ISafeCancel {
 interface IResponse<T> {
   AdditionalData: any[]
   Data: any
+  data: any
   ErrorCode: string
   Message: string
 }
@@ -285,4 +286,16 @@ export async function getContract(contractAddress: string, internalChainId: any)
 
 export async function getTokenDetail() {
   return fetch(githubPageTokenRegistryUrl)
+}
+
+export async function getDetailToken(address: string): Promise<IResponse<any>> {
+  const currentChainInfo = getChainInfo() as any
+  const { chainInfo } = await getGatewayUrl()
+  return axios
+    .get(
+      `${
+        chainInfo.find((chain) => chain.chainId == currentChainInfo.chainId)?.rest
+      }/cosmwasm/wasm/v1/contract/${address}/smart/eyAidG9rZW5faW5mbyI6IHt9IH0%3D`,
+    )
+    .then((res) => res.data)
 }
