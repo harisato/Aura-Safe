@@ -135,6 +135,7 @@ export const fetchMSafeTokens =
           symbol: chainInfo.nativeCurrency.symbol,
           denom: chainInfo.denom,
           type: 'native',
+          enable: true,
         }
         balances.push(nativeToken)
         filteredListTokens.unshift(nativeToken)
