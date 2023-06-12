@@ -6,10 +6,9 @@ import TextField from 'src/components/Input/TextField'
 import Loader from 'src/components/Loader'
 import { Popup } from 'src/components/Popup'
 import Header from 'src/components/Popup/Header'
-import { getInternalChainId } from 'src/config'
 import { updateSafe } from 'src/logic/safe/store/actions/updateSafe'
 import { currentSafeWithNames } from 'src/logic/safe/store/selectors'
-import { getContract, getDetailToken } from 'src/services'
+import { getDetailToken } from 'src/services'
 import { isValidAddress } from 'src/utils/isValidAddress'
 import styled from 'styled-components'
 
@@ -52,22 +51,20 @@ const defaultToken = {
 
 const ImportTokenPopup = ({ open, onBack, onClose }) => {
   const dispatch = useDispatch()
-  const internalChainId = getInternalChainId()
   const [token, setToken] = useState<IToken>(defaultToken)
   const { coinConfig, address } = useSelector(currentSafeWithNames)
   const [isVerifiedContract, setIsVerifiedContract] = useState<string | null>(null)
 
   const getContractDetail = async () => {
     setIsVerifiedContract('loading')
-    const { Data } = await getContract(token.address, internalChainId)
-    const { data } = await getDetailToken(token.address)
-    if (Data) {
-      setIsVerifiedContract(Data.verification ? 'true' : 'false')
-    } else {
+    try {
+      const { data } = await getDetailToken(token.address)
+      if (data) {
+        setIsVerifiedContract('true')
+        setToken({ ...token, name: data.name, symbol: data.symbol, decimals: data.decimals })
+      }
+    } catch (error) {
       setIsVerifiedContract('false')
-    }
-    if (data) {
-      setToken({ ...token, name: data.name, symbol: data.symbol, decimals: data.decimals })
     }
   }
 
