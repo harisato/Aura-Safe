@@ -11,6 +11,7 @@ import { currentSafeWithNames } from 'src/logic/safe/store/selectors'
 import { getDetailToken } from 'src/services'
 import { isValidAddress } from 'src/utils/isValidAddress'
 import styled from 'styled-components'
+import ic_defIcon from 'src/assets/icons/aura.png'
 
 const Wrap = styled.div`
   width: 480px;
@@ -39,6 +40,7 @@ type IToken = {
   isAddedToken: boolean
   enable: boolean
   decimals: number
+  logoUri: string
 }
 const defaultToken = {
   address: '',
@@ -47,6 +49,7 @@ const defaultToken = {
   enable: false,
   isAddedToken: true,
   decimals: 0,
+  logoUri: ic_defIcon,
 }
 
 const ImportTokenPopup = ({ open, onBack, onClose }) => {
