@@ -95,22 +95,35 @@ export const fetchSafeTokens =
 export const fetchMSafeTokens =
   (safeInfo: IMSafeInfo) =>
   async (dispatch: Dispatch, getState: () => AppReduxState): Promise<void> => {
+    let listTokens: any[] = []
+    const cw20Tokens = safeInfo.assets.CW20.asset.map((asset) => ({
+      name: asset.asset_info.data.name,
+      decimals: asset.asset_info.data.decimals,
+      symbol: asset.asset_info.data.symbol,
+      address: asset.contract_address,
+      _id: asset['_id'],
+    }))
+    const listSafeTokens = [...safeInfo.balance, ...cw20Tokens]
     const state = getState()
     const safe = safeByAddressSelector(state, safeInfo.address)
     if (safeInfo?.balance) {
-      const coinConfig = safe?.coinConfig?.length
-        ? safe?.coinConfig
-        : getCoinConfig().map((config) => {
-            return { ...config, enable: true }
-          })
       const listChain = getChains()
       const tokenDetailsListData = await getTokenDetail()
       const tokenDetailsList = await tokenDetailsListData.json()
+      listTokens = [...tokenDetailsList['ibc'], ...tokenDetailsList['cw20']]
+      const filteredListTokens = listTokens.map((token) => {
+        const isExist = listSafeTokens.some((t) => t.denom === token.minCoinDenom || t.address === token.address)
+        if (isExist) {
+          return { ...token, enable: true }
+        } else {
+          return { ...token, enable: false }
+        }
+      })
       const chainInfo: any = listChain.find((x: any) => x.internalChainId === safeInfo?.internalChainId)
       const nativeTokenData = safeInfo.balance.find((balance) => balance.denom == chainInfo.denom)
       const balances: any[] = []
       if (nativeTokenData) {
-        balances.push({
+        const nativeToken = {
           tokenBalance: `${humanReadableValue(
             +nativeTokenData?.amount > 0 ? nativeTokenData?.amount : 0,
             chainInfo.nativeCurrency.decimals,
@@ -122,21 +135,24 @@ export const fetchMSafeTokens =
           symbol: chainInfo.nativeCurrency.symbol,
           denom: chainInfo.denom,
           type: 'native',
-        })
+        }
+        balances.push(nativeToken)
+        filteredListTokens.unshift(nativeToken)
       }
+
+      const coinConfig = safe?.coinConfig?.length
+        ? filteredListTokens
+            .filter(
+              (item) =>
+                !safe?.coinConfig?.some((token) => token.denom === item.denom || token.address === item.address),
+            )
+            .concat(safe?.coinConfig)
+        : filteredListTokens
+
       safeInfo.balance
         .filter((balance) => balance.denom != chainInfo.denom)
         .forEach((data: any) => {
           const tokenDetail = tokenDetailsList['ibc'].find((token) => token.cosmosDenom == data.minimal_denom)
-          if (tokenDetail && coinConfig.findIndex((config) => config.address == tokenDetail.address) == -1) {
-            coinConfig.push({
-              name: tokenDetail.name,
-              address: tokenDetail.address,
-              denom: tokenDetail.minCoinDenom,
-              type: 'ibc',
-              enable: false,
-            })
-          }
           balances.push({
             tokenBalance: `${humanReadableValue(+data?.amount > 0 ? data?.amount : 0, tokenDetail?.decimals || 6)}`,
             tokenAddress: tokenDetail?.address,
@@ -155,15 +171,6 @@ export const fetchMSafeTokens =
       if (safeInfo.assets.CW20.asset.length > 0) {
         safeInfo.assets.CW20.asset.forEach((data) => {
           const tokenDetail = tokenDetailsList['cw20'].find((token) => token.address == data.contract_address)
-          if (tokenDetail && coinConfig.findIndex((config) => config.address == tokenDetail.address) == -1) {
-            coinConfig.push({
-              name: tokenDetail.name,
-              address: tokenDetail.address,
-              denom: tokenDetail.symbol,
-              type: 'cw20',
-              enable: false,
-            })
-          }
           balances.push({
             tokenBalance: `${humanReadableValue(+data?.balance > 0 ? data?.balance : 0, tokenDetail?.decimals || 6)}`,
             tokenAddress: tokenDetail?.address,

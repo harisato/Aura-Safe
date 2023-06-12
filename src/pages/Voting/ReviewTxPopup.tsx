@@ -41,7 +41,7 @@ const ReviewTxPopup = ({ open, onClose, proposal, vote, onBack, gasUsed }: Revie
   const chainDefaultGasPrice = getChainDefaultGasPrice()
   const decimal = getCoinDecimal()
   const [defaultGas, setDefaultGas] = useState(
-    chainDefaultGas.find((chain) => chain.typeUrl === MsgTypeUrl.Vote)?.gasAmount || DEFAULT_GAS_LIMIT.toString(),
+    chainDefaultGas?.find((chain) => chain.typeUrl === MsgTypeUrl.Vote)?.gasAmount || DEFAULT_GAS_LIMIT.toString(),
   )
   const gasFee =
     defaultGas && chainDefaultGasPrice
