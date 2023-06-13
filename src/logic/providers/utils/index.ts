@@ -6,7 +6,7 @@ import { addProvider } from 'src/logic/wallets/store/actions'
 import { trackAnalyticsEvent, WALLET_EVENTS } from 'src/utils/googleAnalytics'
 import { makeProvider, ProviderProps } from '../../wallets/store/model/provider'
 
-export function processProviderResponse(dispatch: Dispatch, provider: ProviderProps): void {
+function processProviderResponse(dispatch: Dispatch, provider: ProviderProps): void {
   const walletRecord = makeProvider(provider)
   dispatch(addProvider(walletRecord))
 }
@@ -18,7 +18,7 @@ export function fetchProvider(providerInfo: ProviderProps): (dispatch: Dispatch<
   }
 }
 
-export function handleProviderNotification(provider: ProviderProps, dispatch: Dispatch<any>): void {
+function handleProviderNotification(provider: ProviderProps, dispatch: Dispatch<any>): void {
   const { available, loaded } = provider
 
   if (!loaded) {

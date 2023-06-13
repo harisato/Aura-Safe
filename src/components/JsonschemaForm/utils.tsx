@@ -18,7 +18,7 @@ export function makeSchemaInput(validator: Validator): any[] {
   }
 }
 
-export function getProperties(schema: Schema, validator: Validator) {
+function getProperties(schema: Schema, validator: Validator) {
   try {
     const fieldName = Object.keys(schema.properties || {}).at(0)
     if (!fieldName) throw new Error('No property')

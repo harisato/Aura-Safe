@@ -18,7 +18,7 @@ export type SignMessageModalProps = {
   safeAddress: string
   safeName: string
   requestId: RequestId
-  ethBalance: string
+  nativeBalance: string
   onUserConfirm: (safeTxHash: string, requestId: RequestId) => void
   onTxReject: (requestId: RequestId) => void
   onClose: () => void

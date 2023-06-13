@@ -13,7 +13,7 @@ import Paragraph from 'src/components/layout/Paragraph'
 import Row from 'src/components/layout/Row'
 import { isPayable } from 'src/logic/contractInteraction/sources/ABIService'
 import { styles } from 'src/routes/safe/components/Balances/SendModal/screens/ContractInteraction/style'
-import { currentSafeEthBalance } from 'src/logic/safe/store/selectors'
+import { currentSafeNativeBalance } from 'src/logic/safe/store/selectors'
 import { getNativeCurrency } from 'src/config'
 
 const useStyles = makeStyles(styles)
@@ -25,14 +25,14 @@ interface NativeCoinValueProps {
 export const NativeCoinValue = ({ onSetMax }: NativeCoinValueProps): React.ReactElement | null => {
   const classes = useStyles()
   const nativeCurrency = getNativeCurrency()
-  const ethBalance = useSelector(currentSafeEthBalance)
+  const nativeBalance = useSelector(currentSafeNativeBalance)
 
   const {
     input: { value: method },
   } = useField('selectedMethod', { subscription: { value: true } })
   const disabled = !isPayable(method)
 
-  if (!ethBalance) {
+  if (!nativeBalance) {
     return null
   }
 
@@ -44,7 +44,7 @@ export const NativeCoinValue = ({ onSetMax }: NativeCoinValueProps): React.React
         </Paragraph>
         <ButtonLink
           color={disabled ? 'disabled' : 'secondary'}
-          onClick={() => !disabled && onSetMax(ethBalance)}
+          onClick={() => !disabled && onSetMax(nativeBalance)}
           weight="bold"
         >
           Send max
@@ -63,7 +63,7 @@ export const NativeCoinValue = ({ onSetMax }: NativeCoinValueProps): React.React
             placeholder="Value"
             text="Value"
             type="text"
-            validate={!disabled && composeValidators(mustBeFloat, maxValue(ethBalance))}
+            validate={!disabled && composeValidators(mustBeFloat, maxValue(nativeBalance))}
           />
         </Col>
       </Row>

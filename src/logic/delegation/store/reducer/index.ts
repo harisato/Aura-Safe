@@ -13,7 +13,7 @@ export type DelegationStateType = {
   allDelegations: DelegationType[]
 }
 
-export const initialState = {
+const initialState = {
   allDelegations: [],
 }
 

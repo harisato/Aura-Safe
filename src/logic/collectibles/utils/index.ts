@@ -8,13 +8,13 @@ import { CollectibleTx } from 'src/routes/safe/components/Balances/SendModal/scr
 // This is an exception made for a popular NFT that's not ERC721 standard-compatible,
 //  so we can allow the user to transfer the assets by using `transferFrom` instead of
 //  the standard `safeTransferFrom` method.
-export const CK_ADDRESS = {
+const CK_ADDRESS = {
   [CHAIN_ID.ETHEREUM]: '0x06012c8cf97bead5deae237070f9587f8e7a266d',
   [CHAIN_ID.RINKEBY]: '0x16baf0de678e52367adc69fd067e5edd1d33e3bf',
 }
 
 // safeTransferFrom(address,address,uint256)
-export const SAFE_TRANSFER_FROM_WITHOUT_DATA_HASH = '42842e0e'
+const SAFE_TRANSFER_FROM_WITHOUT_DATA_HASH = '42842e0e'
 
 /**
  * Returns a method identifier based on the asset specified and the current network

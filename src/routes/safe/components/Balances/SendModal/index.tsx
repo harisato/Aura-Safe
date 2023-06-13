@@ -41,7 +41,7 @@ const useStyles = makeStyles({
   },
 })
 
-export type TxType =
+type TxType =
   | 'chooseTxType'
   | 'sendFunds'
   | 'sendFundsReviewTx'

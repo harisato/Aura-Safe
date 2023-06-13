@@ -14,7 +14,7 @@ import { getCoinMinimalDenom } from 'src/config'
 import { MsgTypeUrl } from 'src/logic/providers/constants/constant'
 import { extractPrefixedSafeAddress, extractSafeAddress } from 'src/routes/routes'
 import { simulate } from 'src/services'
-import { formatBigNumber, formatNativeCurrency, formatNumber } from 'src/utils'
+import { convertAmount, formatNativeCurrency, formatNumber } from 'src/utils'
 import { isValidAddress } from 'src/utils/isValidAddress'
 import { Popup } from '..'
 import Header from '../Header'
@@ -136,7 +136,7 @@ const MultiSendPopup = ({ open, onClose, onOpen }: SendFundsProps): ReactElement
     setSimulateLoading(true)
     const Outputs: AminoMsgMultiSend['value']['outputs'] = recipient.map((r) => ({
       address: r.address,
-      coins: coins(formatBigNumber(+r.amount, true), denom),
+      coins: coins(convertAmount(+r.amount, true), denom),
     }))
     const Msg: any = [
       {
@@ -145,7 +145,7 @@ const MultiSendPopup = ({ open, onClose, onOpen }: SendFundsProps): ReactElement
           inputs: [
             {
               address: safeAddress,
-              coins: coins(formatBigNumber(totalAmount, true), denom),
+              coins: coins(convertAmount(totalAmount, true), denom),
             },
           ],
           outputs: Outputs,
@@ -201,7 +201,7 @@ const MultiSendPopup = ({ open, onClose, onOpen }: SendFundsProps): ReactElement
                         <StyledTableCell align="left">{row.address}</StyledTableCell>
                         <StyledTableCell align="left">{row.amount}</StyledTableCell>
                       </StyledTableRow>
-                    )
+                    ) 
                   })}
                 </DenseTable>
               </>

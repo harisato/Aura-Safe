@@ -4,7 +4,7 @@ import { fetchTransactionDetailsById } from 'src/logic/safe/store/actions/fetchT
 import { getTransactionByAttribute } from 'src/logic/safe/store/selectors/gatewayTransactions'
 import { AppReduxState } from 'src/logic/safe/store'
 
-export type LoadTransactionDetails = {
+type LoadTransactionDetails = {
   data?: any
   loading: boolean
 }

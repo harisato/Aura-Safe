@@ -12,7 +12,4 @@ const FieldContainer = styled(Block)`
   margin-top: 12px;
 `
 
-const Link = styled.a`
-  color: ${green};
-`
-export { BlockWithPadding, FieldContainer, Link }
+export { BlockWithPadding, FieldContainer }

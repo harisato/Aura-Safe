@@ -15,7 +15,7 @@ export type LocalStatusesState = Record<ChainId, Record<string, TransactionStatu
 
 export const LOCAL_TRANSACTIONS_ID = 'localTxStatuses'
 
-export const localTransactionsReducer = handleActions<LocalStatusesState, TransactionStatusPayload>(
+const localTransactionsReducer = handleActions<LocalStatusesState, TransactionStatusPayload>(
   {
     [UPDATE_TRANSACTION_STATUS]: (state, action: Action<TransactionStatusPayload>) => {
       const { safeTxHash, status } = action.payload

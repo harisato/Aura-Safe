@@ -6,7 +6,7 @@ export const FIELD_LOAD_IS_LOADING_SAFE_ADDRESS = 'isLoadingSafeAddress'
 export const FIELD_SAFE_OWNER_LIST = 'safeOwnerList'
 export const FIELD_SAFE_THRESHOLD = 'safeThreshold'
 
-export type OwnerFieldListItem = {
+type OwnerFieldListItem = {
   address: string
   name: string
 }

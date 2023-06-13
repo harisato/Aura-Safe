@@ -44,7 +44,7 @@ export type TransactionDetailsPayload = {
 
 type Payload = HistoryPayload | QueuedPayload | TransactionDetailsPayload
 
-export const gatewayTransactionsReducer = handleActions<GatewayTransactionsState, Payload>(
+const gatewayTransactionsReducer = handleActions<GatewayTransactionsState, Payload>(
   {
     [ADD_HISTORY_TRANSACTIONS]: (state, action: Action<HistoryPayload>) => {
       const { chainId, safeAddress, values, isTail = false } = action.payload

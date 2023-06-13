@@ -30,12 +30,12 @@ import { isValidAddress } from 'src/utils/isValidAddress'
 import { useStyles } from './style'
 import { getExplorerInfo } from 'src/config'
 
-export const REPLACE_OWNER_NAME_INPUT_TEST_ID = 'replace-owner-name-input'
-export const REPLACE_OWNER_ADDRESS_INPUT_TEST_ID = 'replace-owner-address-testid'
-export const REPLACE_OWNER_NEXT_BTN_TEST_ID = 'replace-owner-next-btn'
 
 import { OwnerValues } from '../..'
 import { ModalHeader } from 'src/routes/safe/components/Balances/SendModal/screens/ModalHeader'
+const REPLACE_OWNER_NAME_INPUT_TEST_ID = 'replace-owner-name-input'
+const REPLACE_OWNER_ADDRESS_INPUT_TEST_ID = 'replace-owner-address-testid'
+const REPLACE_OWNER_NEXT_BTN_TEST_ID = 'replace-owner-next-btn'
 
 const formMutators: Record<
   string,

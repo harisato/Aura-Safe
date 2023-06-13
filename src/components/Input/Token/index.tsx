@@ -1,10 +1,9 @@
-import Select, { IOption } from 'src/components/Input/Select'
-import { Token } from 'src/logic/tokens/store/model/token'
-import styled from 'styled-components'
 import MenuItem from '@material-ui/core/MenuItem'
 import { useSelector } from 'react-redux'
+import Select, { IOption } from 'src/components/Input/Select'
+import { Token } from 'src/logic/tokens/store/model/token'
 import { extendedSafeTokensSelector } from 'src/utils/safeUtils/selector'
-import { List } from 'immutable'
+import styled from 'styled-components'
 
 const MenuItemWrapper = styled.div`
   display: flex;
@@ -21,14 +20,14 @@ export default function TokenSelect({ selectedToken, setSelectedToken, disabled 
   const tokenOptions: IOption[] = tokenList.map((token: Token) => ({
     value: token.address,
     label: token.name,
-  })) as unknown as IOption[]
+  })) as IOption[]
 
   return (
     <Select
       options={tokenOptions}
       value={selectedToken || ''}
       onChange={(token) => {
-        setSelectedToken && setSelectedToken(token)
+        setSelectedToken && setSelectedToken(() => tokenList.find((t) => t.address == token))
       }}
       disabled={disabled}
       placeholder="Select an asset*"

@@ -67,17 +67,6 @@ export const styles = createStyles({
   }
 })
 
-const StyledButton = styled(Button)`
-  &&.MuiButton-root {
-    margin: 4px 12px 4px 0px;
-    padding: 0 12px;
-    min-width: auto;
-  }
-
-  svg {
-    margin: 0 6px 0 0;
-  }
-`
 const StyledButtonLink = styled(ButtonLink)`
   text-decoration: none !important;
   p {
@@ -87,4 +76,4 @@ const StyledButtonLink = styled(ButtonLink)`
     fill: #5ee6d0 !important;
   }
 `
-export { StyledButton, StyledButtonLink }
+export { StyledButtonLink }

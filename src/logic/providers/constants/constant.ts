@@ -47,4 +47,4 @@ enum MsgTypeUrl {
   Fail = 'FAILED',
 }
 
-export { KeplrErrors, WalletProviders, MsgTypeUrl }
+export { KeplrErrors, MsgTypeUrl }
