@@ -97,7 +97,6 @@ function Tokens(props): ReactElement {
   useEffect(() => {
     setListToken(hideZeroBalance ? tokenConfig.filter((token) => token.balance.tokenBalance !== 0) : tokenConfig)
   }, [coinConfig, safeTokens, hideZeroBalance])
-
   const handleSearch = (event: ChangeEvent<HTMLInputElement>) => {
     const searchTerm = event.target.value.toLowerCase()
     const filteredTokens = tokenConfig?.filter((token) => {

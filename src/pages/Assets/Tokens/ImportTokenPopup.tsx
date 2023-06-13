@@ -46,7 +46,7 @@ const defaultToken = {
   address: '',
   symbol: '',
   name: '',
-  enable: false,
+  enable: true,
   isAddedToken: true,
   decimals: 0,
   logoUri: ic_defIcon,

@@ -110,7 +110,19 @@ export const fetchMSafeTokens =
       const listChain = getChains()
       const tokenDetailsListData = await getTokenDetail()
       const tokenDetailsList = await tokenDetailsListData.json()
-      listTokens = [...tokenDetailsList['ibc'], ...tokenDetailsList['cw20']]
+      listTokens = [
+        ...tokenDetailsList['ibc'],
+        ...tokenDetailsList['cw20'],
+        // ...(safe?.coinConfig?.find((c) => c.isAddedToken)),
+      ]
+      const importedConfig =
+        safe?.coinConfig?.filter((c) => {
+          if (c.isAddedToken) {
+            return !listTokens.some((t) => t.address === c.address)
+          }
+          return false
+        }) || []
+      listTokens = [...listTokens, ...importedConfig]
       const filteredListTokens = listTokens.map((token) => {
         const isExist = listSafeTokens.some((t) => t.denom === token.minCoinDenom || t.address === token.address)
         if (isExist) {
@@ -153,12 +165,15 @@ export const fetchMSafeTokens =
       safeInfo.balance
         .filter((balance) => balance.denom != chainInfo.denom)
         .forEach((data: any) => {
-          const tokenDetail = tokenDetailsList['ibc'].find((token) => token.cosmosDenom == data.minimal_denom)
+          const tokenDetail = listTokens.find((token) => token.cosmosDenom == data.minimal_denom)
           balances.push({
             tokenBalance: `${humanReadableValue(+data?.amount > 0 ? data?.amount : 0, tokenDetail?.decimals || 6)}`,
             tokenAddress: tokenDetail?.address,
             decimals: tokenDetail?.decimals || 6,
-            logoUri: tokenDetail?.icon ?? 'https://aura-nw.github.io/token-registry/images/undefined.png',
+            logoUri:
+              tokenDetail?.icon ||
+              tokenDetail?.logoUri ||
+              'https://aura-nw.github.io/token-registry/images/undefined.png',
             name: tokenDetail?.name,
             symbol: tokenDetail?.coinDenom,
             denom: tokenDetail?.minCoinDenom,
@@ -169,13 +184,16 @@ export const fetchMSafeTokens =
 
       if (safeInfo.assets.CW20.asset.length > 0) {
         safeInfo.assets.CW20.asset.forEach((data) => {
-          const tokenDetail = tokenDetailsList['cw20'].find((token) => token.address == data.contract_address)
+          const tokenDetail = listTokens.find((token) => token.address == data.contract_address)
           balances.push({
             tokenBalance: `${humanReadableValue(+data?.balance > 0 ? data?.balance : 0, tokenDetail?.decimals || 6)}`,
             tokenAddress: tokenDetail?.address,
             decimals: tokenDetail?.decimals || 6,
             name: tokenDetail?.name,
-            logoUri: tokenDetail?.icon ?? 'https://aura-nw.github.io/token-registry/images/undefined.png',
+            logoUri:
+              tokenDetail?.icon ||
+              tokenDetail?.logoUri ||
+              'https://aura-nw.github.io/token-registry/images/undefined.png',
             symbol: tokenDetail?.symbol,
             denom: tokenDetail?.symbol,
             type: 'CW20',
