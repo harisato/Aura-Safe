@@ -81,7 +81,7 @@ function Tokens(props): ReactElement {
   const [selectedToken, setSelectedToken] = useState<string>('')
   const safeTokens: any = useSelector(extendedSafeTokensSelector)
   const { address, coinConfig, isHideZeroBalance } = useSelector(currentSafeWithNames)
-  const [hideZeroBalance, setHideZeroBalance] = useState(isHideZeroBalance ?? true)
+  const [hideZeroBalance, setHideZeroBalance] = useState(isHideZeroBalance)
   const tokenConfig = safeTokens.filter((token) => {
     return (
       token.type == 'native' ||
@@ -90,7 +90,9 @@ function Tokens(props): ReactElement {
       })?.enable
     )
   })
-  const [listToken, setListToken] = useState(tokenConfig.filter((token) => token.balance.tokenBalance !== 0))
+  const [listToken, setListToken] = useState(
+    isHideZeroBalance ? tokenConfig.filter((token) => token.balance.tokenBalance !== 0) : tokenConfig,
+  )
 
   useEffect(() => {
     setListToken(tokenConfig)
