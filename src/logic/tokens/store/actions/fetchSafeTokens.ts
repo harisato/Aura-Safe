@@ -158,9 +158,7 @@ export const fetchMSafeTokens =
             tokenBalance: `${humanReadableValue(+data?.amount > 0 ? data?.amount : 0, tokenDetail?.decimals || 6)}`,
             tokenAddress: tokenDetail?.address,
             decimals: tokenDetail?.decimals || 6,
-            logoUri: tokenDetail?.icon
-              ? `https://aura-nw.github.io/token-registry/images/${tokenDetail?.icon}`
-              : 'https://aura-nw.github.io/token-registry/images/undefined.png',
+            logoUri: tokenDetail?.icon ?? 'https://aura-nw.github.io/token-registry/images/undefined.png',
             name: tokenDetail?.name,
             symbol: tokenDetail?.coinDenom,
             denom: tokenDetail?.minCoinDenom,
@@ -177,9 +175,7 @@ export const fetchMSafeTokens =
             tokenAddress: tokenDetail?.address,
             decimals: tokenDetail?.decimals || 6,
             name: tokenDetail?.name,
-            logoUri: tokenDetail?.icon
-              ? `https://aura-nw.github.io/token-registry/images/${tokenDetail?.icon}`
-              : 'https://aura-nw.github.io/token-registry/images/undefined.png',
+            logoUri: tokenDetail?.icon ?? 'https://aura-nw.github.io/token-registry/images/undefined.png',
             symbol: tokenDetail?.symbol,
             denom: tokenDetail?.symbol,
             type: 'CW20',
