@@ -1,6 +1,7 @@
 import MenuItem from '@material-ui/core/MenuItem'
 import { useSelector } from 'react-redux'
 import Select, { IOption } from 'src/components/Input/Select'
+import { currentSafeWithNames } from 'src/logic/safe/store/selectors'
 import { Token } from 'src/logic/tokens/store/model/token'
 import { extendedSafeTokensSelector } from 'src/utils/safeUtils/selector'
 import styled from 'styled-components'
@@ -15,9 +16,18 @@ const MenuItemWrapper = styled.div`
   }
 `
 export default function TokenSelect({ selectedToken, setSelectedToken, disabled = false }) {
-  const tokenList = useSelector(extendedSafeTokensSelector) as unknown as Token[]
+  const tokenList: any = useSelector(extendedSafeTokensSelector)
+  const { coinConfig } = useSelector(currentSafeWithNames)
+  const tokenConfig = tokenList.filter((token) => {
+    return (
+      token.type == 'native' ||
+      coinConfig?.find((coin) => {
+        return coin.address == token.address
+      })?.enable
+    )
+  })
 
-  const tokenOptions: IOption[] = tokenList.map((token: Token) => ({
+  const tokenOptions: IOption[] = tokenConfig.map((token: Token) => ({
     value: token.address,
     label: token.name,
   })) as IOption[]
@@ -41,7 +51,7 @@ export default function TokenSelect({ selectedToken, setSelectedToken, disabled 
         ) : null
       }}
     >
-      {tokenList.map((token: Token, index: any) => {
+      {tokenConfig.map((token: any, index: any) => {
         return (
           <MenuItem key={index} value={token.address}>
             <MenuItemWrapper>

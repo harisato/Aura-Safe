@@ -52,6 +52,7 @@ export const signAndCreateTransaction =
     message: any[],
     gasLimit: string,
     sequence: string,
+    toAddress?: string,
     beforeSigningCallback?: () => void,
     successSigningCallback?: () => void,
     errorSigningCallback?: (error: any) => void,
@@ -108,6 +109,9 @@ export const signAndCreateTransaction =
         from: safeAddress,
         accountNumber: signResult.accountNumber,
         sequence: signResult.sequence,
+      }
+      if (toAddress) {
+        data.to = toAddress
       }
       const result = await createSafeTransaction(data)
       const { ErrorCode } = result
@@ -440,4 +444,3 @@ const signMessage = async (
     throw new Error(error)
   }
 }
-

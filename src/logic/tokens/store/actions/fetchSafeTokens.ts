@@ -110,11 +110,7 @@ export const fetchMSafeTokens =
       const listChain = getChains()
       const tokenDetailsListData = await getTokenDetail()
       const tokenDetailsList = await tokenDetailsListData.json()
-      listTokens = [
-        ...tokenDetailsList['ibc'],
-        ...tokenDetailsList['cw20'],
-        // ...(safe?.coinConfig?.find((c) => c.isAddedToken)),
-      ]
+      listTokens = [...tokenDetailsList['ibc'], ...tokenDetailsList['cw20']]
       const importedConfig =
         safe?.coinConfig?.filter((c) => {
           if (c.isAddedToken) {
@@ -125,11 +121,7 @@ export const fetchMSafeTokens =
       listTokens = [...listTokens, ...importedConfig]
       const filteredListTokens = listTokens.map((token) => {
         const isExist = listSafeTokens.some((t) => t.denom === token.minCoinDenom || t.address === token.address)
-        if (isExist) {
-          return { ...token, enable: true }
-        } else {
-          return { ...token, enable: false }
-        }
+        return { ...token, enable: isExist }
       })
       const chainInfo: any = listChain.find((x: any) => x.internalChainId === safeInfo?.internalChainId)
       const nativeTokenData = safeInfo.balance.find((balance) => balance.denom == chainInfo.denom)
