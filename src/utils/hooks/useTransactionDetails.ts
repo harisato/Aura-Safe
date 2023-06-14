@@ -16,7 +16,7 @@ export const useTransactionDetails = (transactionId?: string, txHash?: string, a
     data: undefined,
   })
   const data = useSelector((state: AppReduxState) =>
-    getTransactionByAttribute(state, { attributeValue: transactionId, attributeName: 'id' }),
+    getTransactionByAttribute(state, { attributeValue: auraTxId, attributeName: 'auraTxId' }),
   )
   useEffect(() => {
     const dataTemp = {

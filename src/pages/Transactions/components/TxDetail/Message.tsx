@@ -195,7 +195,9 @@ export default function TxMsg({ tx, txDetail }) {
   }
   return (
     <div>
-      <div className="json-msg" dangerouslySetInnerHTML={{ __html: beutifyJson(JSON.parse(txDetail?.rawMessage)) }} />
+      {txDetail?.rawMessage && (
+        <div className="json-msg" dangerouslySetInnerHTML={{ __html: beutifyJson(JSON.parse(txDetail?.rawMessage)) }} />
+      )}
     </div>
   )
 }
