@@ -19,8 +19,8 @@ export const fetchTransactionDetailsById =
   ({ transactionId, auraTxId }: { transactionId?: string; auraTxId?: string }) =>
   async (dispatch: Dispatch, getState: () => AppReduxState): Promise<Transaction['txDetails']> => {
     const transaction = getTransactionByAttribute(getState(), {
-      attributeValue: auraTxId,
-      attributeName: 'auraTxId',
+      attributeValue: transactionId ? transactionId : auraTxId,
+      attributeName: transactionId ? 'id' : 'auraTxId',
     })
     const safeAddress = extractSafeAddress()
     const chainId = currentChainId(getState())
