@@ -19,6 +19,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { fetchMSafe } from 'src/logic/safe/store/actions/fetchSafe'
 import { extractSafeAddress, extractSafeId } from 'src/routes/routes'
 import { useQuery } from 'src/utils'
+import { extendedSafeTokensSelector } from 'src/utils/safeUtils/selector'
 
 export const TxSignModalContext = createContext<{
   txId: string
@@ -45,7 +46,7 @@ export default function QueueTransactions(): ReactElement {
   const dispatch = useDispatch()
   const safeAddress = extractSafeAddress()
   const safeId = extractSafeId() as number
-
+  const listTokens: any = useSelector(extendedSafeTokensSelector)
   const queryParams = useQuery()
   const transactionId = queryParams.get('transactionId')
 
@@ -110,7 +111,7 @@ export default function QueueTransactions(): ReactElement {
                   <p className="section-title">{`Queued - Transaction with sequence ${curSeq} needs to be executed first`}</p>
                 ) : null}
                 <AccordionWrapper>
-                  <Transaction transaction={txs[0]} curSeq={curSeq} />
+                  <Transaction transaction={txs[0]} curSeq={curSeq} listTokens={listTokens} />
                 </AccordionWrapper>
               </Fragment>
             ) : (
@@ -129,7 +130,7 @@ export default function QueueTransactions(): ReactElement {
                     </p>
                   </div>
                   {txs.map((tx, index) => (
-                    <Transaction hideSeq={true} key={tx.id} transaction={tx} curSeq={curSeq} />
+                    <Transaction hideSeq={true} key={tx.id} transaction={tx} curSeq={curSeq} listTokens={listTokens} />
                   ))}
                 </AccordionWrapper>
               </Fragment>

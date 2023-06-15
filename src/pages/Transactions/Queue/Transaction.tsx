@@ -1,5 +1,5 @@
 import { AccordionDetails } from '@aura/safe-react-components'
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useState } from 'react'
 import { formatTimeInWords } from 'src/utils/date'
 import TxAmount from '../components/TxAmount'
 import TxDetail from '../components/TxDetail'
@@ -14,16 +14,21 @@ export default function Transaction({
   transaction,
   hideSeq,
   curSeq,
+  listTokens,
 }: {
   transaction: any
   hideSeq?: boolean
   curSeq: string
+  listTokens?: any
 }) {
   const [txDetailLoaded, setTxDetailLoaded] = useState(false)
 
   if (!transaction) {
     return null
   }
+  const token = listTokens.find(
+    (t) => t.cosmosDenom === transaction.txInfo.denom || t.denom === transaction.txInfo.denom,
+  )
 
   return (
     <NoPaddingAccordion
@@ -42,8 +47,8 @@ export default function Transaction({
           ) : (
             <TxSequence sequence={transaction.txSequence} />
           )}
-          <TxType type={transaction.txInfo.typeUrl} />
-          <TxAmount amount={transaction.txInfo.typeUrl == 'Custom' ? 0 : transaction.txInfo.amount} />
+          <TxType type={transaction.txInfo.displayType ?? transaction.txInfo.typeUrl} />
+          <TxAmount amount={transaction.txInfo.typeUrl == 'Custom' ? 0 : transaction.txInfo.amount} token={token} />
           <TxTime time={transaction.timestamp ? formatTimeInWords(transaction.timestamp) : 'Unknown'} />
           <TxExecutionInfo
             required={transaction.executionInfo.confirmationsRequired}

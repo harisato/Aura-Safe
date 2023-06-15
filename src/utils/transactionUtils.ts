@@ -95,6 +95,7 @@ const makeTransactions = (list: ITransactionListItem[]): MTransactionListItem[] 
           type: 'Transfer',
           typeUrl: tx?.TypeUrl,
           amount: tx?.FinalAmount,
+          denom: tx?.Denom,
           sender: {
             value: tx?.FromAddress,
             name: null,
@@ -110,6 +111,7 @@ const makeTransactions = (list: ITransactionListItem[]): MTransactionListItem[] 
             type: TokenType.NATIVE_COIN,
             value: tx?.Amount?.toString(),
           },
+          displayType: tx?.DisplayType,
         },
       },
     }
