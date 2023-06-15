@@ -60,7 +60,7 @@ export default function Transaction({
         </StyledTransaction>
       </StyledAccordionSummary>
       <AccordionDetails>
-        {txDetailLoaded && <TxDetail transaction={transaction} isHistoryTx={false} />}
+        {txDetailLoaded && <TxDetail transaction={transaction} isHistoryTx={false} token={token} />}
       </AccordionDetails>
     </NoPaddingAccordion>
   )

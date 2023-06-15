@@ -21,9 +21,9 @@ const StyledStatus = styled.div`
     padding: 0;
   }
 `
-export default function TxMsg({ tx, txDetail }) {
+export default function TxMsg({ tx, txDetail, token }) {
   const type = tx.txInfo.typeUrl
-  const amount = formatNativeToken(txDetail.txMessage[0]?.amount || 0)
+  const amount = convertAmount(txDetail.txMessage[0]?.amount || 0, false, token?.decimals)
   const [msg, setMsg] = useState([])
   useEffect(() => {
     if (txDetail?.rawMessage) {
@@ -50,7 +50,7 @@ export default function TxMsg({ tx, txDetail }) {
           <strong>
             Send{' '}
             <span className="token">
-              {convertAmount(JSON.parse(txDetail?.txMessage[0].contractArgs)?.amount || '0', false)}
+              {convertAmount(JSON.parse(txDetail?.txMessage[0].contractArgs)?.amount || '0', false)} {token?.symbol}
             </span>{' '}
             to:
           </strong>
@@ -119,7 +119,11 @@ export default function TxMsg({ tx, txDetail }) {
     return (
       <div className="tx-msg">
         <strong>
-          Send <span className="token">{amount}</span> to:
+          Send{' '}
+          <span className="token">
+            {amount} {token?.symbol}
+          </span>{' '}
+          to:
         </strong>
         <AddressInfo address={txDetail?.txMessage[0]?.toAddress} />
       </div>

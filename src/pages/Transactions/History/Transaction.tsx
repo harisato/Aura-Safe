@@ -41,7 +41,9 @@ export default function Transaction({ transaction, notFirstTx, listTokens }) {
           <TxStatus transaction={transaction} />
         </StyledTransaction>
       </StyledAccordionSummary>
-      <AccordionDetails>{txDetailLoaded && <TxDetail transaction={transaction} isHistoryTx />}</AccordionDetails>
+      <AccordionDetails>
+        {txDetailLoaded && <TxDetail transaction={transaction} isHistoryTx token={token} />}
+      </AccordionDetails>
     </NoPaddingAccordion>
   )
 }
