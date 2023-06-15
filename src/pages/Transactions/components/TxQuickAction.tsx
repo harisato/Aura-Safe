@@ -37,7 +37,10 @@ export default function TxQuickAction({ transaction, curSeq }) {
   const [loading, setLoading] = useState(false)
   const [isWaiting, setIsWaiting] = useState(false)
   const data = useSelector((state: AppReduxState) =>
-    getTransactionByAttribute(state, { attributeValue: transaction.id, attributeName: 'id' }),
+    getTransactionByAttribute(state, {
+      attributeValue: transaction.id ? transaction.id : transaction.auraTxId,
+      attributeName: transaction.id ? 'id' : 'auraTxId',
+    }),
   )
   const dispatch = useDispatch()
 
