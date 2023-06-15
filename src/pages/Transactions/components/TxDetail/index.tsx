@@ -62,11 +62,17 @@ export default function TxDetail({ transaction, isHistoryTx }) {
       </div>
 
       <div className="tx-exe">
-        <TxOwners txDetails={data} />
-        {!data.executor && isOwner && !isHistoryTx && (
-          <div className="tx-action">
-            <TxActions transaction={data} />
-          </div>
+        {transaction.txInfo.displayType !== 'Receive' ? (
+          <>
+            <TxOwners txDetails={data} />
+            {!data.executor && isOwner && !isHistoryTx && (
+              <div className="tx-action">
+                <TxActions transaction={data} />
+              </div>
+            )}
+          </>
+        ) : (
+          <></>
         )}
       </div>
     </TxDetailsContainer>
