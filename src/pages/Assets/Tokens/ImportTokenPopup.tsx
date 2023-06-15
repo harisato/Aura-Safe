@@ -12,6 +12,8 @@ import { getDetailToken } from 'src/services'
 import { isValidAddress } from 'src/utils/isValidAddress'
 import styled from 'styled-components'
 import ic_defIcon from 'src/assets/icons/aura.png'
+import { extractSafeAddress, extractSafeId } from 'src/routes/routes'
+import { fetchMSafe } from 'src/logic/safe/store/actions/fetchSafe'
 
 const Wrap = styled.div`
   width: 480px;
@@ -57,6 +59,8 @@ const ImportTokenPopup = ({ open, onBack, onClose }) => {
   const [token, setToken] = useState<IToken>(defaultToken)
   const { coinConfig, address } = useSelector(currentSafeWithNames)
   const [isVerifiedContract, setIsVerifiedContract] = useState<string | null>(null)
+  const safeAddress = extractSafeAddress()
+  const safeId = extractSafeId() as number
 
   const getContractDetail = async () => {
     setIsVerifiedContract('loading')
@@ -104,6 +108,7 @@ const ImportTokenPopup = ({ open, onBack, onClose }) => {
         coinConfig: newCoinConfig ?? coinConfig,
       }),
     )
+    dispatch(fetchMSafe(safeAddress, safeId))
     onClose()
     setToken(defaultToken)
   }

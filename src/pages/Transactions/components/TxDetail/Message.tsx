@@ -1,11 +1,11 @@
+import { Fragment, useEffect, useState } from 'react'
+import AddressInfo from 'src/components/AddressInfo'
+import { Message } from 'src/components/CustomTransactionMessage/SmallMsg'
+import StatusCard from 'src/components/StatusCard'
 import { MsgTypeUrl } from 'src/logic/providers/constants/constant'
 import { beutifyJson, convertAmount, formatNativeToken } from 'src/utils'
-import AddressInfo from 'src/components/AddressInfo'
-import { Fragment, useEffect, useState } from 'react'
-import { formatDateTime, formatWithSchema } from 'src/utils/date'
-import StatusCard from 'src/components/StatusCard'
+import { formatWithSchema } from 'src/utils/date'
 import styled from 'styled-components'
-import { Message } from 'src/components/CustomTransactionMessage/SmallMsg'
 
 const voteMapping = {
   1: 'Yes',
@@ -41,20 +41,23 @@ export default function TxMsg({ tx, txDetail }) {
     )
   }
   if (type == MsgTypeUrl.ExecuteContract) {
-    // if (txDetail?.txMessage[0].contractFunction == 'transfer') {
-    //   return (
-    //     <div className="tx-msg">
-    //       <strong>
-    //         Send{' '}
-    //         <span className="token">
-    //           {convertAmount(JSON.parse(txDetail?.txMessage[0].contractArgs)?.amount || '0', false)}
-    //         </span>{' '}
-    //         to:
-    //       </strong>
-    //       <AddressInfo address={JSON.parse(txDetail?.txMessage[0].contractArgs)?.recipient} />
-    //     </div>
-    //   )
-    // }
+    if (tx.txInfo.displayType === 'Receive') {
+      return <></>
+    }
+    if (txDetail?.txMessage[0].contractFunction === 'transfer') {
+      return (
+        <div className="tx-msg">
+          <strong>
+            Send{' '}
+            <span className="token">
+              {convertAmount(JSON.parse(txDetail?.txMessage[0].contractArgs)?.amount || '0', false)}
+            </span>{' '}
+            to:
+          </strong>
+          <AddressInfo address={JSON.parse(txDetail?.txMessage[0].contractArgs)?.recipient} />
+        </div>
+      )
+    }
     return (
       <div className="tx-msg">
         <div>
@@ -110,6 +113,9 @@ export default function TxMsg({ tx, txDetail }) {
     )
   }
   if (type == MsgTypeUrl.Send) {
+    if (tx.txInfo.displayType === 'Receive') {
+      return <></>
+    }
     return (
       <div className="tx-msg">
         <strong>
@@ -195,7 +201,9 @@ export default function TxMsg({ tx, txDetail }) {
   }
   return (
     <div>
-      <div className="json-msg" dangerouslySetInnerHTML={{ __html: beutifyJson(JSON.parse(txDetail?.rawMessage)) }} />
+      {txDetail?.rawMessage && (
+        <div className="json-msg" dangerouslySetInnerHTML={{ __html: beutifyJson(JSON.parse(txDetail?.rawMessage)) }} />
+      )}
     </div>
   )
 }

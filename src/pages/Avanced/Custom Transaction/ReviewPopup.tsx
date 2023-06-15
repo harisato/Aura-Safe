@@ -76,6 +76,7 @@ export default function ReviewPopup({ open, setOpen, gasUsed, msg }) {
         msg,
         manualGasLimit || '250000',
         sequence,
+        undefined,
         () => {
           setDisabled(true)
         },
