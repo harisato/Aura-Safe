@@ -72,6 +72,7 @@ const CheckboxWrapper = styled.div`
     margin-left: 8px;
   }
 `
+let updatedListTokens
 function Tokens(props): ReactElement {
   const dispatch = useDispatch()
   const [open, setOpen] = useState(false)
@@ -95,11 +96,13 @@ function Tokens(props): ReactElement {
   )
 
   useEffect(() => {
-    setListToken(hideZeroBalance ? tokenConfig.filter((token) => token.balance.tokenBalance > 0) : tokenConfig)
+    updatedListTokens = hideZeroBalance ? tokenConfig.filter((token) => token.balance.tokenBalance > 0) : tokenConfig
+    setListToken(updatedListTokens)
   }, [coinConfig, safeTokens, hideZeroBalance])
+
   const handleSearch = (event: ChangeEvent<HTMLInputElement>) => {
     const searchTerm = event.target.value.toLowerCase()
-    const filteredTokens = tokenConfig?.filter((token) => {
+    const filteredTokens = updatedListTokens?.filter((token) => {
       return token?.name?.toLowerCase().includes(searchTerm) || token?.address?.toLowerCase().includes(searchTerm)
     })
     setListToken(filteredTokens)
