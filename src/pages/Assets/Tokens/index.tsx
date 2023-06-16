@@ -80,6 +80,7 @@ function Tokens(props): ReactElement {
   const [keepMountedManagePopup, setKeepMoutedManagePopup] = useState(true)
   const [importTokenPopup, setImportTokenPopup] = useState(false)
   const [selectedToken, setSelectedToken] = useState<string>('')
+  const [search, setSearch] = useState<string>('')
   const safeTokens: any = useSelector(extendedSafeTokensSelector)
   const { address, coinConfig, isHideZeroBalance } = useSelector(currentSafeWithNames)
   const [hideZeroBalance, setHideZeroBalance] = useState(isHideZeroBalance)
@@ -97,11 +98,16 @@ function Tokens(props): ReactElement {
 
   useEffect(() => {
     updatedListTokens = hideZeroBalance ? tokenConfig.filter((token) => token.balance.tokenBalance > 0) : tokenConfig
-    setListToken(updatedListTokens)
+    setListToken(
+      updatedListTokens?.filter((token) => {
+        return token?.name?.toLowerCase().includes(search) || token?.address?.toLowerCase().includes(search)
+      }),
+    )
   }, [coinConfig, safeTokens, hideZeroBalance])
 
   const handleSearch = (event: ChangeEvent<HTMLInputElement>) => {
     const searchTerm = event.target.value.toLowerCase()
+    setSearch(searchTerm)
     const filteredTokens = updatedListTokens?.filter((token) => {
       return token?.name?.toLowerCase().includes(searchTerm) || token?.address?.toLowerCase().includes(searchTerm)
     })
