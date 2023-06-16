@@ -15,7 +15,7 @@ const MenuItemWrapper = styled.div`
     margin-right: 8px;
   }
 `
-export default function TokenSelect({ selectedToken, setSelectedToken, disabled = false }) {
+export default function TokenSelect({ selectedToken, setSelectedToken, disabled = false, onlyNativeToken = false }) {
   const tokenList: any = useSelector(extendedSafeTokensSelector)
   const { coinConfig } = useSelector(currentSafeWithNames)
   const tokenConfig = tokenList.filter((token) => {
@@ -52,6 +52,9 @@ export default function TokenSelect({ selectedToken, setSelectedToken, disabled 
       }}
     >
       {tokenConfig.map((token: any, index: any) => {
+        if (onlyNativeToken && token.type !== 'native') {
+          return null
+        }
         return (
           <MenuItem key={index} value={token.address}>
             <MenuItemWrapper>

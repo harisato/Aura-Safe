@@ -21,6 +21,7 @@ import Header from '../Header'
 import CreateTxPopup from './CreateTxPopup'
 import { BodyWrapper, Footer, PopupWrapper } from './styles'
 import Loader from 'src/components/Loader'
+import { Token } from 'src/logic/tokens/store/model/token'
 
 export type RecipientProps = {
   amount: string
@@ -46,13 +47,13 @@ const MultiSendPopup = ({ open, onClose, onOpen }: SendFundsProps): ReactElement
   const [addressValidateErrorMsg, setAddressValidateErrorMsg] = useState('')
   const [addressValidateSuccessMsg, setAddressValidateSuccessMsg] = useState('')
   const [amountValidateMsg, setAmountValidateMsg] = useState('')
-  const [selectedToken, setSelectedToken] = useState('')
+  const [selectedToken, setSelectedToken] = useState<Token | undefined>(undefined)
   const [rawRecipient, setRawRecipient] = useState('')
   const [totalAmount, setTotalAmount] = useState('0')
   const [balance, setBalance] = useState(0)
 
   useEffect(() => {
-    const bl = tokens.find((token) => token.address == selectedToken)?.balance?.tokenBalance || 0
+    const bl = tokens.find((token) => token.address == selectedToken?.address)?.balance?.tokenBalance || 0
     setBalance(+bl)
   }, [selectedToken])
 
@@ -74,7 +75,7 @@ const MultiSendPopup = ({ open, onClose, onOpen }: SendFundsProps): ReactElement
       return
     }
     onClose()
-    setSelectedToken('')
+    setSelectedToken(undefined)
     clearData()
   }
 
@@ -175,7 +176,7 @@ const MultiSendPopup = ({ open, onClose, onOpen }: SendFundsProps): ReactElement
           <Header onClose={() => handleClose()} subTitle="Step 1 of 2" title="Multi-send" />
           <BodyWrapper>
             <div className="token-selection">
-              <TokenSelect selectedToken={selectedToken} setSelectedToken={setSelectedToken} />
+              <TokenSelect selectedToken={selectedToken?.address} setSelectedToken={setSelectedToken} onlyNativeToken />
             </div>
             <Gap height={16} />
             <div className="label">Add recipients & amounts</div>
@@ -201,7 +202,7 @@ const MultiSendPopup = ({ open, onClose, onOpen }: SendFundsProps): ReactElement
                         <StyledTableCell align="left">{row.address}</StyledTableCell>
                         <StyledTableCell align="left">{row.amount}</StyledTableCell>
                       </StyledTableRow>
-                    ) 
+                    )
                   })}
                 </DenseTable>
               </>
@@ -240,7 +241,7 @@ const MultiSendPopup = ({ open, onClose, onOpen }: SendFundsProps): ReactElement
       </Popup>
       <CreateTxPopup
         recipient={recipient}
-        selectedToken={tokens.find((t) => t.address == selectedToken)}
+        selectedToken={tokens.find((t) => t.address == selectedToken?.address)}
         open={createTxPopupOpen}
         handleClose={handleClose}
         gasUsed={String(Math.round(gasUsed * 1.3))}
