@@ -13,12 +13,15 @@ export const beutifyJson = (data) => {
   const formattedJson = json.replace(
     /("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g,
     function (match) {
-      var cls = 'number'
+      let cls = 'number'
       if (/^"/.test(match)) {
         if (/:$/.test(match)) {
           cls = 'key'
         } else {
           cls = 'string'
+          if (match.length > 900) {
+            match = match.slice(0, 900) + '..."'
+          }
         }
       } else if (/true|false/.test(match)) {
         cls = 'boolean'
