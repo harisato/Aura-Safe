@@ -387,7 +387,7 @@ function Staking(props): ReactElement {
         dstValidator={valueDelegate}
         amount={amount}
         listReward={listReward}
-        gasUsed={Math.round(gasUsed * 1.3)}
+        gasUsed={Math.round(gasUsed * 1.6)}
       />
 
       <ConnectWalletModal isOpen={connectWalletState.showConnect} onClose={onConnectWalletHide}></ConnectWalletModal>

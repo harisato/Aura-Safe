@@ -177,19 +177,42 @@ export const fetchMSafeTokens =
       if (safeInfo.assets.CW20.asset.length > 0) {
         safeInfo.assets.CW20.asset.forEach((data) => {
           const tokenDetail = listTokens.find((token) => token.address == data.contract_address)
-          balances.push({
-            tokenBalance: `${humanReadableValue(+data?.balance > 0 ? data?.balance : 0, tokenDetail?.decimals || 6)}`,
-            tokenAddress: tokenDetail?.address,
-            decimals: tokenDetail?.decimals || 6,
-            name: tokenDetail?.name,
-            logoUri:
-              tokenDetail?.icon ||
-              tokenDetail?.logoUri ||
-              'https://aura-nw.github.io/token-registry/images/undefined.png',
-            symbol: tokenDetail?.symbol,
-            denom: tokenDetail?.symbol,
-            type: 'CW20',
-          })
+          if (tokenDetail) {
+            balances.push({
+              tokenBalance: `${humanReadableValue(+data?.balance > 0 ? data?.balance : 0, tokenDetail?.decimals || 6)}`,
+              tokenAddress: tokenDetail?.address,
+              decimals: tokenDetail?.decimals || 6,
+              name: tokenDetail?.name,
+              logoUri:
+                tokenDetail?.icon ||
+                tokenDetail?.logoUri ||
+                'https://aura-nw.github.io/token-registry/images/undefined.png',
+              symbol: tokenDetail?.symbol,
+              denom: tokenDetail?.symbol,
+              type: 'CW20',
+            })
+          } else {
+            listTokens.forEach((token) => {
+              if (token.tokenType !== 'ibc' && token.tokenType !== 'native') {
+                const isTokenInAsset = safeInfo.assets.CW20.asset.some(
+                  (data) => data.contract_address === token.address,
+                )
+                if (!isTokenInAsset) {
+                  balances.push({
+                    tokenBalance: `${humanReadableValue(0, tokenDetail?.decimals || 6)}`,
+                    tokenAddress: token?.address,
+                    decimals: token?.decimals || 6,
+                    name: token?.name,
+                    logoUri:
+                      token?.icon || token?.logoUri || 'https://aura-nw.github.io/token-registry/images/undefined.png',
+                    symbol: token?.symbol,
+                    denom: token?.symbol,
+                    type: 'CW20',
+                  })
+                }
+              }
+            })
+          }
         })
       }
 
