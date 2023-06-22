@@ -1,19 +1,21 @@
 import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import ic_defIcon from 'src/assets/icons/aura.png'
 import { FilledButton, OutlinedNeutralButton } from 'src/components/Button'
 import Gap from 'src/components/Gap'
 import TextField from 'src/components/Input/TextField'
 import Loader from 'src/components/Loader'
 import { Popup } from 'src/components/Popup'
 import Header from 'src/components/Popup/Header'
+import { NOTIFICATIONS, enhanceSnackbarForAction } from 'src/logic/notifications'
+import enqueueSnackbar from 'src/logic/notifications/store/actions/enqueueSnackbar'
+import { fetchMSafe } from 'src/logic/safe/store/actions/fetchSafe'
 import { updateSafe } from 'src/logic/safe/store/actions/updateSafe'
 import { currentSafeWithNames } from 'src/logic/safe/store/selectors'
+import { extractSafeAddress, extractSafeId } from 'src/routes/routes'
 import { getDetailToken } from 'src/services'
 import { isValidAddress } from 'src/utils/isValidAddress'
 import styled from 'styled-components'
-import ic_defIcon from 'src/assets/icons/aura.png'
-import { extractSafeAddress, extractSafeId } from 'src/routes/routes'
-import { fetchMSafe } from 'src/logic/safe/store/actions/fetchSafe'
 
 const Wrap = styled.div`
   width: 480px;
@@ -54,13 +56,26 @@ const defaultToken = {
   logoUri: ic_defIcon,
 }
 
-const ImportTokenPopup = ({ open, onBack, onClose }) => {
+type IImportTokenPopup = {
+  open: boolean
+  onBack: () => void
+  onClose: () => void
+  onImport?: () => void
+  addressContract?: any
+}
+const ImportTokenPopup = ({ open, onBack, onClose, addressContract, onImport }: IImportTokenPopup) => {
   const dispatch = useDispatch()
   const [token, setToken] = useState<IToken>(defaultToken)
   const { coinConfig, address } = useSelector(currentSafeWithNames)
   const [isVerifiedContract, setIsVerifiedContract] = useState<string | null>(null)
   const safeAddress = extractSafeAddress()
   const safeId = extractSafeId() as number
+
+  useEffect(() => {
+    if (addressContract) {
+      setToken({ ...token, address: addressContract })
+    }
+  }, [])
 
   const getContractDetail = async () => {
     setIsVerifiedContract('loading')
@@ -109,6 +124,8 @@ const ImportTokenPopup = ({ open, onBack, onClose }) => {
       }),
     )
     dispatch(fetchMSafe(safeAddress, safeId))
+    onImport && onImport()
+    dispatch(enqueueSnackbar(enhanceSnackbarForAction(NOTIFICATIONS.IMPORT_TOKEN_SUCCESS)))
     onClose()
     setToken(defaultToken)
   }

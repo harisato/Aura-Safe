@@ -64,6 +64,7 @@ enum NOTIFICATION_IDS {
   SOMETHING_WENT_WRONG,
   TX_REJECTED_MSG_SUCCESS,
   TX_DELETED_MSG_SUCCESS,
+  IMPORT_TOKEN_SUCCESS,
 }
 
 export const NOTIFICATIONS: Record<NotificationId, Notification> = {
@@ -274,5 +275,11 @@ export const NOTIFICATIONS: Record<NotificationId, Notification> = {
   SAFE_CREATION_DUPLICATED: {
     message: 'Duplicate safe information!',
     options: { variant: ERROR, preventDuplicate: false, autoHideDuration: shortDuration },
+  },
+
+  //IMPORT CW_20
+  IMPORT_TOKEN_SUCCESS: {
+    message: 'Import token successfully!',
+    options: { variant: SUCCESS, persist: false, autoHideDuration: shortDuration },
   },
 }

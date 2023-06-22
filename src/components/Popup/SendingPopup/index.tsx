@@ -223,7 +223,7 @@ const SendingPopup = ({ open, onClose, onOpen, defaultToken }: SendFundsProps): 
         amount={amount}
         open={createTxPopupOpen}
         handleClose={handleClose}
-        gasUsed={String(Math.round(gasUsed * 1.3))}
+        gasUsed={String(Math.round(gasUsed * 2))}
       />
     </>
   )

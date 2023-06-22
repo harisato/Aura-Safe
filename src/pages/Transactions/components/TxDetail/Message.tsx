@@ -1,5 +1,6 @@
 import { Fragment, useEffect, useState } from 'react'
 import AddressInfo from 'src/components/AddressInfo'
+import { FilledButton } from 'src/components/Button'
 import { Message } from 'src/components/CustomTransactionMessage/SmallMsg'
 import StatusCard from 'src/components/StatusCard'
 import { MsgTypeUrl } from 'src/logic/providers/constants/constant'
@@ -21,7 +22,18 @@ const StyledStatus = styled.div`
     padding: 0;
   }
 `
-export default function TxMsg({ tx, txDetail, token }) {
+
+const BtnImport = ({ onImport }) => {
+  return (
+    <>
+      <FilledButton style={{ padding: '0px 6px', fontSize: '10px', borderRadius: '6px' }} onClick={onImport}>
+        Import
+      </FilledButton>
+    </>
+  )
+}
+export default function TxMsg({ tx, txDetail, token, onImport }) {
+  const isTokenNotExist = token?.isNotExist
   const type = tx.txInfo.typeUrl
   const amount = convertAmount(txDetail.txMessage[0]?.amount || 0, false, token?.decimals)
   const [msg, setMsg] = useState([])
@@ -50,7 +62,8 @@ export default function TxMsg({ tx, txDetail, token }) {
           <strong>
             Send{' '}
             <span className="token">
-              {convertAmount(JSON.parse(txDetail?.txMessage[0].contractArgs)?.amount || '0', false)} {token?.symbol}
+              {convertAmount(JSON.parse(txDetail?.txMessage[0].contractArgs)?.amount || '0', false)} {token?.symbol}{' '}
+              {isTokenNotExist ? <BtnImport onImport={onImport} /> : <></>}
             </span>{' '}
             to:
           </strong>
@@ -91,7 +104,11 @@ export default function TxMsg({ tx, txDetail, token }) {
     return (
       <div className="tx-msg">
         <strong>
-          Delegate <span className="token">{amount}</span> to:
+          Delegate{' '}
+          <span className="token">
+            {amount} {isTokenNotExist ? <BtnImport onImport={onImport} /> : <></>}
+          </span>{' '}
+          to:
         </strong>
         <AddressInfo address={txDetail?.txMessage[0]?.validatorAddress} />
       </div>
@@ -101,7 +118,11 @@ export default function TxMsg({ tx, txDetail, token }) {
     return (
       <div className="tx-msg">
         <strong>
-          Undelegate <span className="token">{amount}</span> from:
+          Undelegate{' '}
+          <span className="token">
+            {amount} {isTokenNotExist ? <BtnImport onImport={onImport} /> : <></>}
+          </span>{' '}
+          from:
         </strong>
         <AddressInfo address={txDetail?.txMessage[0]?.validatorAddress} />
         {txDetail.autoClaimAmount ? (
@@ -121,7 +142,7 @@ export default function TxMsg({ tx, txDetail, token }) {
         <strong>
           Send{' '}
           <span className="token">
-            {amount} {token?.symbol}
+            {amount} {token?.symbol} {isTokenNotExist ? <BtnImport onImport={onImport} /> : <></>}
           </span>{' '}
           to:
         </strong>
@@ -136,7 +157,11 @@ export default function TxMsg({ tx, txDetail, token }) {
     return (
       <div className="tx-msg">
         <strong>
-          Send total of <span className="token">{formatNativeToken(totalAmount)}</span> to:
+          Send total of{' '}
+          <span className="token">
+            {formatNativeToken(totalAmount)} {isTokenNotExist ? <BtnImport onImport={onImport} /> : <></>}
+          </span>{' '}
+          to:
         </strong>
         {txDetail?.txMessage[0].outputs.map((recipient, index) => (
           <div className="recipient" key={index}>
@@ -153,7 +178,11 @@ export default function TxMsg({ tx, txDetail, token }) {
     return (
       <div className="tx-msg">
         <strong>
-          Redelegate <span className="token">{amount}</span> from:
+          Redelegate{' '}
+          <span className="token">
+            {amount} {isTokenNotExist ? <BtnImport onImport={onImport} /> : <></>}
+          </span>{' '}
+          from:
         </strong>
         <AddressInfo address={txDetail?.txMessage[0]?.validatorSrcAddress} />
         <strong>To:</strong>
@@ -171,7 +200,10 @@ export default function TxMsg({ tx, txDetail, token }) {
       <div className="tx-msg">
         <strong>
           Vote <span>{voteMapping[txDetail?.txMessage[0]?.voteOption]}</span> on Proposal{' '}
-          <span className="token">{`#${txDetail?.txMessage[0]?.proposalId}`}</span>:
+          <span className="token">
+            {`#${txDetail?.txMessage[0]?.proposalId}`} {isTokenNotExist ? <BtnImport onImport={onImport} /> : <></>}
+          </span>
+          :
         </strong>
         <p>{txDetail?.extraDetails?.proposalDetail?.title}</p>
         <strong>Voting end date:</strong>
@@ -194,7 +226,11 @@ export default function TxMsg({ tx, txDetail, token }) {
                 <AddressInfo address={msg?.validatorAddress} />
                 {msg?.amount && (
                   <strong>
-                    Amount: <span className="token">{formatNativeToken(msg?.amount || 0)}</span>
+                    Amount:{' '}
+                    <span className="token">
+                      {formatNativeToken(msg?.amount || 0)}{' '}
+                      {isTokenNotExist ? <BtnImport onImport={onImport} /> : <></>}
+                    </span>
                   </strong>
                 )}
               </Fragment>

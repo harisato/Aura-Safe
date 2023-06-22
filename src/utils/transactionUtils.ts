@@ -112,6 +112,7 @@ const makeTransactions = (list: ITransactionListItem[]): MTransactionListItem[] 
             value: tx?.Amount?.toString(),
           },
           displayType: tx?.DisplayType,
+          contractAddress: tx?.ContractAddress,
         },
       },
     }

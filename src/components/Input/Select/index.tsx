@@ -122,7 +122,7 @@ const Select = ({
           setIsOpen(true)
         }}
         disableUnderline
-        IconComponent={isOpen ? CaretUpIcon : CaretDownIcon}
+        IconComponent={!disabled ? (isOpen ? CaretUpIcon : CaretDownIcon) : () => null}
         MenuProps={menuProps}
         classes={{
           select: classes.select,
