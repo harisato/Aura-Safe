@@ -85,7 +85,7 @@ function CustomTransaction(props): ReactElement {
           </FilledButton>
         </div>
       </Wrap>
-      <ReviewPopup open={open} setOpen={setOpen} gasUsed={Math.round(gasUsed * 1.6)} msg={message} />
+      <ReviewPopup open={open} setOpen={setOpen} gasUsed={Math.round(gasUsed * 2)} msg={message} />
     </>
   )
 }

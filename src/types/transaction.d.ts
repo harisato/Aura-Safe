@@ -60,6 +60,7 @@ export interface ITransactionListItem {
   FinalAmount?: number
   Timestamp?: number
   DisplayType?: string
+  ContractAddress?: string
 }
 
 export interface ISignature {

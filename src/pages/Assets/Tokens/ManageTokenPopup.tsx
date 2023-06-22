@@ -79,9 +79,9 @@ export default function ManageTokenPopup({
     const searchTerm = event.target.value.toLowerCase()
     const filteredTokens = coinConfig?.filter((token) => {
       return (
-        token?.symbol?.toLowerCase().includes(searchTerm) ||
-        token?.name?.toLowerCase().includes(searchTerm) ||
-        token?.address?.toLowerCase().includes(searchTerm)
+        token?.symbol?.toLowerCase().includes(searchTerm.trim()) ||
+        token?.name?.toLowerCase().includes(searchTerm.trim()) ||
+        token?.address?.toLowerCase().includes(searchTerm.trim())
       )
     })
     setConfig(filteredTokens)

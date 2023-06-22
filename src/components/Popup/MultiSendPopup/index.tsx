@@ -244,7 +244,7 @@ const MultiSendPopup = ({ open, onClose, onOpen }: SendFundsProps): ReactElement
         selectedToken={tokens.find((t) => t.address == selectedToken?.address)}
         open={createTxPopupOpen}
         handleClose={handleClose}
-        gasUsed={String(Math.round(gasUsed * 1.6))}
+        gasUsed={String(Math.round(gasUsed * 2))}
       />
     </>
   )

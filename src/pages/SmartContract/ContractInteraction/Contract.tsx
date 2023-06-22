@@ -159,7 +159,7 @@ function Contract({ contractData }): ReactElement {
       <ReviewPopup
         open={open}
         setOpen={setOpen}
-        gasUsed={Math.round(gasUsed * 1.6)}
+        gasUsed={Math.round(gasUsed * 2)}
         data={formData}
         contractData={{
           ...contractData,

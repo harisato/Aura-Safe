@@ -109,7 +109,10 @@ function Tokens(props): ReactElement {
     const searchTerm = event.target.value.toLowerCase()
     setSearch(searchTerm)
     const filteredTokens = updatedListTokens?.filter((token) => {
-      return token?.name?.toLowerCase().includes(searchTerm) || token?.address?.toLowerCase().includes(searchTerm)
+      return (
+        token?.name?.toLowerCase().includes(searchTerm.trim()) ||
+        token?.address?.toLowerCase().includes(searchTerm.trim())
+      )
     })
     setListToken(filteredTokens)
   }
