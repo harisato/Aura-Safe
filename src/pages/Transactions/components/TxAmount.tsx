@@ -1,4 +1,5 @@
 import { getNativeCurrency } from 'src/config'
+import ListIcon from 'src/layout/Sidebar/ListIcon'
 import { convertAmount } from 'src/utils'
 
 type TxAmountProps = {
@@ -11,9 +12,14 @@ export default function TxAmount({ amount = 0, token }: TxAmountProps) {
     <div className="tx-amount">
       {amount ? (
         <>
-          <img className="native-token-img" src={token?.logoUri ?? nativeCurrency.logoUri} alt="native-url-icon" />
+          {token?.isNotExist ? (
+            <ListIcon type="assestAura" />
+          ) : (
+            <img className="native-token-img" src={token?.logoUri ?? nativeCurrency.logoUri} alt="native-url-icon" />
+          )}
+
           <p>
-            {convertAmount(amount, false, token?.decimals)} {token?.symbol}
+            {convertAmount(amount, false, token?.decimals)} {token?.symbol ?? token?.coinDenom}
           </p>
         </>
       ) : (

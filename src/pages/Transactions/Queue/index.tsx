@@ -1,9 +1,15 @@
 import { Loader, Title } from '@aura/safe-react-components'
-import { ReactElement, createContext, useState, Fragment, useEffect } from 'react'
+import { Fragment, ReactElement, createContext, useEffect, useState } from 'react'
 
-import { InfiniteScroll, INFINITE_SCROLL_CONTAINER } from 'src/components/InfiniteScroll'
+import { useDispatch, useSelector } from 'react-redux'
+import NoTransactionsImage from 'src/assets/icons/no-transactions.svg'
 import Img from 'src/components/layout/Img'
+import { fetchMSafe } from 'src/logic/safe/store/actions/fetchSafe'
+import { currentSafeWithNames } from 'src/logic/safe/store/selectors'
+import { extractSafeAddress, extractSafeId } from 'src/routes/routes'
+import { useQuery } from 'src/utils'
 import { usePagedQueuedTransactions } from '../../../utils/hooks/usePagedQueuedTransactions'
+import TxActionModal from '../TxActionModal'
 import {
   AccordionWrapper,
   Centered,
@@ -11,15 +17,7 @@ import {
   NoTransactions,
   ScrollableTransactionsContainer,
 } from '../styled'
-import NoTransactionsImage from 'src/assets/icons/no-transactions.svg'
 import Transaction from './Transaction'
-import TxActionModal from '../TxActionModal'
-import { currentSafeWithNames } from 'src/logic/safe/store/selectors'
-import { useDispatch, useSelector } from 'react-redux'
-import { fetchMSafe } from 'src/logic/safe/store/actions/fetchSafe'
-import { extractSafeAddress, extractSafeId } from 'src/routes/routes'
-import { useQuery } from 'src/utils'
-import { extendedSafeTokensSelector } from 'src/utils/safeUtils/selector'
 
 export const TxSignModalContext = createContext<{
   txId: string
@@ -37,8 +35,8 @@ export const TxSignModalContext = createContext<{
   setOpen: () => {},
 })
 export default function QueueTransactions(): ReactElement {
-  const { nextQueueSeq, sequence: currentSequence } = useSelector(currentSafeWithNames)
-  const { count, isLoading, hasMore, next, transactions } = usePagedQueuedTransactions()
+  const { sequence: currentSequence, coinConfig } = useSelector(currentSafeWithNames)
+  const { count, isLoading, transactions } = usePagedQueuedTransactions()
   const [txId, setTxId] = useState<string>('')
   const [action, setAction] = useState<string>('')
   const [open, setOpen] = useState<boolean>(false)
@@ -46,7 +44,6 @@ export default function QueueTransactions(): ReactElement {
   const dispatch = useDispatch()
   const safeAddress = extractSafeAddress()
   const safeId = extractSafeId() as number
-  const listTokens: any = useSelector(extendedSafeTokensSelector)
   const queryParams = useQuery()
   const transactionId = queryParams.get('transactionId')
 
@@ -111,7 +108,7 @@ export default function QueueTransactions(): ReactElement {
                   <p className="section-title">{`Queued - Transaction with sequence ${curSeq} needs to be executed first`}</p>
                 ) : null}
                 <AccordionWrapper>
-                  <Transaction transaction={txs[0]} curSeq={curSeq} listTokens={listTokens} />
+                  <Transaction transaction={txs[0]} curSeq={curSeq} listTokens={coinConfig} />
                 </AccordionWrapper>
               </Fragment>
             ) : (
@@ -130,7 +127,7 @@ export default function QueueTransactions(): ReactElement {
                     </p>
                   </div>
                   {txs.map((tx, index) => (
-                    <Transaction hideSeq={true} key={tx.id} transaction={tx} curSeq={curSeq} listTokens={listTokens} />
+                    <Transaction hideSeq={true} key={tx.id} transaction={tx} curSeq={curSeq} listTokens={coinConfig} />
                   ))}
                 </AccordionWrapper>
               </Fragment>
