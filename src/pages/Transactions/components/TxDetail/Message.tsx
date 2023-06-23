@@ -62,8 +62,8 @@ export default function TxMsg({ tx, txDetail, token, onImport }) {
           <strong>
             Send{' '}
             <span className="token">
-              {convertAmount(JSON.parse(txDetail?.txMessage[0].contractArgs)?.amount || '0', false)} {token?.symbol}{' '}
-              {isTokenNotExist ? <BtnImport onImport={onImport} /> : <></>}
+              {convertAmount(JSON.parse(txDetail?.txMessage[0].contractArgs)?.amount || '0', false)}{' '}
+              {token?.symbol ?? token?.coinDenom} {isTokenNotExist ? <BtnImport onImport={onImport} /> : <></>}
             </span>{' '}
             to:
           </strong>
@@ -142,7 +142,7 @@ export default function TxMsg({ tx, txDetail, token, onImport }) {
         <strong>
           Send{' '}
           <span className="token">
-            {amount} {token?.symbol} {isTokenNotExist ? <BtnImport onImport={onImport} /> : <></>}
+            {amount} {token?.symbol ?? token?.coinDenom} {isTokenNotExist ? <BtnImport onImport={onImport} /> : <></>}
           </span>{' '}
           to:
         </strong>

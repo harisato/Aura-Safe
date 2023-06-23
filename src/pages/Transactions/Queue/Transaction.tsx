@@ -12,7 +12,6 @@ import TxTime from '../components/TxTime'
 import TxType from '../components/TxType'
 import { NoPaddingAccordion, StyledAccordionSummary, StyledTransaction } from '../styled'
 
-let defToken
 export default function Transaction({
   transaction,
   hideSeq,
@@ -25,13 +24,14 @@ export default function Transaction({
   listTokens?: any
 }) {
   const [txDetailLoaded, setTxDetailLoaded] = useState(false)
+  let defToken
   if (transaction.txInfo.contractAddress) {
     defToken = listTokens.find((t) => t.address === transaction.txInfo.contractAddress)
   } else {
     defToken = listTokens.find(
       (t) =>
         t.denom === transaction.txInfo.denom ||
-        t.minCoinDenom === transaction.txInfo.denom ||
+        t.symbol === transaction.txInfo.denom ||
         t.cosmosDenom === transaction.txInfo.denom,
     )
   }
