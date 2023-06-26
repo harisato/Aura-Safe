@@ -62,7 +62,7 @@ export default function TxMsg({ tx, txDetail, token, onImport }) {
           <strong>
             Send{' '}
             <span className="token">
-              {convertAmount(JSON.parse(txDetail?.txMessage[0].contractArgs)?.amount || '0', false)}{' '}
+              {convertAmount(JSON.parse(txDetail?.txMessage[0].contractArgs)?.amount || '0', false, token?.decimals)}{' '}
               {token?.symbol ?? token?.coinDenom} {isTokenNotExist ? <BtnImport onImport={onImport} /> : <></>}
             </span>{' '}
             to:
