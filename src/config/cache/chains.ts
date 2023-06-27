@@ -11,7 +11,33 @@ export const getChains = (): ChainInfo[] => chains
 
 export const loadChains = async () => {
   const networkList: ChainInfo[] = await getMChainsConfig();
-  chains = networkList
+  chains = networkList.map((chain) => {
+    if (chain.chainId.includes('euphoria')) {
+      return {
+        ...chain,
+        environment: 'euphoria',
+      }
+    }
+    if (chain.chainId.includes('serenity')) {
+      return {
+        ...chain,
+        environment: 'serenity',
+      }
+    }
+    if (chain.chainId.includes('aura-testnet')) {
+      return {
+        ...chain,
+        environment: 'auratestnet',
+      }
+    }
+    if (chain.chainId.includes('xstaxy')) {
+      return {
+        ...chain,
+        environment: 'xstaxy',
+      }
+    }
+    return chain
+  })
   // const { results = [] } = await getChainsConfig(GATEWAY_URL, { limit: 100 })
   // chains = results
   // Set the initail web3 provider after loading chains
