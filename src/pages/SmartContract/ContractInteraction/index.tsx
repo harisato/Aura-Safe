@@ -39,8 +39,8 @@ function ContractInteraction(props): ReactElement {
     setIsVerifiedContract('loading')
     const chainInfo = getChainInfo() as any
     const { data } = await getContract(contractAddress)
-    const cData = data[chainInfo.environment].smart_contract[0].code.code_id_verifications[0]
-    const verification = cData.verification_status == 'SUCCESS'
+    const cData = data[chainInfo.environment]?.smart_contract[0]?.code?.code_id_verifications[0]
+    const verification = cData?.verification_status == 'SUCCESS'
     if (cData && (isValidAbi == 'false' || isValidAbi == null)) {
       setContractData({
         contractAddress: contractAddress,
