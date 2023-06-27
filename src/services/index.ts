@@ -10,6 +10,7 @@ import { ICreateSafeTransaction, ITransactionListItem, ITransactionListQuery } f
 import { IMSafeInfo, IMSafeResponse, OwnedMSafes } from '../types/safe'
 
 let baseUrl = ''
+let baseIndexerUrl = 'https://indexer-v2.dev.aurascan.io/api/v1/graphiql'
 let githubPageTokenRegistryUrl = ''
 let env = 'development'
 
@@ -280,8 +281,30 @@ export async function getProposalDetail(
 ): Promise<IResponse<IProposal>> {
   return axios.get(`${baseUrl}/gov/${internalChainId}/proposals/${proposalId}`).then((res) => res.data)
 }
-export async function getContract(contractAddress: string, internalChainId: any): Promise<IResponse<any>> {
-  return axios.get(`${baseUrl}/contract/${contractAddress}?internalChainId=${internalChainId}`).then((res) => res.data)
+export async function getContract(contractAddress: string): Promise<IResponse<any>> {
+  const chainInfo = getChainInfo() as any
+  return axios
+    .post(baseIndexerUrl, {
+      query: `query GetContractVerificationStatus($address: String = "") {
+        ${chainInfo.environment || ''} {
+          smart_contract(where: {address: {_eq: $address}}) {
+            code {
+              code_id_verifications {
+                compiler_version
+                verified_at
+                verification_status
+                execute_msg_schema
+              }
+            }
+          }
+        }
+      }`,
+      variables: {
+        address: contractAddress,
+      },
+      operationName: 'GetContractVerificationStatus',
+    })
+    .then((res) => res.data)
 }
 
 export async function getTokenDetail() {
