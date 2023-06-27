@@ -284,7 +284,7 @@ export async function getProposalDetail(
 export async function getContract(contractAddress: string): Promise<IResponse<any>> {
   const chainInfo = getChainInfo() as any
   return axios
-    .post(chainInfo.indexerurl, {
+    .post(chainInfo.indexerUrl, {
       query: `query GetContractVerificationStatus($address: String = "") {
         ${chainInfo.environment || ''} {
           smart_contract(where: {address: {_eq: $address}}) {
