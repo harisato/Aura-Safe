@@ -260,7 +260,7 @@ const SafeListItem = ({
       <ListItemSecondaryAction>
         {nativeBalance ? (
           <StyledText size="lg">
-            {formatAmount(nativeBalance)} {nativeCurrencySymbol}
+            {+nativeBalance > 0 ? formatAmount(nativeBalance) : 0} {nativeCurrencySymbol}
           </StyledText>
         ) : showAddSafeLink ? (
           <StyledButton onClick={handleLoadSafe} size="md" variant="outlined">
