@@ -1,11 +1,14 @@
 import { Fragment, useEffect, useState } from 'react'
+import { useSelector } from 'react-redux'
 import AddressInfo from 'src/components/AddressInfo'
 import { FilledButton } from 'src/components/Button'
 import { Message } from 'src/components/CustomTransactionMessage/SmallMsg'
 import StatusCard from 'src/components/StatusCard'
 import { MsgTypeUrl } from 'src/logic/providers/constants/constant'
+import { Token } from 'src/logic/tokens/store/model/token'
 import { beutifyJson, convertAmount, formatNativeToken } from 'src/utils'
 import { formatWithSchema } from 'src/utils/date'
+import { extendedSafeTokensSelector } from 'src/utils/safeUtils/selector'
 import styled from 'styled-components'
 
 const voteMapping = {
@@ -36,7 +39,9 @@ export default function TxMsg({ tx, txDetail, token, onImport }) {
   const isTokenNotExist = token?.isNotExist
   const type = tx.txInfo.typeUrl
   const amount = convertAmount(txDetail.txMessage[0]?.amount || 0, false, token?.decimals)
-  const [msg, setMsg] = useState([])
+  const [msg, setMsg] = useState<any[]>([])
+  const tokenList = useSelector(extendedSafeTokensSelector) as unknown as Token[]
+
   useEffect(() => {
     if (txDetail?.rawMessage) {
       setMsg(JSON.parse(txDetail?.rawMessage))
@@ -97,6 +102,19 @@ export default function TxMsg({ tx, txDetail, token, onImport }) {
               </div>
             </div>
           ))}
+        <div className="function-name">Transaction funds:</div>
+        {msg[0]?.value?.funds?.map((fund, index) => {
+          const foundToken = tokenList.find((token) => token.cosmosDenom === fund.denom || token.denom === fund.denom)
+          if (foundToken) {
+            return (
+              <div key={index}>
+                <p>
+                  {convertAmount(fund.amount, false, +foundToken?.decimals)} {foundToken.symbol}
+                </p>
+              </div>
+            )
+          }
+        })}
       </div>
     )
   }

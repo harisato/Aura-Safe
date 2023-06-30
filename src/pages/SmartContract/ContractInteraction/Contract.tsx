@@ -6,16 +6,16 @@ import JsonschemaForm from 'src/components/JsonschemaForm'
 import { IFund } from 'src/components/JsonschemaForm/FundForm'
 import { makeSchemaInput } from 'src/components/JsonschemaForm/utils'
 import Loader from 'src/components/Loader'
+import { addToFunds } from 'src/logic/contracts/store/actions'
 import { enhanceSnackbarForAction } from 'src/logic/notifications'
 import enqueueSnackbar from 'src/logic/notifications/store/actions/enqueueSnackbar'
 import { MsgTypeUrl } from 'src/logic/providers/constants/constant'
+import { Token } from 'src/logic/tokens/store/model/token'
 import { extractPrefixedSafeAddress, extractSafeAddress } from 'src/routes/routes'
 import { simulate } from 'src/services'
+import { extendedSafeTokensSelector } from 'src/utils/safeUtils/selector'
 import styled from 'styled-components'
 import ReviewPopup from './ReviewPopup'
-import { addToFunds } from 'src/logic/contracts/store/actions'
-import { extendedSafeTokensSelector } from 'src/utils/safeUtils/selector'
-import { Token } from 'src/logic/tokens/store/model/token'
 
 const Wrap = styled.div`
   .preview-button {
@@ -42,19 +42,22 @@ function Contract({ contractData }): ReactElement {
   const [loading, setLoading] = useState(false)
   const [invalidAmount, setInvalidAmount] = useState(false)
   const tokenList = useSelector(extendedSafeTokensSelector) as unknown as Token[]
-  const defListTokens = tokenList.map((token) => ({
-    id: token.denom,
-    denom: token.denom,
-    amount: '',
-    tokenDecimal: token.decimals,
-    logoUri: token.logoUri,
-    type: token.type,
-    symbol: token.symbol,
-    name: token.name,
-    balance: token.balance.tokenBalance,
-    address: token.address,
-    enabled: false,
-  })) as IFund[]
+
+  const defListTokens = tokenList
+    .filter((t) => t.type !== 'CW20')
+    .map((token) => ({
+      id: token.denom,
+      denom: token.cosmosDenom ?? token.denom,
+      amount: '',
+      tokenDecimal: token.decimals,
+      logoUri: token.logoUri,
+      type: token.type,
+      symbol: token.symbol,
+      name: token.name,
+      balance: token.balance.tokenBalance,
+      address: token.address,
+      enabled: false,
+    })) as IFund[]
 
   const preview = async () => {
     try {
