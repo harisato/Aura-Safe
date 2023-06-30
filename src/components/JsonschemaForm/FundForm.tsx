@@ -70,7 +70,7 @@ const FundForm = ({ fund, onDelete, onChangeAmount }: IFundFormProps) => {
 
   useEffect(() => {
     setAmountValidateMsg('')
-    const tokenbalance = token?.balance.tokenBalance
+    const tokenbalance = fund.balance
     if (tokenbalance && +amount > +tokenbalance) {
       setAmountValidateMsg('Insufficient funds.')
     }
