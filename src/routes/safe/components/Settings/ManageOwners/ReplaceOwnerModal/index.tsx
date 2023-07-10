@@ -26,7 +26,7 @@ export type OwnerValues = {
   name: string
 }
 
-export const sendReplaceOwner = async (
+const sendReplaceOwner = async (
   newOwner: OwnerValues,
   safeAddress: string,
   safeVersion: string,

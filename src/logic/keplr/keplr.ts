@@ -24,7 +24,7 @@ export type WalletKey = {
   myPubkey: string
 }
 
-export enum KeplrErrors {
+enum KeplrErrors {
   Success = 'OK',
   Failed = 'FAILED',
   NoChainInfo = 'THERE IS NO CHAIN INFO FOR',

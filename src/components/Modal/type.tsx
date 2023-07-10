@@ -2,7 +2,7 @@ import { ButtonProps as ButtonPropsMUI } from '@material-ui/core'
 import { theme } from '@aura/safe-react-components'
 import { ReactNode } from 'react'
 
-export type Theme = typeof theme
+type Theme = typeof theme
 
 export interface BodyProps {
   children: ReactNode
@@ -26,7 +26,7 @@ export interface TitleProps {
   strong?: boolean
 }
 
-export type CustomButtonMUIProps = Omit<ButtonPropsMUI, 'size' | 'color' | 'variant'> & {
+type CustomButtonMUIProps = Omit<ButtonPropsMUI, 'size' | 'color' | 'variant'> & {
   to?: string
   component?: ReactNode
 }
@@ -37,8 +37,7 @@ export enum ButtonStatus {
   READY,
   LOADING,
 }
-
-export interface ButtonProps extends CustomButtonMUIProps {
+interface ButtonProps extends CustomButtonMUIProps {
   text?: string
   status?: ButtonStatus
   size?: keyof Theme['buttons']['size']

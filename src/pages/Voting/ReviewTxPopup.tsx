@@ -7,13 +7,7 @@ import Gap from 'src/components/Gap'
 import { Popup } from 'src/components/Popup'
 import Footer from 'src/components/Popup/Footer'
 import Header from 'src/components/Popup/Header'
-import {
-  getChainDefaultGas,
-  getChainDefaultGasPrice,
-  getChainInfo,
-  getCoinDecimal,
-  getNativeCurrency,
-} from 'src/config'
+import { getChainDefaultGas, getChainDefaultGasPrice, getCoinDecimal, getNativeCurrency } from 'src/config'
 import { MsgTypeUrl } from 'src/logic/providers/constants/constant'
 import calculateGasFee from 'src/logic/providers/utils/fee'
 import { extractSafeAddress } from 'src/routes/routes'
@@ -28,10 +22,6 @@ const voteMapping = {
   ['ABSTAIN']: 2,
   ['NO']: 3,
   ['NOWITHVETO']: 4,
-}
-export type VotingTx = {
-  option: number
-  proposalId: number
 }
 
 type ReviewVotingTxProps = {
@@ -51,7 +41,7 @@ const ReviewTxPopup = ({ open, onClose, proposal, vote, onBack, gasUsed }: Revie
   const chainDefaultGasPrice = getChainDefaultGasPrice()
   const decimal = getCoinDecimal()
   const [defaultGas, setDefaultGas] = useState(
-    chainDefaultGas.find((chain) => chain.typeUrl === MsgTypeUrl.Vote)?.gasAmount || DEFAULT_GAS_LIMIT.toString(),
+    chainDefaultGas?.find((chain) => chain.typeUrl === MsgTypeUrl.Vote)?.gasAmount || DEFAULT_GAS_LIMIT.toString(),
   )
   const gasFee =
     defaultGas && chainDefaultGasPrice
@@ -93,6 +83,7 @@ const ReviewTxPopup = ({ open, onClose, proposal, vote, onBack, gasUsed }: Revie
         msgs,
         manualGasLimit || '250000',
         sequence,
+        undefined,
         () => {
           setDisabled(true)
         },

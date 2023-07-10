@@ -52,6 +52,13 @@ const Wrap = styled.div`
     font-size: 12px;
     margin-top: 6px;
   }
+  .disabled-input {
+    background: #494c58;
+    border: 1px solid #494c58;
+    input {
+      background: #494c58;
+    }
+  }
 `
 export default function TextField({
   label,
@@ -64,10 +71,11 @@ export default function TextField({
   required,
   errorMsg,
   min,
+  disabled,
 }: {
   label: string
   value: any
-  onChange: (value: string) => void
+  onChange?: (value: string) => void
   type?: React.HTMLInputTypeAttribute
   autoFocus?: boolean
   endIcon?: any
@@ -75,6 +83,7 @@ export default function TextField({
   required?: boolean
   errorMsg?: string
   min?: number
+  disabled?: boolean
 }) {
   const [isFocus, setIsFocus] = useState(false)
   return (
@@ -85,16 +94,17 @@ export default function TextField({
           {required && <span style={{ color: '#bf2525' }}>*</span>}
         </div>
       )}
-      <div className={`${errorMsg ? 'error-input' : ''} input`}>
+      <div className={`${errorMsg ? 'error-input' : ''}  ${disabled ? 'disabled-input' : ''} input`}>
         <input
           placeholder={placeholder}
           autoFocus={autoFocus}
           value={value}
           type={type}
-          onChange={(e) => onChange(e.target.value)}
+          onChange={(e) => onChange && onChange(e.target.value)}
           onFocus={() => setIsFocus(true)}
           onBlur={() => setIsFocus(false)}
           min={min}
+          disabled={disabled}
         />
         {endIcon && <div className="input-end-icon">{endIcon}</div>}
       </div>

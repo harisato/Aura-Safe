@@ -5,7 +5,7 @@ import { formatAmountInUsFormat } from 'src/logic/tokens/utils/formatAmount'
 import { formatNativeCurrency } from 'src/utils'
 export const BALANCE_TABLE_ASSET_ID = 'asset'
 export const BALANCE_TABLE_BALANCE_ID = 'balance'
-export const BALANCE_TABLE_VALUE_ID = 'value'
+const BALANCE_TABLE_VALUE_ID = 'value'
 
 const getTokenPriceInCurrency = (balance: string, currencySelected?: string): string => {
   if (!currencySelected) {

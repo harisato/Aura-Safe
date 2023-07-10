@@ -1,7 +1,7 @@
 import { getGnosisSafeInstanceAt } from 'src/logic/contracts/safeContracts'
 import { ZERO_ADDRESS } from 'src/logic/wallets/ethAddresses'
 
-export const getSetGuardTxData = (guardAddress: string, safeAddress: string, safeVersion: string): string => {
+const getSetGuardTxData = (guardAddress: string, safeAddress: string, safeVersion: string): string => {
   const safeInstance = getGnosisSafeInstanceAt(safeAddress, safeVersion)
 
   return safeInstance.methods.setGuard(guardAddress).encodeABI()

@@ -2,22 +2,16 @@ import { Operation } from '@gnosis.pm/safe-react-gateway-sdk'
 import { List } from 'immutable'
 import { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
-import { fromWei, toWei } from 'web3-utils'
+import { fromWei } from 'web3-utils'
 
 import { getNativeCurrency } from 'src/config'
-import {
-  checkTransactionExecution,
-  estimateSafeTxGas,
-  estimateTransactionGasLimit,
-} from 'src/logic/safe/transactions/gas'
-import { fromTokenUnit } from 'src/logic/tokens/utils/humanReadableValue'
-import { formatAmount } from 'src/logic/tokens/utils/formatAmount'
-import { calculateGasPrice } from 'src/logic/wallets/ethTransactions'
-import { currentSafe } from 'src/logic/safe/store/selectors'
-import { providerSelector } from 'src/logic/wallets/store/selectors'
-import { Confirmation } from 'src/logic/safe/store/models/types/confirmation'
 import { checkIfOffChainSignatureIsPossible } from 'src/logic/safe/safeTxSigner'
-import { ZERO_ADDRESS } from 'src/logic/wallets/ethAddresses'
+import { Confirmation } from 'src/logic/safe/store/models/types/confirmation'
+import { currentSafe } from 'src/logic/safe/store/selectors'
+import { estimateSafeTxGas } from 'src/logic/safe/transactions/gas'
+import { formatAmount } from 'src/logic/tokens/utils/formatAmount'
+import { fromTokenUnit } from 'src/logic/tokens/utils/humanReadableValue'
+import { providerSelector } from 'src/logic/wallets/store/selectors'
 import { sameString } from 'src/utils/strings'
 
 export enum EstimationStatus {
@@ -80,7 +74,7 @@ type UseEstimateTransactionGasProps = {
   manualGasLimit?: string
 }
 
-export type TransactionGasEstimationResult = {
+type TransactionGasEstimationResult = {
   txEstimationExecutionStatus: EstimationStatus
   gasEstimation: string // Amount of gas needed for execute or approve the transaction
   gasCost: string // Cost of gas in raw format (estimatedGas * gasPrice)

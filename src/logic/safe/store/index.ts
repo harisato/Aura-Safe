@@ -1,7 +1,7 @@
-import { ValidatorStateType } from '../../validator/store/reducer/index'
-import { applyMiddleware, CombinedState, combineReducers, compose, createStore, PreloadedState } from 'redux'
-import { save, load, LoadOptions, RLSOptions } from 'redux-localstorage-simple'
+import { applyMiddleware, CombinedState, combineReducers, compose, createStore } from 'redux'
+import { load, LoadOptions, RLSOptions, save } from 'redux-localstorage-simple'
 import thunk from 'redux-thunk'
+import { ValidatorStateType } from '../../validator/store/reducer/index'
 
 import { addressBookMiddleware } from 'src/logic/addressBook/store/middleware'
 import addressBookReducer, { ADDRESS_BOOK_REDUCER_ID } from 'src/logic/addressBook/store/reducer'
@@ -13,54 +13,55 @@ import {
 } from 'src/logic/collectibles/store/reducer/collectibles'
 import cookiesReducer, { COOKIES_REDUCER_ID } from 'src/logic/cookies/store/reducer/cookies'
 import currentSessionReducer, {
-  CurrentSessionState,
   CURRENT_SESSION_REDUCER_ID,
+  CurrentSessionState,
 } from 'src/logic/currentSession/store/reducer/currentSession'
 import notificationsReducer, { NOTIFICATIONS_REDUCER_ID } from 'src/logic/notifications/store/reducer/notifications'
-import gatewayTransactionsReducer, {
-  GatewayTransactionsState,
-  GATEWAY_TRANSACTIONS_ID,
-} from 'src/logic/safe/store/reducer/gatewayTransactions'
-import localTransactionsReducer, {
-  LocalStatusesState,
-  LOCAL_TRANSACTIONS_ID,
-} from 'src/logic/safe/store/reducer/localTransactions'
-import tokensReducer, { TokenState, TOKEN_REDUCER_ID } from 'src/logic/tokens/store/reducer/tokens'
-import providerWatcher from 'src/logic/wallets/store/middlewares/providerWatcher'
-import providerReducer, { ProviderState, PROVIDER_REDUCER_ID } from 'src/logic/wallets/store/reducer/provider'
 import notificationsMiddleware from 'src/logic/safe/store/middleware/notificationsMiddleware'
 import { safeStorageMiddleware } from 'src/logic/safe/store/middleware/safeStorage'
+import gatewayTransactionsReducer, {
+  GATEWAY_TRANSACTIONS_ID,
+  GatewayTransactionsState,
+} from 'src/logic/safe/store/reducer/gatewayTransactions'
+import localTransactionsReducer, {
+  LOCAL_TRANSACTIONS_ID,
+  LocalStatusesState,
+} from 'src/logic/safe/store/reducer/localTransactions'
 import safeReducer, { SAFE_REDUCER_ID } from 'src/logic/safe/store/reducer/safe'
+import tokensReducer, { TOKEN_REDUCER_ID, TokenState } from 'src/logic/tokens/store/reducer/tokens'
+import providerReducer, { PROVIDER_REDUCER_ID, ProviderState } from 'src/logic/wallets/store/reducer/provider'
 
 import currencyValuesReducer, {
-  CurrencyValuesState,
   CURRENCY_REDUCER_ID,
+  CurrencyValuesState,
   initialCurrencyState,
 } from 'src/logic/currencyValues/store/reducer/currencyValues'
 
-import termReducer, { TermState, TermInitialState, TERM_ID } from 'src/logic/checkTerm/store/reducer/term'
+import termReducer, { TERM_ID, TermState } from 'src/logic/checkTerm/store/reducer/term'
 
-import configReducer, { CONFIG_REDUCER_ID, initialConfigState } from 'src/logic/config/store/reducer'
-import { configMiddleware } from 'src/logic/config/store/middleware'
 import { AddressBookState } from 'src/logic/addressBook/model/addressBook'
 import appearanceReducer, {
   APPEARANCE_REDUCER_ID,
-  initialAppearanceState,
   AppearanceState,
+  initialAppearanceState,
 } from 'src/logic/appearance/reducer/appearance'
 import { NFTAssets, NFTTokens } from 'src/logic/collectibles/sources/collectibles'
-import { SafeReducerMap } from 'src/logic/safe/store/reducer/types/safe'
-import { LS_NAMESPACE, LS_SEPARATOR } from 'src/utils/constants'
+import { configMiddleware } from 'src/logic/config/store/middleware'
+import configReducer, { CONFIG_REDUCER_ID, initialConfigState } from 'src/logic/config/store/reducer'
 import { ConfigState } from 'src/logic/config/store/reducer/reducer'
+import delegationReducer, { DELEGATION_REDUCER_ID, DelegationStateType } from 'src/logic/delegation/store/reducer'
+import { PROPOSALS_REDUCER_ID, proposalsReducer } from 'src/logic/proposal/store/reducer/proposals'
 import { localTransactionsMiddleware } from 'src/logic/safe/store/middleware/localTransactionsMiddleware'
-import { proposalsReducer, PROPOSALS_REDUCER_ID } from 'src/logic/proposal/store/reducer/proposals'
-import { IProposal } from 'src/types/proposal'
+import { SafeReducerMap } from 'src/logic/safe/store/reducer/types/safe'
 import validatorReducer, { VALIDATOR_REDUCER_ID } from 'src/logic/validator/store/reducer'
-import delegationReducer, { DelegationStateType, DELEGATION_REDUCER_ID } from 'src/logic/delegation/store/reducer'
+import { IProposal } from 'src/types/proposal'
+import { LS_NAMESPACE, LS_SEPARATOR } from 'src/utils/constants'
+import fundsReducer, { FUNDS_REDUCER_ID } from 'src/logic/contracts/store/reducer'
+import { IFund } from 'src/components/JsonschemaForm/FundForm'
 
 const CURRENCY_KEY = `${CURRENCY_REDUCER_ID}.selectedCurrency`
 
-export const LS_CONFIG: RLSOptions | LoadOptions = {
+const LS_CONFIG: RLSOptions | LoadOptions = {
   states: [ADDRESS_BOOK_REDUCER_ID, CURRENCY_KEY, APPEARANCE_REDUCER_ID, CONFIG_REDUCER_ID, TERM_ID],
   namespace: LS_NAMESPACE,
   namespaceSeparator: LS_SEPARATOR,
@@ -108,6 +109,7 @@ const reducers = {
   [PROPOSALS_REDUCER_ID]: proposalsReducer,
   [VALIDATOR_REDUCER_ID]: validatorReducer,
   [DELEGATION_REDUCER_ID]: delegationReducer,
+  [FUNDS_REDUCER_ID]: fundsReducer,
 }
 
 const rootReducer = combineReducers(reducers)
@@ -134,9 +136,7 @@ export type AppReduxState = CombinedState<{
   [PROPOSALS_REDUCER_ID]: IProposal[]
   [VALIDATOR_REDUCER_ID]: ValidatorStateType
   [DELEGATION_REDUCER_ID]: DelegationStateType
+  [FUNDS_REDUCER_ID]: IFund[]
 }>
 
 export const store: any = createStore(rootReducer, load(LS_CONFIG), enhancer)
-
-export const createPreloadedStore = (localState = {} as PreloadedState<unknown>): typeof store =>
-  createStore(rootReducer, localState, enhancer)

@@ -7,7 +7,7 @@ import { relativeTime } from 'src/utils/date'
 export const SPENDING_LIMIT_TABLE_BENEFICIARY_ID = 'beneficiary'
 export const SPENDING_LIMIT_TABLE_SPENT_ID = 'spent'
 export const SPENDING_LIMIT_TABLE_RESET_TIME_ID = 'resetTime'
-export const SPENDING_LIMIT_TABLE_ACTION_ID = 'action'
+const SPENDING_LIMIT_TABLE_ACTION_ID = 'action'
 
 export type SpendingLimitTable = {
   [SPENDING_LIMIT_TABLE_BENEFICIARY_ID]: string
@@ -23,7 +23,7 @@ export type SpendingLimitTable = {
   }
 }
 
-export const getSpendingLimitData = (spendingLimits?: SpendingLimitRow[] | null): SpendingLimitTable[] | undefined =>
+const getSpendingLimitData = (spendingLimits?: SpendingLimitRow[] | null): SpendingLimitTable[] | undefined =>
   spendingLimits?.map((spendingLimit) => ({
     [SPENDING_LIMIT_TABLE_BENEFICIARY_ID]: spendingLimit.delegate,
     [SPENDING_LIMIT_TABLE_SPENT_ID]: {

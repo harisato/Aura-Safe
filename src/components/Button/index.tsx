@@ -9,7 +9,7 @@ export const OutlinedButton = ({ children, ...rest }) => {
     </OutlinedButtonWrap>
   )
 }
-export const OutlinedButtonWrap = styled.button<{ disabled?: boolean }>`
+const OutlinedButtonWrap = styled.button<{ disabled?: boolean }>`
   cursor: pointer;
   border: 1px solid transparent;
   background-image: ${borderLinear};
@@ -77,10 +77,17 @@ export const OutlinedButtonWrap = styled.button<{ disabled?: boolean }>`
     }
   }
 `
-
-export const OutlinedNeutralButton = styled.button<{ disabled?: boolean; color?: string }>`
+export const OutlinedNeutralButton = ({ children, ...rest }) => {
+  return (
+    <OutlinedNeutralButtonWrap {...rest}>
+      <div>{children}</div>
+    </OutlinedNeutralButtonWrap>
+  )
+}
+const OutlinedNeutralButtonWrap = styled.button<{ disabled?: boolean; color?: string }>`
   background: transparent;
   cursor: pointer;
+  padding: 0 !important;
   border: 1px solid ${(props) => (props.color ? props.color : '#717582')};
   border-radius: 8px;
   font-weight: 400;
@@ -91,40 +98,54 @@ export const OutlinedNeutralButton = styled.button<{ disabled?: boolean; color?:
   letter-spacing: 0.01em;
   color: ${(props) => (props.color ? props.color : '#fff')};
   white-space: nowrap;
-  padding: 10px 24px;
-  > i,
-  img,
-  svg,
-  .icon {
-    margin: 0px 8px 0px 0px;
-  }
+
   &:disabled {
     cursor: not-allowed;
     pointer-events: unset;
-    background: #494c58;
+    color: #717582;
+    > div {
+      background: #131419;
+    }
   }
-  &:not(:disabled)&:hover {
-    background: #363843;
-  }
-  &:active {
-    background: #24262e;
-  }
-  &.loading {
-    pointer-events: unset;
-    background: #24262e;
-  }
-  &.small {
-    font-size: 12px;
-    line-height: 16px;
-    padding: 8px 16px;
+  > div {
+    padding: 10px 24px;
+    border-radius: 8px;
+    display: flex;
     > i,
     img,
     svg,
     .icon {
-      margin: 0px 6px 0px 0px;
+      margin: 0px 8px 0px 0px;
+    }
+  }
+
+  &:not(:disabled)&:hover {
+    > div {
+      background: #363843;
+    }
+  }
+  &:active {
+    > div {
+      background: #24262e;
+    }
+  }
+
+  &.small {
+    font-size: 12px;
+    line-height: 16px;
+    > div {
+      padding: 8px 16px;
+      border-radius: 8px;
+      > i,
+      img,
+      svg,
+      .icon {
+        margin: 0px 6px 0px 0px;
+      }
     }
   }
 `
+
 export const TextButton = styled(Button)`
   border: none;
   padding: 0 !important;

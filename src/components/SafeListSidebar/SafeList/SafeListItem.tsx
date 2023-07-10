@@ -88,7 +88,7 @@ type Props = {
   onSafeClick: () => void
   onNetworkSwitch?: () => void
   address: string
-  ethBalance?: string
+  nativeBalance?: string
   showAddSafeLink?: boolean
   pendingStatus?: SafeStatus | undefined
   networkId: ChainId
@@ -100,7 +100,7 @@ const SafeListItem = ({
   onSafeClick,
   onNetworkSwitch,
   address,
-  ethBalance,
+  nativeBalance,
   showAddSafeLink = false,
   pendingStatus = undefined,
   networkId,
@@ -258,9 +258,9 @@ const SafeListItem = ({
         shortenHash={[SafeStatus.Pending, SafeStatus.Confirmed].includes(pendingStatus!) ? 100 : 4}
       />
       <ListItemSecondaryAction>
-        {ethBalance ? (
+        {nativeBalance ? (
           <StyledText size="lg">
-            {formatAmount(ethBalance)} {nativeCurrencySymbol}
+            {+nativeBalance > 0 ? formatAmount(nativeBalance) : 0} {nativeCurrencySymbol}
           </StyledText>
         ) : showAddSafeLink ? (
           <StyledButton onClick={handleLoadSafe} size="md" variant="outlined">

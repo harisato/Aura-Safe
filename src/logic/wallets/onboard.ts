@@ -63,7 +63,7 @@ const getOnboardConfiguration = () => {
 }
 
 let currentOnboardInstance: API
-export const onboard = (): API => {
+const onboard = (): API => {
   const chainId = _getChainId()
   if (!currentOnboardInstance || currentOnboardInstance.getState().appNetworkId.toString() !== chainId) {
     currentOnboardInstance = Onboard(getOnboardConfiguration())

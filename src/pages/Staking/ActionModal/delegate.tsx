@@ -3,7 +3,7 @@ import Gap from 'src/components/Gap'
 import AmountInput from 'src/components/Input/AmountInput'
 import Col from 'src/components/layout/Col'
 import NotificationPopup from 'src/components/NotificationPopup'
-import { formatBigNumber, formatNativeCurrency } from 'src/utils'
+import { convertAmount, formatNativeCurrency } from 'src/utils'
 import { BoxDelegate, PaddingPopup, TextGray, TextNotiStyled, TextTitleStaking } from './styles'
 export default function ModalDelegate(props) {
   const { handleAmout, amount, nativeCurrency, availableBalance, dataDelegateOfUser, handleMax, validateMsg } = props
@@ -27,14 +27,18 @@ export default function ModalDelegate(props) {
               <Col sm={7} xs={12}>
                 <TextGray>My Delegation</TextGray>
               </Col>
-              <p>{formatNativeCurrency(formatBigNumber(dataDelegateOfUser?.delegation?.delegationBalance?.amount))}</p>
+              <p>
+                {formatNativeCurrency(convertAmount(dataDelegateOfUser?.delegation?.delegationBalance?.amount, false))}
+              </p>
             </BoxDelegate>
 
             <BoxDelegate>
               <Col sm={7} xs={12}>
                 <TextGray>Delegatable Balance</TextGray>
               </Col>
-              <p>{formatNativeCurrency(availableBalance?.amount ? formatBigNumber(availableBalance?.amount) : 0)}</p>
+              <p>
+                {formatNativeCurrency(availableBalance?.amount ? convertAmount(availableBalance?.amount, false) : 0)}
+              </p>
             </BoxDelegate>
             <Gap height={12} />
             <BoxDelegate>

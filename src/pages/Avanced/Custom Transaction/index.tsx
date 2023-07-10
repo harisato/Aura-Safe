@@ -8,7 +8,6 @@ import { getInternalChainId } from 'src/config'
 import { enhanceSnackbarForAction } from 'src/logic/notifications'
 import enqueueSnackbar from 'src/logic/notifications/store/actions/enqueueSnackbar'
 import { extractPrefixedSafeAddress } from 'src/routes/routes'
-import { simulate } from 'src/services'
 import styled from 'styled-components'
 import MessageGenerator from './MessageGenerator'
 import ReviewPopup from './ReviewPopup'
@@ -86,7 +85,7 @@ function CustomTransaction(props): ReactElement {
           </FilledButton>
         </div>
       </Wrap>
-      <ReviewPopup open={open} setOpen={setOpen} gasUsed={Math.round(gasUsed * 1.3)} msg={message} />
+      <ReviewPopup open={open} setOpen={setOpen} gasUsed={Math.round(gasUsed * 2)} msg={message} />
     </>
   )
 }

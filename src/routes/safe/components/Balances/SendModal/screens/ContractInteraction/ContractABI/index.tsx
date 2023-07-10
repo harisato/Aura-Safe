@@ -9,7 +9,7 @@ import { getContractABI } from 'src/config'
 import { extractUsefulMethods } from 'src/logic/contractInteraction/sources/ABIService'
 import { parsePrefixedAddress } from 'src/utils/prefixedAddress'
 
-export const NO_DATA = 'no data'
+const NO_DATA = 'no data'
 
 const hasUsefulMethods = (abi: string): undefined | string => {
   try {

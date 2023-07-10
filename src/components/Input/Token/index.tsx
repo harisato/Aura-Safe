@@ -1,10 +1,10 @@
-import Select, { IOption } from 'src/components/Input/Select'
-import { Token } from 'src/logic/tokens/store/model/token'
-import styled from 'styled-components'
 import MenuItem from '@material-ui/core/MenuItem'
 import { useSelector } from 'react-redux'
+import Select, { IOption } from 'src/components/Input/Select'
+import { currentSafeWithNames } from 'src/logic/safe/store/selectors'
+import { Token } from 'src/logic/tokens/store/model/token'
 import { extendedSafeTokensSelector } from 'src/utils/safeUtils/selector'
-import { List } from 'immutable'
+import styled from 'styled-components'
 
 const MenuItemWrapper = styled.div`
   display: flex;
@@ -15,20 +15,29 @@ const MenuItemWrapper = styled.div`
     margin-right: 8px;
   }
 `
-export default function TokenSelect({ selectedToken, setSelectedToken, disabled = false }) {
-  const tokenList = useSelector(extendedSafeTokensSelector) as unknown as Token[]
+export default function TokenSelect({ selectedToken, setSelectedToken, disabled = false, onlyNativeToken = false }) {
+  const tokenList: any = useSelector(extendedSafeTokensSelector)
+  const { coinConfig } = useSelector(currentSafeWithNames)
+  const tokenConfig = tokenList.filter((token) => {
+    return (
+      token.type == 'native' ||
+      coinConfig?.find((coin) => {
+        return coin.address == token.address
+      })?.enable
+    )
+  })
 
-  const tokenOptions: IOption[] = tokenList.map((token: Token) => ({
+  const tokenOptions: IOption[] = tokenConfig.map((token: Token) => ({
     value: token.address,
     label: token.name,
-  })) as unknown as IOption[]
+  })) as IOption[]
 
   return (
     <Select
       options={tokenOptions}
       value={selectedToken || ''}
       onChange={(token) => {
-        setSelectedToken && setSelectedToken(token)
+        setSelectedToken && setSelectedToken(() => tokenList.find((t) => t.address == token))
       }}
       disabled={disabled}
       placeholder="Select an asset*"
@@ -42,7 +51,10 @@ export default function TokenSelect({ selectedToken, setSelectedToken, disabled 
         ) : null
       }}
     >
-      {tokenList.map((token: Token, index: any) => {
+      {tokenConfig.map((token: any, index: any) => {
+        if (onlyNativeToken && token.type !== 'native') {
+          return null
+        }
         return (
           <MenuItem key={index} value={token.address}>
             <MenuItemWrapper>

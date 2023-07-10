@@ -1,9 +1,8 @@
-import { CustomIconText } from 'src/components/CustomIconText'
-import { MsgTypeUrl } from 'src/logic/providers/constants/constant'
+import { Icon } from '@aura/safe-react-components'
+import CustomIcon from 'src/assets/icons/custom.svg'
 import IncomingIcon from 'src/assets/icons/incoming.svg'
 import OutgoingIcon from 'src/assets/icons/outgoing.svg'
-import CustomIcon from 'src/assets/icons/custom.svg'
-import { Icon, IconTypes } from '@aura/safe-react-components'
+import { MsgTypeUrl } from 'src/logic/providers/constants/constant'
 
 export default function TxType({ type }) {
   if (type == MsgTypeUrl.Delegate) {
@@ -23,7 +22,7 @@ export default function TxType({ type }) {
       </div>
     )
   }
-  if (type == MsgTypeUrl.Send) {
+  if (type == MsgTypeUrl.Send || type === 'Send') {
     return (
       <div className="tx-type">
         <img src={OutgoingIcon} alt="outgoing-icon" />

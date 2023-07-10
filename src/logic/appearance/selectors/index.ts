@@ -1,6 +1,0 @@
-import { APPEARANCE_REDUCER_ID } from 'src/logic/appearance/reducer/appearance'
-import { AppReduxState } from 'src/logic/safe/store'
-
-export const copyShortNameSelector = (state: AppReduxState): boolean => state[APPEARANCE_REDUCER_ID].copyShortName
-
-export const showShortNameSelector = (state: AppReduxState): boolean => state[APPEARANCE_REDUCER_ID].showShortName

@@ -2,6 +2,8 @@ import flatten from 'lodash/flatten'
 import get from 'lodash/get'
 import { createSelector } from 'reselect'
 
+import { currentChainId } from 'src/logic/config/store/selectors'
+import { AppReduxState } from 'src/logic/safe/store'
 import {
   isMultisigExecutionInfo,
   StoreStructure,
@@ -9,12 +11,10 @@ import {
   TxLocation,
 } from 'src/logic/safe/store/models/types/gateway.d'
 import { GATEWAY_TRANSACTIONS_ID } from 'src/logic/safe/store/reducer/gatewayTransactions'
-import { currentChainId } from 'src/logic/config/store/selectors'
 import { createHashBasedSelector } from 'src/logic/safe/store/selectors/utils'
-import { AppReduxState } from 'src/logic/safe/store'
 import { extractSafeAddress } from 'src/routes/routes'
 
-export const gatewayTransactions = (state: AppReduxState): AppReduxState['gatewayTransactions'] => {
+const gatewayTransactions = (state: AppReduxState): AppReduxState['gatewayTransactions'] => {
   return state[GATEWAY_TRANSACTIONS_ID]
 }
 
@@ -27,7 +27,7 @@ export const historyTransactions = createHashBasedSelector(
   },
 )
 
-export const pendingTransactions = createSelector(
+const pendingTransactions = createSelector(
   gatewayTransactions,
   currentChainId,
   (gatewayTransactions, chainId): StoreStructure['queued'] | undefined => {
@@ -59,7 +59,7 @@ export const txTransactions = createSelector(
 
 const txLocations: TxLocation[] = ['queued.txs', 'history']
 
-export const getTransactionWithLocationByAttribute = createSelector(
+const getTransactionWithLocationByAttribute = createSelector(
   gatewayTransactions,
   currentChainId,
   extractSafeAddress,
@@ -99,41 +99,6 @@ export const getTransactionByAttribute = createSelector(
   getTransactionWithLocationByAttribute,
   (_gatewayTransactions, _chainId, _safeAddress, txWithLocation) => {
     return txWithLocation?.transaction
-  },
-)
-
-export const getTransactionsByNonce = createSelector(
-  gatewayTransactions,
-  currentChainId,
-  extractSafeAddress,
-  (_: AppReduxState, nonce: number) => nonce,
-  (gatewayTransactions, chainId, safeAddress, nonce): Transaction[] => {
-    let txsByNonce: Transaction[] = []
-
-    for (const txLocation of txLocations) {
-      const storedTxs: StoreStructure['history'] | StoreStructure['queued']['txs'] | undefined = get(
-        gatewayTransactions?.[chainId]?.[safeAddress],
-        txLocation,
-      )
-
-      if (!storedTxs) {
-        continue
-      }
-
-      for (const txs of Object.values(storedTxs)) {
-        const txFoundByNonce = txs.filter(
-          (tx) => isMultisigExecutionInfo(tx?.executionInfo) && tx.executionInfo?.nonce === nonce,
-        )
-
-        if (!txFoundByNonce.length) {
-          continue
-        }
-
-        txsByNonce = [...txsByNonce, ...txFoundByNonce]
-      }
-    }
-
-    return txsByNonce
   },
 )
 

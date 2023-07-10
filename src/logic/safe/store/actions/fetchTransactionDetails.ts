@@ -3,52 +3,24 @@ import { createAction } from 'redux-actions'
 import { AddressEx, MultisigConfirmation, TransactionStatus } from '@gnosis.pm/safe-react-gateway-sdk'
 import { getInternalChainId } from 'src/config'
 import { currentChainId } from 'src/logic/config/store/selectors'
+import { AppReduxState } from 'src/logic/safe/store'
 import { Dispatch } from 'src/logic/safe/store/actions/types'
 import { Transaction } from 'src/logic/safe/store/models/types/gateway.d'
 import { TransactionDetailsPayload } from 'src/logic/safe/store/reducer/gatewayTransactions'
 import { getTransactionByAttribute } from 'src/logic/safe/store/selectors/gatewayTransactions'
-import { fetchSafeTransaction } from 'src/logic/safe/transactions/api/fetchSafeTransaction'
 import { extractSafeAddress } from 'src/routes/routes'
 import { getProposalDetail, getTxDetailById } from 'src/services'
 import { MESSAGES_CODE } from 'src/services/constant/message'
-import { AppReduxState } from 'src/logic/safe/store'
 
 export const UPDATE_TRANSACTION_DETAILS = 'UPDATE_TRANSACTION_DETAILS'
 const updateTransactionDetails = createAction<TransactionDetailsPayload>(UPDATE_TRANSACTION_DETAILS)
-
-export const fetchTransactionDetails =
-  ({ transactionId }: { transactionId: Transaction['id'] }) =>
-  async (dispatch: Dispatch, getState: () => AppReduxState): Promise<Transaction['txDetails']> => {
-    const transaction = getTransactionByAttribute(getState(), {
-      attributeValue: transactionId,
-      attributeName: 'id',
-    })
-    const safeAddress = extractSafeAddress()
-    const chainId = currentChainId(getState())
-
-    if (transaction?.txDetails || !safeAddress) {
-      return
-    }
-
-    try {
-      const transactionDetails = await fetchSafeTransaction(transactionId)
-
-      dispatch(updateTransactionDetails({ chainId, transactionId, safeAddress, value: transactionDetails }))
-    } catch (error) {
-      console.error(`Failed to retrieve transaction ${transactionId} details`, error.message)
-    }
-  }
-
-type DetailedExecutionInfoExtended = {
-  gasPrice: string
-}
 
 export const fetchTransactionDetailsById =
   ({ transactionId, auraTxId }: { transactionId?: string; auraTxId?: string }) =>
   async (dispatch: Dispatch, getState: () => AppReduxState): Promise<Transaction['txDetails']> => {
     const transaction = getTransactionByAttribute(getState(), {
-      attributeValue: transactionId,
-      attributeName: 'id',
+      attributeValue: transactionId ? transactionId : auraTxId,
+      attributeName: transactionId ? 'id' : 'auraTxId',
     })
     const safeAddress = extractSafeAddress()
     const chainId = currentChainId(getState())

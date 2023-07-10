@@ -33,13 +33,12 @@ const mergeNewTagsInSafe = (state: SafeReducerMap, newSafe: SafeRecord, safeAddr
 }
 
 const updateSafeProps = (prevSafe, safe) => {
-  return prevSafe.withMutations((record) => {
+  const nextSafe = prevSafe.withMutations((record) => {
     // Every property is updated individually to overcome the issue with nested data being overwritten
     const safeProperties = Object.keys(safe)
-
     // We check each safe property sent in action.payload
     safeProperties.forEach((key) => {
-      if (safe[key] && typeof safe[key] === 'object') {
+      if (safe[key] && typeof safe[key] === 'object' && record.get(key)) {
         if (safe[key].length >= 0 || Map.isMap(safe[key])) {
           // If type is array we replace it
           // If type is Immutable Map we replace it
@@ -57,6 +56,7 @@ const updateSafeProps = (prevSafe, safe) => {
       }
     })
   })
+  return nextSafe
 }
 
 type Payloads = SafeRecord | string
@@ -70,11 +70,10 @@ const safeReducer = handleActions<SafeReducerMap, Payloads>(
       mergeNewTagsInSafe(state, safe, safeAddress)
 
       const shouldUpdate = shouldSafeStoreBeUpdated(safe, state.getIn(['safes', safeAddress]) as SafeRecordProps)
-
       return shouldUpdate
-        ? state.updateIn(['safes', safeAddress], makeSafe({ address: safeAddress }), (prevSafe) =>
-            updateSafeProps(prevSafe, safe),
-          )
+        ? state.updateIn(['safes', safeAddress], makeSafe({ address: safeAddress }), (prevSafe) => {
+            return updateSafeProps(prevSafe, safe)
+          })
         : state
     },
     [ADD_OR_UPDATE_SAFE]: (state, action: Action<SafeRecord>) => {

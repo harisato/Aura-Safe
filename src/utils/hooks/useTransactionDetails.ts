@@ -4,7 +4,7 @@ import { fetchTransactionDetailsById } from 'src/logic/safe/store/actions/fetchT
 import { getTransactionByAttribute } from 'src/logic/safe/store/selectors/gatewayTransactions'
 import { AppReduxState } from 'src/logic/safe/store'
 
-export type LoadTransactionDetails = {
+type LoadTransactionDetails = {
   data?: any
   loading: boolean
 }
@@ -16,7 +16,10 @@ export const useTransactionDetails = (transactionId?: string, txHash?: string, a
     data: undefined,
   })
   const data = useSelector((state: AppReduxState) =>
-    getTransactionByAttribute(state, { attributeValue: transactionId, attributeName: 'id' }),
+    getTransactionByAttribute(state, {
+      attributeValue: transactionId ? transactionId : auraTxId,
+      attributeName: transactionId ? 'id' : 'auraTxId',
+    }),
   )
   useEffect(() => {
     const dataTemp = {

@@ -1,16 +1,16 @@
-export interface OpenSeaAssetContract {
+interface OpenSeaAssetContract {
   address: string
   name: string
   image_url: string
   symbol: string
 }
 
-export interface OpenSeaCollection {
+interface OpenSeaCollection {
   name: string
   slug: string
 }
 
-export interface OpenSeaAsset {
+interface OpenSeaAsset {
   asset_contract: OpenSeaAssetContract
   background_color: string
   collection: OpenSeaCollection
@@ -20,7 +20,7 @@ export interface OpenSeaAsset {
   token_id: string
 }
 
-export type OpenSeaAssets = Array<OpenSeaAsset>
+type OpenSeaAssets = Array<OpenSeaAsset>
 
 export interface NFTAsset {
   address: string

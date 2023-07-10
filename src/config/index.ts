@@ -212,3 +212,6 @@ export const getNativeCurrencyLogoUri = (): string => {
 export const getCoinMinimalDenom = (): string => {
   return (getChainInfo() as MChainInfo).denom
 }
+export const getCoinConfig = () => {
+  return (getChainInfo() as any).coinConfig
+}

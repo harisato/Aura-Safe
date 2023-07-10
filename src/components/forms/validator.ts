@@ -10,7 +10,7 @@ import { isValidPrefix, parsePrefixedAddress } from 'src/utils/prefixedAddress'
 import { hasFeature } from 'src/logic/safe/utils/safeVersion'
 
 type ValidatorReturnType = string | undefined
-export type GenericValidatorType = (...args: unknown[]) => ValidatorReturnType
+type GenericValidatorType = (...args: unknown[]) => ValidatorReturnType
 type AsyncValidator = (...args: unknown[]) => Promise<ValidatorReturnType>
 export type Validator = GenericValidatorType | AsyncValidator
 
@@ -68,8 +68,6 @@ export const maxValue =
     return `Maximum value is ${max}`
   }
 
-export const ok = (): undefined => undefined
-
 export const mustBeHexData = (data: string): ValidatorReturnType => {
   const isData = getWeb3().utils.isHexStrict(data)
 
@@ -83,7 +81,7 @@ export const mustBeAddressHash = memoize((address: string): ValidatorReturnType 
   return isValidAddress(address) ? undefined : errorMessage
 })
 
-export const mustBeValidBech32Address = memoize((address: string, prefix?: string): ValidatorReturnType => {
+const mustBeValidBech32Address = memoize((address: string, prefix?: string): ValidatorReturnType => {
   const errorMessage = 'Must be a valid address'
 
   return isValidAddress(address, prefix) ? undefined : errorMessage
@@ -186,7 +184,6 @@ export const differentFrom =
     return undefined
   }
 
-export const noErrorsOn = (name: string, errors: Record<string, unknown>): boolean => errors[name] === undefined
 
 export const validAddressBookName = (name: string): string | undefined => {
   const lengthError = minMaxLength(1, 50)(name)

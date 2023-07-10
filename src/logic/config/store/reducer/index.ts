@@ -7,6 +7,7 @@ export const CONFIG_REDUCER_ID = LOCAL_CONFIG_KEY
 
 export const initialConfigState: ConfigState = {
   chainId: _getChainId(),
+  environment: 'development',
 }
 
 // Stored locally as to preserve chainId for non-EIP-3770 routes
@@ -15,6 +16,9 @@ const configReducer = handleActions<ConfigState, ConfigPayload>(
     [CONFIG_ACTIONS.SET_CHAIN_ID]: (state, action) => {
       const networkId = action.payload
       return { ...state, chainId: networkId }
+    },
+    [CONFIG_ACTIONS.SET_ENVIRONMENT]: (state, action) => {
+      return { ...state, environment: action.payload }
     },
   },
   initialConfigState,

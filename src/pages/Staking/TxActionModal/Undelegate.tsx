@@ -21,14 +21,14 @@ import calculateGasFee from 'src/logic/providers/utils/fee'
 import { currentSafeWithNames } from 'src/logic/safe/store/selectors'
 import { extractSafeAddress } from 'src/routes/routes'
 import { DEFAULT_GAS_LIMIT } from 'src/services/constant/common'
-import { formatBigNumber, formatNativeCurrency, formatNativeToken } from 'src/utils'
+import { convertAmount, formatNativeCurrency, formatNativeToken } from 'src/utils'
 import { signAndCreateTransaction } from 'src/utils/signer'
 import { Wrapper } from './style'
 
 export default function Undelegate({ validator, amount, onClose, gasUsed }) {
   const safeAddress = extractSafeAddress()
   const dispatch = useDispatch()
-  const { ethBalance: balance } = useSelector(currentSafeWithNames)
+  const { nativeBalance: balance } = useSelector(currentSafeWithNames)
   const delegations = useSelector(allDelegation)
   const stakedAmount = delegations?.find(
     (delegation: any) => delegation.operatorAddress == validator.safeStaking,
@@ -56,7 +56,7 @@ export default function Undelegate({ validator, amount, onClose, gasUsed }) {
       {
         typeUrl: MsgTypeUrl.Undelegate,
         value: {
-          amount: coin(formatBigNumber(amount, true), denom),
+          amount: coin(convertAmount(amount, true), denom),
           delegatorAddress: safeAddress,
           validatorAddress: validator.safeStaking,
         },
@@ -67,6 +67,7 @@ export default function Undelegate({ validator, amount, onClose, gasUsed }) {
         msgs,
         manualGasLimit || '250000',
         sequence,
+        undefined,
         () => {
           setDisabled(true)
         },

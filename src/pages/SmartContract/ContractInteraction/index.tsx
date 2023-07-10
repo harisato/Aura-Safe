@@ -1,20 +1,20 @@
+import { Validator } from 'jsonschema'
 import { ReactElement, useEffect, useState } from 'react'
 import Icon from 'src/assets/icons/FileText.svg'
+import Alert from 'src/assets/icons/alert.svg'
+import Check from 'src/assets/icons/check.svg'
 import Breadcrumb from 'src/components/Breadcrumb'
 import Gap from 'src/components/Gap'
 import TextArea from 'src/components/Input/TextArea'
 import TextField from 'src/components/Input/TextField'
-import { getInternalChainId } from 'src/config'
+import { makeSchemaInput } from 'src/components/JsonschemaForm/utils'
+import Loader from 'src/components/Loader'
+import Tooltip from 'src/components/Tooltip'
 import { getContract } from 'src/services'
 import { isValidAddress } from 'src/utils/isValidAddress'
 import styled from 'styled-components'
 import Contract from './Contract'
-import Check from 'src/assets/icons/check.svg'
-import Alert from 'src/assets/icons/alert.svg'
-import Tooltip from 'src/components/Tooltip'
-import { Validator } from 'jsonschema'
-import { makeSchemaInput } from 'src/components/JsonschemaForm/utils'
-import Loader from 'src/components/Loader'
+import { getChainInfo } from 'src/config'
 const Wrap = styled.div`
   background: #24262e;
   border-radius: 8px;
@@ -29,7 +29,6 @@ const Wrap = styled.div`
 `
 
 function ContractInteraction(props): ReactElement {
-  const internalChainId = getInternalChainId()
   const [contractAddress, setContractAddress] = useState('')
   const [abi, setAbi] = useState('')
   const [contractData, setContractData] = useState({})
@@ -38,10 +37,16 @@ function ContractInteraction(props): ReactElement {
 
   const getContractDetail = async () => {
     setIsVerifiedContract('loading')
-    const { Data } = await getContract(contractAddress, internalChainId)
-    if (Data && (isValidAbi == 'false' || isValidAbi == null)) {
-      setContractData(Data)
-      setIsVerifiedContract(Data.verification ? 'true' : 'false')
+    const chainInfo = getChainInfo() as any
+    const { data } = await getContract(contractAddress)
+    const cData = data[chainInfo.environment]?.smart_contract[0]?.code?.code_id_verifications[0]
+    const verification = cData?.verification_status == 'SUCCESS'
+    if (cData && (isValidAbi == 'false' || isValidAbi == null)) {
+      setContractData({
+        contractAddress: contractAddress,
+        executeMsgSchema: cData.execute_msg_schema,
+      })
+      setIsVerifiedContract(verification ? 'true' : 'false')
     } else {
       setContractData({
         contractAddress: contractAddress,

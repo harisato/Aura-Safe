@@ -1,14 +1,26 @@
 import { getNativeCurrency } from 'src/config'
-import { formatNativeToken } from 'src/utils'
+import ListIcon from 'src/layout/Sidebar/ListIcon'
+import { convertAmount } from 'src/utils'
 
-export default function TxAmount({ amount = 0 }) {
+type TxAmountProps = {
+  amount: number
+  token?: any
+}
+export default function TxAmount({ amount = 0, token }: TxAmountProps) {
   const nativeCurrency = getNativeCurrency()
   return (
     <div className="tx-amount">
       {amount ? (
         <>
-          <img className="native-token-img" src={nativeCurrency.logoUri} alt="native-url-icon" />
-          <p>{formatNativeToken(amount)}</p>
+          {token?.isNotExist ? (
+            <ListIcon type="assestAura" />
+          ) : (
+            <img className="native-token-img" src={token?.logoUri ?? nativeCurrency.logoUri} alt="native-url-icon" />
+          )}
+
+          <p>
+            {convertAmount(amount, false, token?.decimals)} {token?.symbol ?? token?.coinDenom}
+          </p>
         </>
       ) : (
         `-`

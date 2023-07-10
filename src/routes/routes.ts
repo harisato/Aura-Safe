@@ -22,19 +22,18 @@ export const SAFE_ADDRESS_SLUG = 'prefixedSafeAddress'
 export const ADDRESSED_ROUTE = `/:${SAFE_ADDRESS_SLUG}(${chainSpecificSafeAddressPathRegExp})`
 // Safe section routes, i.e. /:prefixedSafeAddress/settings
 const SAFE_SECTION_SLUG = 'safeSection'
-export const SAFE_SECTION_ROUTE = `${ADDRESSED_ROUTE}/:${SAFE_SECTION_SLUG}`
+const SAFE_SECTION_ROUTE = `${ADDRESSED_ROUTE}/:${SAFE_SECTION_SLUG}`
 
 // Safe section routes, i.e. /:prefixedSafeAddress/settings
 const VOTING_SECTION_SLUG = 'proposalId'
-export const VOTING_SECTION_ROUTE = `${ADDRESSED_ROUTE}/voting/detail/:${VOTING_SECTION_SLUG}`
 
 // Safe subsection routes, i.e. /:prefixedSafeAddress/settings/advanced
-export const SAFE_SUBSECTION_SLUG = 'safeSubsection'
+const SAFE_SUBSECTION_SLUG = 'safeSubsection'
 export const SAFE_SUBSECTION_ROUTE = `${SAFE_SECTION_ROUTE}/:${SAFE_SUBSECTION_SLUG}`
 
 export const TRANSACTION_ID_SLUG = `safeTxHash`
-export const TRANSACTION_ID_NUMBER = `id`
-export const VOTING_ID_NUMBER = `proposalId`
+const TRANSACTION_ID_NUMBER = `id`
+const VOTING_ID_NUMBER = `proposalId`
 
 // URL: gnosis-safe.io/app/:[SAFE_ADDRESS_SLUG]/:[SAFE_SECTION_SLUG]/:[SAFE_SUBSECTION_SLUG]
 export type SafeRouteSlugs = {
@@ -90,11 +89,6 @@ export const getNetworkRootRoutes = (): Array<{ chainId: ChainId; route: string 
   }))
 
 export type SafeRouteParams = { shortName: ShortName; safeAddress: string; safeId?: number; proposalId?: number }
-
-export const isValidShortChainName = (shortName: ShortName): boolean => {
-  return getChains().some((chain) => chain.shortName === shortName)
-}
-
 // Due to hoisting issues, these functions should remain here
 export const extractPrefixedSafeAddress = (
   path = history.location.pathname,
@@ -103,7 +97,6 @@ export const extractPrefixedSafeAddress = (
   const match = matchPath<SafeRouteSlugs>(path, {
     path: route,
   })
-
   const prefixedSafeAddress = match?.params?.[SAFE_ADDRESS_SLUG]
   const { prefix, address } = parsePrefixedAddress(prefixedSafeAddress || '')
 

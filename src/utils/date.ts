@@ -29,7 +29,7 @@ export const getLocalStartOfDate = (timestamp: number): number => {
 export const formatWithSchema = (timestamp: number, schema: string): string =>
   timestamp ? format(timestamp, schema) : 'Invalid time'
 
-export const formatTime = (timestamp: number): string => formatWithSchema(timestamp, 'h:mm a')
+const formatTime = (timestamp: number): string => formatWithSchema(timestamp, 'h:mm a')
 
 export const formatDateTime = (timestamp: number): string => formatWithSchema(timestamp, 'MMM d, yyyy - h:mm:ss a')
 

@@ -1,6 +1,6 @@
 import { AbiItem, keccak256 } from 'web3-utils'
 
-export interface AllowedAbiItem extends AbiItem {
+interface AllowedAbiItem extends AbiItem {
   name: string
   type: 'function'
 }
@@ -11,33 +11,26 @@ export interface AbiItemExtended extends AllowedAbiItem {
   signatureHash: string
 }
 
-export const getMethodSignature = ({ inputs, name }: AbiItem): string => {
+const getMethodSignature = ({ inputs, name }: AbiItem): string => {
   const params = inputs?.map((x) => x.type).join(',')
   return `${name}(${params})`
 }
 
-export const getSignatureHash = (signature: string): string => {
+const getSignatureHash = (signature: string): string => {
   return keccak256(signature).toString()
 }
 
-export const getMethodHash = (method: AbiItem): string => {
-  const signature = getMethodSignature(method)
-  return getSignatureHash(signature)
-}
-
-export const getMethodSignatureAndSignatureHash = (
-  method: AbiItem,
-): { methodSignature: string; signatureHash: string } => {
+const getMethodSignatureAndSignatureHash = (method: AbiItem): { methodSignature: string; signatureHash: string } => {
   const methodSignature = getMethodSignature(method)
   const signatureHash = getSignatureHash(methodSignature)
   return { methodSignature, signatureHash }
 }
 
-export const isAllowedMethod = ({ name, type }: AbiItem): boolean => {
+const isAllowedMethod = ({ name, type }: AbiItem): boolean => {
   return type === 'function' && !!name
 }
 
-export const getMethodAction = ({ stateMutability }: AbiItem): 'read' | 'write' => {
+const getMethodAction = ({ stateMutability }: AbiItem): 'read' | 'write' => {
   if (!stateMutability) {
     return 'write'
   }

@@ -1,11 +1,8 @@
-import hash from 'object-hash'
-import isEqual from 'lodash/isEqual'
 import memoize from 'lodash/memoize'
-import { createSelectorCreator, defaultMemoize } from 'reselect'
+import hash from 'object-hash'
+import { createSelectorCreator } from 'reselect'
 
 import { AppReduxState } from 'src/logic/safe/store'
-
-export const createIsEqualSelector = createSelectorCreator(defaultMemoize, isEqual)
 
 const hashFn = (gatewayTransactions: AppReduxState['gatewayTransactions'], safeAddress: string): string =>
   hash(gatewayTransactions[safeAddress] ?? {})

@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import { lg } from '../../theme/variables'
 import Row from '../layout/Row'
 
-export const styles = createStyles({
+const styles = createStyles({
   heading: {
     padding: lg,
     justifyContent: 'space-between',

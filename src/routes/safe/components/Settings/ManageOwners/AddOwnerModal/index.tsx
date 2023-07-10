@@ -27,7 +27,7 @@ export type OwnerValues = {
   threshold: string
 }
 
-export const sendAddOwner = async (
+const sendAddOwner = async (
   values: OwnerValues,
   safeAddress: string,
   safeVersion: string,

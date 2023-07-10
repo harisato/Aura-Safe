@@ -5,7 +5,7 @@ import { Modal } from 'src/components/Modal'
 import GnoForm from 'src/components/forms/GnoForm'
 import { Entry } from 'src/pages/AddressBook'
 
-export const DELETE_ENTRY_BTN_ID = 'delete-entry-btn-id'
+const DELETE_ENTRY_BTN_ID = 'delete-entry-btn-id'
 
 interface DeleteEntryModalProps {
   deleteEntryModalHandler: () => void

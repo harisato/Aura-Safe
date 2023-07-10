@@ -1,14 +1,12 @@
-import { Accordion, AccordionDetails, AccordionSummary } from '@aura/safe-react-components'
+import { json, jsonParseLinter } from '@codemirror/lang-json'
+import { githubDark } from '@uiw/codemirror-theme-github'
+import CodeMirror from '@uiw/react-codemirror'
 import { ReactElement, useEffect, useState } from 'react'
-import TextArea from 'src/components/Input/TextArea'
+import { Message } from 'src/components/CustomTransactionMessage/BigMsg'
 import { getInternalChainId } from 'src/config'
 import styled from 'styled-components'
-import CodeMirror from '@uiw/react-codemirror'
-import { githubDark } from '@uiw/codemirror-theme-github'
-import { StreamLanguage } from '@codemirror/language'
-import { json } from '@codemirror/lang-json'
-import { javascript } from '@codemirror/lang-javascript'
-import { Message } from 'src/components/CustomTransactionMessage/BigMsg'
+
+import { linter } from '@codemirror/lint'
 
 const Wrap = styled.div`
   display: flex;
@@ -55,8 +53,6 @@ function MessageGenerator({ setMessage, setIsError }): ReactElement {
       }
       setIsError(false)
       const parsedMessage = JSON.parse(msg)
-      const prettyJson = JSON.stringify(parsedMessage, undefined, 4)
-      setRawMsg(prettyJson)
       if (typeof parsedMessage !== 'object' || !Array.isArray(parsedMessage)) {
         throw new Error('Input data is not an array')
       }
@@ -69,6 +65,17 @@ function MessageGenerator({ setMessage, setIsError }): ReactElement {
       setErrorMsg(error.message)
     }
   }
+
+  const beutifyJson = () => {
+    try {
+      if (!errorMsg) {
+        const parsedMessage = JSON.parse(rawMsg)
+        const prettyJson = JSON.stringify(parsedMessage, undefined, 4)
+        setRawMsg(prettyJson)
+      }
+    } catch (error) {}
+  }
+
   useEffect(() => {
     if (errorMsg) {
       setIsError(true)
@@ -82,10 +89,11 @@ function MessageGenerator({ setMessage, setIsError }): ReactElement {
         <CodeMirror
           className={errorMsg ? 'error' : ''}
           theme={githubDark}
-          extensions={[json()]}
+          extensions={[json(), linter(jsonParseLinter())]}
           value={rawMsg}
           height="54vh"
           onChange={(value, viewUpdate) => onMsgChange(value)}
+          onBlur={() => beutifyJson()}
           placeholder={`[
   {
     "typeUrl": "...",

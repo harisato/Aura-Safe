@@ -44,7 +44,7 @@ export type Transaction = TransactionSummary & {
   confirmationsRequired?: number
 }
 
-export type ExpandedTxDetails = GWTransactionDetails
+type ExpandedTxDetails = GWTransactionDetails
 
 type StoreStructure = {
   queued: {

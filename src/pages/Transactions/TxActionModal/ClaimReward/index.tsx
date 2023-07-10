@@ -35,7 +35,7 @@ export default function Execute({
   const userWalletAddress = useSelector(userAccountSelector)
   const dispatch = useDispatch()
   const [sequence, setSequence] = useState(data?.txSequence)
-  const { ethBalance: balance, nextQueueSeq, sequence: currentSequence } = useSelector(currentSafeWithNames)
+  const { nativeBalance: balance, nextQueueSeq, sequence: currentSequence } = useSelector(currentSafeWithNames)
   const txHandler = async (type) => {
     if (type == 'confirm') {
       dispatch(

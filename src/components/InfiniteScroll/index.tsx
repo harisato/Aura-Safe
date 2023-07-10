@@ -3,13 +3,13 @@ import { InViewHookResponse, useInView } from 'react-intersection-observer'
 
 export const INFINITE_SCROLL_CONTAINER = 'infinite-scroll-container'
 
-export const InfiniteScrollContext = createContext<{
+const InfiniteScrollContext = createContext<{
   ref: MutableRefObject<HTMLDivElement | null> | ((instance: HTMLDivElement | null) => void) | null
   lastItemId?: string
   setLastItemId: (itemId?: string) => void
 }>({ setLastItemId: () => {}, ref: null })
 
-export const InfiniteScrollProvider = forwardRef<HTMLDivElement, { children: ReactNode }>(
+const InfiniteScrollProvider = forwardRef<HTMLDivElement, { children: ReactNode }>(
   ({ children }, ref): ReactElement => {
     const [lastItemId, _setLastItemId] = useState<string>()
 

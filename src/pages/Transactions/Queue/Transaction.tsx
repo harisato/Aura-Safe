@@ -1,5 +1,6 @@
 import { AccordionDetails } from '@aura/safe-react-components'
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
+import { getDetailToken } from 'src/services'
 import { formatTimeInWords } from 'src/utils/date'
 import TxAmount from '../components/TxAmount'
 import TxDetail from '../components/TxDetail'
@@ -10,19 +11,53 @@ import TxStatus from '../components/TxStatus'
 import TxTime from '../components/TxTime'
 import TxType from '../components/TxType'
 import { NoPaddingAccordion, StyledAccordionSummary, StyledTransaction } from '../styled'
+
 export default function Transaction({
   transaction,
   hideSeq,
   curSeq,
+  listTokens,
 }: {
   transaction: any
   hideSeq?: boolean
   curSeq: string
+  listTokens?: any
 }) {
   const [txDetailLoaded, setTxDetailLoaded] = useState(false)
+  let defToken
+  if (transaction.txInfo.contractAddress) {
+    defToken = listTokens.find((t) => t.address === transaction.txInfo.contractAddress)
+  } else {
+    defToken = listTokens.find(
+      (t) =>
+        t.denom === transaction.txInfo.denom ||
+        t.symbol === transaction.txInfo.denom ||
+        t.cosmosDenom === transaction.txInfo.denom,
+    )
+  }
+  const [token, setToken] = useState(defToken)
+
+  useEffect(() => {
+    setToken(defToken)
+  }, [listTokens])
+
+  useEffect(() => {
+    if (!token) {
+      getContractDetail()
+    }
+  }, [token])
 
   if (!transaction) {
     return null
+  }
+
+  const getContractDetail = async () => {
+    try {
+      const { data } = await getDetailToken(transaction?.txInfo?.contractAddress)
+      setToken({ ...data, isNotExist: true, address: transaction.txInfo.contractAddress })
+    } catch (error) {
+      console.log(error)
+    }
   }
 
   return (
@@ -42,8 +77,8 @@ export default function Transaction({
           ) : (
             <TxSequence sequence={transaction.txSequence} />
           )}
-          <TxType type={transaction.txInfo.typeUrl} />
-          <TxAmount amount={transaction.txInfo.typeUrl == 'Custom' ? 0 : transaction.txInfo.amount} />
+          <TxType type={transaction.txInfo.displayType ?? transaction.txInfo.typeUrl} />
+          <TxAmount amount={transaction.txInfo.typeUrl == 'Custom' ? 0 : transaction.txInfo.amount} token={token} />
           <TxTime time={transaction.timestamp ? formatTimeInWords(transaction.timestamp) : 'Unknown'} />
           <TxExecutionInfo
             required={transaction.executionInfo.confirmationsRequired}
@@ -55,7 +90,7 @@ export default function Transaction({
         </StyledTransaction>
       </StyledAccordionSummary>
       <AccordionDetails>
-        {txDetailLoaded && <TxDetail transaction={transaction} isHistoryTx={false} />}
+        {txDetailLoaded && <TxDetail transaction={transaction} isHistoryTx={false} token={token} />}
       </AccordionDetails>
     </NoPaddingAccordion>
   )

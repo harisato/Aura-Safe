@@ -20,7 +20,6 @@ import {
   FIELD_SAFE_THRESHOLD,
 } from '../fields/cancelSafeFields'
 
-export const reviewLoadStepLabel = 'Review'
 
 function ReviewAllowStep(): ReactElement {
   const loadSafeForm = useForm()

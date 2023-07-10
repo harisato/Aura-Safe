@@ -2,6 +2,7 @@ interface IConfiguration {
   apiGateway: string | null
   chainId: string | null
   chainInfo: any[]
+  env: string
 }
 
 export const getGatewayUrl = async (): Promise<IConfiguration> => {
@@ -12,6 +13,7 @@ export const getGatewayUrl = async (): Promise<IConfiguration> => {
         apiGateway: config['api-gateway'],
         chainInfo: config['chain_info'],
         chainId: config['chain_id'],
+        env: config['environment'],
       }
       return data
     })
@@ -21,6 +23,7 @@ export const getGatewayUrl = async (): Promise<IConfiguration> => {
         apiGateway: null,
         chainId: null,
         chainInfo: [],
+        env: 'development',
       }
     })
 }
