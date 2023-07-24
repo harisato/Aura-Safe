@@ -16,6 +16,7 @@ import Notifications from '../Notifications'
 import Provider from '../Provider/Provider'
 import { DevelopBanner, styles } from './styles'
 import WalletPopup from './WalletPopup/WalletPopup'
+import { currentEnvironment } from 'src/logic/config/store/selectors'
 
 const Wrap = styled.div`
   background: #131419;
@@ -42,18 +43,10 @@ const Layout = (props: any) => {
   const { clickAway, open, toggle } = useStateHandler()
   const { clickAway: clickAwayNetworks, open: openNetworks, toggle: toggleNetworks } = useStateHandler()
   const isWrongChain = useSelector(shouldSwitchWalletChain)
-  const [isProduction, setIsProduction] = useState(false)
+  const environment = useSelector(currentEnvironment)
   useEffect(() => {
     clickAway()
   }, [showConnect])
-
-  useEffect(() => {
-    fetch('config.json')
-      .then((res) => res.json())
-      .then((config: any) => {
-        setIsProduction(config['environment'] == 'production')
-      })
-  }, [])
 
   return (
     <Wrap>
@@ -61,7 +54,7 @@ const Layout = (props: any) => {
         <Link to={WELCOME_ROUTE} className={classes.link}>
           <Img alt="Aura Safe" height={42} src={SafeLogo} testId="heading-gnosis-logo" />
         </Link>
-        {!isProduction && <DevelopBanner>Testnet Only</DevelopBanner>}
+        {environment == 'development' && <DevelopBanner>Testnet Only</DevelopBanner>}
       </LogoContainer>
 
       <Spacer />

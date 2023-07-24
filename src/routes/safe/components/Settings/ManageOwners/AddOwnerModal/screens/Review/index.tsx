@@ -25,7 +25,7 @@ import { ModalHeader } from 'src/routes/safe/components/Balances/SendModal/scree
 import { getSafeSDK } from 'src/logic/wallets/getWeb3'
 import { Errors, logError } from 'src/logic/exceptions/CodedException'
 
-export const ADD_OWNER_SUBMIT_BTN_TEST_ID = 'add-owner-submit-btn'
+const ADD_OWNER_SUBMIT_BTN_TEST_ID = 'add-owner-submit-btn'
 
 const useStyles = makeStyles(styles)
 

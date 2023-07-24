@@ -25,7 +25,7 @@ import {
 } from './styles'
 import { Props } from './type'
 
-export const TOGGLE_SIDEBAR_BTN_TESTID = 'TOGGLE_SIDEBAR_BTN'
+const TOGGLE_SIDEBAR_BTN_TESTID = 'TOGGLE_SIDEBAR_BTN'
 const SafeHeader = ({
   address,
   safeName,

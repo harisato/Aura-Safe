@@ -15,7 +15,7 @@ import calculateGasFee from 'src/logic/providers/utils/fee'
 import { currentSafeWithNames } from 'src/logic/safe/store/selectors'
 import { Token } from 'src/logic/tokens/store/model/token'
 import { extractSafeAddress } from 'src/routes/routes'
-import { formatBigNumber, formatNativeCurrency, formatNumber } from 'src/utils'
+import { convertAmount, formatNativeCurrency, formatNumber } from 'src/utils'
 import { signAndCreateTransaction } from 'src/utils/signer'
 import { RecipientProps } from '.'
 import { Popup } from '..'
@@ -36,7 +36,7 @@ export default function CreateTxPopup({
   gasUsed: string
 }) {
   const safeAddress = extractSafeAddress()
-  const { ethBalance: balance, nextQueueSeq, sequence: currentSequence } = useSelector(currentSafeWithNames)
+  const { nativeBalance: balance, nextQueueSeq, sequence: currentSequence } = useSelector(currentSafeWithNames)
   const dispatch = useDispatch()
   const denom = getCoinMinimalDenom()
   const chainDefaultGasPrice = getChainDefaultGasPrice()
@@ -71,12 +71,12 @@ export default function CreateTxPopup({
           inputs: [
             {
               address: safeAddress,
-              coins: coins(formatBigNumber(totalAmount, true), denom),
+              coins: coins(convertAmount(totalAmount, true), denom),
             },
           ],
           outputs: recipient?.map((r) => ({
             address: r.address,
-            coins: coins(formatBigNumber(+r.amount, true), denom),
+            coins: coins(convertAmount(+r.amount, true), denom),
           })),
         },
       },
@@ -86,6 +86,7 @@ export default function CreateTxPopup({
         msgs,
         manualGasLimit || '250000',
         sequence,
+        undefined,
         () => {
           setDisabled(true)
         },

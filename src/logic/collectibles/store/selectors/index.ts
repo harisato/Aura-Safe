@@ -3,8 +3,8 @@ import { NFTAsset, NFTAssets, NFTToken, NFTTokens } from 'src/logic/collectibles
 
 import { AppReduxState } from 'src/logic/safe/store'
 import { NFT_ASSETS_REDUCER_ID, NFT_TOKENS_REDUCER_ID } from 'src/logic/collectibles/store/reducer/collectibles'
-export const nftAssets = (state: AppReduxState): NFTAssets => state[NFT_ASSETS_REDUCER_ID]
-export const nftTokens = (state: AppReduxState): NFTTokens => state[NFT_TOKENS_REDUCER_ID]
+const nftAssets = (state: AppReduxState): NFTAssets => state[NFT_ASSETS_REDUCER_ID]
+const nftTokens = (state: AppReduxState): NFTTokens => state[NFT_TOKENS_REDUCER_ID]
 
 export const nftAssetsSelector = createSelector(nftAssets, (assets) => assets)
 

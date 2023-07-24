@@ -22,7 +22,7 @@ import { FEATURES } from '@gnosis.pm/safe-react-gateway-sdk'
 import { parsePrefixedAddress } from 'src/utils/prefixedAddress'
 import { hasFeature } from 'src/logic/safe/utils/safeVersion'
 
-export interface AddressBookProps {
+interface AddressBookProps {
   fieldMutator: (address: string) => void
   label?: string
   pristine?: boolean
@@ -32,7 +32,7 @@ export interface AddressBookProps {
   setSelectedEntry: Dispatch<SetStateAction<{ address: string; name: string }> | null>
 }
 
-export interface BaseAddressBookInputProps extends AddressBookProps {
+interface BaseAddressBookInputProps extends AddressBookProps {
   addressBookEntries: AddressBookEntry[]
   setSelectedEntry: (args: { address: string; name: string } | null) => void
   setValidationText: Dispatch<SetStateAction<string | undefined>>

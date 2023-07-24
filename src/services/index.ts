@@ -1,21 +1,18 @@
 import { SequenceResponse } from '@cosmjs/stargate'
-import { ChainInfo, TransferDirection } from '@gnosis.pm/safe-react-gateway-sdk'
+import { ChainInfo } from '@gnosis.pm/safe-react-gateway-sdk'
 import axios from 'axios'
 import { getChainInfo } from 'src/config'
 import { WalletKey } from 'src/logic/keplr/keplr'
 import { CHAIN_THEMES, THEME_DF } from 'src/services/constant/chainThemes'
 import { getExplorerUrl, getGatewayUrl } from 'src/services/data/environment'
 import { IProposal, IProposalRes } from 'src/types/proposal'
-import {
-  ICreateSafeTransaction,
-  ISignSafeTransaction,
-  ITransactionDetail,
-  ITransactionListItem,
-  ITransactionListQuery,
-} from 'src/types/transaction'
+import { ICreateSafeTransaction, ITransactionListItem, ITransactionListQuery } from 'src/types/transaction'
 import { IMSafeInfo, IMSafeResponse, OwnedMSafes } from '../types/safe'
 
 let baseUrl = ''
+let baseIndexerUrl = 'https://indexer-v2.dev.aurascan.io/api/v1/graphiql'
+let githubPageTokenRegistryUrl = ''
+let env = 'development'
 
 export interface ISafeCreate {
   creatorAddress: string
@@ -27,14 +24,10 @@ export interface ISafeCreate {
 export interface ISafeCancel {
   myAddress: string
 }
-export interface ISafeAllow {
-  safeId: string
-  myAddress: string
-}
-
-export interface IResponse<T> {
+interface IResponse<T> {
   AdditionalData: any[]
   Data: any
+  data: any
   ErrorCode: string
   Message: string
 }
@@ -59,6 +52,12 @@ export type MChainInfo = ChainInfo & _ChainInfo
 export function setBaseUrl(url: string): void {
   baseUrl = url
 }
+export function setGithubPageTokenRegistryUrl(url: string): void {
+  githubPageTokenRegistryUrl = url
+}
+export function setEnv(e: string): void {
+  env = e
+}
 
 export function getMChainsConfig(): Promise<MChainInfo[]> {
   return axios.post(`${baseUrl}/general/network-list`).then((response) => {
@@ -77,6 +76,7 @@ export function getMChainsConfig(): Promise<MChainInfo[]> {
         defaultGas: GasPriceDefault[]
         tokenImg: string
         rest: string
+        coinConfig?: any[]
       }) => {
         return {
           transactionService: null,
@@ -128,6 +128,7 @@ export function getMChainsConfig(): Promise<MChainInfo[]> {
             // 'SAFE_TX_GAS_OPTIONAL',
             // 'SPENDING_LIMIT',
           ],
+          coinConfig: e?.coinConfig || [],
         }
       },
     )
@@ -177,10 +178,6 @@ export async function allowMSafe(safeId: number, walletKey: WalletKey): Promise<
 
 export function createSafeTransaction(transactionInfo: ICreateSafeTransaction): Promise<IResponse<number>> {
   return axios.post(`${baseUrl}/transaction/create`, transactionInfo).then((res) => res.data)
-}
-
-export function signSafeTransaction(transactionInfo: ISignSafeTransaction): Promise<IResponse<any>> {
-  return axios.post(`${baseUrl}/transaction/sign`, transactionInfo).then((res) => res.data)
 }
 
 export const getTxDetailById = async (
@@ -272,10 +269,6 @@ export async function getNumberOfDelegator(validatorId: any): Promise<IResponse<
     .then((res) => res.data)
 }
 
-export function clamRewards(internalChainId: any, delegatorAddress: any): Promise<IResponse<any>> {
-  return axios.get(`${baseUrl}/general/${internalChainId}/${delegatorAddress}/rewards`).then((res) => res.data)
-}
-
 //VOTING
 
 export async function getProposals(internalChainId: number | string): Promise<IResponse<IProposalRes>> {
@@ -288,6 +281,44 @@ export async function getProposalDetail(
 ): Promise<IResponse<IProposal>> {
   return axios.get(`${baseUrl}/gov/${internalChainId}/proposals/${proposalId}`).then((res) => res.data)
 }
-export async function getContract(contractAddress: string, internalChainId: any): Promise<IResponse<any>> {
-  return axios.get(`${baseUrl}/contract/${contractAddress}?internalChainId=${internalChainId}`).then((res) => res.data)
+export async function getContract(contractAddress: string): Promise<IResponse<any>> {
+  const chainInfo = getChainInfo() as any
+  return axios
+    .post(chainInfo.indexerUrl, {
+      query: `query GetContractVerificationStatus($address: String = "") {
+        ${chainInfo.environment || ''} {
+          smart_contract(where: {address: {_eq: $address}}) {
+            code {
+              code_id_verifications {
+                compiler_version
+                verified_at
+                verification_status
+                execute_msg_schema
+              }
+            }
+          }
+        }
+      }`,
+      variables: {
+        address: contractAddress,
+      },
+      operationName: 'GetContractVerificationStatus',
+    })
+    .then((res) => res.data)
+}
+
+export async function getTokenDetail() {
+  return fetch(githubPageTokenRegistryUrl)
+}
+
+export async function getDetailToken(address: string): Promise<IResponse<any>> {
+  const currentChainInfo = getChainInfo() as any
+  const { chainInfo } = await getGatewayUrl()
+  return axios
+    .get(
+      `${
+        chainInfo.find((chain) => chain.chainId == currentChainInfo.chainId)?.rest
+      }/cosmwasm/wasm/v1/contract/${address}/smart/eyAidG9rZW5faW5mbyI6IHt9IH0%3D`,
+    )
+    .then((res) => res.data)
 }

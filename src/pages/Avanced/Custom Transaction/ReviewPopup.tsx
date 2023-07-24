@@ -19,11 +19,11 @@ import { extractSafeAddress } from 'src/routes/routes'
 import { formatNativeCurrency, formatNumber } from 'src/utils'
 import { signAndCreateTransaction } from 'src/utils/signer'
 import { Wrap } from './styles'
-
+import AlertIcon from 'src/assets/icons/alert.svg'
 export default function ReviewPopup({ open, setOpen, gasUsed, msg }) {
   const safeAddress = extractSafeAddress()
   const dispatch = useDispatch()
-  const { ethBalance: balance } = useSelector(currentSafeWithNames)
+  const { nativeBalance: balance } = useSelector(currentSafeWithNames)
   const chainDefaultGasPrice = getChainDefaultGasPrice()
   const decimal = getCoinDecimal()
   const nativeCurrency = getNativeCurrency()
@@ -63,7 +63,7 @@ export default function ReviewPopup({ open, setOpen, gasUsed, msg }) {
         })
       }
     })
-    const gasUsed = (200000 * msg.length).toString()
+    const gasUsed = (250000 * msg.length).toString()
     setManualGasLimit(gasUsed)
     const gasFee = calculateGasFee(+gasUsed, +chainDefaultGasPrice, decimal)
     setGasPriceFormatted(gasFee)
@@ -76,6 +76,7 @@ export default function ReviewPopup({ open, setOpen, gasUsed, msg }) {
         msg,
         manualGasLimit || '250000',
         sequence,
+        undefined,
         () => {
           setDisabled(true)
         },
@@ -105,6 +106,12 @@ export default function ReviewPopup({ open, setOpen, gasUsed, msg }) {
           })}
         </div>
         <Divider />
+        <div className="gas-warning">
+          <div>
+            <img src={AlertIcon} alt="" />
+          </div>
+          <div>Failed to estimate gas. Default value applied.</div>
+        </div>
         <FeeAndSequence
           open={openGasInput}
           setOpen={setOpenGasInput}

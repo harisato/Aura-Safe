@@ -26,7 +26,7 @@ import { MsgTypeUrl } from 'src/logic/providers/constants/constant'
 import { currentSafeWithNames } from 'src/logic/safe/store/selectors'
 import { loadedSelector } from 'src/logic/wallets/store/selectors'
 import { grantedSelector } from 'src/utils/safeUtils/selector'
-import { formatBigNumber, formatNumber } from 'src/utils'
+import { convertAmount, formatNumber } from 'src/utils'
 import { usePagedQueuedTransactions } from '../../utils/hooks/usePagedQueuedTransactions'
 import MyDelegation from './MyDelegation'
 import TxActionModal from './TxActionModal'
@@ -86,7 +86,7 @@ function Staking(props): ReactElement {
     setValidateMsg(undefined)
     const value = formatNumber(v)
     setAmount(value)
-    if (+value > +formatBigNumber(dataDelegateOfUser?.delegation?.delegationBalance?.amount)) {
+    if (+value > +convertAmount(dataDelegateOfUser?.delegation?.delegationBalance?.amount, false)) {
       setValidateMsg('Given amount is greater than available balance!')
     }
   }
@@ -124,7 +124,7 @@ function Staking(props): ReactElement {
     setValidateMsg(undefined)
     const value = formatNumber(v)
     setAmount(value)
-    if (+value > +formatBigNumber(availableBalance?.amount)) {
+    if (+value > +convertAmount(availableBalance?.amount, false)) {
       setValidateMsg('Given amount is greater than available balance!')
     }
   }
@@ -184,7 +184,7 @@ function Staking(props): ReactElement {
 
   const handleSubmit = async (action) => {
     if (action === 'delegate') {
-      if (+amount > +formatBigNumber(availableBalance?.amount) || amount == 0) {
+      if (+amount > +convertAmount(availableBalance?.amount, false) || amount == 0) {
         setValidateMsg('Invalid amount! Please check and try again.')
         return
       }
@@ -195,7 +195,7 @@ function Staking(props): ReactElement {
               {
                 typeUrl: MsgTypeUrl.Delegate,
                 value: {
-                  amount: coin(formatBigNumber(amount, true), denom),
+                  amount: coin(convertAmount(amount, true), denom),
                   delegatorAddress: SafeAddress,
                   validatorAddress: itemValidator.safeStaking,
                 },
@@ -215,7 +215,7 @@ function Staking(props): ReactElement {
     }
 
     if (action === 'redelegate') {
-      if (+amount > +formatBigNumber(dataDelegateOfUser?.delegation?.delegationBalance?.amount) || amount == 0) {
+      if (+amount > +convertAmount(dataDelegateOfUser?.delegation?.delegationBalance?.amount, false) || amount == 0) {
         setValidateMsg('Invalid amount! Please check and try again.')
         return
       }
@@ -226,7 +226,7 @@ function Staking(props): ReactElement {
               {
                 typeUrl: MsgTypeUrl.Redelegate,
                 value: {
-                  amount: coin(formatBigNumber(amount, true), denom),
+                  amount: coin(convertAmount(amount, true), denom),
                   delegatorAddress: SafeAddress,
                   validatorSrcAddress: itemValidator.safeStaking,
                   validatorDstAddress: valueDelegate,
@@ -248,7 +248,7 @@ function Staking(props): ReactElement {
     }
 
     if (action === 'undelegate') {
-      if (+amount > +formatBigNumber(dataDelegateOfUser?.delegation?.delegationBalance?.amount) || amount == 0) {
+      if (+amount > +convertAmount(dataDelegateOfUser?.delegation?.delegationBalance?.amount, false) || amount == 0) {
         setValidateMsg('Invalid amount! Please check and try again.')
         return
       }
@@ -259,7 +259,7 @@ function Staking(props): ReactElement {
               {
                 typeUrl: MsgTypeUrl.Undelegate,
                 value: {
-                  amount: coin(formatBigNumber(amount, true), denom),
+                  amount: coin(convertAmount(amount, true), denom),
                   delegatorAddress: SafeAddress,
                   validatorAddress: itemValidator.safeStaking,
                 },
@@ -387,7 +387,7 @@ function Staking(props): ReactElement {
         dstValidator={valueDelegate}
         amount={amount}
         listReward={listReward}
-        gasUsed={Math.round(gasUsed * 1.3)}
+        gasUsed={Math.round(gasUsed * 2)}
       />
 
       <ConnectWalletModal isOpen={connectWalletState.showConnect} onClose={onConnectWalletHide}></ConnectWalletModal>

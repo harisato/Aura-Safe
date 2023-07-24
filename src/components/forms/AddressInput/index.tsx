@@ -19,7 +19,7 @@ import { checksumAddress } from 'src/utils/checksumAddress'
 import { Errors, logError } from 'src/logic/exceptions/CodedException'
 import { parsePrefixedAddress } from 'src/utils/prefixedAddress'
 
-export interface AddressInputProps {
+interface AddressInputProps {
   fieldMutator: (address: string) => void
   name?: string
   text?: string

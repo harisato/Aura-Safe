@@ -129,8 +129,7 @@ export default function Stepper(props: StepperProps): ReactElement {
 }
 
 const useStyles = makeStyles((theme) => styles(theme))
-
-export type StepElementProps = {
+type StepElementProps = {
   label: string
   children: JSX.Element
   nextButtonLabel?: string

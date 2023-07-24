@@ -26,7 +26,7 @@ import { getSafeSDK } from 'src/logic/wallets/getWeb3'
 import { logError } from 'src/logic/exceptions/CodedException'
 import ErrorCodes from 'src/logic/exceptions/registry'
 
-export const REMOVE_OWNER_REVIEW_BTN_TEST_ID = 'remove-owner-review-btn'
+const REMOVE_OWNER_REVIEW_BTN_TEST_ID = 'remove-owner-review-btn'
 
 type ReviewRemoveOwnerProps = {
   onClickBack: () => void

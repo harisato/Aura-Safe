@@ -1,4 +1,4 @@
-import { Text, Accordion, AccordionDetails, AccordionSummary, EthHashInfo } from '@aura/safe-react-components'
+import { Accordion, AccordionSummary, EthHashInfo } from '@aura/safe-react-components'
 import styled, { css } from 'styled-components'
 
 export const Wrapper = styled.div`
@@ -17,21 +17,12 @@ export const Wrapper = styled.div`
   }
 `
 
-export const StyledText = styled.span`
-  color: #98989b;
-  font-size: 14px;
-`
-
 export const ContentWrapper = styled.div`
   display: flex;
   flex-direction: column;
   flex-grow: 1;
   align-items: center;
   color: white;
-`
-
-export const ColumnDisplayAccordionDetails = styled(AccordionDetails)`
-  flex-flow: column;
 `
 
 export const AccordionWrapper = styled.div<{ hasSameSeqTxAfter?: boolean; hasSameSeqTxBefore?: boolean }>`
@@ -85,40 +76,6 @@ export const NoPaddingAccordion = styled(Accordion)`
   }
 `
 
-export const ActionAccordion = styled(Accordion)`
-  &.MuiAccordion-root {
-    background-color: #1d1d1f;
-    &:first-child {
-      border-top: none;
-    }
-
-    &.Mui-expanded {
-      border-bottom: none !important;
-      &:last-child {
-        border-bottom: none;
-      }
-    }
-
-    .MuiAccordionDetails-root {
-      padding: 16px;
-    }
-  }
-`
-
-export const StyledTransactionsGroup = styled.div`
-  align-items: flex-start;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  margin: 16px 8px;
-  width: 98%;
-`
-
-export const H2 = styled.h2`
-  text-transform: uppercase;
-  font-size: smaller;
-`
-
 export const SubTitle = styled.p`
   margin: 16px 0px 8px 0px;
   font-size: 0.76em;
@@ -128,76 +85,6 @@ export const SubTitle = styled.p`
   color: ${({ theme }) => theme.colors.white};
   text-transform: uppercase;
 `
-
-export const StyledTransactions = styled.div`
-  background-color: #121212;
-  border-radius: 8px;
-  box-shadow: #00000026 0 4px 12px 0;
-  overflow: hidden;
-  width: 100%;
-
-  & > .MuiAccordion-root {
-    &:first-child {
-      border-top: none;
-    }
-
-    &:last-child {
-      border-bottom: none;
-    }
-
-    &:last-of-type {
-      div {
-        row-gap: 0px;
-      }
-    }
-  }
-`
-
-export const GroupedTransactionsCard = styled(StyledTransactions)`
-  transition: all 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
-  background-color: transparent;
-  border-radius: 0;
-  box-shadow: none;
-
-  &:not(:last-child) {
-    border-bottom: none;
-  }
-
-  .MuiAccordion-root,
-  .MuiAccordionSummary-root,
-  .MuiAccordionDetails-root {
-    background-color: transparent;
-
-    &:hover,
-    &.Mui-expanded {
-      background-color: transparent;
-      border-bottom: none !important;
-    }
-  }
-
-  // &:hover {
-  //   background-color: ${({ theme }) => theme.colors.background};
-
-  //   .MuiAccordionDetails-root {
-  //     div[class^='tx-'] {
-  //       background-color: ${({ theme }) => theme.colors.background};
-  //     }
-  //   }
-
-  //   .disclaimer-container {
-  //     background-color: ${({ theme }) => theme.colors.inputField};
-  //   }
-  // }
-`
-const gridColumns = {
-  // nonce: '0.5fr',
-  type: '3fr',
-  info: '3fr',
-  time: '2.5fr',
-  votes: '1.5fr',
-  actions: '1.5fr',
-  status: '2.5fr',
-}
 
 const willBeReplaced = css`
   .will-be-replaced * {
@@ -316,114 +203,6 @@ export const StyledTransaction = styled.div<{ shouldBlur?: boolean }>`
         visibility: hidden;
       }
     }
-  }
-`
-
-export const StyledGroupedTransactions = styled(StyledTransaction)`
-  // no \`tx-nonce\` column required
-  grid-template-columns: ${Object.values(gridColumns).slice(1).join(' ')};
-  font-family: 'Inter !important';
-`
-
-export const GroupedTransactions = styled(StyledTransaction)`
-  // add a bottom division line for all elements but the last
-  &:not(:last-of-type) {
-    border-bottom: none;
-  }
-
-  // builds the tree-view layout
-  .tree-lines {
-    height: 100%;
-    margin-left: 30px;
-    position: relative;
-    width: 30%;
-
-    // this is a special case, the first element in the list needs to have a block child component
-    // add tree lines line to the first item of the list
-    .first-node {
-      display: block;
-      position: absolute;
-      top: -16px;
-      width: 100%;
-
-      &::before {
-        border-bottom: none;
-        border-left: none;
-        content: '';
-        height: 22px;
-        position: absolute;
-        top: 8px;
-        width: 100%;
-      }
-    }
-
-    // add tree lines to all elements of the list (except for the last one)
-    // :last-of-type won't work with classes selector (HTML elements only)
-    // as we need block-level elements, we're using paragraphs for .tree-lines and .first-node
-    // given that divs are already being used for the transaction row, and both (p and div) are siblings
-    &:not(:last-of-type) {
-      &::before {
-        border-bottom: none;
-        border-left: none;
-        content: '';
-        height: 100%;
-        margin-top: 14px;
-        position: absolute;
-        width: 100%;
-      }
-    }
-  }
-
-  // overrides Accordion styles, as grouped txs behave differently
-  > .MuiAccordion-root {
-    transition: none;
-    border: 0;
-    grid-column-end: span 6;
-    grid-column-start: 2;
-
-    &:first-child {
-      border: 0;
-    }
-
-    &.Mui-expanded {
-      justify-self: center;
-      width: calc(100% - 32px);
-      background-color: rgba(62, 63, 64, 1) !important;
-      &:not(:last-of-type) {
-        border-bottom: none;
-      }
-
-      &:not(:first-of-type) {
-        border-top: none;
-        // if two consecutive accordions are expanded, borders will get duplicated
-        // this rule is to overlap them
-        margin-top: -2px;
-      }
-
-      > .MuiAccordionSummary-root {
-        background-color: #0e0e0f !important;
-        border-bottom: none !important;
-        border-top: none;
-        padding: 0;
-      }
-    }
-  }
-`
-
-export const DisclaimerContainer = styled(StyledTransaction)`
-  background-color: ${({ theme }) => theme.colors.inputField} !important;
-  border-radius: 4px;
-  margin: 12px 8px 0 12px;
-  padding: 8px 12px;
-  width: calc(100% - 48px);
-
-  .nonce {
-    grid-column-start: 1;
-  }
-
-  .disclaimer {
-    grid-column-start: 2;
-    grid-column-end: span 6;
   }
 `
 
@@ -652,11 +431,6 @@ export const InlineEthHashInfo = styled(EthHashInfo)`
   }
 `
 
-export const StyledScrollableBar = styled.div`
-  scrollbar-color: darkgrey #dadada;
-  scrollbar-width: thin;
-`
-
 export const ScrollableTransactionsContainer = styled.div`
   overflow-x: hidden;
   overflow-y: auto;
@@ -671,7 +445,7 @@ export const ScrollableTransactionsContainer = styled.div`
     color: #ffffff;
     margin: 0px 0px 16px;
   }
-  .section-title:last-of-type {
+  .section-title:not(:first-of-type) {
     margin-top: 32px;
   }
 `
@@ -699,14 +473,6 @@ export const StyledAccordionSummary = styled(AccordionSummary)`
   .tx-nonce {
     margin: 0 16px 0 8px;
     min-width: 80px;
-  }
-`
-export const AlignItemsWithMargin = styled.div`
-  display: flex;
-  align-items: center;
-
-  span:first-child {
-    margin-right: 6px;
   }
 `
 export const NoTransactions = styled.div`

@@ -13,6 +13,7 @@ import { wrapInSuspense } from 'src/utils/wrapInSuspense'
 import SafeLoadError from './components/SafeLoadError'
 import ContractInteraction from 'src/pages/SmartContract/ContractInteraction'
 import CustomTransaction from 'src/pages/Avanced/Custom Transaction'
+import Assets from 'src/pages/Assets'
 
 export const BALANCES_TAB_BTN_TEST_ID = 'balances-tab-btn'
 export const SETTINGS_TAB_BTN_TEST_ID = 'settings-tab-btn'
@@ -90,7 +91,7 @@ const Container = (): React.ReactElement => {
         <Route
           exact
           path={[SAFE_ROUTES.ASSETS_BALANCES, SAFE_ROUTES.ASSETS_BALANCES_COLLECTIBLES]}
-          render={() => wrapInSuspense(<Balances />, null)}
+          render={() => wrapInSuspense(<Assets />, null)}
         />
         <Route
           exact

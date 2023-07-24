@@ -3,8 +3,9 @@ import FormControl from '@material-ui/core/FormControl'
 import MenuItem from '@material-ui/core/MenuItem'
 import DefaultSelect from '@material-ui/core/Select'
 import { makeStyles } from '@material-ui/core/styles'
-import { ReactNode } from 'react'
+import { ReactNode, useState } from 'react'
 import CaretDown from 'src/assets/icons/CaretDown.svg'
+import CaretUp from 'src/assets/icons/CaretUp.svg'
 import { inputLinear } from 'src/theme/variables'
 const useStyles = makeStyles(() => ({
   formControl: {
@@ -67,6 +68,7 @@ const useStyles = makeStyles(() => ({
   },
 }))
 const CaretDownIcon = () => <img className="select-icon" src={CaretDown} />
+const CaretUpIcon = () => <img className="select-icon" src={CaretUp} />
 
 export interface IOption {
   value: string | number
@@ -90,6 +92,7 @@ const Select = ({
   disabled?: boolean
 }) => {
   const classes = useStyles()
+  const [isOpen, setIsOpen] = useState(false)
 
   const menuProps: Partial<MenuProps> = {
     classes: {
@@ -112,8 +115,14 @@ const Select = ({
       <DefaultSelect
         value={value}
         onChange={(event) => onChange(event.target.value)}
+        onClose={() => {
+          setIsOpen(false)
+        }}
+        onOpen={() => {
+          setIsOpen(true)
+        }}
         disableUnderline
-        IconComponent={CaretDownIcon}
+        IconComponent={!disabled ? (isOpen ? CaretUpIcon : CaretDownIcon) : () => null}
         MenuProps={menuProps}
         classes={{
           select: classes.select,

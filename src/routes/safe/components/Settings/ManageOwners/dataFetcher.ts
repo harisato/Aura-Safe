@@ -3,9 +3,9 @@ import { List } from 'immutable'
 import { TableColumn } from 'src/components/Table/types.d'
 import { AddressBookState } from 'src/logic/addressBook/model/addressBook'
 
-export const OWNERS_TABLE_NAME_ID = 'name'
+const OWNERS_TABLE_NAME_ID = 'name'
 export const OWNERS_TABLE_ADDRESS_ID = 'address'
-export const OWNERS_TABLE_ACTIONS_ID = 'actions'
+const OWNERS_TABLE_ACTIONS_ID = 'actions'
 
 export type OwnerData = { address: string; name: string }
 

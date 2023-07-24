@@ -1,12 +1,11 @@
 import { Item } from '@aura/safe-react-components/dist/navigation/Tab'
 import { ReactElement, useEffect, useState } from 'react'
-import { Redirect, Route, Switch, useHistory, useRouteMatch } from 'react-router-dom'
+import { Redirect, Route, Switch, useHistory } from 'react-router-dom'
 import Icon from 'src/assets/icons/ChartBar.svg'
 import Breadcrumb from 'src/components/Breadcrumb'
-import Tabs from 'src/components/Tabs/FilterTab'
-import Tab from 'src/components/Tabs/FilterTab/Tab'
-import { extractPrefixedSafeAddress, generateSafeRoute, SAFE_ROUTES } from 'src/routes/routes'
-import { SAFE_EVENTS, useAnalytics } from 'src/utils/googleAnalytics'
+import Tabs from 'src/components/Tabs/NormalTab'
+import Tab from 'src/components/Tabs/NormalTab/Tab'
+import { SAFE_ROUTES, extractPrefixedSafeAddress, generateSafeRoute } from 'src/routes/routes'
 import HistoryTransactions from './History'
 import QueueTransactions from './Queue'
 import { ContentWrapper, Wrapper } from './styled'
@@ -34,26 +33,24 @@ const Transactions = (): ReactElement => {
 
   return (
     <Wrapper>
-      <div className="head">
-        <Breadcrumb title="Transactions" subtitleIcon={Icon} subtitle="Transactions" />
-        <Tabs
-          value={tab}
-          onChange={(e, v) => {
-            setTab(v)
-            switch (v) {
-              case 0:
-                onTabChange(SAFE_ROUTES.TRANSACTIONS_QUEUE)
-                break
-              case 1:
-                onTabChange(SAFE_ROUTES.TRANSACTIONS_HISTORY)
-                break
-            }
-          }}
-        >
-          <Tab label="Queue" />
-          <Tab label="History" />
-        </Tabs>
-      </div>
+      <Breadcrumb title="Transactions" subtitleIcon={Icon} subtitle="Transactions" />
+      <Tabs
+        value={tab}
+        onChange={(e, v) => {
+          setTab(v)
+          switch (v) {
+            case 0:
+              onTabChange(SAFE_ROUTES.TRANSACTIONS_QUEUE)
+              break
+            case 1:
+              onTabChange(SAFE_ROUTES.TRANSACTIONS_HISTORY)
+              break
+          }
+        }}
+      >
+        <Tab label="Queue" />
+        <Tab label="History" />
+      </Tabs>
       <ContentWrapper>
         <Switch>
           <Route exact path={SAFE_ROUTES.TRANSACTIONS_QUEUE} render={() => <QueueTransactions />} />

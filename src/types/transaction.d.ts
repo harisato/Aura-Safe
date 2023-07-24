@@ -59,6 +59,8 @@ export interface ITransactionListItem {
   TypeUrl?: string
   FinalAmount?: number
   Timestamp?: number
+  DisplayType?: string
+  ContractAddress?: string
 }
 
 export interface ISignature {

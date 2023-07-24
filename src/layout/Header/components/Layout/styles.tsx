@@ -52,12 +52,7 @@ export const styles = () => ({
   },
 })
 
-export const LogoContainer = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 12px;
-`
+
 export const DevelopBanner = styled.div`
   color: #868a97;
   border-radius: 4px;

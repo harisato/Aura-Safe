@@ -2,11 +2,11 @@ import NotificationPopup from 'src/components/NotificationPopup'
 import { TextNotiStyled, TextGray, TextDelegateNoti, BoxDelegate } from './styles'
 import { Text } from '@aura/safe-react-components'
 import Col from 'src/components/layout/Col'
-import { formatBigNumber, formatNativeCurrency } from 'src/utils'
+import { convertAmount, formatNativeCurrency } from 'src/utils'
 
 export default function ManageModal(props) {
   const { nativeCurrency, itemDelegate, availableBalance, dataDelegateOfUser } = props
-  const pendingReward: any = formatBigNumber(dataDelegateOfUser?.delegation?.pendingReward?.amount || 0)
+  const pendingReward: any = convertAmount(dataDelegateOfUser?.delegation?.pendingReward?.amount || 0, false)
   return (
     <>
       <NotificationPopup>
@@ -30,7 +30,9 @@ export default function ManageModal(props) {
               <TextGray>My delegation</TextGray>
             </Col>
             <p>
-              {formatNativeCurrency(formatBigNumber(dataDelegateOfUser?.delegation?.delegationBalance?.amount) || 0)}
+              {formatNativeCurrency(
+                convertAmount(dataDelegateOfUser?.delegation?.delegationBalance?.amount, false) || 0,
+              )}
             </p>
           </BoxDelegate>
           <BoxDelegate>
@@ -50,7 +52,9 @@ export default function ManageModal(props) {
             </Col>
 
             <p>
-              {formatNativeCurrency(formatBigNumber(dataDelegateOfUser?.delegation?.delegatableBalance?.amount || 0))}
+              {formatNativeCurrency(
+                convertAmount(dataDelegateOfUser?.delegation?.delegatableBalance?.amount || 0, false),
+              )}
             </p>
           </BoxDelegate>
           <BoxDelegate>
@@ -58,7 +62,9 @@ export default function ManageModal(props) {
               <TextGray>Total Reward</TextGray>
             </Col>
 
-            <p>{formatNativeCurrency(formatBigNumber(dataDelegateOfUser?.delegation?.claimedReward?.amount || 0))}</p>
+            <p>
+              {formatNativeCurrency(convertAmount(dataDelegateOfUser?.delegation?.claimedReward?.amount || 0, false))}
+            </p>
           </BoxDelegate>
         </Col>
       </div>

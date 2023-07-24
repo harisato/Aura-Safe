@@ -39,7 +39,7 @@ const AddSafeButton = ({ onAdd }: Props): ReactElement => {
         <AddIcon />
 
         <Text color="primary" size="xl" strong>
-          Add Safe
+          Create new Safe
         </Text>
       </Fab>
     </StyledLink>

@@ -21,7 +21,7 @@ type OwnerValues = OwnerData & {
   threshold: string
 }
 
-export const sendRemoveOwner = async (
+const sendRemoveOwner = async (
   values: OwnerValues,
   safeAddress: string,
   safeVersion: string,

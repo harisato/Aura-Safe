@@ -19,7 +19,7 @@ import { styles } from 'src/routes/safe/components/Balances/SendModal/screens/Co
 
 const useStyles = makeStyles(styles)
 
-export interface EthAddressInputProps {
+interface EthAddressInputProps {
   isContract?: boolean
   isRequired?: boolean
   name: string

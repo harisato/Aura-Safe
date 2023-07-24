@@ -3,17 +3,6 @@ import { AddressBookEntry, AddressBookState } from 'src/logic/addressBook/model/
 import { sameAddress } from 'src/logic/wallets/ethAddresses'
 import { AppReduxState } from 'src/logic/safe/store'
 import { Overwrite } from 'src/types/helpers'
-
-export type OldAddressBookEntry = {
-  address: string
-  name: string
-  isOwner: boolean
-}
-
-export type OldAddressBookType = {
-  [safeAddress: string]: [OldAddressBookEntry]
-}
-
 export const ADDRESS_BOOK_INVALID_NAMES = ['UNKNOWN', 'OWNER #', 'MY WALLET']
 
 export const isValidAddressBookName = (addressBookName: string): boolean => {

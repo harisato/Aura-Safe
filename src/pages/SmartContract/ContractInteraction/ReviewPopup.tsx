@@ -13,14 +13,15 @@ import { MsgTypeUrl } from 'src/logic/providers/constants/constant'
 import calculateGasFee from 'src/logic/providers/utils/fee'
 import { currentSafeWithNames } from 'src/logic/safe/store/selectors'
 import { extractSafeAddress } from 'src/routes/routes'
-import { formatNativeCurrency } from 'src/utils'
+import { convertAmount, formatNativeCurrency } from 'src/utils'
 import { signAndCreateTransaction } from 'src/utils/signer'
 import { Wrap } from './styles'
+import { IFund } from 'src/components/JsonschemaForm/FundForm'
 
 export default function ReviewPopup({ open, setOpen, gasUsed, data, contractData }) {
   const safeAddress = extractSafeAddress()
   const dispatch = useDispatch()
-  const { ethBalance: balance } = useSelector(currentSafeWithNames)
+  const { nativeBalance: balance } = useSelector(currentSafeWithNames)
   const chainDefaultGasPrice = getChainDefaultGasPrice()
   const decimal = getCoinDecimal()
   const defaultGas = '250000'
@@ -44,13 +45,21 @@ export default function ReviewPopup({ open, setOpen, gasUsed, data, contractData
   }, [gasUsed])
 
   const signTransaction = async () => {
+    const updatedFunds = contractData.funds.map((fund: IFund) => {
+      const { logoUri, type, symbol, ...rest } = fund
+      const updatedAmount = convertAmount(+fund.amount, true, +fund.tokenDecimal)
+      return {
+        ...rest,
+        amount: updatedAmount,
+      }
+    })
     const msgs: any = [
       {
         typeUrl: MsgTypeUrl.ExecuteContract,
         value: {
           contract: contractData.contractAddress,
           sender: safeAddress,
-          funds: contractData.funds ? JSON.parse(contractData.funds) : [],
+          funds: updatedFunds ?? [],
           msg: {
             [contractData.selectedFunction]: data,
           },
@@ -62,6 +71,7 @@ export default function ReviewPopup({ open, setOpen, gasUsed, data, contractData
         msgs,
         manualGasLimit || '250000',
         sequence,
+        undefined,
         () => {
           setDisabled(true)
         },
@@ -107,7 +117,12 @@ export default function ReviewPopup({ open, setOpen, gasUsed, data, contractData
           setSequence={setSequence}
         />
         <Divider />
-        <Amount amount={formatNativeCurrency(+gasPriceFormatted)} label="Total Allocation Amount" />
+        <Amount
+          listTokens={contractData.funds}
+          amount={formatNativeCurrency(+gasPriceFormatted)}
+          label="Total Allocation Amount"
+          nativeFee={+gasPriceFormatted}
+        />
         <div className="notice">
           You’re about to create a transaction and will have to confirm it with your currently connected wallet.
         </div>

@@ -86,7 +86,7 @@ const URL_NOT_PROVIDED_ERROR = 'App url No provided or it is invalid.'
 const APP_LOAD_ERROR = 'There was an error loading the Safe App. There might be a problem with the App provider.'
 
 const AppFrame = ({ appUrl }: Props): ReactElement => {
-  const { address: safeAddress, ethBalance, owners, threshold } = useSelector(currentSafe)
+  const { address: safeAddress, nativeBalance, owners, threshold } = useSelector(currentSafe)
   const { nativeCurrency, chainId, chainName, shortName } = getChainInfo()
   const safeName = useSelector((state) => addressBookEntryName(state, { address: safeAddress }))
   const { trackEvent } = useAnalytics()
@@ -160,10 +160,10 @@ const AppFrame = ({ appUrl }: Props): ReactElement => {
       data: {
         safeAddress: safeAddress as string,
         network: getChainName().toLowerCase() as LowercaseNetworks,
-        ethBalance: ethBalance as string,
+        ethBalance: nativeBalance as string,
       },
     })
-  }, [ethBalance, safeAddress, appUrl, sendMessageToIframe])
+  }, [nativeBalance, safeAddress, appUrl, sendMessageToIframe])
 
   const communicator = useAppCommunicator(iframeRef, safeApp)
 
@@ -327,7 +327,7 @@ const AppFrame = ({ appUrl }: Props): ReactElement => {
         isOpen={confirmTransactionModal.isOpen}
         app={safeApp as SafeApp}
         safeAddress={safeAddress}
-        ethBalance={ethBalance as string}
+        nativeBalance={nativeBalance as string}
         safeName={safeName as string}
         txs={confirmTransactionModal.txs}
         onClose={closeConfirmationModal}
@@ -341,7 +341,7 @@ const AppFrame = ({ appUrl }: Props): ReactElement => {
         isOpen={signMessageModalState.isOpen}
         app={safeApp as SafeApp}
         safeAddress={safeAddress}
-        ethBalance={ethBalance as string}
+        nativeBalance={nativeBalance as string}
         safeName={safeName as string}
         onClose={closeSignMessageModal}
         requestId={signMessageModalState.requestId}

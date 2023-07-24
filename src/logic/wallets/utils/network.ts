@@ -2,9 +2,9 @@ import { Wallet } from 'bnc-onboard/dist/src/interfaces'
 import onboard from 'src/logic/wallets/onboard'
 import { numberToHex } from 'web3-utils'
 
-import { getChainInfo, getExplorerUrl, getPublicRpcUrl, _getChainId } from 'src/config'
+import { _getChainId, getChainInfo, getExplorerUrl, getPublicRpcUrl } from 'src/config'
 import { ChainId } from 'src/config/chain.d'
-import { Errors, CodedException } from 'src/logic/exceptions/CodedException'
+import { CodedException, Errors } from 'src/logic/exceptions/CodedException'
 
 const WALLET_ERRORS = {
   UNRECOGNIZED_CHAIN: 4902,
@@ -82,13 +82,3 @@ export const shouldSwitchNetwork = (wallet = onboard().getState()?.wallet): bool
   return currentNetwork ? desiredNetwork !== currentNetwork.toString() : false
 }
 
-export const switchWalletChain = async (): Promise<void> => {
-  const { wallet } = onboard().getState()
-  try {
-    await switchNetwork(wallet, _getChainId())
-  } catch (e) {
-    e.log()
-    // Fallback to the onboard popup if switching isn't supported
-    await onboard().walletCheck()
-  }
-}

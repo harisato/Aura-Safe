@@ -1,10 +1,12 @@
 import { Loader, Title } from '@aura/safe-react-components'
 import { Fragment, ReactElement, useEffect } from 'react'
 
+import { useSelector } from 'react-redux'
 import NoTransactionsImage from 'src/assets/icons/no-transactions.svg'
 import Img from 'src/components/layout/Img'
 import { useQuery } from 'src/utils'
 import { formatWithSchema } from 'src/utils/date'
+import { extendedSafeTokensSelector } from 'src/utils/safeUtils/selector'
 import { usePagedHistoryTransactions } from '../../../utils/hooks/usePagedHistoryTransactions'
 import {
   AccordionWrapper,
@@ -17,9 +19,9 @@ import {
 import Transaction from './Transaction'
 export default function HistoryTransactions(): ReactElement {
   const { count, isLoading, hasMore, next, transactions: historyTx } = usePagedHistoryTransactions()
-
   const queryParams = useQuery()
   const transactionId = queryParams.get('transactionId')
+  const listTokens: any = useSelector(extendedSafeTokensSelector)
 
   const expandTx = () => {
     const elem = document.getElementById(`tx-${transactionId}`) as any
@@ -77,6 +79,7 @@ export default function HistoryTransactions(): ReactElement {
                     className="history-tx"
                   >
                     <Transaction
+                      listTokens={listTokens}
                       transaction={tx}
                       notFirstTx={index == 0 ? false : txs[index].txSequence == txs[index - 1].txSequence}
                     />

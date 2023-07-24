@@ -1,8 +1,8 @@
 import { List } from 'immutable'
 
-export const FIXED = 'fixed'
+const FIXED = 'fixed'
 
-export const buildOrderFieldFrom = (attr: string): string => `${attr}Order`
+const buildOrderFieldFrom = (attr: string): string => `${attr}Order`
 
 const desc = (
   a: string,

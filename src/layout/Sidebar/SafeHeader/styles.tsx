@@ -1,9 +1,8 @@
-import { border, fontColor } from 'src/theme/variables'
-import styled from 'styled-components'
+import { Icon, Text } from '@aura/safe-react-components'
 import PrefixedEthHashInfo from 'src/components/PrefixedEthHashInfo'
-import { Icon, Text, Button } from '@aura/safe-react-components'
+import { fontColor } from 'src/theme/variables'
+import styled from 'styled-components'
 import { StyledTextLabelProps } from './type'
-import { borderLinear } from 'src/theme/variables'
 
 const Container = styled.div`
   max-width: 320px;
@@ -48,19 +47,6 @@ const IconContainer = styled.div`
   justify-content: center;
   gap: 6px;
 `
-const StyledButton = styled(Button)`
-  border: 2px solid transparent;
-  background-image: ${borderLinear};
-  background-origin: border-box;
-  background-clip: content-box, border-box;
-  border-radius: 50px !important;
-  padding: 0 !important;
-  background-color: transparent !important;
-  min-width: 130px !important;
-  svg {
-    margin-right: 5px;
-  }
-`
 
 const StyledTextLabel = styled(Text)`
   padding: 8px;
@@ -104,9 +90,6 @@ const StyledLabel = styled.div`
     line-height: 18px;
   }
 `
-const StyledText = styled(Text)`
-  margin: 8px 0 16px 0;
-`
 
 const StyledDotChainName = styled.span`
   width: 8px;
@@ -115,8 +98,6 @@ const StyledDotChainName = styled.span`
   border-radius: 50%;
   margin-right: 5px;
 `
-
-const ContainerChainName = styled.div``
 
 const StyledIdenticonContainer = styled.div`
   flex-grow: 1;
@@ -138,14 +119,11 @@ export {
   IdenticonContainer,
   StyledIcon,
   IconContainer,
-  StyledButton,
   StyledTextLabel,
   StyledTextSafeName,
   StyledPrefixedEthHashInfo,
   StyledLabel,
-  StyledText,
   StyledDotChainName,
-  ContainerChainName,
   StyledIdenticonContainer,
   ContainerButton,
   StyledTextSafeNameWrapper,

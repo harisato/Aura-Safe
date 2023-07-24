@@ -6,8 +6,6 @@ export enum ProposalStatus {
   Failed = 'PROPOSAL_STATUS_FAILED',
 }
 
-export type VoteLabel = 'Yes' | 'No' | 'Abstain' | 'NoWithVeto'
-export type VoteKey = 'yes' | 'abstain' | 'no' | 'no_with_veto'
 
 export enum VoteMapping {
   'yes' = 'Yes',
@@ -16,7 +14,7 @@ export enum VoteMapping {
   'no_with_veto' = 'NoWithVeto',
 }
 
-export interface VoteResult {
+interface VoteResult {
   number?: string
   name?: string
   percent: string

@@ -35,7 +35,7 @@ export default function Execute({
 }) {
   const { action } = useContext(TxSignModalContext)
   const delegations = useSelector(allDelegation)
-  const { ethBalance: balance, nextQueueSeq, sequence: currentSequence } = useSelector(currentSafeWithNames)
+  const { nativeBalance: balance, nextQueueSeq, sequence: currentSequence } = useSelector(currentSafeWithNames)
   const srcValidatorStakedAmount = delegations?.find(
     (delegation: any) => delegation.operatorAddress == data?.txDetails?.txMessage[0]?.validatorSrcAddress,
   )?.staked

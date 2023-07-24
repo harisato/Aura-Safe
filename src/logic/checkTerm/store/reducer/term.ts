@@ -15,7 +15,7 @@ export const TermInitialState = {
 
 export type TermPayload = { checkTerm: boolean }
 
-export type TermValuePayload = { termValue: any }
+type TermValuePayload = { termValue: any }
 
 const termReducer = handleActions<TermState>(
   {

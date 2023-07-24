@@ -1,11 +1,10 @@
-import { getChains } from 'src/config/cache/chains'
-import { getChainDefaultGasPrice, getChainInfo, getCoinDecimal, getNativeCurrency } from 'src/config'
-import { MChainInfo } from 'src/services'
-import { calculateFee, GasPrice } from '@cosmjs/stargate'
+import { GasPrice, calculateFee } from '@cosmjs/stargate'
 import BigNumber from 'bignumber.js'
-import calculateGasFee from 'src/logic/providers/utils/fee'
-import { useLocation } from 'react-router-dom'
 import { useMemo } from 'react'
+import { useLocation } from 'react-router-dom'
+import { getChainDefaultGasPrice, getChainInfo, getNativeCurrency } from 'src/config'
+import { getChains } from 'src/config/cache/chains'
+import { MChainInfo } from 'src/services'
 
 export const beutifyJson = (data) => {
   if (!data) return ''
@@ -14,12 +13,15 @@ export const beutifyJson = (data) => {
   const formattedJson = json.replace(
     /("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g,
     function (match) {
-      var cls = 'number'
+      let cls = 'number'
       if (/^"/.test(match)) {
         if (/:$/.test(match)) {
           cls = 'key'
         } else {
           cls = 'string'
+          if (match.length > 900) {
+            match = match.slice(0, 900) + '..."'
+          }
         }
       } else if (/true|false/.test(match)) {
         cls = 'boolean'
@@ -31,9 +33,7 @@ export const beutifyJson = (data) => {
   )
   return formattedJson
 }
-export const validateFloatNumber = (value: any): boolean => {
-  return !isNaN(parseFloat(value)) && isFinite(value)
-}
+
 export const formatNumber = (value: any): string => {
   const nativeCurrency = getNativeCurrency()
 
@@ -58,19 +58,16 @@ export const isNumberKeyPress = (event): boolean => {
   }
   return true
 }
-export const roundGasAmount = (amount) => {
-  const decimal = getCoinDecimal()
-  const chainDefaultGasPrice = getChainDefaultGasPrice()
-  const fee = calculateGasFee(+amount, +chainDefaultGasPrice, decimal)
-  return amount
-}
-export const formatBigNumber = (amount, isMulti = false) => {
+
+export const convertAmount = (amount: string | number, isMulti: boolean = false, decimal?: number) => {
   const nativeCurrency = getNativeCurrency()
-  if (isNaN(amount)) return '0'
+  if (isNaN(+amount)) return '0'
   return isMulti
-    ? new BigNumber(amount).times(new BigNumber(10).pow(nativeCurrency.decimals)).toFixed()
+    ? new BigNumber(amount).times(new BigNumber(10).pow(decimal || nativeCurrency.decimals)).toFixed()
     : new BigNumber(
-        new BigNumber(amount).div(new BigNumber(10).pow(nativeCurrency.decimals)).toFixed(nativeCurrency.decimals),
+        new BigNumber(amount)
+          .div(new BigNumber(10).pow(decimal || nativeCurrency.decimals))
+          .toFixed(decimal || nativeCurrency.decimals),
       ).toFixed()
 }
 
@@ -90,9 +87,16 @@ export const formatNativeCurrency = (amount) => {
     Number(new BigNumber(new BigNumber(+amount).toFixed(+nativeCurrency.decimals)).toFixed()),
   )} ${nativeCurrency.symbol}`
 }
+
+export const humanReadableValue = (value: number | string, decimals = 18): string => {
+  return new BigNumber(value).times(`1e-${decimals}`).toFixed()
+}
+
 export const formatWithComma = (amount): string => {
   if (+amount > 1) {
-    const intl = new Intl.NumberFormat('en-US')
+    const intl = new Intl.NumberFormat('en-US', {
+      maximumFractionDigits: 6,
+    })
     return intl.format(amount)
   } else {
     return amount?.toString()

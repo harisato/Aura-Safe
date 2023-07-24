@@ -18,7 +18,7 @@ import PrefixedEthHashInfo from 'src/components/PrefixedEthHashInfo'
 import { getExplorerInfo } from 'src/config'
 
 export const REMOVE_GUARD_BTN_TEST_ID = 'remove-guard-btn'
-export const GUARDS_ROW_TEST_ID = 'guards-row'
+const GUARDS_ROW_TEST_ID = 'guards-row'
 
 interface TransactionGuardProps {
   address: string

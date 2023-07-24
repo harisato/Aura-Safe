@@ -20,5 +20,3 @@ export type CancelSafeFormValues = {
 
   [FIELD_ALLOW_SAFE_ADDRESS]: string
 }
-
-export const SAFE_PENDING_CREATION_STORAGE_KEY = 'NEW_SAFE_PENDING_CREATION_STORAGE_KEY'

@@ -8,10 +8,6 @@ import { Overwrite } from 'src/types/helpers'
 
 export const addressBookState = (state: AppReduxState): AppReduxState['addressBook'] => state['addressBook']
 
-export const addressBookAddresses = createSelector([addressBookState], (addressBook): string[] => {
-  return addressBook.map(({ address }) => address)
-})
-
 export type AddressBookMap = {
   [address: string]: AddressBookEntry
 }
@@ -20,7 +16,7 @@ type AddressBookMapByChain = {
   [chainId: string]: AddressBookMap
 }
 
-export const addressBookAsMap = createSelector([addressBookState], (addressBook): AddressBookMapByChain => {
+const addressBookAsMap = createSelector([addressBookState], (addressBook): AddressBookMapByChain => {
   const addressBookMap = {}
 
   addressBook.forEach((entry) => {
@@ -42,9 +38,6 @@ const getNameByAddress = (addressBook, address: string, chainId: ChainId): strin
   return addressBook?.[chainId]?.[address]?.name || ''
 }
 
-const getNameById = (addressBook, id: string, chainId: ChainId): string => {
-  return addressBook?.[chainId]?.[id]?.name || ''
-}
 
 type GetNameParams = Overwrite<Partial<AddressBookEntry>, { address: string }>
 

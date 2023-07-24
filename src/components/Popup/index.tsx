@@ -1,6 +1,5 @@
 import { Modal } from '@material-ui/core'
 import { ReactElement, ReactNode } from 'react'
-import { bgBox } from 'src/theme/variables'
 import styled from 'styled-components'
 
 const PopupWrapper = styled(Modal)`
@@ -33,10 +32,19 @@ interface PopupProps {
   handleClose?: (event: Record<string, unknown>, reason: 'backdropClick' | 'escapeKeyDown') => void
   open: boolean
   paperClassName?: string
-  title: string
+  title?: string
+  keepMounted?: boolean
 }
 
-const Popup = ({ children, description, handleClose, open, paperClassName, title }: PopupProps): ReactElement => {
+const Popup = ({
+  children,
+  description,
+  handleClose,
+  open,
+  paperClassName,
+  title,
+  keepMounted = false,
+}: PopupProps): ReactElement => {
   return (
     <PopupWrapper
       BackdropProps={{ className: 'overlay' }}
@@ -44,6 +52,7 @@ const Popup = ({ children, description, handleClose, open, paperClassName, title
       aria-labelledby={title}
       onClose={handleClose}
       open={open}
+      keepMounted={keepMounted}
     >
       <div className={`paper ${paperClassName}`}>{children}</div>
     </PopupWrapper>

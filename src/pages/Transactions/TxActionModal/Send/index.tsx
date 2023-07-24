@@ -33,7 +33,7 @@ export default function Execute({
   deleteTx,
 }) {
   const { action } = useContext(TxSignModalContext)
-  const { ethBalance: balance, nextQueueSeq, sequence: currentSequence } = useSelector(currentSafeWithNames)
+  const { nativeBalance: balance, nextQueueSeq, sequence: currentSequence } = useSelector(currentSafeWithNames)
   const userWalletAddress = useSelector(userAccountSelector)
   const dispatch = useDispatch()
   const [sequence, setSequence] = useState(data?.txSequence)

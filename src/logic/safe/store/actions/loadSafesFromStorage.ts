@@ -7,7 +7,6 @@ const loadSafesFromStorage =
   () =>
   (dispatch: Dispatch): void => {
     const safes = getLocalSafes()
-
     if (safes) {
       safes.forEach((safeProps) => {
         dispatch(addOrUpdateSafe(buildSafe(safeProps)))

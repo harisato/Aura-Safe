@@ -15,7 +15,7 @@ const Wrap = styled.div`
   }
 `
 export default function EditSequence({ defaultSequence, sequence, setSequence }) {
-  const { ethBalance: balance, nextQueueSeq, sequence: currentSequence } = useSelector(currentSafeWithNames)
+  const { nativeBalance: balance, nextQueueSeq, sequence: currentSequence } = useSelector(currentSafeWithNames)
   const { count, isLoading, hasMore, next, transactions } = usePagedQueuedTransactions()
 
   return (

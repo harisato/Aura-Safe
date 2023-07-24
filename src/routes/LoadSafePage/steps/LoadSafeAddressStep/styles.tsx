@@ -17,9 +17,4 @@ const CheckIconAddressAdornment = styled(CheckCircle)`
   color: #03ae60;
   height: 20px;
 `
-
-const StyledLink = styled.a`
-  color: ${green};
-`
-
-export { Container, FieldContainer, CheckIconAddressAdornment, StyledLink }
+export { Container, FieldContainer, CheckIconAddressAdornment }

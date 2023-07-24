@@ -18,7 +18,7 @@ import Col from 'src/components/layout/Col'
 import Hairline from 'src/components/layout/Hairline'
 import Paragraph from 'src/components/layout/Paragraph'
 import Row from 'src/components/layout/Row'
-import { currentSafeEthBalance } from 'src/logic/safe/store/selectors'
+import { currentSafeNativeBalance } from 'src/logic/safe/store/selectors'
 import SafeInfo from 'src/routes/safe/components/Balances/SendModal/SafeInfo'
 
 import { styles } from './style'
@@ -50,7 +50,7 @@ const useStyles = makeStyles(styles)
 const SendCustomTx = ({ initialValues, isABI, onClose, onNext, switchMethod }: Props): ReactElement => {
   const classes = useStyles()
   const nativeCurrency = getNativeCurrency()
-  const ethBalance = useSelector(currentSafeEthBalance)
+  const nativeBalance = useSelector(currentSafeNativeBalance)
 
   const saveForm = async (values) => {
     await handleSubmit(values, false)
@@ -83,7 +83,7 @@ const SendCustomTx = ({ initialValues, isABI, onClose, onNext, switchMethod }: P
         subscription={{ submitting: true, pristine: true, values: true }}
       >
         {(submitting, validating, rest, mutators) => {
-          const handleClickSendMax = () => mutators.setMax(ethBalance)
+          const handleClickSendMax = () => mutators.setMax(nativeBalance)
           const handleToggleAbi = () => saveForm(rest.values)
           return (
             <>
@@ -116,7 +116,7 @@ const SendCustomTx = ({ initialValues, isABI, onClose, onNext, switchMethod }: P
                       placeholder="Value*"
                       text="Value*"
                       type="text"
-                      validate={composeValidators(mustBeFloat, maxValue(ethBalance || '0'), minValue(0))}
+                      validate={composeValidators(mustBeFloat, maxValue(nativeBalance || '0'), minValue(0))}
                     />
                   </Col>
                 </Row>

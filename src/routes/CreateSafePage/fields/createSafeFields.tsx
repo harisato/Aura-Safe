@@ -8,7 +8,7 @@ export const FIELD_NEW_SAFE_GAS_LIMIT = 'gasLimit'
 export const FIELD_NEW_SAFE_GAS_PRICE = 'gasPrice'
 export const FIELD_NEW_SAFE_CREATION_TX_HASH = 'safeCreationTxHash'
 
-export type OwnerFieldItem = {
+type OwnerFieldItem = {
   nameFieldName: string
   addressFieldName: string
 }
