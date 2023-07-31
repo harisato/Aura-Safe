@@ -30,7 +30,7 @@ export default function Transaction({ transaction, notFirstTx, listTokens }) {
   }, [listTokens])
 
   useEffect(() => {
-    if (!token) {
+    if (!token && transaction.txInfo.contractAddress) {
       getContractDetail()
     }
   }, [token])
@@ -40,7 +40,6 @@ export default function Transaction({ transaction, notFirstTx, listTokens }) {
   }
 
   const getContractDetail = async () => {
-    if (!transaction?.txInfo?.contractAddress) return
     try {
       const { data } = await getDetailToken(transaction?.txInfo?.contractAddress)
       setToken({ ...data, isNotExist: true, address: transaction.txInfo.contractAddress })
