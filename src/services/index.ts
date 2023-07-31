@@ -262,8 +262,7 @@ export async function getNumberOfDelegator(validatorId: any): Promise<IResponse<
   const { chainInfo } = await getGatewayUrl()
   return axios
     .get(
-      `${
-        chainInfo.find((chain) => chain.chainId == currentChainInfo.chainId)?.rest
+      `${chainInfo.find((chain) => chain.chainId == currentChainInfo.chainId)?.rest
       }/cosmos/staking/v1beta1/validators/${validatorId}/delegations?pagination.count_total=true`,
     )
     .then((res) => res.data)
@@ -313,12 +312,8 @@ export async function getTokenDetail() {
 
 export async function getDetailToken(address: string): Promise<IResponse<any>> {
   const currentChainInfo = getChainInfo() as any
-  const { chainInfo } = await getGatewayUrl()
+
   return axios
-    .get(
-      `${
-        chainInfo.find((chain) => chain.chainId == currentChainInfo.chainId)?.rest
-      }/cosmwasm/wasm/v1/contract/${address}/smart/eyAidG9rZW5faW5mbyI6IHt9IH0%3D`,
-    )
+    .get(`${currentChainInfo.lcd}cosmwasm/wasm/v1/contract/${address}/smart/eyAidG9rZW5faW5mbyI6IHt9IH0%3D`)
     .then((res) => res.data)
 }
