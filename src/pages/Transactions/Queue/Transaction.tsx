@@ -11,6 +11,7 @@ import TxStatus from '../components/TxStatus'
 import TxTime from '../components/TxTime'
 import TxType from '../components/TxType'
 import { NoPaddingAccordion, StyledAccordionSummary, StyledTransaction } from '../styled'
+import { fromBech32 } from '@cosmjs/encoding'
 
 export default function Transaction({
   transaction,
@@ -23,8 +24,9 @@ export default function Transaction({
   curSeq: string
   listTokens?: any
 }) {
-  const [txDetailLoaded, setTxDetailLoaded] = useState(false)
   let defToken
+  const [txDetailLoaded, setTxDetailLoaded] = useState(false)
+  const [isAddress, setIsAddress] = useState<boolean>(false)
   if (transaction.txInfo.contractAddress) {
     defToken = listTokens.find((t) => t.address === transaction.txInfo.contractAddress)
   } else {
@@ -42,10 +44,23 @@ export default function Transaction({
   }, [listTokens])
 
   useEffect(() => {
-    if (!token && transaction.txInfo.contractAddress) {
+    if (transaction.txInfo.contractAddress) {
+      try {
+        const data = fromBech32(transaction.txInfo.contractAddress)
+        if (data) {
+          setIsAddress(true)
+        }
+      } catch (e) {
+        setIsAddress(false)
+      }
+    }
+  }, [transaction.txInfo.contractAddress])
+
+  useEffect(() => {
+    if (!token && isAddress) {
       getContractDetail()
     }
-  }, [token])
+  }, [token, isAddress])
 
   if (!transaction) {
     return null
