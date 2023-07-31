@@ -124,7 +124,7 @@ export default function TxMsg({ tx, txDetail, token, onImport }) {
         <strong>
           Delegate{' '}
           <span className="token">
-            {amount} {isTokenNotExist ? <BtnImport onImport={onImport} /> : <></>}
+            {amount} {token?.symbol ?? token?.coinDenom} {isTokenNotExist ? <BtnImport onImport={onImport} /> : <></>}
           </span>{' '}
           to:
         </strong>
@@ -138,7 +138,7 @@ export default function TxMsg({ tx, txDetail, token, onImport }) {
         <strong>
           Undelegate{' '}
           <span className="token">
-            {amount} {isTokenNotExist ? <BtnImport onImport={onImport} /> : <></>}
+            {amount} {token?.symbol ?? token?.coinDenom} {isTokenNotExist ? <BtnImport onImport={onImport} /> : <></>}
           </span>{' '}
           from:
         </strong>

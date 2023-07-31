@@ -1,4 +1,5 @@
 import { AccordionDetails } from '@aura/safe-react-components'
+import { fromBech32 } from '@cosmjs/encoding'
 import { useEffect, useState } from 'react'
 import { getDetailToken } from 'src/services'
 import { formatTimeInWords } from 'src/utils/date'
@@ -12,8 +13,9 @@ import { NoPaddingAccordion, StyledAccordionSummary, StyledTransaction } from '.
 
 export default function Transaction({ transaction, notFirstTx, listTokens }) {
   let defToken
+  const [isAddress, setIsAddress] = useState<boolean>(false)
   const [txDetailLoaded, setTxDetailLoaded] = useState(false)
-  if (transaction.txInfo.contractAddress) {
+  if (transaction.txInfo.contractAddress && isAddress) {
     defToken = listTokens.find((t) => t.address === transaction.txInfo.contractAddress)
   } else {
     defToken = listTokens.find(
@@ -30,10 +32,23 @@ export default function Transaction({ transaction, notFirstTx, listTokens }) {
   }, [listTokens])
 
   useEffect(() => {
-    if (!token && transaction.txInfo.contractAddress) {
+    if (transaction.txInfo.contractAddress) {
+      try {
+        const data = fromBech32(transaction.txInfo.contractAddress)
+        if (data) {
+          setIsAddress(true)
+        }
+      } catch (e) {
+        setIsAddress(false)
+      }
+    }
+  }, [transaction.txInfo.contractAddress])
+
+  useEffect(() => {
+    if (!token && isAddress && transaction.txInfo.amount) {
       getContractDetail()
     }
-  }, [token])
+  }, [token, isAddress])
 
   if (!transaction) {
     return null
