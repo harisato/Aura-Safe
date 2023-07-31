@@ -15,7 +15,7 @@ export default function Transaction({ transaction, notFirstTx, listTokens }) {
   let defToken
   const [isAddress, setIsAddress] = useState<boolean>(false)
   const [txDetailLoaded, setTxDetailLoaded] = useState(false)
-  if (transaction.txInfo.contractAddress) {
+  if (transaction.txInfo.contractAddress && isAddress) {
     defToken = listTokens.find((t) => t.address === transaction.txInfo.contractAddress)
   } else {
     defToken = listTokens.find(
@@ -45,7 +45,7 @@ export default function Transaction({ transaction, notFirstTx, listTokens }) {
   }, [transaction.txInfo.contractAddress])
 
   useEffect(() => {
-    if (!token && isAddress) {
+    if (!token && isAddress && transaction.txInfo.amount) {
       getContractDetail()
     }
   }, [token, isAddress])
