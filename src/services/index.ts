@@ -11,6 +11,7 @@ import { IMSafeInfo, IMSafeResponse, OwnedMSafes } from '../types/safe'
 
 let baseUrl = ''
 let baseIndexerUrl = 'https://indexer-v2.dev.aurascan.io/api/v1/graphiql'
+let baseIndexerUrlv2 = 'https://indexer-v2.dev.aurascan.io/api/v2/graphql'
 let githubPageTokenRegistryUrl = ''
 let env = 'development'
 
@@ -270,8 +271,13 @@ export async function getNumberOfDelegator(validatorId: any): Promise<IResponse<
 
 //VOTING
 
-export async function getProposals(internalChainId: number | string): Promise<IResponse<IProposalRes>> {
-  return axios.get(`${baseUrl}/gov/${internalChainId}/proposals`).then((res) => res.data)
+export const getProposals = async (env: string) => {
+
+  return axios.post(`${baseIndexerUrlv2}`, {
+    query: `query GetProposals {\n      ${env} {\n        proposal(order_by: {proposal_id: desc}, limit: 10) {\n          proposer_address\n          content\n          tally\n          proposal_id\n          status\n          submit_time\n          deposit_end_time\n          total_deposit\n          voting_start_time\n          voting_end_time\n        }\n      }\n    }`,
+    variables: {},
+    operationName: 'GetProposals',
+  }).then((res) => res.data)
 }
 
 export async function getProposalDetail(
