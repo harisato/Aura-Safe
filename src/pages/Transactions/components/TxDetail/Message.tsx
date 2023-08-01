@@ -102,7 +102,7 @@ export default function TxMsg({ tx, txDetail, token, onImport }) {
               </div>
             </div>
           ))}
-        <div className="function-name">Transaction funds:</div>
+        {msg[0]?.value?.funds.length > 0 ? <div className="function-name">Transaction funds:</div> : <></>}
         {msg[0]?.value?.funds?.map((fund, index) => {
           const foundToken = tokenList.find((token) => token.cosmosDenom === fund.denom || token.denom === fund.denom)
           if (foundToken) {
@@ -124,7 +124,7 @@ export default function TxMsg({ tx, txDetail, token, onImport }) {
         <strong>
           Delegate{' '}
           <span className="token">
-            {amount} {isTokenNotExist ? <BtnImport onImport={onImport} /> : <></>}
+            {amount} {token?.symbol ?? token?.coinDenom} {isTokenNotExist ? <BtnImport onImport={onImport} /> : <></>}
           </span>{' '}
           to:
         </strong>
@@ -138,7 +138,7 @@ export default function TxMsg({ tx, txDetail, token, onImport }) {
         <strong>
           Undelegate{' '}
           <span className="token">
-            {amount} {isTokenNotExist ? <BtnImport onImport={onImport} /> : <></>}
+            {amount} {token?.symbol ?? token?.coinDenom} {isTokenNotExist ? <BtnImport onImport={onImport} /> : <></>}
           </span>{' '}
           from:
         </strong>
