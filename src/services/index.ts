@@ -314,6 +314,6 @@ export async function getDetailToken(address: string): Promise<IResponse<any>> {
   const currentChainInfo = getChainInfo() as any
 
   return axios
-    .get(`${currentChainInfo.lcd}cosmwasm/wasm/v1/contract/${address}/smart/eyAidG9rZW5faW5mbyI6IHt9IH0%3D`)
+    .get(`${currentChainInfo.lcd}/cosmwasm/wasm/v1/contract/${address}/smart/eyAidG9rZW5faW5mbyI6IHt9IH0%3D`)
     .then((res) => res.data)
 }
