@@ -5,7 +5,7 @@ import { getChainInfo } from 'src/config'
 import { WalletKey } from 'src/logic/keplr/keplr'
 import { CHAIN_THEMES, THEME_DF } from 'src/services/constant/chainThemes'
 import { getExplorerUrl, getGatewayUrl } from 'src/services/data/environment'
-import { IProposal, IProposalRes } from 'src/types/proposal'
+import { IProposal } from 'src/types/proposal'
 import { ICreateSafeTransaction, ITransactionListItem, ITransactionListQuery } from 'src/types/transaction'
 import { IMSafeInfo, IMSafeResponse, OwnedMSafes } from '../types/safe'
 
@@ -241,17 +241,73 @@ export async function simulate(payload: any): Promise<IResponse<any>> {
 
 //STAKING
 
-export function getAllValidator(internalChainId: any): Promise<IResponse<any>> {
-  return axios.get(`${baseUrl}/distribution/${internalChainId}/validators`).then((res) => res.data)
+export function getAllValidators(): Promise<IResponse<any>> {
+  const chainInfo = getChainInfo() as any
+
+  return axios.post(baseIndexerUrlv2, {
+    query: `query GetAllValidator {
+      ${chainInfo.environment || ''} {
+        validator(limit: 1000) {
+          account_address
+          commission
+          description
+          operator_address
+          status
+          tokens
+          percent_voting_power
+          delegators_count
+          uptime
+          image_url 
+        }
+      }
+    }`,
+    variables: {},
+    operationName: 'GetAllValidator',
+  }).then((res) => res.data?.data[chainInfo.environment])
 }
+
 
 export function getAllDelegateOfUser(internalChainId: any, delegatorAddress: any): Promise<IResponse<any>> {
   return axios.get(`${baseUrl}/distribution/${internalChainId}/${delegatorAddress}/delegations`).then((res) => res.data)
 }
 
-export function getAllUnDelegateOfUser(internalChainId: any, delegatorAddress: any): Promise<IResponse<any>> {
+export function getAllDelegations(chainLcd: string, delegatorAddress: any): Promise<any> {
   return axios
-    .get(`${baseUrl}/distribution/${internalChainId}/${delegatorAddress}/undelegations`)
+    .get(`${chainLcd}/cosmos/staking/v1beta1/delegations/${delegatorAddress}`)
+    .then((res) => res.data)
+}
+
+export function getAllUnDelegateOfUser(chainLcd: string, delegatorAddress: any): Promise<any> {
+  return axios
+    .get(`${chainLcd}/cosmos/staking/v1beta1/delegators/${delegatorAddress}/unbonding_delegations`)
+    .then((res) => res.data)
+}
+
+export function getAllReward(chainLcd: string, delegatorAddress: any): Promise<any> {
+  return axios
+    .get(`${chainLcd}/cosmos/distribution/v1beta1/delegators/${delegatorAddress}/rewards`)
+    .then((res) => res.data)
+}
+
+export async function getAccountInfo(env: string, contractAddress: string): Promise<IResponse<any>> {
+  return axios
+    .post(baseIndexerUrlv2, {
+      query: `query QueryAccountInfo($address: String = "") {
+        ${env} {
+          account(where: {address: {_eq: $address}}) {
+            account_number
+            sequence
+            pubkey
+            balances
+          }
+        }
+      }
+    `,
+      variables: {
+        address: contractAddress,
+      },
+      operationName: 'QueryAccountInfo',
+    })
     .then((res) => res.data)
 }
 
@@ -272,8 +328,7 @@ export async function getNumberOfDelegator(validatorId: any): Promise<IResponse<
 //VOTING
 
 export const getProposals = async (env: string) => {
-
-  return axios.post(`${baseIndexerUrlv2}`, {
+  return axios.post(baseIndexerUrlv2, {
     query: `query GetProposals {\n      ${env} {\n        proposal(order_by: {proposal_id: desc}, limit: 10) {\n          proposer_address\n          content\n          tally\n          proposal_id\n          status\n          submit_time\n          deposit_end_time\n          total_deposit\n          voting_start_time\n          voting_end_time\n        }\n      }\n    }`,
     variables: {},
     operationName: 'GetProposals',
@@ -320,6 +375,6 @@ export async function getDetailToken(address: string): Promise<IResponse<any>> {
   const currentChainInfo = getChainInfo() as any
 
   return axios
-    .get(`${currentChainInfo.lcd}cosmwasm/wasm/v1/contract/${address}/smart/eyAidG9rZW5faW5mbyI6IHt9IH0%3D`)
+    .get(`${currentChainInfo.lcd}/cosmwasm/wasm/v1/contract/${address}/smart/eyAidG9rZW5faW5mbyI6IHt9IH0%3D`)
     .then((res) => res.data)
 }
