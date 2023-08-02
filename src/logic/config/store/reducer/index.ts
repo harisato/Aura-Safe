@@ -7,7 +7,7 @@ export const CONFIG_REDUCER_ID = LOCAL_CONFIG_KEY
 
 export const initialConfigState: ConfigState = {
   chainId: _getChainId(),
-  environment: 'development',
+  environment: 'production',
 }
 
 // Stored locally as to preserve chainId for non-EIP-3770 routes

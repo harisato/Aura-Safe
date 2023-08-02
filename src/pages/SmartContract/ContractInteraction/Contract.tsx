@@ -41,9 +41,10 @@ function Contract({ contractData }): ReactElement {
   const [schema, setSchema] = useState<any>()
   const [loading, setLoading] = useState(false)
   const [invalidAmount, setInvalidAmount] = useState(false)
-  const tokenList = useSelector(extendedSafeTokensSelector) as unknown as Token[]
+  const tokenList = useSelector(extendedSafeTokensSelector)
 
   const defListTokens = tokenList
+    .toArray()
     .filter((t) => t.type !== 'CW20')
     .map((token) => ({
       id: token.denom,
