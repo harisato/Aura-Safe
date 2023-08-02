@@ -10,33 +10,29 @@ let chains: ChainInfo[] = []
 export const getChains = (): ChainInfo[] => chains
 
 export const loadChains = async () => {
-  const networkList: ChainInfo[] = await getMChainsConfig();
+  const networkList: ChainInfo[] = await getMChainsConfig()
   chains = networkList.map((chain) => {
     if (chain.chainId.includes('euphoria')) {
       return {
         ...chain,
-        indexerUrl: 'https://indexer-v2.dev.aurascan.io/api/v1/graphiql',
         environment: 'euphoria',
       }
     }
     if (chain.chainId.includes('serenity')) {
       return {
         ...chain,
-        indexerUrl: 'https://indexer-v2.dev.aurascan.io/api/v1/graphiql',
         environment: 'serenity',
       }
     }
     if (chain.chainId.includes('aura-testnet')) {
       return {
         ...chain,
-        indexerUrl: 'https://indexer-v2.dev.aurascan.io/api/v1/graphiql',
         environment: 'auratestnet',
       }
     }
     if (chain.chainId.includes('xstaxy')) {
       return {
         ...chain,
-        indexerUrl: 'https://indexer-v2.dev.aurascan.io/api/v1/graphiql',
         environment: 'xstaxy',
       }
     }

@@ -10,7 +10,6 @@ import { ICreateSafeTransaction, ITransactionListItem, ITransactionListQuery } f
 import { IMSafeInfo, IMSafeResponse, OwnedMSafes } from '../types/safe'
 
 let baseUrl = ''
-let baseIndexerUrl = 'https://indexer-v2.dev.aurascan.io/api/v1/graphiql'
 let githubPageTokenRegistryUrl = ''
 let env = 'development'
 
@@ -70,6 +69,7 @@ export function getMChainsConfig(): Promise<MChainInfo[]> {
         prefix: string
         denom: string
         symbol: string
+        indexerV2: string
         explorer: string
         coinDecimals: string
         gasPrice: string
@@ -93,6 +93,7 @@ export function getMChainsConfig(): Promise<MChainInfo[]> {
             value: e.rpc,
           },
           lcd: e.rest,
+          indexerV2: e.indexerV2,
           safeAppsRpcUri: {
             authentication: '',
             value: e.rpc,
@@ -262,7 +263,8 @@ export async function getNumberOfDelegator(validatorId: any): Promise<IResponse<
   const { chainInfo } = await getGatewayUrl()
   return axios
     .get(
-      `${chainInfo.find((chain) => chain.chainId == currentChainInfo.chainId)?.rest
+      `${
+        chainInfo.find((chain) => chain.chainId == currentChainInfo.chainId)?.rest
       }/cosmos/staking/v1beta1/validators/${validatorId}/delegations?pagination.count_total=true`,
     )
     .then((res) => res.data)
@@ -283,7 +285,7 @@ export async function getProposalDetail(
 export async function getContract(contractAddress: string): Promise<IResponse<any>> {
   const chainInfo = getChainInfo() as any
   return axios
-    .post(chainInfo.indexerUrl, {
+    .post(chainInfo.indexerV2, {
       query: `query GetContractVerificationStatus($address: String = "") {
         ${chainInfo.environment || ''} {
           smart_contract(where: {address: {_eq: $address}}) {
