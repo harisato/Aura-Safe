@@ -163,6 +163,38 @@ export async function getMSafeInfo(safeId: number): Promise<IMSafeInfo> {
   return axios.get(`${baseUrl}/multisigwallet/${safeId}`).then((res) => res.data.Data)
 }
 
+export async function getAccountAsset(env: string, safeAddress: string): Promise<any> {
+  return axios.post(baseIndexerUrlv2, {
+    query: `query QueryAccountAsset($address: String = "") {
+      ${env} {
+        cw20_holder(where: {address: {_eq: $address}}) {
+          amount
+          cw20_contract {
+            decimal
+            name
+            symbol
+            smart_contract {
+              address
+            }
+          }
+        }
+        cw721_token(where: {owner: {_eq: $address}}, limit: 10) {
+          media_info(path: "offchain")
+          cw721_contract {
+            smart_contract {
+              address
+            }
+          }
+        }
+      }
+    }`,
+    variables: {
+      address: safeAddress
+    },
+    operationName: 'QueryAccountAsset',
+  }).then((res) => res.data.data[env])
+}
+
 export async function getMSafeInfoWithAdress(query: string, internalChainId: number): Promise<IMSafeInfo> {
   return axios
     .get(`${baseUrl}/multisigwallet/${query}`, {
