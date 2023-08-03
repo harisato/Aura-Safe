@@ -3,7 +3,7 @@ import * as Sentry from '@sentry/react'
 import { useEffect, useState } from 'react'
 
 import { MuiThemeProvider } from '@material-ui/core/styles'
-import { Provider } from 'react-redux'
+import { Provider, useDispatch } from 'react-redux'
 import { Router } from 'react-router'
 import App from 'src/App'
 import GlobalErrorBoundary from 'src/components/GlobalErrorBoundary'
@@ -30,6 +30,7 @@ import './KeystoneCustom.module.scss'
 import LegacyRouteRedirection from './LegacyRouteRedirection'
 import './OnboardCustom.module.scss'
 import { pyxisTheme } from 'src/theme/styledComponentsTheme'
+import { setEnvironmentAction } from 'src/logic/config/store/actions'
 // Preloader is rendered outside of '#root' and acts as a loading spinner
 // for the app and then chains loading
 const removePreloader = () => {
@@ -40,6 +41,7 @@ const RootConsumer = (): React.ReactElement | null => {
   const [gatewayUrl, setGatewayUrl] = useState<string>('')
   const [hasChains, setHasChains] = useState<boolean>(false)
   const [isError, setIsError] = useState<boolean>(false)
+  const dispatch = useDispatch()
 
   useEffect(() => {
     const initGateway = async () => {
@@ -60,6 +62,7 @@ const RootConsumer = (): React.ReactElement | null => {
         if (apiGateway) {
           setBaseUrl(apiGateway)
           setEnv(env || 'development')
+          dispatch(setEnvironmentAction((env || 'development') as 'production' | 'development'))
           setGithubPageTokenRegistryUrl(`https://aura-nw.github.io/token-registry/${chainId}.json`)
           setGatewayUrl(apiGateway)
         } else {
