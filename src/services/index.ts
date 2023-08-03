@@ -218,10 +218,6 @@ export function confirmSafeTransaction(payload: any): Promise<IResponse<any>> {
   return axios.post(`${baseUrl}/transaction/confirm`, payload).then((res) => res.data)
 }
 
-export async function getAccountOnChain(safeAddress: string, internalChainId): Promise<IResponse<SequenceResponse>> {
-  return axios.get(`${baseUrl}/general/get-account-onchain/${safeAddress}/${internalChainId}`).then((res) => res.data)
-}
-
 export async function getAddress(safeAddress: string): Promise<IResponse<any>> {
   return axios.get(`${baseUrl}/user/${safeAddress}`).then((res) => res.data)
 }
@@ -267,29 +263,29 @@ export function getAllValidators(): Promise<IResponse<any>> {
 }
 
 
-export function getAllDelegateOfUser(internalChainId: any, delegatorAddress: any): Promise<IResponse<any>> {
+export async function getAllDelegateOfUser(internalChainId: any, delegatorAddress: any): Promise<IResponse<any>> {
   return axios.get(`${baseUrl}/distribution/${internalChainId}/${delegatorAddress}/delegations`).then((res) => res.data)
 }
 
-export function getAllDelegations(chainLcd: string, delegatorAddress: any): Promise<any> {
+export async function getAllDelegations(chainLcd: string, delegatorAddress: any): Promise<any> {
   return axios
     .get(`${chainLcd}/cosmos/staking/v1beta1/delegations/${delegatorAddress}`)
     .then((res) => res.data)
 }
 
-export function getAllUnDelegateOfUser(chainLcd: string, delegatorAddress: any): Promise<any> {
+export async function getAllUnDelegateOfUser(chainLcd: string, delegatorAddress: any): Promise<any> {
   return axios
     .get(`${chainLcd}/cosmos/staking/v1beta1/delegators/${delegatorAddress}/unbonding_delegations`)
     .then((res) => res.data)
 }
 
-export function getAllReward(chainLcd: string, delegatorAddress: any): Promise<any> {
+export async function getAllReward(chainLcd: string, delegatorAddress: any): Promise<any> {
   return axios
     .get(`${chainLcd}/cosmos/distribution/v1beta1/delegators/${delegatorAddress}/rewards`)
     .then((res) => res.data)
 }
 
-export async function getAccountInfo(env: string, contractAddress: string): Promise<IResponse<any>> {
+export async function getAccountInfo(env: string, contractAddress: string): Promise<any> {
   return axios
     .post(baseIndexerUrlv2, {
       query: `query QueryAccountInfo($address: String = "") {
@@ -297,7 +293,6 @@ export async function getAccountInfo(env: string, contractAddress: string): Prom
           account(where: {address: {_eq: $address}}) {
             account_number
             sequence
-            pubkey
             balances
           }
         }
@@ -308,10 +303,10 @@ export async function getAccountInfo(env: string, contractAddress: string): Prom
       },
       operationName: 'QueryAccountInfo',
     })
-    .then((res) => res.data)
+    .then((res) => res.data.data[env])
 }
 
-export function getDelegateOfUser(dataSend: any): Promise<IResponse<any>> {
+export async function getDelegateOfUser(dataSend: any): Promise<IResponse<any>> {
   return axios.get(`${baseUrl}/distribution/delegation?${dataSend}`).then((res) => res.data)
 }
 export async function getNumberOfDelegator(validatorId: any): Promise<IResponse<any>> {

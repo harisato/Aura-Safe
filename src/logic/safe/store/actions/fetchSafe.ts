@@ -1,27 +1,25 @@
 import { Dispatch } from 'redux'
 import { Action } from 'redux-actions'
 
+import { SequenceResponse } from '@cosmjs/stargate'
+import { SafeInfo } from '@gnosis.pm/safe-react-gateway-sdk'
+import { _getChainId, getChainInfo, getCoinDecimal } from 'src/config'
+import { fetchCollectibles } from 'src/logic/collectibles/store/actions/fetchCollectibles'
+import { currentChainId } from 'src/logic/config/store/selectors'
+import { Errors, logError } from 'src/logic/exceptions/CodedException'
+import { AppReduxState, store } from 'src/logic/safe/store'
 import { updateSafe } from 'src/logic/safe/store/actions/updateSafe'
 import { SafeRecordProps } from 'src/logic/safe/store/models/safe'
 import { getLocalSafe } from 'src/logic/safe/utils'
 import { getSafeInfo } from 'src/logic/safe/utils/safeInformation'
-import { SafeInfo } from '@gnosis.pm/safe-react-gateway-sdk'
-import { checksumAddress } from 'src/utils/checksumAddress'
-import { buildSafeOwners, extractRemoteSafeInfo } from './utils'
-import { Errors, logError } from 'src/logic/exceptions/CodedException'
-import { AppReduxState, store } from 'src/logic/safe/store'
-import { currentSafe, currentSafeWithNames } from '../selectors'
-import fetchTransactions from './transactions/fetchTransactions'
-import { fetchCollectibles } from 'src/logic/collectibles/store/actions/fetchCollectibles'
-import { currentChainId } from 'src/logic/config/store/selectors'
-import { getAccountOnChain, getMSafeInfo } from 'src/services'
-import { IMSafeInfo } from 'src/types/safe'
-import { getCoinDecimal, getInternalChainId, _getChainId, getChainInfo } from 'src/config'
 import { fetchMSafeTokens } from 'src/logic/tokens/store/actions/fetchSafeTokens'
-import _ from 'lodash'
-import BigNumber from 'bignumber.js'
-import { SequenceResponse } from '@cosmjs/stargate'
+import { getAccountInfo, getMSafeInfo } from 'src/services'
+import { IMSafeInfo } from 'src/types/safe'
 import { humanReadableValue } from 'src/utils'
+import { checksumAddress } from 'src/utils/checksumAddress'
+import { currentSafeWithNames } from '../selectors'
+import fetchTransactions from './transactions/fetchTransactions'
+import { buildSafeOwners, extractRemoteSafeInfo } from './utils'
 
 /**
  * Builds a Safe Record that will be added to the app's store
@@ -152,6 +150,7 @@ export const fetchMSafe =
 
     const state = store.getState()
     const chainId = currentChainId(state)
+    const currentChainInfo = getChainInfo() as any
 
     // If the network has changed while the safe was being loaded,
     // ignore the result
@@ -162,7 +161,7 @@ export const fetchMSafe =
     // remote (client-gateway)
     if (remoteSafeInfo) {
       safeInfo = await extractRemoteSafeInfo(remoteSafeInfo)
-      const onlineData: SequenceResponse = (await getAccountOnChain(safeAddress, getInternalChainId())).Data
+      const onlineData: SequenceResponse = (await getAccountInfo(currentChainInfo.environment, safeAddress)).account[0]            
 
       safeInfo.nextQueueSeq = mSafeInfo?.nextQueueSeq || onlineData?.sequence?.toString()
       safeInfo.sequence = mSafeInfo?.sequence || onlineData?.sequence?.toString()

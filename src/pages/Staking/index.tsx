@@ -151,7 +151,7 @@ function Staking(props): ReactElement {
     })
 
     getAccountInfo(currentChainInfo.environment, SafeAddress).then((res) => {
-      const availableBalance = res.data.auratestnet.account[0].balances?.find((e) => e.denom === currentChainInfo.denom)
+      const availableBalance = res.account[0].balances?.find((e) => e.denom === currentChainInfo.denom)
       setAvailableBalance(availableBalance)
     })
   }, [internalChainId, SafeAddress, currentChainInfo])
