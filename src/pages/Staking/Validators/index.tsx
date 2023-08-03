@@ -1,30 +1,17 @@
 import React, { ReactElement, useEffect, useState } from 'react'
 
-import { makeStyles } from '@material-ui/core/styles'
-import BigNumber from 'bignumber.js'
 import { OutlinedButton } from 'src/components/Button'
 import DenseTable, { StyledTableCell, StyledTableRow } from 'src/components/Table/DenseTable'
 import Tabs from 'src/components/Tabs/FilterTab'
 import Tab from 'src/components/Tabs/FilterTab/Tab'
 import TabPanel, { a11yProps } from 'src/components/Tabs/FilterTab/TabPanel'
-import { getNativeCurrency } from 'src/config'
 import sreachIcon from '../assets/Shape.svg'
 import { ContainSearch, HeaderValidator, ImgRow, StyleSearch, TitleStyled, Wrap } from './styles'
-
-const useStyles = makeStyles({
-  root: {
-    backgroundColor: 'transparent',
-    marginTop: 10,
-    marginBottom: 30,
-    boxShadow: 'none',
-    width: 330,
-  },
-})
 
 const ValidatorTable = (props) => {
   const { data, handleManageDelegate, value, disabledButton } = props
   const obj1 = new Intl.NumberFormat('en-US')
-  const nativeCurrency = getNativeCurrency()
+
   return (
     <DenseTable headers={['Rank', 'Validator', 'Voting Power', 'Commision', 'Uptime', ' ']}>
       {data?.map((row, index) => (
@@ -65,7 +52,6 @@ const ValidatorTable = (props) => {
 function Validators(props): ReactElement {
   const { allValidator, handleManageDelegate, disabledButton } = props
   const [value, setValue] = React.useState(0)
-  const classes = useStyles()
 
   const [search, setSearch] = useState('')
 
