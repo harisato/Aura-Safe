@@ -150,7 +150,7 @@ function Staking(props): ReactElement {
       setAllRewards(res.rewards)
     })
 
-    getAccountInfo(currentChainInfo.environment, SafeAddress).then((res) => {
+    getAccountInfo(SafeAddress).then((res) => {
       const availableBalance = res.account[0].balances?.find((e) => e.denom === currentChainInfo.denom)
       setAvailableBalance(availableBalance)
     })

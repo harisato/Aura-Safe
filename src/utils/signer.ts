@@ -383,7 +383,7 @@ const signMessage = async (
       if (!signer)
         throw new Error(`An error occurred while loading signer. Please disconnect your wallet and try again.`)
       const account = await signer.getAccounts()
-      const accountInfo = (await getAccountInfo(chainEnv, safeAddress)).account[0]
+      const accountInfo = (await getAccountInfo(safeAddress)).account[0]
       const onlineData: SequenceResponse = {
         accountNumber: accountInfo.account_number,
         sequence: accountInfo.sequence,

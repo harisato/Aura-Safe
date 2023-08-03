@@ -161,7 +161,7 @@ export const fetchMSafe =
       // remote (client-gateway)
       if (remoteSafeInfo) {
         safeInfo = await extractRemoteSafeInfo(remoteSafeInfo)
-        const onlineData: SequenceResponse = (await getAccountInfo(currentChainInfo.environment, safeAddress)).account[0]
+        const onlineData: SequenceResponse = (await getAccountInfo(safeAddress)).account[0]
 
         safeInfo.nextQueueSeq = mSafeInfo?.nextQueueSeq || onlineData?.sequence?.toString()
         safeInfo.sequence = mSafeInfo?.sequence || onlineData?.sequence?.toString()
@@ -215,9 +215,9 @@ export const fetchMSafe =
 
 async function _getSafeInfo(safeAddress: string, safeId: number): Promise<[IMSafeInfo, SafeInfo]> {
   const chainInfo = getChainInfo() as any
-  const getAccountAssetPromise = getAccountAsset(chainInfo.environment, safeAddress)
+  const getAccountAssetPromise = getAccountAsset(safeAddress)
   const getMSafeInfoPromise = getMSafeInfo(safeId)
-  const getAccountInfoPromise = getAccountInfo(chainInfo.environment, safeAddress)
+  const getAccountInfoPromise = getAccountInfo(safeAddress)
   return Promise.all([getAccountAssetPromise, getMSafeInfoPromise, getAccountInfoPromise]).then(([accountAssetData, mSafeInfotData, accountInfoData]) => {
     const formatMSafeInfotData: IMSafeInfo = {
       ...mSafeInfotData,

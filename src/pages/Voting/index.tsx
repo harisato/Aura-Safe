@@ -76,7 +76,7 @@ function Voting(): ReactElement {
   }
 
   useEffect(() => {
-    getProposals(chainInfo.environment).then((res) => {
+    getProposals().then((res) => {
       if (res.data?.[chainInfo.environment].proposal) {
         const proposalsData: IProposal[] = res.data[chainInfo.environment].proposal.map((proposal) => {
           const { mostVotedOptionKey, sum } = getMostVote(proposal.tally)
