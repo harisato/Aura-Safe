@@ -76,6 +76,15 @@ export const NoPaddingAccordion = styled(Accordion)`
   }
 `
 
+export const NoPaddingSmallAccordion = styled(Accordion)`
+  &.MuiAccordion-root {
+    border: none !important;
+    .MuiAccordionDetails-root {
+      padding: 0;
+    }
+  }
+`
+
 export const SubTitle = styled.p`
   margin: 16px 0px 8px 0px;
   font-size: 0.76em;
@@ -475,6 +484,21 @@ export const StyledAccordionSummary = styled(AccordionSummary)`
     min-width: 80px;
   }
 `
+export const StyledSmallAccordionSummary = styled(AccordionSummary)`
+  background-color: #24262e !important;
+  border: none !important;
+  .tx-nonce {
+    margin: 0 16px 0 8px;
+    min-width: 80px;
+  }
+  &.MuiAccordionSummary-root {
+    height: 26px !important;
+    min-height: 26px !important;
+    max-width: 150px !important;
+    padding: 0 !important;
+  }
+`
+
 export const NoTransactions = styled.div`
   display: flex;
   flex-direction: column;
