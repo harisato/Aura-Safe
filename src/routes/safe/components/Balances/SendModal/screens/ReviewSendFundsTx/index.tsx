@@ -38,7 +38,6 @@ import { enhanceSnackbarForAction, ERROR, NOTIFICATIONS } from 'src/logic/notifi
 import enqueueSnackbar from 'src/logic/notifications/store/actions/enqueueSnackbar'
 import fetchTransactions from 'src/logic/safe/store/actions/transactions/fetchTransactions'
 import { currentSafeOwners } from 'src/logic/safe/store/selectors'
-import { loadLastUsedProvider } from 'src/logic/wallets/store/middlewares/providerWatcher'
 import { userAccountSelector } from 'src/logic/wallets/store/selectors'
 import {
   extractSafeAddress,
@@ -48,12 +47,12 @@ import {
   SAFE_ADDRESS_SLUG,
   SAFE_ROUTES,
 } from 'src/routes/routes'
-import { EditableTxParameters } from 'src/utils/transactionHelpers/EditableTxParameters'
 import { TxParameters } from 'src/routes/safe/container/hooks/useTransactionParameters'
-import { createSafeTransaction, getAccountOnChain, getMChainsConfig } from 'src/services'
+import { createSafeTransaction } from 'src/services'
 import { DEFAULT_GAS_LIMIT } from 'src/services/constant/common'
 import { MESSAGES_CODE } from 'src/services/constant/message'
 import { ICreateSafeTransaction } from 'src/types/transaction'
+import { EditableTxParameters } from 'src/utils/transactionHelpers/EditableTxParameters'
 import { ModalHeader } from '../ModalHeader'
 import { styles } from './style'
 
@@ -162,18 +161,6 @@ const ReviewSendFundsTx = ({ onClose, onPrev, tx }: ReviewTxProps): React.ReactE
         chainInfo.shortName === 'evmos'
           ? Math.floor(Number(tx?.amount) * Math.pow(10, 18)).toString() || ''
           : Math.floor(Number(tx?.amount) * Math.pow(10, 6)).toString() || ''
-
-      const signingInstruction = await (async () => {
-        // get account on chain from API
-        const { Data: accountOnChainResult } = await getAccountOnChain(safeAddress, getInternalChainId())
-        // const accountOnChain = await client.getAccount(safeAddress)
-
-        return {
-          accountNumber: accountOnChainResult?.accountNumber,
-          sequence: accountOnChainResult?.sequence,
-          memo: '',
-        }
-      })()
 
       const msgSend: any = {
         fromAddress: safeAddress,

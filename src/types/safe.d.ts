@@ -9,6 +9,7 @@ export type Safe = {
 export type OwnedMSafes = Safe[]
 
 export interface IMSafeInfo {
+  accountNumber: string
   id: number
   address: string
   pubkeys: string

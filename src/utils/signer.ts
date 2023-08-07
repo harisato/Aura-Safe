@@ -41,7 +41,7 @@ import {
   changeTransactionSequenceById,
   confirmSafeTransaction,
   createSafeTransaction,
-  getAccountOnChain,
+  getAccountInfo
 } from 'src/services'
 import { MESSAGES_CODE } from 'src/services/constant/message'
 import { ICreateSafeTransaction } from 'src/types/transaction'
@@ -57,100 +57,100 @@ export const signAndCreateTransaction =
     successSigningCallback?: () => void,
     errorSigningCallback?: (error: any) => void,
   ) =>
-  async (dispatch: Dispatch<any>): Promise<any> => {
-    try {
-      const chainInfo = getChainInfo()
-      const safeAddress = extractSafeAddress()
-      const sendFee = calcFee(gasLimit)
-      const chainId = chainInfo.chainId
-      const msgs = message.map((msg: any) => {
-        if (
-          [
-            '/cosmwasm.wasm.v1.MsgInstantiateContract',
-            '/cosmwasm.wasm.v1.MsgExecuteContract',
-            '/cosmwasm.wasm.v1.MsgMigrateContract',
-          ].includes(msg.typeUrl as never)
-        ) {
-          return {
-            ...msg,
-            value: {
-              ...msg.value,
-              msg: toUtf8(JSON.stringify(msg.value.msg)),
-            },
-          }
-        }
-
-        if (['/cosmwasm.wasm.v1.MsgStoreCode'].includes(msg.typeUrl as never)) {
-          return {
-            ...msg,
-            value: {
-              ...msg.value,
-              wasmByteCode: fromBase64(msg.value.wasmByteCode),
-            },
-          }
-        }
-
-        return msg
-      })
-      beforeSigningCallback && beforeSigningCallback()
-      dispatch(enqueueSnackbar(enhanceSnackbarForAction(NOTIFICATIONS.SIGN_TX_MSG)))
-
-      const signResult = await signMessage(chainId, safeAddress, msgs, sendFee, sequence)
-      if (!signResult) throw new Error()
-      const signatures = toBase64(signResult.signatures[0])
-      const bodyBytes = toBase64(signResult.bodyBytes)
-      const authInfoBytes = toBase64(signResult.authInfoBytes)
-      const data: ICreateSafeTransaction = {
-        internalChainId: getInternalChainId(),
-        creatorAddress: signResult.signerAddress,
-        signature: signatures,
-        bodyBytes: bodyBytes,
-        authInfoBytes: authInfoBytes,
-        from: safeAddress,
-        accountNumber: signResult.accountNumber,
-        sequence: signResult.sequence,
-      }
-      if (toAddress) {
-        data.to = toAddress
-      }
-      const result = await createSafeTransaction(data)
-      const { ErrorCode } = result
-      if (ErrorCode === MESSAGES_CODE.SUCCESSFUL.ErrorCode) {
+    async (dispatch: Dispatch<any>): Promise<any> => {
+      try {
+        const chainInfo = getChainInfo() as any
+        const safeAddress = extractSafeAddress()
+        const sendFee = calcFee(gasLimit)
         const chainId = chainInfo.chainId
-        dispatch(fetchTransactions(chainId, safeAddress))
-        const prefixedSafeAddress = getPrefixedSafeAddressSlug({ shortName: extractShortChainName(), safeAddress })
-        const txRoute = generatePath(SAFE_ROUTES.TRANSACTIONS_QUEUE, {
-          [SAFE_ADDRESS_SLUG]: prefixedSafeAddress,
+        const msgs = message.map((msg: any) => {
+          if (
+            [
+              '/cosmwasm.wasm.v1.MsgInstantiateContract',
+              '/cosmwasm.wasm.v1.MsgExecuteContract',
+              '/cosmwasm.wasm.v1.MsgMigrateContract',
+            ].includes(msg.typeUrl as never)
+          ) {
+            return {
+              ...msg,
+              value: {
+                ...msg.value,
+                msg: toUtf8(JSON.stringify(msg.value.msg)),
+              },
+            }
+          }
+
+          if (['/cosmwasm.wasm.v1.MsgStoreCode'].includes(msg.typeUrl as never)) {
+            return {
+              ...msg,
+              value: {
+                ...msg.value,
+                wasmByteCode: fromBase64(msg.value.wasmByteCode),
+              },
+            }
+          }
+
+          return msg
         })
-        successSigningCallback && successSigningCallback()
-        history.push(txRoute + `?transactionId=${result.Data.transactionId}`)
-      } else {
-        errorSigningCallback && errorSigningCallback(result?.Message)
-        dispatch(
-          enqueueSnackbar(
-            enhanceSnackbarForAction(
-              result?.Message
-                ? {
+        beforeSigningCallback && beforeSigningCallback()
+        dispatch(enqueueSnackbar(enhanceSnackbarForAction(NOTIFICATIONS.SIGN_TX_MSG)))
+
+        const signResult = await signMessage(chainId, chainInfo.environment, safeAddress, msgs, sendFee, sequence)
+        if (!signResult) throw new Error()
+        const signatures = toBase64(signResult.signatures[0])
+        const bodyBytes = toBase64(signResult.bodyBytes)
+        const authInfoBytes = toBase64(signResult.authInfoBytes)
+        const data: ICreateSafeTransaction = {
+          internalChainId: getInternalChainId(),
+          creatorAddress: signResult.signerAddress,
+          signature: signatures,
+          bodyBytes: bodyBytes,
+          authInfoBytes: authInfoBytes,
+          from: safeAddress,
+          accountNumber: signResult.accountNumber,
+          sequence: signResult.sequence,
+        }
+        if (toAddress) {
+          data.to = toAddress
+        }
+        const result = await createSafeTransaction(data)
+        const { ErrorCode } = result
+        if (ErrorCode === MESSAGES_CODE.SUCCESSFUL.ErrorCode) {
+          const chainId = chainInfo.chainId
+          dispatch(fetchTransactions(chainId, safeAddress))
+          const prefixedSafeAddress = getPrefixedSafeAddressSlug({ shortName: extractShortChainName(), safeAddress })
+          const txRoute = generatePath(SAFE_ROUTES.TRANSACTIONS_QUEUE, {
+            [SAFE_ADDRESS_SLUG]: prefixedSafeAddress,
+          })
+          successSigningCallback && successSigningCallback()
+          history.push(txRoute + `?transactionId=${result.Data.transactionId}`)
+        } else {
+          errorSigningCallback && errorSigningCallback(result?.Message)
+          dispatch(
+            enqueueSnackbar(
+              enhanceSnackbarForAction(
+                result?.Message
+                  ? {
                     message: result?.Message,
                     options: { variant: 'error', persist: false, autoHideDuration: 5000, preventDuplicate: true },
                   }
-                : NOTIFICATIONS.TX_FAILED_MSG,
+                  : NOTIFICATIONS.TX_FAILED_MSG,
+              ),
             ),
+          )
+        }
+      } catch (error) {
+        errorSigningCallback && errorSigningCallback(error)
+        dispatch(
+          enqueueSnackbar(
+            enhanceSnackbarForAction({
+              message: error.message || 'Transaction request failed',
+              options: { variant: ERROR, persist: false, autoHideDuration: 5000, preventDuplicate: true },
+            }),
           ),
         )
       }
-    } catch (error) {
-      errorSigningCallback && errorSigningCallback(error)
-      dispatch(
-        enqueueSnackbar(
-          enhanceSnackbarForAction({
-            message: error.message || 'Transaction request failed',
-            options: { variant: ERROR, persist: false, autoHideDuration: 5000, preventDuplicate: true },
-          }),
-        ),
-      )
     }
-  }
 export const signAndConfirmTransaction =
   (
     transactionId: string,
@@ -161,96 +161,97 @@ export const signAndConfirmTransaction =
     successSigningCallback?: () => void,
     errorSigningCallback?: (error: any) => void,
   ) =>
-  async (dispatch: Dispatch<any>): Promise<any> => {
-    try {
-      const chainInfo = getChainInfo()
-      const safeAddress = extractSafeAddress()
-      const chainId = chainInfo.chainId
-      const msgs = message.map((msg: any) => {
-        if (
-          [
-            '/cosmwasm.wasm.v1.MsgInstantiateContract',
-            '/cosmwasm.wasm.v1.MsgExecuteContract',
-            '/cosmwasm.wasm.v1.MsgMigrateContract',
-          ].includes(msg.typeUrl as never)
-        ) {
-          return {
-            ...msg,
-            value: {
-              ...msg.value,
-              msg: toUtf8(msg.value.msg),
-            },
-          }
-        }
-        if (['/cosmwasm.wasm.v1.MsgStoreCode'].includes(msg.typeUrl as never)) {
-          return {
-            ...msg,
-            value: {
-              ...msg.value,
-              wasmByteCode: fromBase64(msg.value.wasmByteCode),
-            },
-          }
-        }
-
-        return msg
-      })
-      beforeSigningCallback && beforeSigningCallback()
-      dispatch(enqueueSnackbar(enhanceSnackbarForAction(NOTIFICATIONS.SIGN_TX_MSG)))
-      const signResult = await signMessage(chainId, safeAddress, msgs, sendFee, sequence)
-      if (!signResult) throw new Error(signResult)
-      const signatures = toBase64(signResult.signatures[0])
-      const bodyBytes = toBase64(signResult.bodyBytes)
-      const authInfoBytes = toBase64(signResult.authInfoBytes)
-      const data: ICreateSafeTransaction = {
-        internalChainId: getInternalChainId(),
-        creatorAddress: signResult.signerAddress,
-        signature: signatures,
-        bodyBytes: bodyBytes,
-        authInfoBytes: authInfoBytes,
-        from: safeAddress,
-        accountNumber: signResult.accountNumber,
-        sequence: signResult.sequence,
-        transactionId,
-      }
-      const result = await confirmSafeTransaction(data)
-      const { ErrorCode } = result
-      if (ErrorCode === MESSAGES_CODE.SUCCESSFUL.ErrorCode) {
+    async (dispatch: Dispatch<any>): Promise<any> => {
+      try {
+        const chainInfo = getChainInfo() as any
+        const safeAddress = extractSafeAddress()
         const chainId = chainInfo.chainId
-        dispatch(fetchTransactions(chainId, safeAddress, true))
-        const prefixedSafeAddress = getPrefixedSafeAddressSlug({ shortName: extractShortChainName(), safeAddress })
-        const txRoute = generatePath(SAFE_ROUTES.TRANSACTIONS_QUEUE, {
-          [SAFE_ADDRESS_SLUG]: prefixedSafeAddress,
+        const msgs = message.map((msg: any) => {
+          if (
+            [
+              '/cosmwasm.wasm.v1.MsgInstantiateContract',
+              '/cosmwasm.wasm.v1.MsgExecuteContract',
+              '/cosmwasm.wasm.v1.MsgMigrateContract',
+            ].includes(msg.typeUrl as never)
+          ) {
+            return {
+              ...msg,
+              value: {
+                ...msg.value,
+                msg: toUtf8(msg.value.msg),
+              },
+            }
+          }
+          if (['/cosmwasm.wasm.v1.MsgStoreCode'].includes(msg.typeUrl as never)) {
+            return {
+              ...msg,
+              value: {
+                ...msg.value,
+                wasmByteCode: fromBase64(msg.value.wasmByteCode),
+              },
+            }
+          }
+
+          return msg
         })
-        successSigningCallback && successSigningCallback()
-        history.push(txRoute)
-      } else {
-        errorSigningCallback && errorSigningCallback(result?.Message)
-        dispatch(
-          enqueueSnackbar(
-            enhanceSnackbarForAction(
-              result?.Message
-                ? {
+        beforeSigningCallback && beforeSigningCallback()
+        dispatch(enqueueSnackbar(enhanceSnackbarForAction(NOTIFICATIONS.SIGN_TX_MSG)))
+        const signResult = await signMessage(chainId, chainInfo.environment, safeAddress, msgs, sendFee, sequence)
+        if (!signResult) throw new Error(signResult)
+        const signatures = toBase64(signResult.signatures[0])
+        const bodyBytes = toBase64(signResult.bodyBytes)
+        const authInfoBytes = toBase64(signResult.authInfoBytes)
+        const data: ICreateSafeTransaction = {
+          internalChainId: getInternalChainId(),
+          creatorAddress: signResult.signerAddress,
+          signature: signatures,
+          bodyBytes: bodyBytes,
+          authInfoBytes: authInfoBytes,
+          from: safeAddress,
+          accountNumber: signResult.accountNumber,
+          sequence: signResult.sequence,
+          transactionId,
+        }
+        const result = await confirmSafeTransaction(data)
+        const { ErrorCode } = result
+        if (ErrorCode === MESSAGES_CODE.SUCCESSFUL.ErrorCode) {
+          const chainId = chainInfo.chainId
+          dispatch(fetchTransactions(chainId, safeAddress, true))
+          const prefixedSafeAddress = getPrefixedSafeAddressSlug({ shortName: extractShortChainName(), safeAddress })
+          const txRoute = generatePath(SAFE_ROUTES.TRANSACTIONS_QUEUE, {
+            [SAFE_ADDRESS_SLUG]: prefixedSafeAddress,
+          })
+          successSigningCallback && successSigningCallback()
+          history.push(txRoute)
+        } else {
+          errorSigningCallback && errorSigningCallback(result?.Message)
+          dispatch(
+            enqueueSnackbar(
+              enhanceSnackbarForAction(
+                result?.Message
+                  ? {
                     message: result?.Message,
                     options: { variant: 'error', persist: false, autoHideDuration: 5000, preventDuplicate: true },
                   }
-                : NOTIFICATIONS.TX_FAILED_MSG,
+                  : NOTIFICATIONS.TX_FAILED_MSG,
+              ),
             ),
+          )
+        }
+      } catch (error) {
+        errorSigningCallback && errorSigningCallback(error)
+        console.error(error)
+        dispatch(
+          enqueueSnackbar(
+            enhanceSnackbarForAction({
+              message: error.message || 'Transaction request failed',
+              options: { variant: ERROR, persist: false, autoHideDuration: 5000, preventDuplicate: true },
+            }),
           ),
         )
       }
-    } catch (error) {
-      errorSigningCallback && errorSigningCallback(error)
-      console.error(error)
-      dispatch(
-        enqueueSnackbar(
-          enhanceSnackbarForAction({
-            message: error.message || 'Transaction request failed',
-            options: { variant: ERROR, persist: false, autoHideDuration: 5000, preventDuplicate: true },
-          }),
-        ),
-      )
     }
-  }
+
 export const signAndChangeTransactionSequence =
   (
     oldTxId: string,
@@ -261,95 +262,95 @@ export const signAndChangeTransactionSequence =
     successSigningCallback?: () => void,
     errorSigningCallback?: (error: any) => void,
   ) =>
-  async (dispatch: Dispatch<any>): Promise<any> => {
-    try {
-      const chainInfo = getChainInfo()
-      const safeAddress = extractSafeAddress()
-      const chainId = chainInfo.chainId
-      const msgs = message.map((msg: any) => {
-        if (
-          [
-            '/cosmwasm.wasm.v1.MsgInstantiateContract',
-            '/cosmwasm.wasm.v1.MsgExecuteContract',
-            '/cosmwasm.wasm.v1.MsgMigrateContract',
-          ].includes(msg.typeUrl as never)
-        ) {
-          return {
-            ...msg,
-            value: {
-              ...msg.value,
-              msg: toUtf8(msg.value.msg),
-            },
-          }
-        }
-        if (['/cosmwasm.wasm.v1.MsgStoreCode'].includes(msg.typeUrl as never)) {
-          return {
-            ...msg,
-            value: {
-              ...msg.value,
-              wasmByteCode: fromBase64(msg.value.wasmByteCode),
-            },
-          }
-        }
-
-        return msg
-      })
-      beforeSigningCallback && beforeSigningCallback()
-      dispatch(enqueueSnackbar(enhanceSnackbarForAction(NOTIFICATIONS.SIGN_TX_MSG)))
-      const signResult = await signMessage(chainId, safeAddress, msgs, sendFee, sequence)
-      if (!signResult) throw new Error()
-      const signatures = toBase64(signResult.signatures[0])
-      const bodyBytes = toBase64(signResult.bodyBytes)
-      const authInfoBytes = toBase64(signResult.authInfoBytes)
-      const data: ICreateSafeTransaction = {
-        internalChainId: getInternalChainId(),
-        creatorAddress: signResult.signerAddress,
-        signature: signatures,
-        bodyBytes: bodyBytes,
-        authInfoBytes: authInfoBytes,
-        from: safeAddress,
-        accountNumber: signResult.accountNumber,
-        sequence: signResult.sequence,
-        oldTxId,
-      }
-      const result = await changeTransactionSequenceById(data)
-      const { ErrorCode } = result
-      if (ErrorCode === MESSAGES_CODE.SUCCESSFUL.ErrorCode) {
+    async (dispatch: Dispatch<any>): Promise<any> => {
+      try {
+        const chainInfo = getChainInfo() as any
+        const safeAddress = extractSafeAddress()
         const chainId = chainInfo.chainId
-        dispatch(fetchTransactions(chainId, safeAddress))
-        const prefixedSafeAddress = getPrefixedSafeAddressSlug({ shortName: extractShortChainName(), safeAddress })
-        const txRoute = generatePath(SAFE_ROUTES.TRANSACTIONS_QUEUE, {
-          [SAFE_ADDRESS_SLUG]: prefixedSafeAddress,
+        const msgs = message.map((msg: any) => {
+          if (
+            [
+              '/cosmwasm.wasm.v1.MsgInstantiateContract',
+              '/cosmwasm.wasm.v1.MsgExecuteContract',
+              '/cosmwasm.wasm.v1.MsgMigrateContract',
+            ].includes(msg.typeUrl as never)
+          ) {
+            return {
+              ...msg,
+              value: {
+                ...msg.value,
+                msg: toUtf8(msg.value.msg),
+              },
+            }
+          }
+          if (['/cosmwasm.wasm.v1.MsgStoreCode'].includes(msg.typeUrl as never)) {
+            return {
+              ...msg,
+              value: {
+                ...msg.value,
+                wasmByteCode: fromBase64(msg.value.wasmByteCode),
+              },
+            }
+          }
+
+          return msg
         })
-        successSigningCallback && successSigningCallback()
-        history.push(txRoute)
-      } else {
-        errorSigningCallback && errorSigningCallback(result?.Message)
-        dispatch(
-          enqueueSnackbar(
-            enhanceSnackbarForAction(
-              result?.Message
-                ? {
+        beforeSigningCallback && beforeSigningCallback()
+        dispatch(enqueueSnackbar(enhanceSnackbarForAction(NOTIFICATIONS.SIGN_TX_MSG)))
+        const signResult = await signMessage(chainId, chainInfo.environment, safeAddress, msgs, sendFee, sequence)
+        if (!signResult) throw new Error()
+        const signatures = toBase64(signResult.signatures[0])
+        const bodyBytes = toBase64(signResult.bodyBytes)
+        const authInfoBytes = toBase64(signResult.authInfoBytes)
+        const data: ICreateSafeTransaction = {
+          internalChainId: getInternalChainId(),
+          creatorAddress: signResult.signerAddress,
+          signature: signatures,
+          bodyBytes: bodyBytes,
+          authInfoBytes: authInfoBytes,
+          from: safeAddress,
+          accountNumber: signResult.accountNumber,
+          sequence: signResult.sequence,
+          oldTxId,
+        }
+        const result = await changeTransactionSequenceById(data)
+        const { ErrorCode } = result
+        if (ErrorCode === MESSAGES_CODE.SUCCESSFUL.ErrorCode) {
+          const chainId = chainInfo.chainId
+          dispatch(fetchTransactions(chainId, safeAddress))
+          const prefixedSafeAddress = getPrefixedSafeAddressSlug({ shortName: extractShortChainName(), safeAddress })
+          const txRoute = generatePath(SAFE_ROUTES.TRANSACTIONS_QUEUE, {
+            [SAFE_ADDRESS_SLUG]: prefixedSafeAddress,
+          })
+          successSigningCallback && successSigningCallback()
+          history.push(txRoute)
+        } else {
+          errorSigningCallback && errorSigningCallback(result?.Message)
+          dispatch(
+            enqueueSnackbar(
+              enhanceSnackbarForAction(
+                result?.Message
+                  ? {
                     message: result?.Message,
                     options: { variant: 'error', persist: false, autoHideDuration: 5000, preventDuplicate: true },
                   }
-                : NOTIFICATIONS.TX_FAILED_MSG,
+                  : NOTIFICATIONS.TX_FAILED_MSG,
+              ),
             ),
+          )
+        }
+      } catch (error) {
+        errorSigningCallback && errorSigningCallback(error)
+        dispatch(
+          enqueueSnackbar(
+            enhanceSnackbarForAction({
+              message: error.message || 'Transaction request failed',
+              options: { variant: ERROR, persist: false, autoHideDuration: 5000, preventDuplicate: true },
+            }),
           ),
         )
       }
-    } catch (error) {
-      errorSigningCallback && errorSigningCallback(error)
-      dispatch(
-        enqueueSnackbar(
-          enhanceSnackbarForAction({
-            message: error.message || 'Transaction request failed',
-            options: { variant: ERROR, persist: false, autoHideDuration: 5000, preventDuplicate: true },
-          }),
-        ),
-      )
     }
-  }
 
 const getDefaultOptions = (): KeplrIntereactionOptions => ({
   sign: {
@@ -361,6 +362,7 @@ const getDefaultOptions = (): KeplrIntereactionOptions => ({
 
 const signMessage = async (
   chainId: string,
+  chainEnv: string,
   safeAddress: string,
   messages: any,
   fee: StdFee,
@@ -381,7 +383,12 @@ const signMessage = async (
       if (!signer)
         throw new Error(`An error occurred while loading signer. Please disconnect your wallet and try again.`)
       const account = await signer.getAccounts()
-      const onlineData: SequenceResponse = (await getAccountOnChain(safeAddress, getInternalChainId())).Data
+      const accountInfo = (await getAccountInfo(safeAddress)).account[0]
+      const onlineData: SequenceResponse = {
+        accountNumber: accountInfo.account_number,
+        sequence: accountInfo.sequence,
+      }
+
       const signerData: SignerData = {
         accountNumber: onlineData.accountNumber,
         sequence: sequence ? +sequence : onlineData?.sequence,
@@ -391,7 +398,7 @@ const signMessage = async (
       if (!(signerAddress && messages && fee && signerData)) {
         throw new Error(`An error occurred while loading signing payload. Please disconnect your wallet and try again.`)
       }
-      ;(window as any).signObject = { signerAddress, messages, fee, memo, signerData }
+      ; (window as any).signObject = { signerAddress, messages, fee, memo, signerData }
       const registry = new Registry(TxTypes)
       const aminoTypes = new AminoTypes({
         ...createBankAminoConverters(),
@@ -403,6 +410,7 @@ const signMessage = async (
         ...createFreegrantAminoConverters(),
         ...createIbcAminoConverters(),
       })
+
       const pubkey = encodePubkey(encodeSecp256k1Pubkey(account[0].pubkey))
       const signMode = SignMode.SIGN_MODE_LEGACY_AMINO_JSON
       const msgs = messages.map((msg) => {
