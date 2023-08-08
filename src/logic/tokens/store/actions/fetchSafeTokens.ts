@@ -102,8 +102,8 @@ export const fetchMSafeTokens =
       symbol: asset.asset_info.data.symbol,
       address: asset.contract_address,
       _id: asset['_id'],
-    }))
-    const listSafeTokens = [...safeInfo.balance, ...cw20Tokens]
+    }))    
+    const listSafeTokens = [...(safeInfo?.balance || []), ...cw20Tokens];
     const state = getState()
     const safe = safeByAddressSelector(state, safeInfo.address)
     if (safeInfo?.balance) {

@@ -152,7 +152,7 @@ function Staking(props): ReactElement {
     })
 
     getAccountInfo(SafeAddress).then((res) => {
-      const availableBalance = res.account[0].balances?.find((e) => e.denom === currentChainInfo.denom)
+      const availableBalance = res.account[0]?.balances?.find((e) => e.denom === currentChainInfo.denom)
       setAvailableBalance(availableBalance)
     })
   }, [internalChainId, SafeAddress, currentChainInfo])
@@ -216,12 +216,12 @@ function Staking(props): ReactElement {
 
     const delegation = {
       claimedReward: {
-        amount: rewardAmount[0].amount,
-        denom: rewardAmount[0].denom,
+        amount: rewardAmount[0]?.amount,
+        denom: rewardAmount[0]?.denom,
       },
       delegatableBalance: {
-        amount: balances.find((balance) => balance.type === 'native').tokenBalance,
-        denom: balances.find((balance) => balance.type === 'native').denom,
+        amount: balances.find((balance) => balance.type === 'native')?.tokenBalance,
+        denom: balances.find((balance) => balance.type === 'native')?.denom,
       },
       delegationBalance: {
         amount: allDelegations?.find((item) => item.delegation.validator_address === address)?.balance.amount,

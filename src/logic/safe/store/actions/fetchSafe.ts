@@ -221,7 +221,7 @@ async function _getSafeInfo(safeAddress: string, safeId: number): Promise<[IMSaf
   return Promise.all([getAccountAssetPromise, getMSafeInfoPromise, getAccountInfoPromise]).then(([accountAssetData, mSafeInfotData, accountInfoData]) => {
     const formatMSafeInfotData: IMSafeInfo = {
       ...mSafeInfotData,
-      accountNumber: String(accountInfoData.account[0].account_number),
+      accountNumber: String(accountInfoData.account[0]?.account_number),
       assets: {
         CW20: {
           asset: accountAssetData.cw20_holder.map((cw20) => ({
@@ -242,7 +242,7 @@ async function _getSafeInfo(safeAddress: string, safeId: number): Promise<[IMSaf
           }))
         }
       },
-      balance: accountInfoData.account[0].balances.map((balance) => {
+      balance: accountInfoData.account[0]?.balances.map((balance) => {
         if (balance.denom === getCoinMinimalDenom()) {
           return {
             amount: balance.amount,
@@ -257,7 +257,7 @@ async function _getSafeInfo(safeAddress: string, safeId: number): Promise<[IMSaf
         }
 
       }),
-      sequence: String(accountInfoData.account[0].sequence)
+      sequence: String(accountInfoData.account[0]?.sequence)
     }
 
     const safeInfoData: SafeInfo = {

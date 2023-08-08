@@ -385,7 +385,7 @@ const signMessage = async (
       const account = await signer.getAccounts()
       const accountInfo = (await getAccountInfo(safeAddress)).account[0]
       const onlineData: SequenceResponse = {
-        accountNumber: accountInfo.account_number,
+        accountNumber: accountInfo?.account_number,
         sequence: accountInfo.sequence,
       }
 
