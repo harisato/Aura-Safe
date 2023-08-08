@@ -30,7 +30,7 @@ const ValidatorTable = (props) => {
             <div style={{ color: 'rgba(134, 138, 151, 1)' }}>{row.votingPower.percentage} %</div>
           </StyledTableCell>
           <StyledTableCell align="left">
-            {parseFloat(row.commission.commission_rates.rate).toFixed(2)} %
+            {parseFloat(String(row.commission.commission_rates.rate * 100)).toFixed(2)} %
           </StyledTableCell>
 
           <StyledTableCell align="left">{+parseFloat(row.uptime).toFixed(2)} %</StyledTableCell>

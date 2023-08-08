@@ -10,7 +10,6 @@ import {
   getAllReward,
   getAllUnDelegateOfUser,
   getAllValidators,
-  getDelegateOfUser,
   getNumberOfDelegator,
   simulate,
 } from 'src/services/index'
@@ -30,11 +29,13 @@ import { convertAmount, formatNumber } from 'src/utils'
 import { grantedSelector } from 'src/utils/safeUtils/selector'
 import MyDelegation from './MyDelegation'
 import TxActionModal from './TxActionModal'
+import { currentSafeWithNames } from 'src/logic/safe/store/selectors'
 
 export const defValidatorImage = 'https://validator-logos.s3.ap-southeast-1.amazonaws.com/validator-default.svg'
 function Staking(props): ReactElement {
   const currentChainInfo = getChainInfo() as any
   const granted = useSelector(grantedSelector)
+  const { balances } = useSelector(currentSafeWithNames)
   const { safeId } = extractPrefixedSafeAddress()
 
   const denom = getCoinMinimalDenom()
@@ -51,8 +52,8 @@ function Staking(props): ReactElement {
   const [availableBalance, setAvailableBalance] = useState({ _id: '', amount: '', denom: '' })
   const [totalStake, setTotalStake] = useState<any>()
   const [rewardAmount, setRewardAmount] = useState(0)
-  const [allDelegations, setAllDelegations] = useState([])
-  const [allRewards, setAllRewards] = useState([])
+  const [allDelegations, setAllDelegations] = useState<any[]>([])
+  const [allRewards, setAllRewards] = useState<any[]>([])
 
   const internalChainId = getInternalChainId()
 
@@ -194,20 +195,50 @@ function Staking(props): ReactElement {
   }
 
   const handleCallDataValidator = async (address) => {
+    const nativeCurrency = getNativeCurrency()
     setDataDelegateOfUser(null)
-    const dataSend: any = {
-      internalChainId: internalChainId,
-      operatorAddress: address,
-      delegatorAddress: SafeAddress,
+
+    const validatorsRes: any = await getAllValidators()
+    const validator = validatorsRes.validator
+      .map((val) => ({
+        commission: val.commission.commission_rates.rate * 100,
+        delegators: val.delegators_count,
+        operatorAddress: val.operator_address,
+        votingPower: {
+          percent_voting_power: val.percent_voting_power,
+          tokens: {
+            amount: val.tokens,
+            denom: nativeCurrency.symbol,
+          },
+        },
+      }))
+      .find((item) => item.operatorAddress === address)
+
+    const delegation = {
+      claimedReward: {
+        amount: rewardAmount[0].amount,
+        denom: rewardAmount[0].denom,
+      },
+      delegatableBalance: {
+        amount: balances.find((balance) => balance.type === 'native').tokenBalance,
+        denom: balances.find((balance) => balance.type === 'native').denom,
+      },
+      delegationBalance: {
+        amount: allDelegations?.find((item) => item.delegation.validator_address === address)?.balance.amount,
+        denom: allDelegations?.find((item) => item.delegation.validator_address === address)?.balance.denom,
+      },
+      pendingReward: {
+        amount: allRewards?.find((rw) => rw.validator_address === address)?.reward.amount,
+        denom: allRewards?.find((rw) => rw.validator_address === address)?.reward.denom,
+      },
     }
-    const res = await getDelegateOfUser(queryString.stringify(dataSend))
     let numberOfDelegator
     try {
       numberOfDelegator = await getNumberOfDelegator(address)
     } catch (error) {}
     setDataDelegateOfUser({
-      ...res.Data,
-      validator: { ...res.Data.validator, delegators: numberOfDelegator?.pagination?.total || '??' },
+      delegation,
+      validator: { ...validator, delegators: numberOfDelegator?.pagination?.total || '??' },
     })
   }
 

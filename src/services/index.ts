@@ -269,7 +269,7 @@ export async function simulate(payload: any): Promise<IResponse<any>> {
 
 //STAKING
 
-export function getAllValidators(): Promise<IResponse<any>> {
+export async function getAllValidators(): Promise<IResponse<any>> {
   const chainInfo = getChainInfo() as any
 
   return axios.post(chainInfo.indexerV2, {
@@ -340,9 +340,6 @@ export async function getAccountInfo(contractAddress: string): Promise<any> {
     .then((res) => res.data.data[chainInfo.environment])
 }
 
-export async function getDelegateOfUser(dataSend: any): Promise<IResponse<any>> {
-  return axios.get(`${baseUrl}/distribution/delegation?${dataSend}`).then((res) => res.data)
-}
 export async function getNumberOfDelegator(validatorId: any): Promise<IResponse<any>> {
   const currentChainInfo = getChainInfo() as any
   const { chainInfo } = await getGatewayUrl()
