@@ -377,7 +377,7 @@ export async function getContract(contractAddress: string): Promise<IResponse<an
         ${chainInfo.environment || ''} {
           smart_contract(where: {address: {_eq: $address}}) {
             code {
-              code_id_verifications {
+              code_id_verifications(order_by: {updated_at: desc}) {
                 compiler_version
                 verified_at
                 verification_status
