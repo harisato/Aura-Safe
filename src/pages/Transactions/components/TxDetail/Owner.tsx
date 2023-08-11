@@ -1,15 +1,16 @@
 import { Text as AuraText } from '@aura/safe-react-components'
-import { ReactElement } from 'react'
+import { ReactElement, useState } from 'react'
 import styled from 'styled-components'
 
-import Img from 'src/components/layout/Img'
-import AddressInfo from 'src/components/AddressInfo'
+import { AccordionDetails } from '@material-ui/core'
 import DoneIcon from 'src/assets/icons/done-icon.svg'
 import ExecuteIcon from 'src/assets/icons/excute-icon.svg'
 import NotExecuteIcon from 'src/assets/icons/execute.svg'
 import PlusIcon from 'src/assets/icons/plus-icon.svg'
 import CircleRedIcon from 'src/assets/icons/rejected.svg'
-import { OwnerList, OwnerListItem } from '../../styled'
+import AddressInfo from 'src/components/AddressInfo'
+import Img from 'src/components/layout/Img'
+import { NoPaddingSmallAccordion, OwnerList, OwnerListItem, StyledSmallAccordionSummary } from '../../styled'
 
 const StyledImg = styled(Img)`
   background-color: transparent;
@@ -20,10 +21,21 @@ const Text = styled(AuraText)`
   margin-bottom: 6px;
 `
 
+const RedStyledLabel = styled.span`
+  color: #e65e5e;
+`
+
+const ErrorMsg = styled.span`
+  color: #d5625e;
+  font-size: 12px;
+  margin-top: 10px;
+`
+
 export const TxOwners = ({ txDetails }: { txDetails: any }): ReactElement | null => {
   if (!txDetails.confirmations) {
     return null
   }
+  const [showErr, setShowErr] = useState<boolean>(false)
   const confirmationsNeeded = txDetails.confirmationsRequired - txDetails.confirmations.length
   const CreationNode = (
     <OwnerListItem>
@@ -129,6 +141,16 @@ export const TxOwners = ({ txDetails }: { txDetails: any }): ReactElement | null
             <AddressInfo address={txDetails.deletedBy.ownerAddress} />
           </div>
         </OwnerListItem>
+      )}
+      {txDetails.logs && (
+        <NoPaddingSmallAccordion expanded={showErr} onChange={() => setShowErr(!showErr)}>
+          <StyledSmallAccordionSummary>
+            <RedStyledLabel>{showErr ? 'Hide error detail' : 'Show error detail'}</RedStyledLabel>
+          </StyledSmallAccordionSummary>
+          <AccordionDetails>
+            <ErrorMsg>{txDetails.logs}</ErrorMsg>
+          </AccordionDetails>
+        </NoPaddingSmallAccordion>
       )}
     </OwnerList>
   )

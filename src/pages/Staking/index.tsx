@@ -3,12 +3,13 @@ import ActionModal from './ActionModal/index'
 import Undelegating from './Undelegating'
 import Validators from './Validators'
 
-import { getCoinMinimalDenom, getInternalChainId, getNativeCurrency } from 'src/config'
+import { getChainInfo, getCoinMinimalDenom, getInternalChainId, getNativeCurrency } from 'src/config'
 import {
-  getAllDelegateOfUser,
+  getAccountInfo,
+  getAllDelegations,
+  getAllReward,
   getAllUnDelegateOfUser,
-  getAllValidator,
-  getDelegateOfUser,
+  getAllValidators,
   getNumberOfDelegator,
   simulate,
 } from 'src/services/index'
@@ -17,28 +18,28 @@ import queryString from 'query-string'
 import { extractPrefixedSafeAddress, extractSafeAddress } from 'src/routes/routes'
 
 import { coin } from '@cosmjs/stargate'
-import { useDispatch, useSelector } from 'react-redux'
+import { useSelector } from 'react-redux'
 import Icon from 'src/assets/icons/Stack.svg'
 import Breadcrumb from 'src/components/Breadcrumb'
 import { ConnectWalletModal } from 'src/components/ConnectWalletModal'
 import useConnectWallet from 'src/logic/hooks/useConnectWallet'
 import { MsgTypeUrl } from 'src/logic/providers/constants/constant'
-import { currentSafeWithNames } from 'src/logic/safe/store/selectors'
 import { loadedSelector } from 'src/logic/wallets/store/selectors'
-import { grantedSelector } from 'src/utils/safeUtils/selector'
 import { convertAmount, formatNumber } from 'src/utils'
-import { usePagedQueuedTransactions } from '../../utils/hooks/usePagedQueuedTransactions'
+import { grantedSelector } from 'src/utils/safeUtils/selector'
 import MyDelegation from './MyDelegation'
 import TxActionModal from './TxActionModal'
+import { currentSafeWithNames } from 'src/logic/safe/store/selectors'
+
+export const defValidatorImage = 'https://validator-logos.s3.ap-southeast-1.amazonaws.com/validator-default.svg'
 function Staking(props): ReactElement {
-  const dispatch = useDispatch()
+  const currentChainInfo = getChainInfo() as any
   const granted = useSelector(grantedSelector)
+  const { balances } = useSelector(currentSafeWithNames)
   const { safeId } = extractPrefixedSafeAddress()
 
   const denom = getCoinMinimalDenom()
   const { connectWalletState, onConnectWalletShow, onConnectWalletHide } = useConnectWallet()
-  const { count, isLoading, hasMore, next, transactions } = usePagedQueuedTransactions()
-  const currentSafeData = useSelector(currentSafeWithNames)
   const loaded = useSelector(loadedSelector)
 
   const [isOpenDelagate, setIsOpenDelagate] = useState(false)
@@ -49,15 +50,17 @@ function Staking(props): ReactElement {
   const [amount, setAmount] = useState<any>('')
 
   const [availableBalance, setAvailableBalance] = useState({ _id: '', amount: '', denom: '' })
-  const [totalStake, setTotalStake] = useState(0)
+  const [totalStake, setTotalStake] = useState<any>()
   const [rewardAmount, setRewardAmount] = useState(0)
+  const [allDelegations, setAllDelegations] = useState<any[]>([])
+  const [allRewards, setAllRewards] = useState<any[]>([])
 
   const internalChainId = getInternalChainId()
 
   const SafeAddress = extractSafeAddress()
 
   const [allValidator, setAllValidator] = useState([])
-  const [validatorOfUser, setValidatorOfUser] = useState([])
+  const [validatorOfUser, setValidatorOfUser] = useState<any>([])
   const [unValidatorOfUser, setUnValidatorOfUser] = useState([])
   const [listReward, setListReward] = useState<any>([])
 
@@ -91,34 +94,96 @@ function Staking(props): ReactElement {
     }
   }
 
-  const handleListValidator = async (internalChainId) => {
-    const listValidator: any = (await getAllValidator(internalChainId)) || []
-    setAllValidator(listValidator?.Data?.validators)
+  const calculateTotalStaked = (delegations: any[]) => {
+    let total = 0
+    for (const delegation of delegations) {
+      total += +delegation.balance.amount
+    }
+    return {
+      amount: total.toString(),
+      denom: delegations[0].balance.denom,
+    }
+  }
+
+  const handleListValidator = async () => {
+    const listValidators: any = (await getAllValidators()) || []
+
+    const validators = listValidators.validator.map((val) => {
+      return {
+        commission: val.commission,
+        description: {
+          moniker: val.description.moniker,
+          picture: val.image_url.includes('http') ? val.image_url : defValidatorImage,
+        },
+        operatorAddress: val.operator_address,
+        status: val.status,
+        uptime: val.uptime,
+        validator: val.description.moniker,
+        votingPower: {
+          number: val.tokens,
+          percentage: val.percent_voting_power,
+        },
+      }
+    })
+
+    setAllValidator(validators)
   }
 
   useEffect(() => {
-    const dataTemp: any = []
-    handleListValidator(internalChainId)
-    //
-    getAllDelegateOfUser(internalChainId, SafeAddress).then((res) => {
-      setValidatorOfUser(res.Data?.delegations)
-      res.Data?.availableBalance && setAvailableBalance(res.Data?.availableBalance)
-      setTotalStake(res.Data.total?.staked)
-      setRewardAmount(res.Data.total?.reward || 0)
-      res.Data?.delegations?.map((item) => {
-        if (item.reward?.[0]?.amount) {
-          dataTemp.push({
-            delegatorAddress: SafeAddress,
-            validatorAddress: item?.operatorAddress,
-          })
+    handleListValidator()
+    getAllUnDelegateOfUser(currentChainInfo.lcd, SafeAddress).then((res) => {
+      const formatData = res.unbonding_responses.map((item) => {
+        return {
+          operatorAddress: item.validator_address,
+          completionTime: item.entries[0].completion_time,
+          balance: item.entries[0].balance,
         }
       })
-      setListReward(dataTemp)
+      setUnValidatorOfUser(formatData)
     })
-    getAllUnDelegateOfUser(internalChainId, SafeAddress).then((res) => {
-      setUnValidatorOfUser(res.Data?.undelegations)
+
+    getAllDelegations(currentChainInfo.lcd, SafeAddress).then((res) => {
+      setAllDelegations(res.delegation_responses)
     })
-  }, [internalChainId, SafeAddress])
+
+    getAllReward(currentChainInfo.lcd, SafeAddress).then((res) => {
+      setRewardAmount(res.total || 0)
+      setAllRewards(res.rewards)
+    })
+
+    getAccountInfo(SafeAddress).then((res) => {
+      const availableBalance = res.account[0]?.balances?.find((e) => e.denom === currentChainInfo.denom)
+      setAvailableBalance(availableBalance)
+    })
+  }, [internalChainId, SafeAddress, currentChainInfo])
+
+  useEffect(() => {
+    const dataTemp: any = []
+    const formatDataDelegations = allDelegations.map((delegation: any) => {
+      const reward = allRewards.find(
+        (rw: any) => rw.validator_address === delegation.delegation.validator_address,
+      ) as any
+      return {
+        balance: delegation.balance,
+        operatorAddress: delegation.delegation.validator_address,
+        reward: reward?.reward ?? [],
+      }
+    })
+    setValidatorOfUser(formatDataDelegations)
+
+    formatDataDelegations?.map((item) => {
+      if (item.reward?.[0]?.amount) {
+        dataTemp.push({
+          delegatorAddress: SafeAddress,
+          validatorAddress: item?.operatorAddress,
+        })
+      }
+    })
+    setListReward(dataTemp)
+
+    const staked = formatDataDelegations.length > 0 ? calculateTotalStaked(formatDataDelegations) : undefined
+    setTotalStake(staked)
+  }, [allRewards, allDelegations])
 
   const handleAmout = (v) => {
     setValidateMsg(undefined)
@@ -130,20 +195,50 @@ function Staking(props): ReactElement {
   }
 
   const handleCallDataValidator = async (address) => {
+    const nativeCurrency = getNativeCurrency()
     setDataDelegateOfUser(null)
-    const dataSend: any = {
-      internalChainId: internalChainId,
-      operatorAddress: address,
-      delegatorAddress: SafeAddress,
+
+    const validatorsRes: any = await getAllValidators()
+    const validator = validatorsRes.validator
+      .map((val) => ({
+        commission: val.commission.commission_rates.rate * 100,
+        delegators: val.delegators_count,
+        operatorAddress: val.operator_address,
+        votingPower: {
+          percent_voting_power: val.percent_voting_power,
+          tokens: {
+            amount: val.tokens,
+            denom: nativeCurrency.symbol,
+          },
+        },
+      }))
+      .find((item) => item.operatorAddress === address)
+
+    const delegation = {
+      claimedReward: {
+        amount: rewardAmount[0]?.amount,
+        denom: rewardAmount[0]?.denom,
+      },
+      delegatableBalance: {
+        amount: balances.find((balance) => balance.type === 'native')?.tokenBalance,
+        denom: balances.find((balance) => balance.type === 'native')?.denom,
+      },
+      delegationBalance: {
+        amount: allDelegations?.find((item) => item.delegation.validator_address === address)?.balance.amount,
+        denom: allDelegations?.find((item) => item.delegation.validator_address === address)?.balance.denom,
+      },
+      pendingReward: {
+        amount: allRewards?.find((rw) => rw.validator_address === address)?.reward.amount,
+        denom: allRewards?.find((rw) => rw.validator_address === address)?.reward.denom,
+      },
     }
-    const res = await getDelegateOfUser(queryString.stringify(dataSend))
     let numberOfDelegator
     try {
       numberOfDelegator = await getNumberOfDelegator(address)
     } catch (error) {}
     setDataDelegateOfUser({
-      ...res.Data,
-      validator: { ...res.Data.validator, delegators: numberOfDelegator?.pagination?.total || '??' },
+      delegation,
+      validator: { ...validator, delegators: numberOfDelegator?.pagination?.total || '??' },
     })
   }
 

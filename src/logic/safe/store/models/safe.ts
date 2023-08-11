@@ -33,7 +33,7 @@ export type SafeRecordProps = {
   owners: SafeOwner[]
   modules?: ModulePair[] | null
   spendingLimits?: SpendingLimit[] | null
-  balances: BalanceRecord[]
+  balances: any[]
   nonce: number
   recurringUser?: boolean
   currentVersion: string
