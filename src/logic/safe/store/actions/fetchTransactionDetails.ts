@@ -89,6 +89,7 @@ export const fetchTransactionDetailsById =
         extraDetails,
         autoClaimAmount: Data?.AutoClaimAmount,
         sequence: Data?.Sequence,
+        logs: Data?.Logs
       }
 
       dispatch(
