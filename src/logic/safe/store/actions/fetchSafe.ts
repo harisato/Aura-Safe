@@ -141,16 +141,16 @@ export const fetchMSafe =
       let safeInfo: Partial<SafeRecordProps> = {}
       let remoteSafeInfo: SafeInfo | null = null
       let mSafeInfo: IMSafeInfo | null = null
+      let accountInfo: SequenceResponse | null = null
 
       try {
-        ;[mSafeInfo, remoteSafeInfo] = await _getSafeInfo(safeAddress, safeId)
+        ;[mSafeInfo, remoteSafeInfo, accountInfo] = await _getSafeInfo(safeAddress, safeId)
       } catch (err) {
         console.error(err)
       }
 
       const state = store.getState()
       const chainId = currentChainId(state)
-      const currentChainInfo = getChainInfo() as any
 
       // If the network has changed while the safe was being loaded,
       // ignore the result
@@ -161,7 +161,7 @@ export const fetchMSafe =
       // remote (client-gateway)
       if (remoteSafeInfo) {
         safeInfo = await extractRemoteSafeInfo(remoteSafeInfo)
-        const onlineData: SequenceResponse = (await getAccountInfo(safeAddress)).account[0]
+        const onlineData: SequenceResponse | null = accountInfo
 
         safeInfo.nextQueueSeq = mSafeInfo?.nextQueueSeq || onlineData?.sequence?.toString()
         safeInfo.sequence = mSafeInfo?.sequence || onlineData?.sequence?.toString()
@@ -213,11 +213,11 @@ export const fetchMSafe =
       return dispatch(updateSafe({ address, ...safeInfo, owners, safeId: safeId }))
     }
 
-async function _getSafeInfo(safeAddress: string, safeId: number): Promise<[IMSafeInfo, SafeInfo]> {
-  const chainInfo = getChainInfo() as any
+async function _getSafeInfo(safeAddress: string, safeId: number): Promise<[IMSafeInfo, SafeInfo, SequenceResponse]> {
   const getAccountAssetPromise = getAccountAsset(safeAddress)
   const getMSafeInfoPromise = getMSafeInfo(safeId)
   const getAccountInfoPromise = getAccountInfo(safeAddress)
+
   return Promise.all([getAccountAssetPromise, getMSafeInfoPromise, getAccountInfoPromise]).then(([accountAssetData, mSafeInfotData, accountInfoData]) => {
     const formatMSafeInfotData: IMSafeInfo = {
       ...mSafeInfotData,
@@ -302,7 +302,7 @@ async function _getSafeInfo(safeAddress: string, safeId: number): Promise<[IMSaf
       txHistoryTag: mSafeInfotData.txHistoryTag,
     }
 
-    return [formatMSafeInfotData, safeInfoData]
+    return [formatMSafeInfotData, safeInfoData, accountInfoData.account[0]]
   });
 
 
