@@ -39,10 +39,9 @@ export default function Undelegate({ validator, amount, onClose, gasUsed }) {
   const chainDefaultGasPrice = getChainDefaultGasPrice()
   const decimal = getCoinDecimal()
   const defaultGas =
-    gasUsed !== null && gasUsed !== undefined
-      ? gasUsed
-      : chainDefaultGas?.find((chain) => chain.typeUrl === MsgTypeUrl.Undelegate)?.gasAmount ||
-        DEFAULT_GAS_LIMIT.toString()
+    gasUsed ||
+    chainDefaultGas?.find((chain) => chain.typeUrl === MsgTypeUrl.Undelegate)?.gasAmount ||
+    DEFAULT_GAS_LIMIT.toString()
   const gasFee =
     defaultGas && chainDefaultGasPrice
       ? calculateGasFee(+defaultGas, +chainDefaultGasPrice, decimal)

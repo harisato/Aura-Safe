@@ -37,10 +37,9 @@ export default function Redelegate({ validator, amount, onClose, dstValidator, g
   const chainDefaultGasPrice = getChainDefaultGasPrice()
   const decimal = getCoinDecimal()
   const defaultGas =
-    gasUsed !== null && gasUsed !== undefined
-      ? gasUsed
-      : chainDefaultGas.find((chain) => chain.typeUrl === MsgTypeUrl.Redelegate)?.gasAmount ||
-        DEFAULT_GAS_LIMIT.toString()
+    gasUsed ||
+    chainDefaultGas?.find((chain) => chain.typeUrl === MsgTypeUrl.Redelegate)?.gasAmount ||
+    DEFAULT_GAS_LIMIT.toString()
   const gasFee =
     defaultGas && chainDefaultGasPrice
       ? calculateGasFee(+defaultGas, +chainDefaultGasPrice, decimal)
