@@ -29,7 +29,7 @@ export default function Delegate({ validator, amount, onClose, gasUsed }) {
   const denom = getCoinMinimalDenom()
   const chainDefaultGasPrice = getChainDefaultGasPrice()
   const decimal = getCoinDecimal()
-  const defaultGas = gasUsed || '400000'
+  const defaultGas = gasUsed !== null && gasUsed !== undefined ? gasUsed : '400000'
   const gasFee =
     defaultGas && chainDefaultGasPrice
       ? calculateGasFee(+defaultGas, +chainDefaultGasPrice, decimal)
