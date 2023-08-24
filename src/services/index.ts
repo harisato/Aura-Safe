@@ -1,16 +1,14 @@
-import { SequenceResponse } from '@cosmjs/stargate'
 import { ChainInfo } from '@gnosis.pm/safe-react-gateway-sdk'
 import axios from 'axios'
 import { getChainInfo } from 'src/config'
 import { WalletKey } from 'src/logic/keplr/keplr'
 import { CHAIN_THEMES, THEME_DF } from 'src/services/constant/chainThemes'
 import { getExplorerUrl, getGatewayUrl } from 'src/services/data/environment'
-import { IProposal, IProposalRes } from 'src/types/proposal'
+import { IProposal } from 'src/types/proposal'
 import { ICreateSafeTransaction, ITransactionListItem, ITransactionListQuery } from 'src/types/transaction'
 import { IMSafeInfo, IMSafeResponse, OwnedMSafes } from '../types/safe'
 
 let baseUrl = ''
-let baseIndexerUrl = 'https://indexer-v2.dev.aurascan.io/api/v1/graphiql'
 let githubPageTokenRegistryUrl = ''
 let env = 'development'
 
@@ -70,6 +68,7 @@ export function getMChainsConfig(): Promise<MChainInfo[]> {
         prefix: string
         denom: string
         symbol: string
+        indexerV2: string
         explorer: string
         coinDecimals: string
         gasPrice: string
@@ -93,6 +92,7 @@ export function getMChainsConfig(): Promise<MChainInfo[]> {
             value: e.rpc,
           },
           lcd: e.rest,
+          indexerV2: e.indexerV2,
           safeAppsRpcUri: {
             authentication: '',
             value: e.rpc,
@@ -162,6 +162,39 @@ export async function getMSafeInfo(safeId: number): Promise<IMSafeInfo> {
   return axios.get(`${baseUrl}/multisigwallet/${safeId}`).then((res) => res.data.Data)
 }
 
+export async function getAccountAsset(safeAddress: string): Promise<any> {
+  const chainInfo = getChainInfo() as any
+  return axios.post(chainInfo.indexerV2, {
+    query: `query QueryAccountAsset($address: String = "") {
+      ${chainInfo.environment} {
+        cw20_holder(where: {address: {_eq: $address}}) {
+          amount
+          cw20_contract {
+            decimal
+            name
+            symbol
+            smart_contract {
+              address
+            }
+          }
+        }
+        cw721_token(where: {owner: {_eq: $address}}, limit: 10) {
+          media_info(path: "offchain")
+          cw721_contract {
+            smart_contract {
+              address
+            }
+          }
+        }
+      }
+    }`,
+    variables: {
+      address: safeAddress
+    },
+    operationName: 'QueryAccountAsset',
+  }).then((res) => res.data.data[chainInfo.environment])
+}
+
 export async function getMSafeInfoWithAdress(query: string, internalChainId: number): Promise<IMSafeInfo> {
   return axios
     .get(`${baseUrl}/multisigwallet/${query}`, {
@@ -217,10 +250,6 @@ export function confirmSafeTransaction(payload: any): Promise<IResponse<any>> {
   return axios.post(`${baseUrl}/transaction/confirm`, payload).then((res) => res.data)
 }
 
-export async function getAccountOnChain(safeAddress: string, internalChainId): Promise<IResponse<SequenceResponse>> {
-  return axios.get(`${baseUrl}/general/get-account-onchain/${safeAddress}/${internalChainId}`).then((res) => res.data)
-}
-
 export async function getAddress(safeAddress: string): Promise<IResponse<any>> {
   return axios.get(`${baseUrl}/user/${safeAddress}`).then((res) => res.data)
 }
@@ -240,23 +269,77 @@ export async function simulate(payload: any): Promise<IResponse<any>> {
 
 //STAKING
 
-export function getAllValidator(internalChainId: any): Promise<IResponse<any>> {
-  return axios.get(`${baseUrl}/distribution/${internalChainId}/validators`).then((res) => res.data)
+export async function getAllValidators(): Promise<IResponse<any>> {
+  const chainInfo = getChainInfo() as any
+
+  return axios.post(chainInfo.indexerV2, {
+    query: `query GetAllValidator {
+      ${chainInfo.environment || ''} {
+        validator(limit: 1000) {
+          account_address
+          commission
+          description
+          operator_address
+          status
+          tokens
+          percent_voting_power
+          delegators_count
+          uptime
+          image_url 
+        }
+      }
+    }`,
+    variables: {},
+    operationName: 'GetAllValidator',
+  }).then((res) => res.data?.data[chainInfo.environment])
 }
 
-export function getAllDelegateOfUser(internalChainId: any, delegatorAddress: any): Promise<IResponse<any>> {
+
+export async function getAllDelegateOfUser(internalChainId: any, delegatorAddress: any): Promise<IResponse<any>> {
   return axios.get(`${baseUrl}/distribution/${internalChainId}/${delegatorAddress}/delegations`).then((res) => res.data)
 }
 
-export function getAllUnDelegateOfUser(internalChainId: any, delegatorAddress: any): Promise<IResponse<any>> {
+export async function getAllDelegations(chainLcd: string, delegatorAddress: any): Promise<any> {
   return axios
-    .get(`${baseUrl}/distribution/${internalChainId}/${delegatorAddress}/undelegations`)
+    .get(`${chainLcd}/cosmos/staking/v1beta1/delegations/${delegatorAddress}`)
     .then((res) => res.data)
 }
 
-export function getDelegateOfUser(dataSend: any): Promise<IResponse<any>> {
-  return axios.get(`${baseUrl}/distribution/delegation?${dataSend}`).then((res) => res.data)
+export async function getAllUnDelegateOfUser(chainLcd: string, delegatorAddress: any): Promise<any> {
+  return axios
+    .get(`${chainLcd}/cosmos/staking/v1beta1/delegators/${delegatorAddress}/unbonding_delegations`)
+    .then((res) => res.data)
 }
+
+export async function getAllReward(chainLcd: string, delegatorAddress: any): Promise<any> {
+  return axios
+    .get(`${chainLcd}/cosmos/distribution/v1beta1/delegators/${delegatorAddress}/rewards`)
+    .then((res) => res.data)
+}
+
+export async function getAccountInfo(contractAddress: string): Promise<any> {
+  const chainInfo = getChainInfo() as any
+
+  return axios
+    .post(chainInfo.indexerV2, {
+      query: `query QueryAccountInfo($address: String = "") {
+        ${chainInfo.environment} {
+          account(where: {address: {_eq: $address}}) {
+            account_number
+            sequence
+            balances
+          }
+        }
+      }
+    `,
+      variables: {
+        address: contractAddress,
+      },
+      operationName: 'QueryAccountInfo',
+    })
+    .then((res) => res.data.data[chainInfo.environment])
+}
+
 export async function getNumberOfDelegator(validatorId: any): Promise<IResponse<any>> {
   const currentChainInfo = getChainInfo() as any
   const { chainInfo } = await getGatewayUrl()
@@ -270,8 +353,14 @@ export async function getNumberOfDelegator(validatorId: any): Promise<IResponse<
 
 //VOTING
 
-export async function getProposals(internalChainId: number | string): Promise<IResponse<IProposalRes>> {
-  return axios.get(`${baseUrl}/gov/${internalChainId}/proposals`).then((res) => res.data)
+export const getProposals = async () => {
+  const chainInfo = getChainInfo() as any
+
+  return axios.post(chainInfo.indexerV2, {
+    query: `query GetProposals {\n      ${chainInfo.environment} {\n        proposal(order_by: {proposal_id: desc}, limit: 10) {\n          proposer_address\n          content\n          tally\n          proposal_id\n          status\n          submit_time\n          deposit_end_time\n          total_deposit\n          voting_start_time\n          voting_end_time\n        }\n      }\n    }`,
+    variables: {},
+    operationName: 'GetProposals',
+  }).then((res) => res.data)
 }
 
 export async function getProposalDetail(
@@ -283,12 +372,12 @@ export async function getProposalDetail(
 export async function getContract(contractAddress: string): Promise<IResponse<any>> {
   const chainInfo = getChainInfo() as any
   return axios
-    .post(chainInfo.indexerUrl, {
+    .post(chainInfo.indexerV2, {
       query: `query GetContractVerificationStatus($address: String = "") {
         ${chainInfo.environment || ''} {
           smart_contract(where: {address: {_eq: $address}}) {
             code {
-              code_id_verifications {
+              code_id_verifications(order_by: {updated_at: desc}) {
                 compiler_version
                 verified_at
                 verification_status
@@ -314,6 +403,6 @@ export async function getDetailToken(address: string): Promise<IResponse<any>> {
   const currentChainInfo = getChainInfo() as any
 
   return axios
-    .get(`${currentChainInfo.lcd}cosmwasm/wasm/v1/contract/${address}/smart/eyAidG9rZW5faW5mbyI6IHt9IH0%3D`)
+    .get(`${currentChainInfo.lcd}/cosmwasm/wasm/v1/contract/${address}/smart/eyAidG9rZW5faW5mbyI6IHt9IH0%3D`)
     .then((res) => res.data)
 }
