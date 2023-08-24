@@ -198,20 +198,19 @@ function Staking(props): ReactElement {
     setDataDelegateOfUser(null)
 
     const validatorsRes: any = await getAllValidators()
-    const validator = validatorsRes.validator
-      .map((val) => ({
-        commission: val.commission.commission_rates.rate * 100,
-        delegators: val.delegators_count,
-        operatorAddress: val.operator_address,
-        votingPower: {
-          percent_voting_power: val.percent_voting_power,
-          tokens: {
-            amount: val.tokens,
-            denom: nativeCurrency.symbol,
-          },
+    const validatorItem = validatorsRes.validator.find((item) => item.operator_address === address)
+    const validator = {
+      commission: validatorItem.commission.commission_rates.rate * 100,
+      delegators: validatorItem.delegators_count,
+      operatorAddress: validatorItem.operator_address,
+      votingPower: {
+        percent_voting_power: validatorItem.percent_voting_power,
+        tokens: {
+          amount: validatorItem.tokens,
+          denom: nativeCurrency.symbol,
         },
-      }))
-      ?.find((item) => item.operatorAddress === address)
+      },
+    }
 
     const delegation = {
       claimedReward: {
