@@ -3,7 +3,7 @@ import { Action } from 'redux-actions'
 
 import { SequenceResponse } from '@cosmjs/stargate'
 import { SafeInfo } from '@gnosis.pm/safe-react-gateway-sdk'
-import { _getChainId, getChainInfo, getCoinDecimal, getCoinMinimalDenom } from 'src/config'
+import { _getChainId, getCoinDecimal, getCoinMinimalDenom } from 'src/config';
 import { fetchCollectibles } from 'src/logic/collectibles/store/actions/fetchCollectibles'
 import { currentChainId } from 'src/logic/config/store/selectors'
 import { Errors, logError } from 'src/logic/exceptions/CodedException'

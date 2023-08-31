@@ -2,7 +2,6 @@ import BigNumber from 'bignumber.js'
 import { Dispatch } from 'redux'
 
 import { SafeBalanceResponse } from '@gnosis.pm/safe-react-gateway-sdk'
-import { getCoinConfig } from 'src/config'
 import { getChains } from 'src/config/cache/chains'
 import { currentCurrencySelector } from 'src/logic/currencyValues/store/selectors'
 import { Errors, logError } from 'src/logic/exceptions/CodedException'

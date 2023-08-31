@@ -25,7 +25,6 @@ export const TRANSACTIONS_TAB_NEW_BTN_TEST_ID = 'transactions-tab-new-btn'
 
 const Apps = lazy(() => import('src/routes/safe/components/Apps'))
 const Settings = lazy(() => import('src/routes/safe/components/Settings'))
-const Balances = lazy(() => import('src/routes/safe/components/Balances'))
 const Transaction = lazy(() => import('src/pages/Transactions'))
 const AddressBookTable = lazy(() => import('src/pages/AddressBook'))
 const Staking = lazy(() => import('src/pages/Staking'))
