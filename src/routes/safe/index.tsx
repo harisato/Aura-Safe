@@ -37,7 +37,8 @@ const Container = (): React.ReactElement => {
   const isSafeLoaded = owners.length > 0
   const [hasLoadFailed, setHasLoadFailed] = useState<boolean>(false)
   const dispatch = useDispatch()
-  const isCustomTransaction = location.pathname.includes('/custom-transaction')
+  const isIgnorantPage =
+    location.pathname.includes('/custom-transaction') || location.pathname.includes('/transactions')
   let componentToRender: React.ReactElement
 
   useEffect(() => {
@@ -62,8 +63,26 @@ const Container = (): React.ReactElement => {
   })
 
   if (hasLoadFailed) {
-    if (isCustomTransaction) {
-      componentToRender = <CustomTransaction />
+    if (isIgnorantPage) {
+      componentToRender = (
+        <Switch>
+          <Route
+            exact
+            path={[
+              SAFE_ROUTES.TRANSACTIONS,
+              SAFE_ROUTES.TRANSACTIONS_HISTORY,
+              SAFE_ROUTES.TRANSACTIONS_QUEUE,
+              SAFE_ROUTES.TRANSACTIONS_SINGULAR,
+            ]}
+            render={() => wrapInSuspense(<Transaction />, null)}
+          />
+          <Route
+            exact
+            path={SAFE_ROUTES.CUSTOM_TRANSACTION}
+            render={() => wrapInSuspense(<CustomTransaction />, null)}
+          />
+        </Switch>
+      )
     } else {
       componentToRender = <SafeLoadError />
     }
@@ -110,7 +129,7 @@ const Container = (): React.ReactElement => {
     )
   }
 
-  if (!isSafeLoaded && !hasLoadFailed && !isCustomTransaction) {
+  if (!isSafeLoaded && !hasLoadFailed && !isIgnorantPage) {
     return (
       <LoadingContainer>
         <Loader size="md" />
