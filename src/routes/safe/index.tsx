@@ -1,16 +1,13 @@
-import { GenericModal, Loader } from '@aura/safe-react-components'
+import { GenericModal } from '@aura/safe-react-components'
 import { lazy, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Redirect, Route, Switch } from 'react-router-dom'
 
 import { FEATURES } from '@gnosis.pm/safe-react-gateway-sdk'
-import { LoadingContainer } from 'src/components/LoaderContainer'
 import { fetchAllDelegations } from 'src/logic/delegation/store/actions'
 import { currentSafeFeaturesEnabled, currentSafeOwners } from 'src/logic/safe/store/selectors'
 import { extractPrefixedSafeAddress, generateSafeRoute, SAFE_ROUTES } from 'src/routes/routes'
-import { SAFE_POLLING_INTERVAL } from 'src/utils/constants'
 import { wrapInSuspense } from 'src/utils/wrapInSuspense'
-import SafeLoadError from './components/SafeLoadError'
 import ContractInteraction from 'src/pages/SmartContract/ContractInteraction'
 import CustomTransaction from 'src/pages/Avanced/Custom Transaction'
 import Assets from 'src/pages/Assets'
@@ -34,20 +31,19 @@ const Container = (): React.ReactElement => {
   const featuresEnabled = useSelector(currentSafeFeaturesEnabled)
   const owners = useSelector(currentSafeOwners)
   const isSafeLoaded = owners.length > 0
-  const [hasLoadFailed, setHasLoadFailed] = useState<boolean>(false)
+  // const [hasLoadFailed, setHasLoadFailed] = useState<boolean>(false)
   const dispatch = useDispatch()
   useEffect(() => {
     if (isSafeLoaded) {
       dispatch(fetchAllDelegations())
       return
     }
-
-    const failedTimeout = setTimeout(() => {
-      setHasLoadFailed(true)
-    }, SAFE_POLLING_INTERVAL)
-    return () => {
-      clearTimeout(failedTimeout)
-    }
+    // const failedTimeout = setTimeout(() => {
+    //   setHasLoadFailed(true)
+    // }, SAFE_POLLING_INTERVAL)
+    // return () => {
+    //   clearTimeout(failedTimeout)
+    // }
   }, [isSafeLoaded])
 
   const [modal, setModal] = useState({
@@ -58,17 +54,17 @@ const Container = (): React.ReactElement => {
     onClose: () => {},
   })
 
-  if (hasLoadFailed) {
-    return <SafeLoadError />
-  }
+  // if (hasLoadFailed) {
+  //   return <SafeLoadError />
+  // }
 
-  if (!isSafeLoaded) {
-    return (
-      <LoadingContainer>
-        <Loader size="md" />
-      </LoadingContainer>
-    )
-  }
+  // if (!isSafeLoaded) {
+  //   return (
+  //     <LoadingContainer>
+  //       <Loader size="md" />
+  //     </LoadingContainer>
+  //   )
+  // }
 
   const closeGenericModal = () => {
     if (modal.onClose) {
