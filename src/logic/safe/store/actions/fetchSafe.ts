@@ -279,11 +279,11 @@ async function _getSafeInfo(safeAddress: string, safeId: number): Promise<[IMSaf
     chainId: _getChainId(),
     nonce: 0,
     threshold: mSafeInfotData.threshold,
-    owners: mSafeInfotData.owners?.map((owners) => ({
+    owners: accountAssetData && accountInfoData ? mSafeInfotData.owners?.map((owners) => ({
       value: owners,
       logoUri: null,
       name: null,
-    })),
+    })) : [],
     implementation: {
       value: '',
       logoUri: null,

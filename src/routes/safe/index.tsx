@@ -1,7 +1,7 @@
 import { GenericModal, Loader } from '@aura/safe-react-components'
 import React, { lazy, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { Redirect, Route, Switch, useLocation } from 'react-router-dom'
+import { Redirect, Route, Switch } from 'react-router-dom'
 
 import { FEATURES } from '@gnosis.pm/safe-react-gateway-sdk'
 import { LoadingContainer } from 'src/components/LoaderContainer'
@@ -31,14 +31,12 @@ const Staking = lazy(() => import('src/pages/Staking'))
 const Voting = lazy(() => import('src/pages/Voting'))
 
 const Container = (): React.ReactElement => {
-  const location = useLocation()
   const featuresEnabled = useSelector(currentSafeFeaturesEnabled)
   const owners = useSelector(currentSafeOwners)
   const isSafeLoaded = owners.length > 0
   const [hasLoadFailed, setHasLoadFailed] = useState<boolean>(false)
   const dispatch = useDispatch()
-  const isIgnorantPage =
-    location.pathname.includes('/custom-transaction') || location.pathname.includes('/transactions')
+
   let componentToRender: React.ReactElement
 
   useEffect(() => {
@@ -59,33 +57,51 @@ const Container = (): React.ReactElement => {
     title: null,
     body: null,
     footer: null,
-    onClose: () => {},
+    onClose: () => { },
   })
 
   if (hasLoadFailed) {
-    if (isIgnorantPage) {
-      componentToRender = (
-        <Switch>
-          <Route
-            exact
-            path={[
-              SAFE_ROUTES.TRANSACTIONS,
-              SAFE_ROUTES.TRANSACTIONS_HISTORY,
-              SAFE_ROUTES.TRANSACTIONS_QUEUE,
-              SAFE_ROUTES.TRANSACTIONS_SINGULAR,
-            ]}
-            render={() => wrapInSuspense(<Transaction />, null)}
-          />
-          <Route
-            exact
-            path={SAFE_ROUTES.CUSTOM_TRANSACTION}
-            render={() => wrapInSuspense(<CustomTransaction />, null)}
-          />
-        </Switch>
-      )
-    } else {
-      componentToRender = <SafeLoadError />
-    }
+    componentToRender = (
+      <Switch>
+        <Route
+          exact
+          path={[SAFE_ROUTES.ASSETS_BALANCES, SAFE_ROUTES.ASSETS_BALANCES_COLLECTIBLES]}
+          render={() => wrapInSuspense(<SafeLoadError />, null)}
+        />
+        <Route
+          exact
+          path={[
+            SAFE_ROUTES.TRANSACTIONS,
+            SAFE_ROUTES.TRANSACTIONS_HISTORY,
+            SAFE_ROUTES.TRANSACTIONS_QUEUE,
+            SAFE_ROUTES.TRANSACTIONS_SINGULAR,
+          ]}
+          render={() => wrapInSuspense(<Transaction />, null)}
+        />
+        <Route
+          exact
+          path={SAFE_ROUTES.CONTRACT_INTERACTION}
+          render={() => wrapInSuspense(<SafeLoadError />, null)}
+        />
+        <Route exact path={SAFE_ROUTES.CUSTOM_TRANSACTION} render={() => wrapInSuspense(<CustomTransaction />, null)} />
+        <Route exact path={SAFE_ROUTES.STAKING} render={() => wrapInSuspense(<SafeLoadError />, null)} />
+        <Route exact path={SAFE_ROUTES.VOTING} render={() => wrapInSuspense(<SafeLoadError />, null)} />
+        <Route exact path={SAFE_ROUTES.ADDRESS_BOOK} render={() => wrapInSuspense(<SafeLoadError />, null)} />
+        <Route
+          exact
+          path={SAFE_ROUTES.APPS}
+          render={({ history }) => {
+            if (!featuresEnabled.includes(FEATURES.SAFE_APPS)) {
+              history.push(generateSafeRoute(SAFE_ROUTES.ASSETS_BALANCES, extractPrefixedSafeAddress()))
+            }
+            return wrapInSuspense(<SafeLoadError />, null)
+          }}
+        />
+        <Route path={SAFE_ROUTES.SETTINGS} render={() => wrapInSuspense(<SafeLoadError />, null)} />
+        <Redirect to={SAFE_ROUTES.ASSETS_BALANCES} />
+      </Switch>
+    )
+
   } else {
     componentToRender = (
       <Switch>
@@ -129,7 +145,7 @@ const Container = (): React.ReactElement => {
     )
   }
 
-  if (!isSafeLoaded && !hasLoadFailed && !isIgnorantPage) {
+  if (!isSafeLoaded && !hasLoadFailed) {
     return (
       <LoadingContainer>
         <Loader size="md" />
@@ -147,7 +163,7 @@ const Container = (): React.ReactElement => {
       title: null,
       body: null,
       footer: null,
-      onClose: () => {},
+      onClose: () => { },
     })
   }
 
