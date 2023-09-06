@@ -1,25 +1,25 @@
-import { Dispatch } from 'redux'
-import { Action } from 'redux-actions'
+import { Dispatch } from 'redux';
+import { Action } from 'redux-actions';
 
-import { SequenceResponse } from '@cosmjs/stargate'
-import { SafeInfo } from '@gnosis.pm/safe-react-gateway-sdk'
+import { SequenceResponse } from '@cosmjs/stargate';
+import { SafeInfo } from '@gnosis.pm/safe-react-gateway-sdk';
 import { _getChainId, getCoinDecimal, getCoinMinimalDenom } from 'src/config';
-import { fetchCollectibles } from 'src/logic/collectibles/store/actions/fetchCollectibles'
-import { currentChainId } from 'src/logic/config/store/selectors'
-import { Errors, logError } from 'src/logic/exceptions/CodedException'
-import { AppReduxState, store } from 'src/logic/safe/store'
-import { updateSafe } from 'src/logic/safe/store/actions/updateSafe'
-import { SafeRecordProps } from 'src/logic/safe/store/models/safe'
-import { getLocalSafe } from 'src/logic/safe/utils'
-import { getSafeInfo } from 'src/logic/safe/utils/safeInformation'
-import { fetchMSafeTokens } from 'src/logic/tokens/store/actions/fetchSafeTokens'
-import { getAccountAsset, getAccountInfo, getMSafeInfo } from 'src/services'
-import { IMSafeInfo } from 'src/types/safe'
-import { humanReadableValue } from 'src/utils'
-import { checksumAddress } from 'src/utils/checksumAddress'
-import { currentSafeWithNames } from '../selectors'
-import fetchTransactions from './transactions/fetchTransactions'
-import { buildSafeOwners, extractRemoteSafeInfo } from './utils'
+import { fetchCollectibles } from 'src/logic/collectibles/store/actions/fetchCollectibles';
+import { currentChainId } from 'src/logic/config/store/selectors';
+import { Errors, logError } from 'src/logic/exceptions/CodedException';
+import { AppReduxState, store } from 'src/logic/safe/store';
+import { updateSafe } from 'src/logic/safe/store/actions/updateSafe';
+import { SafeRecordProps } from 'src/logic/safe/store/models/safe';
+import { getLocalSafe } from 'src/logic/safe/utils';
+import { getSafeInfo } from 'src/logic/safe/utils/safeInformation';
+import { fetchMSafeTokens } from 'src/logic/tokens/store/actions/fetchSafeTokens';
+import { fetchAccountInfo, getAccountAsset, getMSafeInfo } from 'src/services';
+import { IMSafeInfo } from 'src/types/safe';
+import { humanReadableValue } from 'src/utils';
+import { checksumAddress } from 'src/utils/checksumAddress';
+import { currentSafeWithNames } from '../selectors';
+import fetchTransactions from './transactions/fetchTransactions';
+import { buildSafeOwners, extractRemoteSafeInfo } from './utils';
 
 /**
  * Builds a Safe Record that will be added to the app's store
@@ -142,9 +142,10 @@ export const fetchMSafe =
       let remoteSafeInfo: SafeInfo | null = null
       let mSafeInfo: IMSafeInfo | null = null
       let accountInfo: SequenceResponse | null = null
+      let isSafeLoaded: boolean = false
 
       try {
-        ;[mSafeInfo, remoteSafeInfo, accountInfo] = await _getSafeInfo(safeAddress, safeId)
+        ;[mSafeInfo, remoteSafeInfo, accountInfo, isSafeLoaded] = await _getSafeInfo(safeAddress, safeId)
       } catch (err) {
         console.error(err)
       }
@@ -210,13 +211,13 @@ export const fetchMSafe =
 
       await Promise.all(dispatchPromises)
 
-      return dispatch(updateSafe({ address, ...safeInfo, owners, safeId: safeId }))
+      return dispatch(updateSafe({ address, ...safeInfo, owners, safeId: safeId, isSafeLoaded }))
     }
 
-async function _getSafeInfo(safeAddress: string, safeId: number): Promise<[IMSafeInfo, SafeInfo, SequenceResponse]> {
+async function _getSafeInfo(safeAddress: string, safeId: number): Promise<[IMSafeInfo, SafeInfo, SequenceResponse, boolean]> {
   const getAccountAssetPromise = getAccountAsset(safeAddress)
   const getMSafeInfoPromise = getMSafeInfo(safeId)
-  const getAccountInfoPromise = getAccountInfo(safeAddress)
+  const getAccountInfoPromise = fetchAccountInfo(safeAddress)
 
   const results = await Promise.allSettled([getAccountAssetPromise, getMSafeInfoPromise, getAccountInfoPromise]);
 
@@ -229,9 +230,11 @@ async function _getSafeInfo(safeAddress: string, safeId: number): Promise<[IMSaf
   if (!mSafeInfotData) {
     throw new Error("Get Safe Info failed");
   }
+
+  const isSafeLoaded = accountAssetData && mSafeInfotData && accountInfoData
   const formatMSafeInfotData: IMSafeInfo = {
     ...mSafeInfotData,
-    accountNumber: String(accountInfoData?.account[0]?.account_number),
+    accountNumber: String(accountInfoData?.account_number),
     assets: {
       CW20: {
         asset: accountAssetData?.cw20_holder?.map((cw20) => ({
@@ -252,14 +255,13 @@ async function _getSafeInfo(safeAddress: string, safeId: number): Promise<[IMSaf
         }))
       }
     },
-    balance: accountInfoData?.account[0]?.balances.map((balance) => {
+    balance: accountInfoData?.balances?.map((balance) => {
       if (balance.denom === getCoinMinimalDenom()) {
         return {
           amount: balance.amount,
           denom: balance.base_denom ?? balance.denom,
         }
       }
-
       return {
         amount: balance.amount,
         denom: balance.base_denom ?? balance.denom,
@@ -267,7 +269,7 @@ async function _getSafeInfo(safeAddress: string, safeId: number): Promise<[IMSaf
       }
 
     }),
-    sequence: String(accountInfoData?.account[0]?.sequence)
+    sequence: String(accountInfoData?.sequence)
   }
 
   const safeInfoData: SafeInfo = {
@@ -279,11 +281,11 @@ async function _getSafeInfo(safeAddress: string, safeId: number): Promise<[IMSaf
     chainId: _getChainId(),
     nonce: 0,
     threshold: mSafeInfotData.threshold,
-    owners: accountAssetData && accountInfoData ? mSafeInfotData.owners?.map((owners) => ({
+    owners: mSafeInfotData.owners?.map((owners) => ({
       value: owners,
       logoUri: null,
       name: null,
-    })) : [],
+    })),
     implementation: {
       value: '',
       logoUri: null,
@@ -312,7 +314,7 @@ async function _getSafeInfo(safeAddress: string, safeId: number): Promise<[IMSaf
     txHistoryTag: mSafeInfotData.txHistoryTag,
   }
 
-  return [formatMSafeInfotData, safeInfoData, accountInfoData?.account[0]]
+  return [formatMSafeInfotData, safeInfoData, accountInfoData, isSafeLoaded]
 
 
 

@@ -41,6 +41,7 @@ import {
   changeTransactionSequenceById,
   confirmSafeTransaction,
   createSafeTransaction,
+  fetchAccountInfo,
   getAccountInfo,
   getAccountInfoByLcd
 } from 'src/services'
@@ -454,19 +455,3 @@ const signMessage = async (
   }
 }
 
-async function fetchAccountInfo(safeAddress: string) {
-  try {
-    const response = await getAccountInfo(safeAddress);
-    const accountInfo = response.account[0];
-    return accountInfo;
-  } catch (error) {
-    try {
-      const lcdResponse = await getAccountInfoByLcd(safeAddress);
-      const accountInfoFromLcd = lcdResponse.account;
-      return accountInfoFromLcd;
-    } catch (lcdError) {
-      console.error("Error while fetching account info:", lcdError);
-      return null;
-    }
-  }
-}

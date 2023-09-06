@@ -6,7 +6,7 @@ import { Redirect, Route, Switch } from 'react-router-dom'
 import { FEATURES } from '@gnosis.pm/safe-react-gateway-sdk'
 import { LoadingContainer } from 'src/components/LoaderContainer'
 import { fetchAllDelegations } from 'src/logic/delegation/store/actions'
-import { currentSafeFeaturesEnabled, currentSafeOwners } from 'src/logic/safe/store/selectors'
+import { currentSafeFeaturesEnabled, currentSafeLoaded } from 'src/logic/safe/store/selectors'
 import Assets from 'src/pages/Assets'
 import CustomTransaction from 'src/pages/Avanced/Custom Transaction'
 import ContractInteraction from 'src/pages/SmartContract/ContractInteraction'
@@ -32,12 +32,9 @@ const Voting = lazy(() => import('src/pages/Voting'))
 
 const Container = (): React.ReactElement => {
   const featuresEnabled = useSelector(currentSafeFeaturesEnabled)
-  const owners = useSelector(currentSafeOwners)
-  const isSafeLoaded = owners.length > 0
+  const isSafeLoaded = useSelector(currentSafeLoaded)
   const [hasLoadFailed, setHasLoadFailed] = useState<boolean>(false)
   const dispatch = useDispatch()
-
-  let componentToRender: React.ReactElement
 
   useEffect(() => {
     if (isSafeLoaded) {
@@ -57,93 +54,65 @@ const Container = (): React.ReactElement => {
     title: null,
     body: null,
     footer: null,
-    onClose: () => { },
+    onClose: () => {},
   })
 
-  if (hasLoadFailed) {
-    componentToRender = (
-      <Switch>
-        <Route
-          exact
-          path={[SAFE_ROUTES.ASSETS_BALANCES, SAFE_ROUTES.ASSETS_BALANCES_COLLECTIBLES]}
-          render={() => wrapInSuspense(<SafeLoadError />, null)}
-        />
-        <Route
-          exact
-          path={[
-            SAFE_ROUTES.TRANSACTIONS,
-            SAFE_ROUTES.TRANSACTIONS_HISTORY,
-            SAFE_ROUTES.TRANSACTIONS_QUEUE,
-            SAFE_ROUTES.TRANSACTIONS_SINGULAR,
-          ]}
-          render={() => wrapInSuspense(<Transaction />, null)}
-        />
-        <Route
-          exact
-          path={SAFE_ROUTES.CONTRACT_INTERACTION}
-          render={() => wrapInSuspense(<SafeLoadError />, null)}
-        />
-        <Route exact path={SAFE_ROUTES.CUSTOM_TRANSACTION} render={() => wrapInSuspense(<CustomTransaction />, null)} />
-        <Route exact path={SAFE_ROUTES.STAKING} render={() => wrapInSuspense(<SafeLoadError />, null)} />
-        <Route exact path={SAFE_ROUTES.VOTING} render={() => wrapInSuspense(<SafeLoadError />, null)} />
-        <Route exact path={SAFE_ROUTES.ADDRESS_BOOK} render={() => wrapInSuspense(<SafeLoadError />, null)} />
-        <Route
-          exact
-          path={SAFE_ROUTES.APPS}
-          render={({ history }) => {
-            if (!featuresEnabled.includes(FEATURES.SAFE_APPS)) {
-              history.push(generateSafeRoute(SAFE_ROUTES.ASSETS_BALANCES, extractPrefixedSafeAddress()))
-            }
-            return wrapInSuspense(<SafeLoadError />, null)
-          }}
-        />
-        <Route path={SAFE_ROUTES.SETTINGS} render={() => wrapInSuspense(<SafeLoadError />, null)} />
-        <Redirect to={SAFE_ROUTES.ASSETS_BALANCES} />
-      </Switch>
-    )
-
-  } else {
-    componentToRender = (
-      <Switch>
-        <Route
-          exact
-          path={[SAFE_ROUTES.ASSETS_BALANCES, SAFE_ROUTES.ASSETS_BALANCES_COLLECTIBLES]}
-          render={() => wrapInSuspense(<Assets />, null)}
-        />
-        <Route
-          exact
-          path={[
-            SAFE_ROUTES.TRANSACTIONS,
-            SAFE_ROUTES.TRANSACTIONS_HISTORY,
-            SAFE_ROUTES.TRANSACTIONS_QUEUE,
-            SAFE_ROUTES.TRANSACTIONS_SINGULAR,
-          ]}
-          render={() => wrapInSuspense(<Transaction />, null)}
-        />
-        <Route
-          exact
-          path={SAFE_ROUTES.CONTRACT_INTERACTION}
-          render={() => wrapInSuspense(<ContractInteraction />, null)}
-        />
-        <Route exact path={SAFE_ROUTES.CUSTOM_TRANSACTION} render={() => wrapInSuspense(<CustomTransaction />, null)} />
-        <Route exact path={SAFE_ROUTES.STAKING} render={() => wrapInSuspense(<Staking />, null)} />
-        <Route exact path={SAFE_ROUTES.VOTING} render={() => wrapInSuspense(<Voting />, null)} />
-        <Route exact path={SAFE_ROUTES.ADDRESS_BOOK} render={() => wrapInSuspense(<AddressBookTable />, null)} />
-        <Route
-          exact
-          path={SAFE_ROUTES.APPS}
-          render={({ history }) => {
-            if (!featuresEnabled.includes(FEATURES.SAFE_APPS)) {
-              history.push(generateSafeRoute(SAFE_ROUTES.ASSETS_BALANCES, extractPrefixedSafeAddress()))
-            }
-            return wrapInSuspense(<Apps />, null)
-          }}
-        />
-        <Route path={SAFE_ROUTES.SETTINGS} render={() => wrapInSuspense(<Settings />, null)} />
-        <Redirect to={SAFE_ROUTES.ASSETS_BALANCES} />
-      </Switch>
-    )
-  }
+  const commonRoutes = [
+    {
+      path: [SAFE_ROUTES.ASSETS_BALANCES, SAFE_ROUTES.ASSETS_BALANCES_COLLECTIBLES],
+      component: hasLoadFailed ? <SafeLoadError /> : <Assets />,
+      exact: true,
+    },
+    {
+      path: [
+        SAFE_ROUTES.TRANSACTIONS,
+        SAFE_ROUTES.TRANSACTIONS_HISTORY,
+        SAFE_ROUTES.TRANSACTIONS_QUEUE,
+        SAFE_ROUTES.TRANSACTIONS_SINGULAR,
+      ],
+      component: <Transaction />,
+      exact: true,
+    },
+    {
+      path: SAFE_ROUTES.CONTRACT_INTERACTION,
+      component: hasLoadFailed ? <SafeLoadError /> : <ContractInteraction />,
+      exact: true,
+    },
+    {
+      path: SAFE_ROUTES.CUSTOM_TRANSACTION,
+      component: <CustomTransaction />,
+      exact: true,
+    },
+    {
+      path: SAFE_ROUTES.STAKING,
+      component: hasLoadFailed ? <SafeLoadError /> : <Staking />,
+      exact: true,
+    },
+    {
+      path: SAFE_ROUTES.VOTING,
+      component: hasLoadFailed ? <SafeLoadError /> : <Voting />,
+      exact: true,
+    },
+    {
+      path: SAFE_ROUTES.ADDRESS_BOOK,
+      component: hasLoadFailed ? <SafeLoadError /> : <AddressBookTable />,
+      exact: true,
+    },
+    {
+      path: SAFE_ROUTES.APPS,
+      render: ({ history }) => {
+        if (!featuresEnabled.includes(FEATURES.SAFE_APPS)) {
+          history.push(generateSafeRoute(SAFE_ROUTES.ASSETS_BALANCES, extractPrefixedSafeAddress()))
+        }
+        return hasLoadFailed ? <SafeLoadError /> : <Apps />
+      },
+      exact: true,
+    },
+    {
+      path: SAFE_ROUTES.SETTINGS,
+      component: hasLoadFailed ? <SafeLoadError /> : <Settings />,
+    },
+  ]
 
   if (!isSafeLoaded && !hasLoadFailed) {
     return (
@@ -163,13 +132,23 @@ const Container = (): React.ReactElement => {
       title: null,
       body: null,
       footer: null,
-      onClose: () => { },
+      onClose: () => {},
     })
   }
 
   return (
     <>
-      {componentToRender}
+      <Switch>
+        {commonRoutes.map((route, index) => (
+          <Route
+            key={index}
+            exact={route.exact}
+            path={route.path}
+            render={route.render || (() => wrapInSuspense(route.component, null))}
+          />
+        ))}
+        <Redirect to={SAFE_ROUTES.ASSETS_BALANCES} />
+      </Switch>
       {modal.isOpen && <GenericModal {...modal} onClose={closeGenericModal} />}
     </>
   )
