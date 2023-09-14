@@ -51,45 +51,45 @@ const extractDataFromResult = (
 
 export const fetchSafeTokens =
   (safeAddress: string, currency?: string) =>
-    async (dispatch: Dispatch, getState: () => AppReduxState): Promise<void> => {
-      const state = getState()
-      const safe = currentSafe(state)
+  async (dispatch: Dispatch, getState: () => AppReduxState): Promise<void> => {
+    const state = getState()
+    const safe = currentSafe(state)
 
-      if (!safe) {
-        return
-      }
-      const selectedCurrency = currency ?? currentCurrencySelector(state)
-
-      let tokenCurrenciesBalances: SafeBalanceResponse
-      try {
-        tokenCurrenciesBalances = await fetchTokenCurrenciesBalances({
-          safeAddress,
-          selectedCurrency,
-        })
-      } catch (e) {
-        logError(Errors._601, e.message)
-        return
-      }
-
-      const { balances, nativeBalance, tokens } = tokenCurrenciesBalances.items.reduce<ExtractedData>(
-        extractDataFromResult,
-        {
-          balances: [],
-          nativeBalance: '0',
-          tokens: [],
-        },
-      )
-
-      dispatch(
-        updateSafe({
-          address: safeAddress,
-          balances,
-          nativeBalance: '0',
-          totalFiatBalance: new BigNumber(tokenCurrenciesBalances.fiatTotal).toFixed(6),
-        }),
-      )
-      dispatch(addTokens(tokens))
+    if (!safe) {
+      return
     }
+    const selectedCurrency = currency ?? currentCurrencySelector(state)
+
+    let tokenCurrenciesBalances: SafeBalanceResponse
+    try {
+      tokenCurrenciesBalances = await fetchTokenCurrenciesBalances({
+        safeAddress,
+        selectedCurrency,
+      })
+    } catch (e) {
+      logError(Errors._601, e.message)
+      return
+    }
+
+    const { balances, nativeBalance, tokens } = tokenCurrenciesBalances.items.reduce<ExtractedData>(
+      extractDataFromResult,
+      {
+        balances: [],
+        nativeBalance: '0',
+        tokens: [],
+      },
+    )
+
+    dispatch(
+      updateSafe({
+        address: safeAddress,
+        balances,
+        nativeBalance: '0',
+        totalFiatBalance: new BigNumber(tokenCurrenciesBalances.fiatTotal).toFixed(6),
+      }),
+    )
+    dispatch(addTokens(tokens))
+  }
 
 export const fetchMSafeTokens =
   (safeInfo: IMSafeInfo) =>
@@ -146,11 +146,11 @@ export const fetchMSafeTokens =
 
       const coinConfig = safe?.coinConfig?.length
         ? filteredListTokens
-          .filter(
-            (item) =>
-              !safe?.coinConfig?.some((token) => token.denom === item.denom || token.address === item.address),
-          )
-          .concat(safe?.coinConfig)
+            .filter(
+              (item) =>
+                !safe?.coinConfig?.some((token) => token.denom === item.denom || token.address === item.address),
+            )
+            .concat(safe?.coinConfig)
         : filteredListTokens
 
       safeInfo.balance
@@ -228,3 +228,4 @@ export const fetchMSafeTokens =
         }),
       )
     }
+  }
