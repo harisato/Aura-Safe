@@ -19,7 +19,7 @@ import { EMPTY_DATA } from 'src/logic/wallets/ethTransactions'
 import { providerSelector } from 'src/logic/wallets/store/selectors'
 import enqueueSnackbar from 'src/logic/notifications/store/actions/enqueueSnackbar'
 import closeSnackbarAction from 'src/logic/notifications/store/actions/closeSnackbar'
-import { generateSafeTxHash } from 'src/logic/safe/store/actions/transactions/utils/transactionHelpers'
+// import { generateSafeTxHash } from 'src/logic/safe/store/actions/transactions/utils/transactionHelpers'
 import { shouldExecuteTransaction } from 'src/logic/safe/store/actions/utils'
 import fetchTransactions from './transactions/fetchTransactions'
 import { TxArgs } from 'src/logic/safe/store/models/types/transaction'
@@ -155,7 +155,7 @@ export const createTransaction =
     let safeTxHash = ''
 
     try {
-      safeTxHash = await generateSafeTxHash(safeAddress, safeVersion, txArgs)
+      // safeTxHash = await generateSafeTxHash(safeAddress, safeVersion, txArgs)
 
       if (isExecution) {
         dispatch(updateTransactionStatus({ safeTxHash, status: LocalTransactionStatus.PENDING }))

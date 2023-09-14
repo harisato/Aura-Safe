@@ -13,7 +13,7 @@ import {
 
 import { useSelector } from 'react-redux'
 import { INTERFACE_MESSAGES, Transaction, LowercaseNetworks } from '@gnosis.pm/safe-apps-sdk-v1'
-import Web3 from 'web3'
+// import Web3 from 'web3'
 
 import { currentSafe } from 'src/logic/safe/store/selectors'
 import { getChainInfo, getChainName, getSafeAppsRpcServiceUrl, getTxServiceUrl } from 'src/config'
@@ -78,9 +78,9 @@ const INITIAL_CONFIRM_TX_MODAL_STATE: ConfirmTransactionModalState = {
   params: undefined,
 }
 
-const safeAppWeb3Provider = new Web3.providers.HttpProvider(getSafeAppsRpcServiceUrl(), {
-  timeout: 10_000,
-})
+// const safeAppWeb3Provider = new Web3.providers.HttpProvider(getSafeAppsRpcServiceUrl(), {
+//   timeout: 10_000,
+// })
 
 const URL_NOT_PROVIDED_ERROR = 'App url No provided or it is invalid.'
 const APP_LOAD_ERROR = 'There was an error loading the Safe App. There might be a problem with the App provider.'
@@ -197,31 +197,28 @@ const AppFrame = ({ appUrl }: Props): ReactElement => {
     })
 
     communicator?.on(Methods.rpcCall, async (msg) => {
-      const params = msg.data.params as RPCPayload
-
-      try {
-        const response = new Promise<MethodToResponse['rpcCall']>((resolve, reject) => {
-          safeAppWeb3Provider.send(
-            {
-              jsonrpc: '2.0',
-              method: params.call,
-              params: params.params,
-              id: '1',
-            },
-            (err, res) => {
-              if (err || res?.error) {
-                reject(err || res?.error)
-              }
-
-              resolve(res?.result)
-            },
-          )
-        })
-
-        return response
-      } catch (err) {
-        return err
-      }
+      // const params = msg.data.params as RPCPayload
+      // try {
+      //   const response = new Promise<MethodToResponse['rpcCall']>((resolve, reject) => {
+      //     safeAppWeb3Provider.send(
+      //       {
+      //         jsonrpc: '2.0',
+      //         method: params.call,
+      //         params: params.params,
+      //         id: '1',
+      //       },
+      //       (err, res) => {
+      //         if (err || res?.error) {
+      //           reject(err || res?.error)
+      //         }
+      //         resolve(res?.result)
+      //       },
+      //     )
+      //   })
+      //   return response
+      // } catch (err) {
+      //   return err
+      // }
     })
 
     communicator?.on(Methods.sendTransactions, (msg) => {
