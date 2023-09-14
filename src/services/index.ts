@@ -343,9 +343,7 @@ export async function getAccountInfo(contractAddress: string): Promise<any> {
 
 export async function getAccountInfoByLcd(contractAddress: string): Promise<any> {
   const currentChainInfo = getChainInfo() as any
-  return axios
-    .get(`${currentChainInfo.lcd}/cosmos/auth/v1beta1/accounts/${contractAddress}`)
-    .then((res) => res.data)
+  return axios.get(`${currentChainInfo.lcd}/cosmos/auth/v1beta1/accounts/${contractAddress}`).then((res) => res.data)
 }
 
 export async function getNumberOfDelegator(validatorId: any): Promise<IResponse<any>> {
@@ -420,17 +418,17 @@ export async function getDetailToken(address: string): Promise<IResponse<any>> {
 
 export async function fetchAccountInfo(safeAddress: string) {
   try {
-    const response = await getAccountInfo(safeAddress);
-    const accountInfo = response.account[0] ?? { account_number: 0, sequence: 0, balances: [] };
-    return accountInfo;
+    const response = await getAccountInfo(safeAddress)
+    const accountInfo = response.account[0] ?? { account_number: 0, sequence: 0, balances: [] }
+    return accountInfo
   } catch (error) {
     try {
-      const lcdResponse = await getAccountInfoByLcd(safeAddress);
-      const accountInfoFromLcd = lcdResponse.account;
-      return accountInfoFromLcd;
+      const lcdResponse = await getAccountInfoByLcd(safeAddress)
+      const accountInfoFromLcd = lcdResponse.account
+      return accountInfoFromLcd
     } catch (lcdError) {
-      console.error("Error while fetching account info:", lcdError);
-      return null;
+      console.error('Error while fetching account info:', lcdError)
+      return null
     }
   }
 }
