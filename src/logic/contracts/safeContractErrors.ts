@@ -2,7 +2,7 @@
 
 import { CONTRACT_ERRORS, CONTRACT_ERROR_CODES } from 'src/logic/contracts/contracts.d'
 import { getWeb3 } from 'src/logic/wallets/getWeb3'
-import { GnosisSafe } from 'src/types/contracts/gnosis_safe.d'
+// import { GnosisSafe } from 'src/types/contracts/gnosis_safe.d'
 
 export const decodeMessage = (message: string): string => {
   const code = CONTRACT_ERROR_CODES.find((code) => {
@@ -17,7 +17,7 @@ export const getContractErrorMessage = async ({
   from,
   data,
 }: {
-  safeInstance: GnosisSafe
+  safeInstance: any
   from: string
   data: string
 }): Promise<string | null> => {

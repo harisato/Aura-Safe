@@ -16,19 +16,19 @@ import { ChainId } from 'src/config/chain.d'
 import { ZERO_ADDRESS } from 'src/logic/wallets/ethAddresses'
 import { calculateGasOf, EMPTY_DATA } from 'src/logic/wallets/ethTransactions'
 import { getWeb3, getChainIdFrom } from 'src/logic/wallets/getWeb3'
-import { GnosisSafe } from 'src/types/contracts/gnosis_safe.d'
-import { ProxyFactory } from 'src/types/contracts/proxy_factory.d'
-import { CompatibilityFallbackHandler } from 'src/types/contracts/compatibility_fallback_handler.d'
-import { SignMessageLib } from 'src/types/contracts/sign_message_lib.d'
-import { MultiSend } from 'src/types/contracts/multi_send.d'
+// import { GnosisSafe } from 'src/types/contracts/gnosis_safe.d'
+// import { ProxyFactory } from 'src/types/contracts/proxy_factory.d'
+// import { CompatibilityFallbackHandler } from 'src/types/contracts/compatibility_fallback_handler.d'
+// import { SignMessageLib } from 'src/types/contracts/sign_message_lib.d'
+// import { MultiSend } from 'src/types/contracts/multi_send.d'
 import { getSafeInfo } from 'src/logic/safe/utils/safeInformation'
 
 export const SENTINEL_ADDRESS = '0x0000000000000000000000000000000000000001'
 
-let proxyFactoryMaster: ProxyFactory
-let safeMaster: GnosisSafe
-let fallbackHandler: CompatibilityFallbackHandler
-let multiSend: MultiSend
+let proxyFactoryMaster: any
+let safeMaster: any
+let fallbackHandler: any
+let multiSend: any
 
 const getSafeContractDeployment = ({ safeVersion }: { safeVersion: string }) => {
   // We check if version is prior to v1.0.0 as they are not supported but still we want to keep a minimum compatibility
@@ -267,9 +267,9 @@ export const estimateGasForDeployingSafe = async (
   }).then((value) => value * 2)
 }
 
-export const getGnosisSafeInstanceAt = (safeAddress: string, safeVersion: string): GnosisSafe => {
+export const getGnosisSafeInstanceAt = (safeAddress: string, safeVersion: string): any => {
   const safeSingletonDeployment = getSafeContractDeployment({ safeVersion })
 
   const web3 = getWeb3()
-  return new web3.eth.Contract(safeSingletonDeployment?.abi as any[], safeAddress) as unknown as GnosisSafe
+  return new web3.eth.Contract(safeSingletonDeployment?.abi as any[], safeAddress) as unknown as any
 }

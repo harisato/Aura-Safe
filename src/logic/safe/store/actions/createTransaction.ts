@@ -23,7 +23,7 @@ import closeSnackbarAction from 'src/logic/notifications/store/actions/closeSnac
 import { shouldExecuteTransaction } from 'src/logic/safe/store/actions/utils'
 import fetchTransactions from './transactions/fetchTransactions'
 import { TxArgs } from 'src/logic/safe/store/models/types/transaction'
-import { PayableTx } from 'src/types/contracts/types.d'
+// import { PayableTx } from 'src/types/contracts/types.d'
 import { AppReduxState } from 'src/logic/safe/store'
 import { Dispatch, DispatchReturn } from './types'
 import { checkIfOffChainSignatureIsPossible, getPreValidatedSignatures } from 'src/logic/safe/safeTxSigner'
@@ -178,7 +178,7 @@ export const createTransaction =
       }
 
       const tx = isExecution ? getExecutionTransaction(txArgs) : getApprovalTransaction(safeInstance, safeTxHash)
-      const sendParams: PayableTx = {
+      const sendParams: any = {
         from,
         value: 0,
         gas: ethParameters?.ethGasLimit,
