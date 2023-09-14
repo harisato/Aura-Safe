@@ -1,4 +1,4 @@
-import { AbstractProvider } from 'web3-core'
+// import { AbstractProvider } from 'web3-core'
 import semverSatisfies from 'semver/functions/satisfies'
 
 import { getWeb3, getChainIdFrom } from 'src/logic/wallets/getWeb3'
@@ -157,7 +157,7 @@ export const getEIP712Signer =
     }
 
     return new Promise((resolve, reject) => {
-      const provider = web3.currentProvider as AbstractProvider
+      const provider = web3.currentProvider as any
       provider.sendAsync(signedTypedData, (err, signature) => {
         if (err) {
           reject(err)

@@ -62,14 +62,14 @@
 //   }
 // }
 
-// let currentOnboardInstance: any
-// const onboard = (): any => {
-//   const chainId = _getChainId()
-//   if (!currentOnboardInstance || currentOnboardInstance.getState().appNetworkId.toString() !== chainId) {
-//     // currentOnboardInstance = Onboard(getOnboardConfiguration())
-//   }
+let currentOnboardInstance: any
+const onboard = (): any => {
+  // const chainId = _getChainId()
+  // if (!currentOnboardInstance || currentOnboardInstance.getState().appNetworkId.toString() !== chainId) {
+  //   // currentOnboardInstance = Onboard(getOnboardConfiguration())
+  // }
 
-//   return currentOnboardInstance
-// }
+  return currentOnboardInstance
+}
 
-// export default onboard
+export default onboard

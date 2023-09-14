@@ -39,7 +39,7 @@ export const getWeb3ReadOnly = (): any => {
 }
 
 let web3: any
-export const getWeb3 = (): Web3 => web3
+export const getWeb3 = (): any => web3
 export const setWeb3 = (provider: any): void => {
   // web3 = new Web3(provider)
 }

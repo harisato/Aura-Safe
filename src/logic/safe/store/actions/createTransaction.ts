@@ -152,7 +152,7 @@ export const createTransaction =
       sigs,
     }
 
-    let safeTxHash = ''
+    const safeTxHash = ''
 
     try {
       // safeTxHash = await generateSafeTxHash(safeAddress, safeVersion, txArgs)

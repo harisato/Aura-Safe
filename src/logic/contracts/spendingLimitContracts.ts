@@ -1,4 +1,4 @@
-import { AbiItem } from 'web3-utils'
+// import { AbiItem } from 'web3-utils'
 
 import { getWeb3 } from 'src/logic/wallets/getWeb3'
 import { SPENDING_LIMIT_MODULE_ADDRESS } from 'src/utils/constants'
@@ -13,7 +13,7 @@ export const getSpendingLimitContract = () => {
   const web3 = getWeb3()
 
   return new web3.eth.Contract(
-    SpendingLimitModule.abi as AbiItem[],
+    SpendingLimitModule.abi as any[],
     SPENDING_LIMIT_MODULE_ADDRESS,
   ) as unknown as AllowanceModule
 }

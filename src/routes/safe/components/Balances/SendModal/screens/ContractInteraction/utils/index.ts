@@ -1,8 +1,8 @@
 import { FORM_ERROR, Mutator, SubmissionErrors } from 'final-form'
 import createDecorator from 'final-form-calculate'
-import { ContractSendMethod } from 'web3-eth-contract'
+// import { ContractSendMethod } from 'web3-eth-contract'
 
-import { AbiItemExtended } from 'src/logic/contractInteraction/sources/ABIService'
+// import { AbiItemExtended } from 'src/logic/contractInteraction/sources/ABIService'
 import { getAddressFromDomain, getWeb3 } from 'src/logic/wallets/getWeb3'
 import { TransactionReviewType } from 'src/routes/safe/components/Balances/SendModal/screens/ContractInteraction/Review'
 import { isValidCryptoDomainName, isValidEnsName } from 'src/logic/wallets/ethAddresses'
@@ -103,11 +103,7 @@ const extractMethodArgs =
     return getParsedJSONOrArrayFromString(values[key]) || values[key]
   }
 
-export const createTxObject = (
-  method: AbiItemExtended,
-  contractAddress: string,
-  values: Record<string, string>,
-): ContractSendMethod => {
+export const createTxObject = (method: any, contractAddress: string, values: Record<string, string>): any => {
   const web3 = getWeb3()
   const contract = new web3.eth.Contract([method], contractAddress)
   const { inputs, name = '', signatureHash } = method
@@ -116,7 +112,7 @@ export const createTxObject = (
   return contract.methods[name](...args)
 }
 
-export const isReadMethod = (method: AbiItemExtended): boolean => method && method.action === 'read'
+export const isReadMethod = (method: any): boolean => method && method.action === 'read'
 
 export const getValueFromTxInputs = (key: string, type: string, tx: TransactionReviewType): string => {
   if (isArrayParameter(type)) {
