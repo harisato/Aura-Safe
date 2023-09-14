@@ -30,7 +30,6 @@ const SendCustomTx = lazy(() => import('./screens/ContractInteraction/SendCustom
 
 const ReviewCustomTx = lazy(() => import('./screens/ContractInteraction/ReviewCustomTx'))
 
-
 const useStyles = makeStyles({
   loaderStyle: {
     height: '500px',

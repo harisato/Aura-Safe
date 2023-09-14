@@ -1,4 +1,4 @@
-import abi from 'ethereumjs-abi'
+// import abi from 'ethereumjs-abi'
 
 import { CONTRACT_ERRORS, CONTRACT_ERROR_CODES } from 'src/logic/contracts/contracts.d'
 import { getWeb3 } from 'src/logic/wallets/getWeb3'
@@ -33,7 +33,8 @@ export const getContractErrorMessage = async ({
 
     const returnBuffer = Buffer.from(returnData.slice(2), 'hex')
 
-    const contractOutput = abi.rawDecode(['string'], returnBuffer.slice(4))[0]
+    // const contractOutput = abi.rawDecode(['string'], returnBuffer.slice(4))[0]
+    const contractOutput = ''
     return decodeMessage(contractOutput)
   } catch (e) {
     return decodeMessage(e.message)

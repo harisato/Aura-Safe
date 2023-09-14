@@ -3,7 +3,7 @@ import { Text } from '@aura/safe-react-components'
 import { ReactElement, useEffect, useMemo, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import styled from 'styled-components'
-import { toBN } from 'web3-utils'
+// import { toBN } from 'web3-utils'
 import { DecodedDataResponse } from '@gnosis.pm/safe-react-gateway-sdk'
 
 import { createTransaction } from 'src/logic/safe/store/actions/createTransaction'
@@ -63,7 +63,8 @@ type Props = ConfirmTxModalProps & {
 }
 
 const parseTxValue = (value: string | number): string => {
-  return toBN(value).toString()
+  // return toBN(value).toString()
+  return ''
 }
 
 export const ReviewConfirm = ({
@@ -87,10 +88,7 @@ export const ReviewConfirm = ({
   const explorerUrl = getExplorerInfo(safeAddress)
   const isOwner = useSelector(grantedSelector)
 
-  const txRecipient: string | undefined = useMemo(
-    () => (isMultiSend ? getMultisendContractAddress() : txs[0]?.to),
-    [txs, isMultiSend],
-  )
+  const txRecipient = useMemo(() => (isMultiSend ? getMultisendContractAddress() : txs[0]?.to), [txs, isMultiSend])
   const txData: string | undefined = useMemo(
     () => (isMultiSend ? encodeMultiSendCall(txs) : txs[0]?.data),
     [txs, isMultiSend],

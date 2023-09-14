@@ -93,18 +93,19 @@ export const fetchSafeTokens =
 
 export const fetchMSafeTokens =
   (safeInfo: IMSafeInfo) =>
-    async (dispatch: Dispatch, getState: () => AppReduxState): Promise<void> => {
-      let listTokens: any[] = []
-      const cw20Tokens = safeInfo.assets.CW20.asset?.map((asset) => ({
-        name: asset.asset_info.data.name,
-        decimals: asset.asset_info.data.decimals,
-        symbol: asset.asset_info.data.symbol,
-        address: asset.contract_address,
-        _id: asset['_id'],
-      }))
-      const listSafeTokens = [...(safeInfo?.balance || []), ...(cw20Tokens || [])];
-      const state = getState()
-      const safe = safeByAddressSelector(state, safeInfo.address)
+  async (dispatch: Dispatch, getState: () => AppReduxState): Promise<void> => {
+    let listTokens: any[] = []
+    const cw20Tokens = safeInfo.assets.CW20.asset.map((asset) => ({
+      name: asset.asset_info.data.name,
+      decimals: asset.asset_info.data.decimals,
+      symbol: asset.asset_info.data.symbol,
+      address: asset.contract_address,
+      _id: asset['_id'],
+    }))
+    const listSafeTokens = [...(safeInfo?.balance || []), ...cw20Tokens]
+    const state = getState()
+    const safe = safeByAddressSelector(state, safeInfo.address)
+    if (safeInfo?.balance) {
       const listChain = getChains()
       const tokenDetailsListData = await getTokenDetail()
       const tokenDetailsList = await tokenDetailsListData.json()

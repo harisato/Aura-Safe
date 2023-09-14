@@ -1,16 +1,16 @@
-import { WalletInitOptions } from 'bnc-onboard/dist/src/interfaces'
+// import { WalletInitOptions } from 'bnc-onboard/dist/src/interfaces'
 
 import { getRpcServiceUrl, getDisabledWallets, _getChainId } from 'src/config'
 import { WALLETS } from 'src/config/chain.d'
 
-type Wallet = WalletInitOptions & {
-  desktop: boolean
-  walletName: WALLETS
-}
+// type Wallet = WalletInitOptions & {
+//   desktop: boolean
+//   walletName: WALLETS
+// }
 
-const wallets = (): Wallet[] => {
-  const rpcUrl = getRpcServiceUrl()
-  const chainId = _getChainId()
+const wallets = (): any[] => {
+  // const rpcUrl = getRpcServiceUrl()
+  // const chainId = _getChainId()
 
   return [
     // { walletName: WALLETS.METAMASK, preferred: true, desktop: false },
@@ -71,7 +71,7 @@ const wallets = (): Wallet[] => {
   ]
 }
 
-export const getSupportedWallets = (): WalletInitOptions[] => {
+export const getSupportedWallets = (): any[] => {
   if (window.isDesktop) {
     return wallets()
       .filter((wallet) => wallet.desktop)

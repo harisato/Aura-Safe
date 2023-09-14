@@ -30,7 +30,6 @@ import { isValidAddress } from 'src/utils/isValidAddress'
 import { useStyles } from './style'
 import { getExplorerInfo } from 'src/config'
 
-
 import { OwnerValues } from '../..'
 import { ModalHeader } from 'src/routes/safe/components/Balances/SendModal/screens/ModalHeader'
 const REPLACE_OWNER_NAME_INPUT_TEST_ID = 'replace-owner-name-input'
