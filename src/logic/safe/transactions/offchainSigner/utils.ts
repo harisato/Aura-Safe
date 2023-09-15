@@ -1,22 +1,22 @@
 import { sameString } from 'src/utils/strings'
-import { bufferToHex, ecrecover, pubToAddress } from 'ethereumjs-util'
+// import { bufferToHex, ecrecover, pubToAddress } from 'ethereumjs-util'
 
-export const isTxHashSignedWithPrefix = (txHash: string, signature: string, ownerAddress: string): boolean => {
-  let hasPrefix
-  try {
-    const rsvSig = {
-      r: Buffer.from(signature.slice(2, 66), 'hex'),
-      s: Buffer.from(signature.slice(66, 130), 'hex'),
-      v: parseInt(signature.slice(130, 132), 16),
-    }
-    const recoveredData = ecrecover(Buffer.from(txHash.slice(2), 'hex'), rsvSig.v, rsvSig.r, rsvSig.s)
-    const recoveredAddress = bufferToHex(pubToAddress(recoveredData))
-    hasPrefix = !sameString(recoveredAddress, ownerAddress)
-  } catch (e) {
-    hasPrefix = true
-  }
-  return hasPrefix
-}
+// export const isTxHashSignedWithPrefix = (txHash: string, signature: string, ownerAddress: string): boolean => {
+//   let hasPrefix
+//   try {
+//     const rsvSig = {
+//       r: Buffer.from(signature.slice(2, 66), 'hex'),
+//       s: Buffer.from(signature.slice(66, 130), 'hex'),
+//       v: parseInt(signature.slice(130, 132), 16),
+//     }
+//     const recoveredData = ecrecover(Buffer.from(txHash.slice(2), 'hex'), rsvSig.v, rsvSig.r, rsvSig.s)
+//     const recoveredAddress = bufferToHex(pubToAddress(recoveredData))
+//     hasPrefix = !sameString(recoveredAddress, ownerAddress)
+//   } catch (e) {
+//     hasPrefix = true
+//   }
+//   return hasPrefix
+// }
 
 type AdjustVOverload = {
   (signingMethod: 'eth_signTypedData', signature: string): string
@@ -44,11 +44,11 @@ export const adjustV: AdjustVOverload = (
     if (sigV < MIN_VALID_V_VALUE) {
       sigV += MIN_VALID_V_VALUE
     }
-    const adjusted = signature.slice(0, -2) + sigV.toString(16)
-    const signatureHasPrefix = isTxHashSignedWithPrefix(safeTxHash as string, adjusted, sender as string)
-    if (signatureHasPrefix) {
-      sigV += 4
-    }
+    // const adjusted = signature.slice(0, -2) + sigV.toString(16)
+    // const signatureHasPrefix = isTxHashSignedWithPrefix(safeTxHash as string, adjusted, sender as string)
+    // if (signatureHasPrefix) {
+    //   sigV += 4
+    // }
   }
 
   if (signingMethod === 'eth_signTypedData') {

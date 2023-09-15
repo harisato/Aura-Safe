@@ -13,7 +13,7 @@ import { SafeRecordProps } from 'src/logic/safe/store/models/safe'
 import { getLocalSafe } from 'src/logic/safe/utils'
 import { getSafeInfo } from 'src/logic/safe/utils/safeInformation'
 import { fetchMSafeTokens } from 'src/logic/tokens/store/actions/fetchSafeTokens'
-import { fetchAccountInfo, getAccountAsset, getMSafeInfo } from 'src/services'
+import { getAccountInfo, getAccountAsset, getMSafeInfo } from 'src/services'
 import { IMSafeInfo } from 'src/types/safe'
 import { humanReadableValue } from 'src/utils'
 import { checksumAddress } from 'src/utils/checksumAddress'
@@ -216,7 +216,7 @@ export const fetchMSafe =
 async function _getSafeInfo(safeAddress: string, safeId: number): Promise<[IMSafeInfo, SafeInfo, SequenceResponse]> {
   const getAccountAssetPromise = getAccountAsset(safeAddress)
   const getMSafeInfoPromise = getMSafeInfo(safeId)
-  const getAccountInfoPromise = fetchAccountInfo(safeAddress)
+  const getAccountInfoPromise = getAccountInfo(safeAddress)
 
   return Promise.all([getAccountAssetPromise, getMSafeInfoPromise, getAccountInfoPromise]).then(
     ([accountAssetData, mSafeInfotData, accountInfoData]) => {
