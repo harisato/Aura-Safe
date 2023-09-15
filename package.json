@@ -17,7 +17,7 @@
   },
   "homepage": "https://pyxis.network",
   "scripts": {
-    "build": "rescripts --max-old-space-size=11192 build",
+    "build": "rescripts --openssl-legacy-provider --max-old-space-size=11192 build",
     "start:dev16": "DISABLE_ESLINT_PLUGIN=true rescripts --max-old-space-size=11192 start",
     "format:staged": "lint-staged",
     "lint:check": "eslint './src/**/*.{js,jsx,ts,tsx}'",
@@ -25,7 +25,7 @@
     "prettier:check": "yarn prettier --check",
     "prettier:fix": "yarn prettier --write",
     "prettier": "prettier './src/**/*.{js,jsx,ts,tsx}'",
-    "start": "rescripts start",
+    "start": "rescripts --openssl-legacy-provider start",
     "test": "REACT_APP_ENV=test rescripts test --env=jsdom",
     "test:coverage": "REACT_APP_ENV=test yarn test --coverage --watchAll=false",
     "test:ci": "REACT_APP_ENV=test yarn test --ci --coverage --json --watchAll=false --testLocationInResults --runInBand --outputFile=jest.results.json",
@@ -169,11 +169,8 @@
     "jest": "26.6.0",
     "lint-staged": "^11.1.1",
     "patch-package": "^6.4.7",
-    "postinstall-postinstall": "^2.1.0",
     "prettier": "^2.4.0",
-    "redux-mock-store": "^1.5.4",
     "sass": "^1.32.0",
-    "typescript": "^4.3.5",
-    "wait-on": "^6.0.0"
+    "typescript": "^4.3.5"
   }
 }

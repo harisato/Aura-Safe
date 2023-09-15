@@ -1,9 +1,9 @@
-FROM node:16 as build
+FROM node:18.17-slim as build
 
 WORKDIR /app
 
 COPY package.json yarn.lock ./
-RUN yarn install --frozen-lockfile --network-concurrency 1
+RUN yarn install --frozen-lockfile
 
 COPY . .
 RUN yarn build
