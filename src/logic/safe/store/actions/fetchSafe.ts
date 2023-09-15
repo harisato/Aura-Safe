@@ -13,7 +13,7 @@ import { SafeRecordProps } from 'src/logic/safe/store/models/safe'
 import { getLocalSafe } from 'src/logic/safe/utils'
 import { getSafeInfo } from 'src/logic/safe/utils/safeInformation'
 import { fetchMSafeTokens } from 'src/logic/tokens/store/actions/fetchSafeTokens'
-import { getAccountInfo, getAccountAsset, getMSafeInfo } from 'src/services'
+import { getAccountInfo, getAccountAsset, getMSafeInfo, fetchAccountInfo } from 'src/services'
 import { IMSafeInfo } from 'src/types/safe'
 import { humanReadableValue } from 'src/utils'
 import { checksumAddress } from 'src/utils/checksumAddress'
@@ -142,9 +142,10 @@ export const fetchMSafe =
     let remoteSafeInfo: SafeInfo | null = null
     let mSafeInfo: IMSafeInfo | null = null
     let accountInfo: SequenceResponse | null = null
+    let isSafeLoaded = false
 
     try {
-      ;[mSafeInfo, remoteSafeInfo, accountInfo] = await _getSafeInfo(safeAddress, safeId)
+      ;[mSafeInfo, remoteSafeInfo, accountInfo, isSafeLoaded] = await _getSafeInfo(safeAddress, safeId)
     } catch (err) {
       console.error(err)
     }
@@ -210,99 +211,110 @@ export const fetchMSafe =
 
     await Promise.all(dispatchPromises)
 
-    return dispatch(updateSafe({ address, ...safeInfo, owners, safeId: safeId }))
+    return dispatch(updateSafe({ address, ...safeInfo, owners, safeId: safeId, isSafeLoaded }))
   }
 
-async function _getSafeInfo(safeAddress: string, safeId: number): Promise<[IMSafeInfo, SafeInfo, SequenceResponse]> {
+async function _getSafeInfo(
+  safeAddress: string,
+  safeId: number,
+): Promise<[IMSafeInfo, SafeInfo, SequenceResponse, boolean]> {
   const getAccountAssetPromise = getAccountAsset(safeAddress)
   const getMSafeInfoPromise = getMSafeInfo(safeId)
-  const getAccountInfoPromise = getAccountInfo(safeAddress)
+  const getAccountInfoPromise = fetchAccountInfo(safeAddress)
 
-  return Promise.all([getAccountAssetPromise, getMSafeInfoPromise, getAccountInfoPromise]).then(
-    ([accountAssetData, mSafeInfotData, accountInfoData]) => {
-      const formatMSafeInfotData: IMSafeInfo = {
-        ...mSafeInfotData,
-        accountNumber: String(accountInfoData.account[0]?.account_number),
-        assets: {
-          CW20: {
-            asset: accountAssetData.cw20_holder.map((cw20) => ({
-              asset_info: {
-                data: {
-                  decimals: +cw20.cw20_contract.decimal,
-                  name: cw20.cw20_contract.name,
-                  symbol: cw20.cw20_contract.symbol,
-                },
-              },
-              balance: cw20.amount,
-              contract_address: cw20.cw20_contract.smart_contract.address,
-            })),
+  const results = await Promise.allSettled([getAccountAssetPromise, getMSafeInfoPromise, getAccountInfoPromise])
+
+  const [accountAssetDataResult, mSafeInfotDataResult, accountInfoDataResult] = results
+
+  const accountAssetData = accountAssetDataResult.status === 'fulfilled' ? accountAssetDataResult.value : null
+  const mSafeInfotData = mSafeInfotDataResult.status === 'fulfilled' ? mSafeInfotDataResult.value : null
+  const accountInfoData = accountInfoDataResult.status === 'fulfilled' ? accountInfoDataResult.value : null
+
+  if (!mSafeInfotData) {
+    throw new Error('Get Safe Info failed')
+  }
+
+  const isSafeLoaded = !!(accountAssetData && mSafeInfotData && accountInfoData)
+  const formatMSafeInfotData: IMSafeInfo = {
+    ...mSafeInfotData,
+    accountNumber: String(accountInfoData?.account_number),
+    assets: {
+      CW20: {
+        asset: accountAssetData?.cw20_holder?.map((cw20) => ({
+          asset_info: {
+            data: {
+              decimals: +cw20.cw20_contract.decimal,
+              name: cw20.cw20_contract.name,
+              symbol: cw20.cw20_contract.symbol,
+            },
           },
-          CW721: {
-            asset: accountAssetData.cw721_token.map((cw721) => ({
-              contract_address: cw721.cw721_contract.smart_contract.address,
-            })),
-          },
-        },
-        balance: accountInfoData.account[0]?.balances.map((balance) => {
-          if (balance.denom === getCoinMinimalDenom()) {
-            return {
-              amount: balance.amount,
-              denom: balance.base_denom ?? balance.denom,
-            }
-          }
-
-          return {
-            amount: balance.amount,
-            denom: balance.base_denom ?? balance.denom,
-            minimal_denom: balance.denom,
-          }
-        }),
-        sequence: String(accountInfoData.account[0]?.sequence),
-      }
-
-      const safeInfoData: SafeInfo = {
-        address: {
-          value: mSafeInfotData.address,
-          logoUri: null,
-          name: null,
-        },
-        chainId: _getChainId(),
-        nonce: 0,
-        threshold: mSafeInfotData.threshold,
-        owners: mSafeInfotData.owners?.map((owners) => ({
-          value: owners,
-          logoUri: null,
-          name: null,
+          balance: cw20.amount,
+          contract_address: cw20.cw20_contract.smart_contract.address,
         })),
-        implementation: {
-          value: '',
-          logoUri: null,
-          name: null,
-        },
-        modules: [
-          {
-            value: '',
-            logoUri: null,
-            name: null,
-          },
-        ],
-        guard: {
-          value: '',
-          logoUri: null,
-          name: null,
-        },
-        fallbackHandler: {
-          value: '',
-          logoUri: null,
-          name: null,
-        },
-        version: '',
-        collectiblesTag: '',
-        txQueuedTag: mSafeInfotData.txQueuedTag,
-        txHistoryTag: mSafeInfotData.txHistoryTag,
-      }
-
-      return [formatMSafeInfotData, safeInfoData, accountInfoData.account[0]]
+      },
+      CW721: {
+        asset: accountAssetData?.cw721_token?.map((cw721) => ({
+          contract_address: cw721.cw721_contract.smart_contract.address,
+        })),
+      },
     },
-  )
+    balance: accountInfoData?.balances?.map((balance) => {
+      if (balance.denom === getCoinMinimalDenom()) {
+        return {
+          amount: balance.amount,
+          denom: balance.base_denom ?? balance.denom,
+        }
+      }
+      return {
+        amount: balance.amount,
+        denom: balance.base_denom ?? balance.denom,
+        minimal_denom: balance.denom,
+      }
+    }),
+    sequence: String(accountInfoData?.sequence),
+  }
+
+  const safeInfoData: SafeInfo = {
+    address: {
+      value: mSafeInfotData.address,
+      logoUri: null,
+      name: null,
+    },
+    chainId: _getChainId(),
+    nonce: 0,
+    threshold: mSafeInfotData.threshold,
+    owners: mSafeInfotData.owners?.map((owners) => ({
+      value: owners,
+      logoUri: null,
+      name: null,
+    })),
+    implementation: {
+      value: '',
+      logoUri: null,
+      name: null,
+    },
+    modules: [
+      {
+        value: '',
+        logoUri: null,
+        name: null,
+      },
+    ],
+    guard: {
+      value: '',
+      logoUri: null,
+      name: null,
+    },
+    fallbackHandler: {
+      value: '',
+      logoUri: null,
+      name: null,
+    },
+    version: '',
+    collectiblesTag: '',
+    txQueuedTag: mSafeInfotData.txQueuedTag,
+    txHistoryTag: mSafeInfotData.txHistoryTag,
+  }
+
+  return [formatMSafeInfotData, safeInfoData, accountInfoData, isSafeLoaded]
 }
