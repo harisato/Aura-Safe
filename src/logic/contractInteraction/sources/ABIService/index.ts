@@ -1,15 +1,15 @@
 // import { AbiItem, keccak256 } from 'web3-utils'
 
-// interface AllowedAbiItem extends AbiItem {
-//   name: string
-//   type: 'function'
-// }
+interface AllowedAbiItem {
+  name: string
+  type: 'function'
+}
 
-// export interface AbiItemExtended extends AllowedAbiItem {
-//   action: string
-//   methodSignature: string
-//   signatureHash: string
-// }
+export interface AbiItemExtended extends AllowedAbiItem {
+  action: string
+  methodSignature: string
+  signatureHash: string
+}
 
 const getMethodSignature = ({ inputs, name }: any): string => {
   const params = inputs?.map((x) => x.type).join(',')
