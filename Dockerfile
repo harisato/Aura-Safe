@@ -1,4 +1,4 @@
-FROM node:14 as build
+FROM node:18.17 as build
 
 # Grab needed environment variables from .env.example
 ENV REACT_APP_ENV=production
