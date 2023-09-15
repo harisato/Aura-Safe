@@ -2,6 +2,7 @@ FROM node:18.17 as build
 
 # Grab needed environment variables from .env.example
 ENV REACT_APP_ENV=production
+ENV NODE_OPTIONS=--openssl-legacy-provider
 
 WORKDIR /app
 
