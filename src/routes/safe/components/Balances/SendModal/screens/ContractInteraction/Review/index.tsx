@@ -11,7 +11,6 @@ import Img from 'src/components/layout/Img'
 import Paragraph from 'src/components/layout/Paragraph'
 import Row from 'src/components/layout/Row'
 import PrefixedEthHashInfo from 'src/components/PrefixedEthHashInfo'
-import { AbiItemExtended } from 'src/logic/contractInteraction/sources/ABIService'
 import { TX_NOTIFICATION_TYPES } from 'src/logic/safe/transactions'
 import { getEthAsToken } from 'src/logic/tokens/utils/tokenHelpers'
 import { styles } from 'src/routes/safe/components/Balances/SendModal/screens/ContractInteraction/style'
@@ -41,7 +40,7 @@ export type TransactionReviewType = {
   contractAddress?: string
   data?: string
   value?: string
-  selectedMethod?: AbiItemExtended
+  selectedMethod?: any
 }
 
 type Props = {

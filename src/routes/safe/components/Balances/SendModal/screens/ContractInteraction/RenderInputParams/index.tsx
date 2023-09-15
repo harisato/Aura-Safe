@@ -5,7 +5,6 @@ import Row from 'src/components/layout/Row'
 
 import { InputComponent } from './InputComponent'
 import { generateFormFieldKey } from '../utils'
-import { AbiItemExtended } from 'src/logic/contractInteraction/sources/ABIService'
 
 export const RenderInputParams = (): ReactElement | null => {
   const {
@@ -13,7 +12,7 @@ export const RenderInputParams = (): ReactElement | null => {
   } = useField('abi', { subscription: { valid: true, value: true } })
   const {
     input: { value: method },
-  }: { input: { value: AbiItemExtended } } = useField('selectedMethod', { subscription: { value: true } })
+  }: { input: { value: any } } = useField('selectedMethod', { subscription: { value: true } })
   const renderInputs = validABI && !!method && method.inputs?.length
 
   return !renderInputs ? null : (

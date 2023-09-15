@@ -16,7 +16,7 @@ import { NO_CONTRACT } from 'src/routes/safe/components/Balances/SendModal/scree
 import CheckIcon from '../MethodsDropdown/img/check.svg'
 import { useDropdownStyles } from 'src/routes/safe/components/Balances/SendModal/screens/ContractInteraction/MethodsDropdown/style'
 import { DropdownListTheme } from 'src/theme/mui'
-import { extractUsefulMethods, AbiItemExtended } from 'src/logic/contractInteraction/sources/ABIService'
+import { extractUsefulMethods } from 'src/logic/contractInteraction/sources/ABIService'
 import { Text } from '@aura/safe-react-components'
 import styled from 'styled-components'
 
@@ -40,8 +40,8 @@ export const MethodsDropdown = ({ onChange }: MethodsDropdownProps): ReactElemen
     initialValues: { selectedMethod: selectedMethodByDefault },
   } = useFormState({ subscription: { initialValues: true } })
   const [selectedMethod, setSelectedMethod] = useState(selectedMethodByDefault ? selectedMethodByDefault : {})
-  const [methodsList, setMethodsList] = useState<AbiItemExtended[]>([])
-  const [methodsListFiltered, setMethodsListFiltered] = useState<AbiItemExtended[]>([])
+  const [methodsList, setMethodsList] = useState<any[]>([])
+  const [methodsListFiltered, setMethodsListFiltered] = useState<any[]>([])
 
   const [anchorEl, setAnchorEl] = useState(null)
   const [searchParams, setSearchParams] = useState('')
